@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@theme {
+  /* --- Colors --- */
+ --color-primary-50: #e7eff8;
+  --color-primary-100: #d6e2f4;
+  --color-primary-200: #adc7e9;
+  --color-primary-300: #88acd7;
+  --color-primary-400: #578bc3;
+  --color-primary-500: #0c62c3; /* The original hex code */
+  --color-primary-600: #0a56ae;
+  --color-primary-700: #084c98;
+  --color-primary-800: #06407d;
+  --color-primary-900: #053365;
+  --color-primary-950: #021a36;
+
+ 
+  --color-secondary-50: #f0fdfa;
+  --color-secondary-100: #ccfbf5;
+  --color-secondary-200: #99f6e9;
+  --color-secondary-300: #5eead4;
+  --color-secondary-400: #2dd4bf;
+  --color-secondary-500: #14b8a6;
+  --color-secondary-600: #0d9488;
+  --color-secondary-700: #0f766e;
+  --color-secondary-800: #115e59;
+  --color-secondary-900: #134e4a;
+  --color-secondary-950: #062e2c;
+  /* --- Fonts --- */
+ 
+
+  /* --- Animations and Keyframes --- */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-slow: pulse 3s ease-in-out infinite;
+
+  /* --- Shadows --- */
+  --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
+  --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
+}
+body{
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+   
+    font-style: normal;
+  }
+

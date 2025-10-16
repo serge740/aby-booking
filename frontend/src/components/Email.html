@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    .container {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        width: 27rem;
+        border-radius: .7rem;
+        box-shadow: .5px .5px 10px 1px rgba(135, 207, 235, 0.473);
+        .brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: .7rem .7rem 0rem 0rem;
+            width: 100%;
+            background-color: #ffd44d;
+            height: 4rem;
+            h3 {
+                font-family: poppins;
+                color: white;
+            }
+        }
+        .content {
+            padding-left: 1rem;
+        }
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="brand"><h3>AbyTechHub</h3></div>
+        <div class="content">
+            <p>Hello {{to_name}},</p>
+            <p>You got a new message from {{from_name}}:</p>
+            <p>
+                {{email}}
+                {{subject}}
+                {{message}}
+            </p>
+            <p>
+                Best wishes,<br>EmailJS team </p>
+
+        </div>
+    </div>
+</body>
+
+</html>
