@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle, ArrowRight } from 'lucide-react';
-import Image from '../../assets/images/about1.png'
+import Image from '../../assets/blog1.jpg'
 
 function HomeAbout() {
   const services = [
