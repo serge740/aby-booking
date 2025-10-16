@@ -41,10 +41,18 @@
   --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
   --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
 }
+input{
+  color: black;
+}
+textarea{
+  color: black;
+}
+select{
+  color: black;
+}
 body{
     font-family: "Oswald", sans-serif;
     font-optical-sizing: auto;
-   
     font-style: normal;
   }
 
