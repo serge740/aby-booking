@@ -11,7 +11,7 @@ const FooterContent = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-[#c0aa83] via-[#a38e6a] to-[#c0aa83] text-white relative">
+    <footer className="bg-gradient-to-br from-[#6F4E37] via-[#a38e6a] to-[#6F4E37] text-white relative">
       <section className="py-12 px-6 md:px-8 lg:px-14">
         <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between">
           {/* Left Section */}
@@ -46,7 +46,7 @@ const FooterContent = () => {
             href="https://www.facebook.com/coffeeking"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
           >
             <FaFacebookF className="text-lg" />
           </a>
@@ -55,7 +55,7 @@ const FooterContent = () => {
             href="https://x.com/coffeeking"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
           >
             <RxCross2 className="text-lg" />
           </a>
@@ -64,7 +64,7 @@ const FooterContent = () => {
             href="https://www.instagram.com/coffeeking"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
           >
             <FaInstagram className="text-lg" />
           </a>
@@ -73,7 +73,7 @@ const FooterContent = () => {
             href="https://wa.me/+1234567890"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
           >
             <FaWhatsapp className="text-lg" />
           </a>
@@ -82,7 +82,7 @@ const FooterContent = () => {
             href="mailto:info@coffeeking.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
           >
             <FaEnvelope className="text-lg" />
           </a>
@@ -97,7 +97,7 @@ const FooterContent = () => {
       {/* Scroll to Top */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] p-3 rounded-full shadow-lg hover:scale-110 hover:shadow-2xl transition-all duration-300"
+        className="fixed bottom-6 right-6 bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] p-3 rounded-full shadow-lg hover:scale-110 hover:shadow-2xl transition-all duration-300"
         aria-label="Scroll to Top"
       >
         <IoMdArrowRoundUp className="text-white text-xl" />

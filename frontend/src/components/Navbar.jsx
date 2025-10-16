@@ -49,7 +49,7 @@ function NavBar() {
           left: 50%;
           width: 0;
           height: 2px;
-          background: #c0aa83;
+          background: #6F4E37;
           transition: all 0.3s ease;
           transform: translateX(-50%);
         }
@@ -62,7 +62,7 @@ function NavBar() {
         {/* Top Info Bar */}
         <div
           className="text-white py-2 px-4 hidden lg:block pl-12 pr-10"
-          style={{ backgroundColor: "#c0aa83" }}
+          style={{ backgroundColor: "#6F4E37" }}
         >
           <div className="container mx-auto flex justify-between items-center text-sm">
             <div className="flex items-center space-x-6">
@@ -79,7 +79,7 @@ function NavBar() {
                 className="flex items-center space-x-2 hover:text-white/80 transition-colors"
               >
                 <FiMail className="w-4 h-4" />
-                <span>inf@JamboKawa.com</span>
+                <span>info@JamboKawa.com</span>
               </a>
             </div>
 
@@ -105,11 +105,11 @@ function NavBar() {
         </div>
 
         {/* Main Navigation */}
-        <nav className="shadow-md nav-transition bg-white text-[#c0aa83]">
+        <nav className="shadow-md nav-transition bg-white text-[#6F4E37]">
           <div className="container mx-auto flex justify-between items-center px-4 py-3 lg:py-4 pl-12 pr-10">
             {/* Text Logo */}
             <div className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105">
-              <h1 className="text-2xl font-bold text-[#c0aa83] tracking-wide">
+              <h1 className="text-2xl font-bold text-[#6F4E37] tracking-wide">
                 JamboKawa
               </h1>
             </div>
@@ -130,8 +130,8 @@ function NavBar() {
                     className={({ isActive }) =>
                       `nav-link block px-4 py-2 text-base font-semibold capitalize transition-all duration-200 rounded-lg ${
                         isActive
-                          ? "text-[#c0aa83] underline underline-offset-4"
-                          : "text-[#c0aa83] hover:text-[#a68c64]"
+                          ? "text-[#6F4E37] underline underline-offset-4"
+                          : "text-[#6F4E37] hover:text-[#a68c64]"
                       }`
                     }
                   >
@@ -142,7 +142,7 @@ function NavBar() {
             </ul>
 
             {/* Contact / Mobile Button */}
-            <div className="flex items-center bg-[#c0aa83] p-2 rounded-md w-36 text-white">
+            <div className="flex items-center bg-[#6F4E37] p-2 rounded-md w-36 text-white">
               <div className="hidden lg:block ml-4">
                 <NavLink
                   to="/contact-us"
@@ -156,7 +156,7 @@ function NavBar() {
               <div className="lg:hidden">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-2 rounded-lg transition-all duration-300 text-[#c0aa83] hover:text-[#a68c64]"
+                  className="p-2 rounded-lg transition-all duration-300 text-[#6F4E37] hover:text-[#a68c64]"
                 >
                   {menuOpen ? <FiX className="w-7 h-7" /> : <FiMenu className="w-7 h-7" />}
                 </button>
@@ -176,11 +176,11 @@ function NavBar() {
               className="lg:hidden fixed top-0 left-0 w-4/5 max-w-sm h-full z-40 shadow-2xl"
               style={{ backgroundColor: "#ffffff" }}
             >
-              <div className="flex justify-between items-center p-6 border-b border-[#c0aa83] text-[#c0aa83]">
+              <div className="flex justify-between items-center p-6 border-b border-[#6F4E37] text-[#6F4E37]">
                 <h1 className="text-xl font-bold">JamboKawa</h1>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className="text-[#c0aa83] hover:text-[#a68c64] transition-all p-2"
+                  className="text-[#6F4E37] hover:text-[#a68c64] transition-all p-2"
                 >
                   <FiX className="w-6 h-6" />
                 </button>
@@ -199,7 +199,7 @@ function NavBar() {
                     <NavLink
                       to={item.path}
                       onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-3 text-base font-semibold text-[#c0aa83] hover:text-[#a68c64] transition-colors duration-200"
+                      className="block px-4 py-3 text-base font-semibold text-[#6F4E37] hover:text-[#a68c64] transition-colors duration-200"
                     >
                       {item.name}
                     </NavLink>
@@ -207,7 +207,7 @@ function NavBar() {
                 ))}
               </ul>
 
-              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-[#c0aa83]">
+              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-[#6F4E37]">
                 <div className="flex justify-center space-x-6">
                   {socialLinks.map(({ icon: Icon, href }, i) => (
                     <a
@@ -215,7 +215,7 @@ function NavBar() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#c0aa83] hover:text-[#a68c64] transition-all hover:scale-110"
+                      className="text-[#6F4E37] hover:text-[#a68c64] transition-all hover:scale-110"
                     >
                       <Icon className="w-5 h-5" />
                     </a>

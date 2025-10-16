@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import {
-  FaRocket,
-  FaClipboardList,
-  FaCheckCircle,
-  FaCog,
-  FaHeadset,
+  FaCoffee,
+  FaSeedling, // Replaced FaBeans with FaSeedling
+  FaStore,
+  FaMugHot,
+  FaHeart,
   FaChevronDown,
 } from 'react-icons/fa';
 import banner2 from '../../assets/banners/banner-img2.png';
@@ -18,54 +18,53 @@ export default function WorkProcess() {
     AOS.init({ duration: 1000, once: true, easing: 'ease-in-out' });
   }, []);
 
-  const steps = [
-    {
-      icon: FaRocket,
-      title: 'Get Started',
-      description:
-        'Begin your journey with our expert-driven development process, ensuring a smooth onboarding experience.',
-      number: '01',
-      bgColor: '#c0aa83',
-      bgLightColor: '#c0aa8320',
-    },
-    {
-      icon: FaClipboardList,
-      title: 'Requirement Gathering',
-      description:
-        'We gather and analyze all project requirements, aligning business goals with technical needs.',
-      number: '02',
-      bgColor: '#c0aa83',
-      bgLightColor: '#c0aa8320',
-    },
-    {
-      icon: FaCog,
-      title: 'Planning & Strategy',
-      description:
-        'We outline a clear roadmap, define milestones, and strategize the best approach to ensure seamless execution.',
-      number: '03',
-      bgColor: '#c0aa83',
-      bgLightColor: '#c0aa8320',
-    },
-    {
-      icon: FaCheckCircle,
-      title: 'Development & Execution',
-      description:
-        'Our expert developers bring the vision to life, coding and building scalable, secure solutions.',
-      number: '04',
-      bgColor: '#c0aa83',
-      bgLightColor: '#c0aa8320',
-    },
-    {
-      icon: FaHeadset,
-      title: 'Deployment & Support',
-      description:
-        'We launch your project successfully and provide ongoing maintenance, support, and updates.',
-      number: '05',
-      bgColor: '#c0aa83',
-      bgLightColor: '#c0aa8320',
-    },
-  ];
-
+const steps = [
+  {
+    icon: FaCoffee, // Placeholder for a coffee cup icon
+    title: 'Welcome to Jambokawa',
+    description:
+      'Start your coffee shop journey with our passionate team, ensuring a warm and inviting onboarding experience.',
+    number: '01',
+    bgColor: '#8B4513', // Rich coffee brown
+    bgLightColor: '#8B451320', // Light coffee brown with transparency
+  },
+  {
+    icon: FaSeedling, // Placeholder for a coffee bean icon
+    title: 'Menu Planning',
+    description:
+      'We craft the perfect menu by selecting premium coffee beans and curating delicious offerings to delight your customers.',
+    number: '02',
+    bgColor: '#8B4513',
+    bgLightColor: '#8B451320',
+  },
+  {
+    icon: FaStore, // Placeholder for a shop or storefront icon
+    title: 'Shop Design & Setup',
+    description:
+      'We design a cozy, inviting space and plan the layout to ensure a seamless flow for customers and staff.',
+    number: '03',
+    bgColor: '#8B4513',
+    bgLightColor: '#8B451320',
+  },
+  {
+    icon: FaMugHot, // Placeholder for a steaming mug icon
+    title: 'Brewing & Training',
+    description:
+      'Our expert baristas bring the vision to life, crafting perfect brews and training staff for exceptional service.',
+    number: '04',
+    bgColor: '#8B4513',
+    bgLightColor: '#8B451320',
+  },
+  {
+    icon: FaHeart, // Placeholder for a heart or customer service icon
+    title: 'Grand Opening & Support',
+    description:
+      'We launch your Jambokawa Coffee Shop with flair and provide ongoing support to keep customers coming back.',
+    number: '05',
+    bgColor: '#8B4513',
+    bgLightColor: '#8B451320',
+  },
+];
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
@@ -77,7 +76,7 @@ export default function WorkProcess() {
         <div className="mb-16 md:mb-20 text-center" data-aos="fade-down">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 -mt-8">
             Our{' '}
-            <span className="bg-jambokawa bg-clip-text text-transparent">
+            <span className="bg-[#6F4E37] bg-clip-text text-transparent">
               Working
             </span>{' '}
             Process

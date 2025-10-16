@@ -1,29 +1,42 @@
 import React, { useState } from 'react';
-import { Shield, Users, Lock, Cpu, Code } from 'lucide-react';
+import { Shield, Users, Lock,Store } from 'lucide-react';
+
+import {
+  FaCoffee,
+  FaSeedling, // Replaced FaBeans with FaSeedling
+  FaStore,
+  FaMugHot,
+  FaHeart,
+  FaChevronDown,
+} from 'react-icons/fa';
+
 
 export default function WhyChooseUs() {
   const [highlighted, setHighlighted] = useState(null);
 
   const services = [
-    {
-      icon: Code,
-      title: 'Web Development',
-      description: 'Building modern, responsive applications using technologies such as React, JavaScript, and related frameworks to create high-impact digital products.',
-      path: '/services',
-    },
-    {
-      icon: Cpu,
-      title: 'Software Solutions',
-      description: 'Delivering cutting-edge software solutions that drive businesses forward and transform ideas into impactful digital experiences.',
-      path: '/services',
-    },
-    {
-      icon: Users,
-      title: 'IT Training',
-      description: 'Empowering local talent through coding workshops and digital skills programs, supporting innovation within Rwandas growing tech ecosystem.',
-      path: '/services',
-    },
-  ];
+  {
+    icon: FaCoffee,
+    title: 'Specialty Coffee',
+    description:
+      'Experience our hand-crafted brews made from ethically sourced African beans, roasted in-house for the perfect aroma and flavor in every cup.',
+    path: '/menu',
+  },
+  {
+    icon: FaSeedling,
+    title: 'Coffee Beans & Merch',
+    description:
+      'Take Jambokawa home — choose from our range of fresh roasted beans, signature blends, and beautifully designed coffee merchandise.',
+    path: '/shop',
+  },
+  {
+    icon: Store,
+    title: 'Café Experience',
+    description:
+      'Relax in our cozy space designed for comfort and connection — enjoy your favorite drinks, pastries, and the warmth of the Jambokawa community.',
+    path: '/visit',
+  },
+]
 
   return (
     <div className="w-full py-4 md:py-24 px-4 md:px-8 bg-white">
@@ -31,16 +44,16 @@ export default function WhyChooseUs() {
         {/* Header */}
         <div className="text-center mb-12 md:mb-20">
           <div className="flex items-center justify-center gap-2 -mt-10">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#c0aa83' }}></div>
-            <p className="font-semibold text-sm md:text-base tracking-wider uppercase" style={{ color: '#c0aa83' }}>Our Solutions</p>
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#c0aa83' }}></div>
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#6F4E37' }}></div>
+            <p className="font-semibold text-sm md:text-base tracking-wider uppercase" style={{ color: '#6F4E37' }}>Our Solutions</p>
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#6F4E37' }}></div>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight" style={{ color: '#c0aa83' }}>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight" style={{ color: '#6F4E37' }}>
             Why We Stand Out <br /> Choose Us Today
           </h2>
 
-          <p className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed" style={{ color: '#c0aa83' }}>
+          <p className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed" style={{ color: '#6F4E37' }}>
             Discover innovative solutions tailored to your needs, crafted with precision and a passion for excellence in technology.
           </p>
         </div>
@@ -81,7 +94,7 @@ export default function WhyChooseUs() {
                     <Icon
                       className="w-8 h-8 transition-colors duration-300"
                       style={{ 
-                        color: '#c0aa83'
+                        color: '#6F4E37'
                       }}
                       strokeWidth={2}
                     />
@@ -102,9 +115,9 @@ export default function WhyChooseUs() {
                 <a
                   href={service.path}
                   className="font-medium text-center block transition-colors duration-300 text-sm md:text-base"
-                  style={{ color: '#c0aa83' }}
+                  style={{ color: '#6F4E37' }}
                   onMouseEnter={(e) => e.target.style.color = '#a08968'}
-                  onMouseLeave={(e) => e.target.style.color = '#c0aa83'}
+                  onMouseLeave={(e) => e.target.style.color = '#6F4E37'}
                 >
                   View Details →
                 </a>
