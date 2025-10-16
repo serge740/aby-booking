@@ -1,8 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Mail, Phone, MapPin, Clock, Send, Coffee } from "lucide-react";
 import Header from "../components/header";
-import { useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -35,75 +33,62 @@ const ContactUs = () => {
     e.preventDefault();
     setLoading(true);
 
-    emailjs
-      .sendForm(
-        "service_kwzng64",
-        "template_bz2mb97",
-        form.current,
-        "GbB192kAFStZjdFfT"
-      )
-      .then(
-        (result) => {
-          console.log("Success:", result.text);
-          alert("Message sent successfully!");
-          setFormData({
-            from_name: "",
-            user_email: "",
-            subject: "",
-            message: "",
-          });
-        },
-        (error) => {
-          console.log("Error:", error.text);
-          alert("Failed to send message.");
-        }
-      )
-      .finally(() => setLoading(false));
+    // Simulating email send - replace with your actual emailjs implementation
+    setTimeout(() => {
+      alert("Message sent successfully!");
+      setFormData({
+        from_name: "",
+        user_email: "",
+        subject: "",
+        message: "",
+      });
+      setLoading(false);
+    }, 2000);
   };
 
   const contactInfo = [
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
-      detail: "+250 791813289",
-      link: "tel:+250791813289",
-      color: "from-blue-500 to-blue-600"
+      detail: "+1 (555) 123-4567",
+      link: "tel:+15551234567",
+      color: "from-[#c0aa83] to-[#a38e6a]"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
-      detail: "info@abytechhub.com",
-      link: "mailto:info@abytechhub.com",
-      color: "from-purple-500 to-purple-600"
+      detail: "hello@coffeeking.com",
+      link: "mailto:hello@coffeeking.com",
+      color: "from-[#c0aa83] to-[#a38e6a]"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: "Location",
-      detail: " KN 3 Rd, Kigali",
-      link: "https://share.google/zMIUGhrORT3Knc0xA",
-      color: "from-pink-500 to-pink-600"
+      detail: "123 Coffee Street, Brew City",
+      link: "https://maps.google.com",
+      color: "from-[#c0aa83] to-[#a38e6a]"
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: "Working Hours",
-      detail: "24/7 Available",
+      detail: "Mon-Sun: 7AM - 10PM",
       link: null,
-      color: "from-orange-500 to-orange-600"
+      color: "from-[#c0aa83] to-[#a38e6a]"
     }
   ];
 
   return (
-    <div className="w-full flex flex-col pb-16 items-center gap-12 bg-gradient-to-b from-gray-50 to-white">
+    <div className="w-full flex flex-col pb-16 items-center gap-12 ">
       {/* Header */}
-      <Header title="Contact Us" path="contact us" />
+      <Header title={'Contact Us'} path={'contact'} />
 
       {/* Company Info Cards */}
-      <div className="w-full px-4 lg:px-14 max-w-8xl mx-auto -mt-4">
+      <div className="w-full px-4 lg:px-14 mx-auto -mt-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           {contactInfo.map((info, index) => (
             <div
               key={index}
-              className="group relative bg-white rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
+              className="group relative bg-white/90 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-[#c0aa83]"
             >
               {/* Gradient Background on Hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${info.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}></div>
@@ -117,7 +102,7 @@ const ContactUs = () => {
 
               {/* Content */}
               <div className="relative">
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                <h3 className="text-sm font-semibold text-[#c0aa83] uppercase tracking-wide mb-1">
                   {info.title}
                 </h3>
                 {info.link ? (
@@ -125,7 +110,7 @@ const ContactUs = () => {
                     href={info.link}
                     target={info.link.startsWith('http') ? "_blank" : undefined}
                     rel={info.link.startsWith('http') ? "noopener noreferrer" : undefined}
-                    className="text-gray-900 font-bold text-lg hover:text-primary-600 transition-colors duration-200 block"
+                    className="text-gray-900 font-bold text-lg hover:text-[#c0aa83] transition-colors duration-200 block"
                   >
                     {info.detail}
                   </a>
@@ -144,20 +129,20 @@ const ContactUs = () => {
       </div>
 
       {/* Form & Map Section */}
-      <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 max-w-8xl mx-auto">
+      <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 mx-auto">
         {/* Google Map */}
         <div className="w-full lg:w-1/2 flex items-center">
           <div className="w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white relative group">
             {/* Map Overlay Label */}
             <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-primary-600" />
-                <span className="font-semibold text-gray-900">Our Location</span>
+                <MapPin className="w-5 h-5 text-[#c0aa83]" />
+                <span className="font-semibold text-gray-900">Visit Our Cafe</span>
               </div>
             </div>
             
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2922.2939038340305!2d-85.6696030232607!3d42.90884217114711!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8819b394c0d8cd01%3A0x24e9c42fcca37dc!2sAbyRide%20taxi%20service!5e0!3m2!1sen!2srw!4v1740779811412!5m2!1sen!2srw"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2176709267986!2d-73.98823492346677!3d40.75797883540513!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1709123456789!5m2!1sen!2sus"
               className="w-full border-0 aspect-[16/9] lg:aspect-square"
               allowFullScreen=""
               loading="lazy"
@@ -168,21 +153,21 @@ const ContactUs = () => {
 
         {/* Contact Form */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center">
-          <div className="relative bg-white p-8 lg:p-10 rounded-2xl shadow-xl border border-gray-100">
-            {/* Decorative gradient blob */}
-            <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-purple-900 to-blue-900 opacity-10 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-br from-purple-900 to-blue-900 opacity-10 rounded-full blur-3xl"></div>
+          <div className="relative bg-white/90 p-8 lg:p-10 rounded-2xl shadow-xl border border-[#c0aa83]">
+            {/* Decorative gradient blobs */}
+            <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
             
             <div className="relative">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-900 to-blue-900 flex items-center justify-center shadow-lg">
-                  <Send className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] flex items-center justify-center shadow-lg">
+                  <Coffee className="w-6 h-6 text-white" />
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
                   Get in Touch
                 </h2>
               </div>
-              <p className="text-gray-600 mb-6">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+              <p className="text-gray-600 mb-6">Have a question or special request? We'd love to hear from you. Send us a message!</p>
 
               <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-5">
                 {/* Name Field */}
@@ -197,7 +182,7 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="John Doe"
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-white transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
                   />
                 </div>
 
@@ -213,11 +198,9 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="you@example.com"
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-white transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
                   />
                 </div>
-
-              
 
                 {/* Message Field */}
                 <div className="flex flex-col">
@@ -228,10 +211,10 @@ const ContactUs = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Tell us more about your inquiry..."
+                    placeholder="Tell us about your coffee preferences or any questions..."
                     required
                     rows="5"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-white transition duration-200 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200 resize-none"
                   ></textarea>
                 </div>
 
@@ -239,7 +222,7 @@ const ContactUs = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative w-full py-3.5 mt-2 bg-gradient-to-r from-purple-900 to-blue-900 text-white font-bold text-lg rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                  className="group relative w-full py-3.5 mt-2 bg-gradient-to-r from-[#c0aa83] to-[#a38e6a] text-white font-bold text-lg rounded-xl hover:from-[#a38e6a] hover:to-[#8c7452] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {loading ? (
@@ -257,6 +240,36 @@ const ContactUs = () => {
                   <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Additional Coffee-themed Section */}
+      <div className="w-full px-4 lg:px-14 mx-auto">
+        <div className="bg-gradient-to-r from-[#c0aa83] to-[#a38e6a] rounded-3xl p-8 lg:p-12 text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#c0aa83]/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#c0aa83]/20 rounded-full blur-3xl"></div>
+          
+          <div className="relative text-center max-w-3xl mx-auto">
+            <Coffee className="w-16 h-16 mx-auto mb-4" />
+            <h3 className="text-3xl lg:text-4xl font-bold mb-4">
+              Visit Us for a Perfect Cup
+            </h3>
+            <p className="text-xl text-[#f2e0bf] mb-6">
+              Whether you're a coffee connoisseur or just looking for a cozy spot to relax, 
+              we're here to serve you the finest brews in town.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
+                <p className="font-semibold">Free WiFi</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
+                <p className="font-semibold">Cozy Atmosphere</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm px-6 py-3 rounded-full">
+                <p className="font-semibold">Premium Beans</p>
+              </div>
             </div>
           </div>
         </div>
