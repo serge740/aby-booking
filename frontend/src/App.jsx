@@ -21,8 +21,10 @@ import UnlockScreen from "./pages/auth/admin/UnlockScreen";
 import ExpenseDashboard from "./pages/dashboard/ExpenseDashboard";
 import ReportDashboard from "./pages/dashboard/ReportManagement";
 import CommingSoon from "./layouts/CommingSoon";
+import CoffeeShopPage from "./pages/product/Product";
+import CoffeeShop from "./pages/product/SingleProduct";
+import CartPage from "./pages/CartPage";
 import Gallery from "./components/home/Gallery";
-
 
 
 // Loading component
@@ -52,7 +54,11 @@ const router = createBrowserRouter([
     { path: 'service/:id', element: <SuspenseWrapper><ServiceSingle /></SuspenseWrapper> },
     { path: 'project', element: <SuspenseWrapper><ProjectsPage /></SuspenseWrapper> },
     { path: 'team-member', element: <SuspenseWrapper><TeamMember /></SuspenseWrapper> },
-    { path: 'gallery', element: <SuspenseWrapper><Gallery /></SuspenseWrapper> },
+    { path: 'products', element: <SuspenseWrapper><CoffeeShopPage /></SuspenseWrapper> },
+    { path: 'products/:id', element: <SuspenseWrapper><CoffeeShop /></SuspenseWrapper> },
+    { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
+       { path: 'gallery', element: <SuspenseWrapper><Gallery /></SuspenseWrapper> },
+ 
   ]
 },
 
