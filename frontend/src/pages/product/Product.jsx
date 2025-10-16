@@ -80,6 +80,7 @@ const CoffeeShopPage = () => {
       categories: product.categories,
       tags: product.tags
     };
+    
     addToCartGlobal(productToAdd, 1);
   };
 
@@ -138,7 +139,9 @@ const CoffeeShopPage = () => {
                   <span className="font-bold" style={{ color: '#c0aa83' }}>${subtotal.toFixed(2)}</span>
                 </div>
                 
-                <button className="w-full py-3 bg-gray-900 text-white font-semibold mb-3 hover:bg-gray-800 transition-colors">
+                <button 
+                onClick={()=>navigate('/cart')}
+                className="w-full py-3 bg-gray-900 text-white font-semibold mb-3 hover:bg-gray-800 transition-colors">
                   View cart
                 </button>
                 

@@ -20,12 +20,19 @@ const CoffeeShop = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const navigate =  useNavigate();
-  const {id:blogId} = useParams()
-  const id = Number(blogId)
+  const navigate = useNavigate();
+  const { id: blogId } = useParams();
+  const id = Number(blogId);
 
   // Product data using the new structure
-  const product = productsData.find(p => p.id === id)
+  const product = productsData.find(p => p.id === id);
+
+  // Combine image and gallery into unified images array
+  // Ensure image comes first, then gallery images (filter out duplicates)
+  const allImages = [
+    product.image, // Main image always first
+    ...product.gallery.filter(img => img !== product.image) // Add gallery images, excluding main image to avoid duplicates
+  ].filter(Boolean); // Remove any null/undefined images
 
   // Check if product is in cart and get cart quantity
   const cartItem = cart.find(item => item.id === product.id);
@@ -42,10 +49,18 @@ const CoffeeShop = () => {
     }
   }, [cartQuantity, isInCart]);
 
+  // Initialize activeImageIndex to ensure it's within bounds
+  useEffect(() => {
+    if (activeImageIndex >= allImages.length) {
+      setActiveImageIndex(0);
+    }
+  }, [allImages.length, activeImageIndex]);
+
   // Updated related products with new structure
-  const relatedProducts = productsData.filter(p => p.id !== product.id && 
+  const relatedProducts = productsData.filter(p => 
+    p.id !== product.id && 
     p.categories.some(cat => product.categories.includes(cat))
-  ).slice(0, 3); // Limit to 3 related products
+  ).slice(0, 3);
 
   const categories = [...new Set(product.categories.concat(
     relatedProducts.flatMap(p => p.categories)
@@ -63,10 +78,8 @@ const CoffeeShop = () => {
     const newQuantity = quantity + 1;
     if (newQuantity <= product.stock) {
       if (isInCart) {
-        // Update existing cart item
         updateQuantity(product.id, newQuantity);
       } else {
-        // Update local quantity for new addition
         setQuantity(newQuantity);
       }
     }
@@ -76,14 +89,11 @@ const CoffeeShop = () => {
     const newQuantity = quantity - 1;
     if (newQuantity >= 1) {
       if (isInCart) {
-        // Update existing cart item
         updateQuantity(product.id, newQuantity);
       } else {
-        // Update local quantity
         setQuantity(newQuantity);
       }
     } else if (newQuantity === 0 && isInCart) {
-      // Remove from cart if quantity reaches 0
       removeFromCart(product.id);
       setQuantity(1);
     }
@@ -98,37 +108,39 @@ const CoffeeShop = () => {
     }
   };
 
-  // Handle add to cart - only for when not in cart
   const handleAddToCart = () => {
     if (!isInCart && quantity <= product.stock) {
       const productToAdd = {
         ...product,
         quantity: quantity,
         price: product.price,
-        image: product.image
+        image: product.image // Keep original image for cart display
       };
       addToCart(productToAdd, quantity);
     }
   };
 
-  // Handle remove from cart
   const handleRemoveFromCart = () => {
     removeFromCart(product.id);
     setQuantity(1);
   };
 
-  // Handle quantity change for cart items in sidebar
   const handleCartQuantityChange = (itemId, newQuantity) => {
     updateQuantity(itemId, newQuantity);
   };
 
-  // Gallery navigation
+  // Updated gallery navigation using allImages
   const nextImage = () => {
-    setActiveImageIndex((prev) => (prev + 1) % product.gallery.length);
+    setActiveImageIndex((prev) => (prev + 1) % allImages.length);
   };
 
   const prevImage = () => {
-    setActiveImageIndex((prev) => (prev - 1 + product.gallery.length) % product.gallery.length);
+    setActiveImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+  };
+
+  // Handle thumbnail click
+  const handleThumbnailClick = (index) => {
+    setActiveImageIndex(index);
   };
 
   return (
@@ -136,7 +148,7 @@ const CoffeeShop = () => {
       <Header path={'Product'} title={`Single Product - ${product.name}`} />
 
       <div className="flex">
-        {/* Sidebar */}
+        {/* Sidebar - unchanged */}
         <aside className="w-72 bg-white shadow-lg p-6 flex-shrink-0">
           {/* Cart Section */}
           <div className="mb-10">
@@ -174,7 +186,7 @@ const CoffeeShop = () => {
                       >
                         +
                       </button>
-                      <p className="text-sm ml-2" style={{ color: '#c0aa83' }}>
+                      <p className="text-sm ml-2" style={{ color: '#6F4E37' }}>
                         ${item.price.toFixed(2)}
                       </p>
                     </div>
@@ -195,12 +207,14 @@ const CoffeeShop = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-gray-900 text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition mb-3">
+                <button 
+                onClick={()=>navigate('/cart')}
+                className="w-full bg-gray-900 text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition mb-3">
                   View cart
                 </button>
                 <button 
                   className="w-full py-3 rounded-md font-semibold text-white hover:opacity-90 transition"
-                  style={{ backgroundColor: '#c0aa83' }}
+                  style={{ backgroundColor: '#6F4E37' }}
                 >
                   CHECKOUT
                 </button>
@@ -208,7 +222,7 @@ const CoffeeShop = () => {
             )}
           </div>
 
-          {/* Categories Section */}
+          {/* Categories and Tags sections unchanged */}
           <div className="mb-10">
             <h3 className="text-xl font-bold text-gray-800 mb-4">Categories</h3>
             <ul className="space-y-2">
@@ -223,7 +237,6 @@ const CoffeeShop = () => {
             </ul>
           </div>
 
-          {/* Tags Section */}
           <div>
             <h3 className="text-xl font-bold text-gray-800 mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
@@ -245,12 +258,12 @@ const CoffeeShop = () => {
             {/* Product Detail Section */}
             <div className="bg-white rounded-lg shadow-sm p-8 lg:p-12 mb-12">
               <div className="grid lg:grid-cols-2 gap-12 mb-12">
-                {/* Product Image Gallery */}
+                {/* Updated Product Image Gallery */}
                 <div className="space-y-4">
                   {/* Main Image with Slider */}
                   <div className="relative group">
                     <img 
-                      src={product.gallery[activeImageIndex]}
+                      src={allImages[activeImageIndex]}
                       alt={`${product.name} - Image ${activeImageIndex + 1}`}
                       className="w-full h-auto rounded-lg shadow-md"
                     />
@@ -261,7 +274,7 @@ const CoffeeShop = () => {
                     )}
                     
                     {/* Navigation Arrows */}
-                    {product.gallery.length > 1 && (
+                    {allImages.length > 1 && (
                       <>
                         <button
                           onClick={prevImage}
@@ -278,18 +291,18 @@ const CoffeeShop = () => {
                       </>
                     )}
 
-                    {/* Image Counter */}
+                    {/* Updated Image Counter */}
                     <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded text-sm">
-                      {activeImageIndex + 1} / {product.gallery.length}
+                      {activeImageIndex + 1} / {allImages.length}
                     </div>
                   </div>
 
-                  {/* Thumbnail Gallery */}
+                  {/* Updated Thumbnail Gallery */}
                   <div className="grid grid-cols-4 gap-3">
-                    {product.gallery.map((img, index) => (
+                    {allImages.map((img, index) => (
                       <button
                         key={index}
-                        onClick={() => setActiveImageIndex(index)}
+                        onClick={() => handleThumbnailClick(index)}
                         className={`aspect-square rounded-lg overflow-hidden transition ${
                           activeImageIndex === index 
                             ? 'ring-4 ring-primary-500 shadow-lg' 
@@ -306,10 +319,10 @@ const CoffeeShop = () => {
                   </div>
                 </div>
 
-                {/* Product Info */}
+                {/* Product Info - unchanged */}
                 <div className="flex flex-col justify-center">
+                  {/* ... rest of product info remains the same ... */}
                   <div className="flex items-center gap-2 mb-4">
-                    {/* Rating stars */}
                     {[...Array(5)].map((_, i) => (
                       <div key={i} className={`w-4 h-4 ${
                         i < Math.floor(product.rating) 
@@ -325,7 +338,7 @@ const CoffeeShop = () => {
                   <h1 className="text-4xl font-bold text-gray-900 mb-4">{product.name}</h1>
                   
                   <div className="mb-6">
-                    <span className="text-3xl font-bold" style={{ color: '#c0aa83' }}>
+                    <span className="text-3xl font-bold" style={{ color: '#6F4E37' }}>
                       ${product.price.toFixed(2)}
                     </span>
                     {product.onSale && product.originalPrice && (
@@ -342,7 +355,7 @@ const CoffeeShop = () => {
                     {product.shortDescription}
                   </p>
 
-                  {/* Enhanced Quantity Selector & Add to Cart */}
+                  {/* Quantity Selector & Add to Cart - unchanged */}
                   <div className="flex items-center gap-4 mb-8">
                     <div className="flex items-center border-2 border-gray-200 rounded-md overflow-hidden">
                       <input 
@@ -385,7 +398,6 @@ const CoffeeShop = () => {
                     </button>
                   </div>
 
-                  {/* Enhanced Cart Status Display */}
                   {isInCart && (
                     <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-center justify-between">
@@ -410,18 +422,17 @@ const CoffeeShop = () => {
                   <div className="border-t-2 border-gray-100 pt-6 space-y-2">
                     <p className="text-gray-700">
                       <span className="font-semibold">Categories: </span>
-                      <span style={{ color: '#c0aa83' }}>{product.categories.join(', ')}</span>
+                      <span style={{ color: '#6F4E37' }}>{product.categories.join(', ')}</span>
                     </p>
                     <p className="text-gray-700">
                       <span className="font-semibold">Tags: </span>
-                      <span style={{ color: '#c0aa83' }}>{product.tags.join(', ')}</span>
+                      <span style={{ color: '#6F4E37' }}>{product.tags.join(', ')}</span>
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Rest of the component remains the same */}
-              {/* Tabs Section */}
+              {/* Tabs Section - unchanged */}
               <div className="border-t-2 border-gray-200 pt-8">
                 <div className="flex gap-2 mb-8">
                   <button 
@@ -439,7 +450,7 @@ const CoffeeShop = () => {
                     className={`px-6 py-3 font-semibold rounded-md text-white transition ${
                       activeTab === 'reviews' ? 'opacity-100' : 'opacity-80'
                     }`}
-                    style={{ backgroundColor: '#c0aa83' }}
+                    style={{ backgroundColor: '#6F4E37' }}
                   >
                     Reviews ({product.reviews.length})
                   </button>
@@ -471,7 +482,7 @@ const CoffeeShop = () => {
               </div>
             </div>
 
-            {/* Related Products Section */}
+            {/* Related Products Section - unchanged */}
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-8">Related products</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -512,7 +523,7 @@ const CoffeeShop = () => {
                               ${relatedProduct.originalPrice.toFixed(2)}
                             </span>
                           )}
-                          <span className="text-xl font-bold" style={{ color: '#c0aa83' }}>
+                          <span className="text-xl font-bold" style={{ color: '#6F4E37' }}>
                             ${relatedProduct.price.toFixed(2)}
                           </span>
                         </div>
