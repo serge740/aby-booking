@@ -23,6 +23,7 @@ import ReportDashboard from "./pages/dashboard/ReportManagement";
 import CommingSoon from "./layouts/CommingSoon";
 import CoffeeShopPage from "./pages/product/Product";
 import CoffeeShop from "./pages/product/SingleProduct";
+import CartPage from "./pages/CartPage";
 
 
 
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
     { path: 'team-member', element: <SuspenseWrapper><TeamMember /></SuspenseWrapper> },
     { path: 'products', element: <SuspenseWrapper><CoffeeShopPage /></SuspenseWrapper> },
     { path: 'products/:id', element: <SuspenseWrapper><CoffeeShop /></SuspenseWrapper> },
+    { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
   ]
 },
 

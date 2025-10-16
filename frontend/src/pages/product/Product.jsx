@@ -1,100 +1,116 @@
-import React, { useState } from 'react';
-import { ShoppingCart, X, ChevronRight, Filter as FilterIcon } from 'lucide-react';
+import React, { useState, useContext } from 'react';
+import { ShoppingCart, X, ChevronRight, Star } from 'lucide-react';
+import { useCart } from '../../context/CartContext'; // Adjust path as needed
 import Header from '../../components/header';
+import { useNavigate } from 'react-router-dom';
+import { productsData } from '../../stores/productDatat';
+
+
+
 
 const CoffeeShopPage = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: 'American Black Coffee', price: 14.00, quantity: 1, image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=100&q=80' }
-  ]);
+  const { cart, addToCart: addToCartGlobal, removeFromCart } = useCart();
   const [priceRange, setPriceRange] = useState([0, 30]);
   const [sortBy, setSortBy] = useState('default');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [products] = useState(productsData);
+  const navigate = useNavigate();
 
-  const products = [
-    {
-      id: 1,
-      name: 'Accessory',
-      image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 4.66
-    },
-    {
-      id: 2,
-      name: 'American Black Coffee',
-      image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 14.00
-    },
-    {
-      id: 3,
-      name: 'Coffee Canephora',
-      image: 'https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 23.05
-    },
-    {
-      id: 4,
-      name: 'Coffee bean',
-      image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 18.50
-    },
-    {
-      id: 5,
-      name: 'Coffee candy',
-      image: 'https://images.unsplash.com/photo-1481391243133-f96216dcb5d2?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 8.99
-    },
-    {
-      id: 6,
-      name: 'Ephiopian Aroma',
-      image: 'https://images.unsplash.com/photo-1587734195503-904fca47e0e9?w=400&q=80',
-      description: 'Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, eleifend vitae velit.',
-      price: 26.00
+
+  // Updated products array with new structure
+
+
+
+  // Extract unique categories and tags for filtering
+  const allCategories = [...new Set(products.flatMap(p => p.categories))];
+  const allTags = [...new Set(products.flatMap(p => p.tags))];
+
+  const categories = allCategories.map(cat => ({
+    name: cat,
+    count: products.filter(p => p.categories.includes(cat)).length
+  }));
+
+  const tags = allTags;
+
+  // Filter products based on criteria
+  const filteredProducts = products.filter(product => {
+    const inPriceRange = product.price >= priceRange[0] && product.price <= priceRange[1];
+    const inCategories = selectedCategories.length === 0 || 
+      selectedCategories.some(cat => product.categories.includes(cat));
+    const inTags = selectedTags.length === 0 || 
+      selectedTags.some(tag => product.tags.includes(tag));
+    
+    return inPriceRange && inCategories && inTags;
+  });
+
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'rating':
+        return b.rating - a.rating;
+      default:
+        return 0;
     }
-  ];
+  });
 
-  const categories = [
-    { name: 'Coffee', count: 12 },
-    { name: 'Green coffee', count: 8 },
-    { name: 'Italian', count: 15 },
-    { name: 'Roasted coffee', count: 10 },
-    { name: 'Uncategorized', count: 5 }
-  ];
+  // Calculate subtotal from global cart
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const tags = ['#accessory', '#arabica', '#bean', '#candy', '#cup', '#ethiopien', '#latte'];
-
-  const removeFromCart = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
-  };
-
+  // Wrapper for addToCart to ensure product has all necessary properties
   const addToCart = (product) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    if (existingItem) {
-      setCartItems(cartItems.map(item => 
-        item.id === product.id 
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1, image: product.image }]);
-    }
+    const productToAdd = {
+      ...product,
+      price: product.price,
+      image: product.image,
+      // Ensure we don't add gallery, fullDescription, etc. to cart for storage efficiency
+      gallery: undefined,
+      fullDescription: undefined,
+      reviews: undefined,
+      originalPrice: product.originalPrice,
+      onSale: product.onSale,
+      rating: product.rating,
+      stock: product.stock,
+      categories: product.categories,
+      tags: product.tags
+    };
+    addToCartGlobal(productToAdd, 1);
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const handleCategoryToggle = (category) => {
+    setSelectedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const handleTagToggle = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-         <Header title="product" path="product" />
+      <Header title="product" path="product" />
       <div className="flex">
         {/* Sidebar */}
-        <div className="w-72 bg-white shadow-lg p-6 min-h-screen">
+        <div className="w-72 bg-white shadow-lg p-6 min-h-screen overflow-y-auto">
           {/* Cart Section */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Cart</h2>
             
             <div className="space-y-4 mb-6">
-              {cartItems.map(item => (
+              {cart.map(item => (
                 <div key={item.id} className="flex items-start gap-3 pb-4 border-b border-gray-200">
                   <button
                     onClick={() => removeFromCart(item.id)}
@@ -113,34 +129,43 @@ const CoffeeShopPage = () => {
               ))}
             </div>
 
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-gray-900">Subtotal:</span>
-                <span className="font-bold" style={{ color: '#c0aa83' }}>${subtotal.toFixed(2)}</span>
+            {cart.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">Your cart is empty</p>
+            ) : (
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="font-bold text-gray-900">Subtotal:</span>
+                  <span className="font-bold" style={{ color: '#c0aa83' }}>${subtotal.toFixed(2)}</span>
+                </div>
+                
+                <button className="w-full py-3 bg-gray-900 text-white font-semibold mb-3 hover:bg-gray-800 transition-colors">
+                  View cart
+                </button>
+                
+                <button 
+                  className="w-full py-3 text-white font-semibold hover:opacity-90 transition-opacity"
+                  style={{ backgroundColor: '#c0aa83' }}
+                >
+                  CHECKOUT
+                </button>
               </div>
-              
-              <button className="w-full py-3 bg-gray-900 text-white font-semibold mb-3 hover:bg-gray-800 transition-colors">
-                View cart
-              </button>
-              
-              <button 
-                className="w-full py-3 text-white font-semibold hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#c0aa83' }}
-              >
-                CHECKOUT
-              </button>
-            </div>
+            )}
           </div>
 
           {/* Categories */}
           <div className="mb-8">
             <h3 className="text-xl font-bold text-gray-900 mb-4">Categories</h3>
             <div className="space-y-2">
-              {categories.map((category, index) => (
-                <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 cursor-pointer hover:pl-2 transition-all group">
-                  <div className="flex items-center gap-2">
-                    <ChevronRight size={16} className="text-gray-400 group-hover:text-gray-700" style={{ color: '#c0aa83' }} />
-                    <span className="text-gray-700 group-hover:text-gray-900">{category.name}</span>
+              {categories.map((category) => (
+                <div key={category.name} className="flex items-center justify-between py-2 border-b border-gray-100 cursor-pointer">
+                  <div 
+                    className="flex items-center gap-2 hover:pl-2 transition-all"
+                    onClick={() => handleCategoryToggle(category.name)}
+                  >
+                    <ChevronRight size={16} className="text-gray-400" style={{ color: '#c0aa83' }} />
+                    <span className={`text-gray-700 ${selectedCategories.includes(category.name) ? 'font-semibold text-gray-900' : ''}`}>
+                      {category.name} ({category.count})
+                    </span>
                   </div>
                 </div>
               ))}
@@ -154,36 +179,35 @@ const CoffeeShopPage = () => {
               <input 
                 type="range" 
                 min="0" 
-                max="30" 
+                max={Math.max(...products.map(p => p.price))}
                 value={priceRange[1]}
-                onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                onChange={(e) => setPriceRange([priceRange[0], parseFloat(e.target.value)])}
                 className="w-full h-2 rounded-lg appearance-none cursor-pointer"
                 style={{ 
-                  background: `linear-gradient(to right, #c0aa83 0%, #c0aa83 ${(priceRange[1]/30)*100}%, #e5e7eb ${(priceRange[1]/30)*100}%, #e5e7eb 100%)`
+                  background: `linear-gradient(to right, #c0aa83 0%, #c0aa83 ${(priceRange[1]/Math.max(...products.map(p => p.price)))*100}%, #e5e7eb ${(priceRange[1]/Math.max(...products.map(p => p.price)))*100}%, #e5e7eb 100%)`
                 }}
               />
             </div>
             <div className="text-sm text-gray-600 mb-4">
-              Price: <span className="font-semibold">${priceRange[0]} — ${priceRange[1]}</span>
+              Price: <span className="font-semibold">${priceRange[0]} — ${priceRange[1].toFixed(2)}</span>
             </div>
-            <button 
-              className="px-6 py-2 bg-gray-900 text-white font-semibold hover:bg-gray-800 transition-colors"
-            >
-              Filter
-            </button>
           </div>
 
           {/* Tags */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-4">Tags</h3>
             <div className="flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
+              {tags.map((tag) => (
                 <span 
-                  key={index}
-                  className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer transition-colors"
+                  key={tag}
+                  className={`px-2 py-1 rounded-full text-xs cursor-pointer transition-all ${
+                    selectedTags.includes(tag)
+                      ? 'bg-[#c0aa83] text-white'
+                      : 'text-gray-500 hover:text-gray-700 bg-gray-100'
+                  }`}
+                  onClick={() => handleTagToggle(tag)}
                 >
                   {tag}
-                  {index < tags.length - 1 && ','}
                 </span>
               ))}
             </div>
@@ -194,7 +218,11 @@ const CoffeeShopPage = () => {
         <div className="flex-1 p-8">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
-            <p className="text-gray-600">Showing all 9 results</p>
+            <p className="text-gray-600">
+              Showing {sortedProducts.length} of {products.length} results
+              {selectedCategories.length > 0 && ` in: ${selectedCategories.join(', ')}`}
+              {selectedTags.length > 0 && ` with tags: ${selectedTags.join(', ')}`}
+            </p>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -204,44 +232,106 @@ const CoffeeShopPage = () => {
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
               <option value="name">Name: A to Z</option>
+              <option value="rating">Rating: High to Low</option>
             </select>
           </div>
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map(product => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl transition-shadow">
-                <div className="relative overflow-hidden">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{product.name}</h3>
-                  <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-                    {product.description}
-                  </p>
+            {sortedProducts.map(product => {
+              const isInCart = cart.some(item => item.id === product.id);
+              return (
+                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden group hover:shadow-xl transition-shadow">
+                  <div className="relative overflow-hidden">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {product.onSale && (
+                      <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                        Sale
+                      </div>
+                    )}
+                    {product.stock < 5 && (
+                      <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                        Low Stock
+                      </div>
+                    )}
+                    {isInCart && (
+                      <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm font-semibold">
+                        In Cart
+                      </div>
+                    )}
+                  </div>
                   
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold" style={{ color: '#c0aa83' }}>
-                      ${product.price.toFixed(2)}
-                    </span>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 mb-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          size={16}
+                          className={i < Math.floor(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'} 
+                        />
+                      ))}
+                      <span className="text-sm text-gray-600">({product.rating})</span>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 cursor-pointer" onClick={()=> navigate(`/products/${product.id}`) }>{product.name}</h3>
+                    <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                      {product.shortDescription}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <span className="text-2xl font-bold" style={{ color: '#c0aa83' }}>
+                          ${product.price.toFixed(2)}
+                        </span>
+                        {product.onSale && product.originalPrice && (
+                          <span className="text-sm text-gray-500 line-through ml-2">
+                            ${product.originalPrice.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {product.stock} in stock
+                      </span>
+                    </div>
+                    
                     <button
                       onClick={() => addToCart(product)}
-                      className="px-6 py-2 text-white font-semibold hover:opacity-90 transition-opacity flex items-center gap-2"
-                      style={{ backgroundColor: '#c0aa83' }}
+                      disabled={product.stock === 0}
+                      className={`w-full py-2 text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        isInCart ? 'bg-[#c0aa83]' : 'bg-[#c0aa83]'
+                      }`}
                     >
                       <ShoppingCart size={18} />
-                      Add to cart
+                      {isInCart ? 'Added to Cart' : product.stock === 0 ? 'Out of Stock' : 'Add to cart'}
                     </button>
+                    
+                    <div className="mt-3 text-xs text-gray-500">
+                      <div className="flex flex-wrap gap-1 mb-1">
+                        {product.categories.slice(0, 2).map(cat => (
+                          <span key={cat} className="bg-gray-100 px-1 py-0.5 rounded">#{cat}</span>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {product.tags.slice(0, 2).map(tag => (
+                          <span key={tag} className="bg-gray-100 px-1 py-0.5 rounded text-xs">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
+          {sortedProducts.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
