@@ -23,8 +23,8 @@ function HomeAbout() {
                 className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
               />
               {/* Decorative elements */}
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-[#c0aa83] rounded-full opacity-30 blur-xl"></div>
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-[#c0aa83] rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-[#6F4E37] rounded-full opacity-30 blur-xl"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-[#6F4E37] rounded-full opacity-30 blur-xl"></div>
             </div>
           </div>
 
@@ -33,12 +33,12 @@ function HomeAbout() {
             {/* Header */}
             <div className="flex items-center gap-2 mb-4">
               <div className="flex gap-1">
-                <div className="w-2 h-2 bg-[#c0aa83] rounded-full"></div>
-                <div className="w-2 h-2 bg-[#c0aa83] rounded-full opacity-60"></div>
-                <div className="w-2 h-2 bg-[#c0aa83] rounded-full opacity-40"></div>
-                <div className="w-2 h-2 bg-[#c0aa83] rounded-full opacity-20"></div>
+                <div className="w-2 h-2 bg-[#6F4E37] rounded-full"></div>
+                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-60"></div>
+                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-40"></div>
+                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-20"></div>
               </div>
-              <span className="text-[#c0aa83] font-semibold tracking-wide text-sm uppercase">
+              <span className="text-[#6F4E37] font-semibold tracking-wide text-sm uppercase">
                 About Jambokawa
               </span>
             </div>
@@ -56,10 +56,10 @@ function HomeAbout() {
               {services.map((service, index) => (
                 <div 
                   key={index}
-                  className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-[#c0aa83]/10"
+                  className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-[#6F4E37]/10"
                 >
                   <div className="flex-shrink-0">
-                    <CheckCircle className="w-6 h-6 text-[#c0aa83]" />
+                    <CheckCircle className="w-6 h-6 text-[#6F4E37]" />
                   </div>
                   <span className="text-gray-800 font-semibold text-base">
                     {service.name}
@@ -70,7 +70,7 @@ function HomeAbout() {
 
             {/* CTA Button */}
             <div className="-pt-16">
-              <button className="bg-[#c0aa83] hover:bg-[#b39a76] text-white font-semibold px-6 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <button className="bg-[#6F4E37] hover:bg-[#b39a76] text-white font-semibold px-6 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                 Our Story
                 <ArrowRight className="w-5 h-5" />
               </button>
