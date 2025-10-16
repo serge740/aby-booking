@@ -28,8 +28,9 @@ const HomePage = () => {
  
             <WorkProcess />
             <Programs />
+              <Partners />
             <Testimonials />
-            <Partners />
+          
             <BlogLatest />
 
         </>

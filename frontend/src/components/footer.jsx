@@ -3,6 +3,7 @@ import React from "react";
 import { FaFacebookF, FaLinkedinIn, FaInstagram, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { IoMdArrowRoundUp } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import Image from '../assets/coffe/map.png'
 
 const FooterContent = () => {
   const scrollToTop = () => {
@@ -29,9 +30,9 @@ const FooterContent = () => {
           {/* Right Section - Image */}
           <div className="relative flex items-center justify-center mt-8 lg:mt-0">
             <img
-              src="../image/coffee-cup.png" // Update with a coffee-themed image (e.g., coffee cup or beans)
+              src={Image} // Update with a coffee-themed image (e.g., coffee cup or beans)
               alt="CoffeeKing Brew"
-              className="w-[450px] lg:w-[550px] grayscale hover:grayscale-0 transition duration-500 rounded-lg"
+              className="w-[450px] lg:w-[550px]  transition duration-500 rounded-lg"
             />
           </div>
         </div>
