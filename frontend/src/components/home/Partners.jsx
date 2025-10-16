@@ -6,22 +6,32 @@ import { Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-// Import partner logos
-import abyride from "../../assets/images/abyride.png";
-import rentbyaby from "../../assets/images/rentbyaby.png";
-import abyinventory from "../../assets/images/abyinventory.png";
-import image4 from '../../assets/partner/im4.png';
-import image5 from '../../assets/partner/im5.png';
-import image6 from '../../assets/partner/im5.jpg';
-
-// Original partners (6)
+// Using placeholder and free online logos
 const basePartners = [
-  { name: "AbyRide", logo: abyride },
-  { name: "Rent By Aby", logo: rentbyaby },
-  { name: "Aby Inventory", logo: abyinventory },
-  { name: "Partner 4", logo: image4 },
-  { name: "Partner 5", logo: image5 },
-  { name: "Partner 6", logo: image6 },
+  { 
+    name: "TechCorp", 
+    logo: "https://via.placeholder.com/150x60/1a1a1a/c0aa83?text=TechCorp" 
+  },
+  { 
+    name: "Innovation Labs", 
+    logo: "https://via.placeholder.com/150x60/2c2c2c/c0aa83?text=InnoLabs" 
+  },
+  { 
+    name: "Digital Solutions", 
+    logo: "https://via.placeholder.com/150x60/1a1a1a/c0aa83?text=DigiSol" 
+  },
+  { 
+    name: "Cloud Systems", 
+    logo: "https://via.placeholder.com/150x60/2c2c2c/c0aa83?text=CloudSys" 
+  },
+  { 
+    name: "Smart Tech", 
+    logo: "https://via.placeholder.com/150x60/1a1a1a/c0aa83?text=SmartTech" 
+  },
+  { 
+    name: "Future Co", 
+    logo: "https://via.placeholder.com/150x60/2c2c2c/c0aa83?text=FutureCo" 
+  },
 ];
 
 // Duplicate to make 10 slides
@@ -35,14 +45,14 @@ export default function Partners() {
   }, []);
 
   return (
-    <section className="bg-jambokawa py-4 md:py-10 px-4 md:px-8">
+    <section className="bg-[#1a1a1a] py-4 md:py-10 px-4 md:px-8">
       <div className="mx-auto w-[95%]">
         {/* Heading */}
         <div className="text-center mb-16 md:mb-20 text-white" data-aos="fade-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Our <span className="text-[#c0aa83]">Partners</span>
+            Our <span className="text-[#6F4E37]">Partners</span>
           </h2>
-          <p className="text-[#c0aa83] text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[#6F4E37] text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
             Working together with trusted brands to bring value and innovation.
           </p>
         </div>
@@ -70,14 +80,14 @@ export default function Partners() {
             {partners.map((p, index) => (
               <SwiperSlide key={index}>
                 <div
-                  className="flex items-center justify-center h-28"
+                  className="flex items-center justify-center h-28 bg-white/5 rounded-lg p-4"
                   data-aos="zoom-in"
                   data-aos-delay={index * 100}
                 >
                   <img
                     src={p.logo}
                     alt={p.name}
-                    className="max-h-20 object-contain transition-transform duration-300 hover:scale-105"
+                    className="max-h-20 w-full object-contain transition-transform duration-300 hover:scale-105"
                   />
                 </div>
               </SwiperSlide>
@@ -88,6 +98,21 @@ export default function Partners() {
           <div className="swiper-pagination flex justify-center gap-2 mt-8 md:mt-12"></div>
         </div>
       </div>
+
+      <style jsx>{`
+        .swiper-pagination-bullet {
+          width: 10px;
+          height: 10px;
+          background: #6F4E37;
+          opacity: 0.3;
+          transition: all 0.3s ease;
+        }
+        .swiper-pagination-bullet-active {
+          opacity: 1;
+          width: 30px;
+          border-radius: 5px;
+        }
+      `}</style>
     </section>
   );
 }
