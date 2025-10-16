@@ -292,7 +292,7 @@ const CoffeeShop = () => {
                         onClick={() => setActiveImageIndex(index)}
                         className={`aspect-square rounded-lg overflow-hidden transition ${
                           activeImageIndex === index 
-                            ? 'ring-4 ring-[#c0aa83] shadow-lg' 
+                            ? 'ring-4 ring-primary-500 shadow-lg' 
                             : 'ring-2 ring-gray-200 hover:ring-gray-400'
                         }`}
                       >
@@ -377,7 +377,7 @@ const CoffeeShop = () => {
                       onClick={handleAddToCart}
                       disabled={isInCart || product.stock === 0}
                       className={`flex-1 py-3 px-6 rounded-md text-white font-semibold hover:opacity-90 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                        isInCart ? 'bg-green-600' : 'bg-[#c0aa83]'
+                        isInCart ? 'bg-green-600' : 'bg-primary-500'
                       }`}
                     >
                       <ShoppingCart size={18} />
@@ -530,7 +530,7 @@ const CoffeeShop = () => {
                             }}
                             disabled={relatedProduct.stock === 0}
                             className={`px-4 py-2 text-white text-sm font-semibold rounded disabled:opacity-50 disabled:cursor-not-allowed ${
-                              relatedIsInCart ? 'bg-green-500' : 'bg-[#c0aa83]'
+                              relatedIsInCart ? 'bg-green-500' : 'bg-primary-500'
                             }`}
                           >
                             {relatedIsInCart ? 'In Cart' : 'Add to Cart'}

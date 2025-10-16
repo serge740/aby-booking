@@ -124,7 +124,7 @@ const BlogDetailPage = () => {
               </p>
 
               {/* Quote */}
-              <blockquote className="border-l-4 pl-6 py-4 mb-6" style={{ borderColor: '#c0aa83' }}>
+              <blockquote className="border-l-4 pl-6 py-4 mb-6" style={{ borderColor: '#6F4E37' }}>
                 <p className="text-gray-800 font-medium leading-relaxed">
                   {currentPost.quote}
                 </p>
@@ -139,7 +139,7 @@ const BlogDetailPage = () => {
             <div className="bg-gray-100 p-6 mb-8">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  <span className="text-5xl font-light" style={{ color: '#c0aa83' }}>
+                  <span className="text-5xl font-light" style={{ color: '#6F4E37' }}>
                     {currentDate.day}
                   </span>
                   <div className="flex flex-col text-sm text-gray-600">
@@ -162,7 +162,7 @@ const BlogDetailPage = () => {
               <div className="mb-3">
                 <span className="font-bold text-gray-800">Tags: </span>
                 {currentPost.tags.map((tag, index) => (
-                  <span key={index} style={{ color: '#c0aa83' }} className="mr-2">
+                  <span key={index} style={{ color: '#6F4E37' }} className="mr-2">
                     {tag}
                   </span>
                 ))}
@@ -172,7 +172,7 @@ const BlogDetailPage = () => {
                 <span className="font-bold text-gray-800">Category: </span>
                 {currentPost.category.map((cat, index) => (
                   <span key={index}>
-                    <span style={{ color: '#c0aa83' }}>{cat}</span>
+                    <span style={{ color: '#6F4E37' }}>{cat}</span>
                     {index < currentPost.category.length - 1 && ', '}
                   </span>
                 ))}
@@ -257,7 +257,7 @@ const BlogDetailPage = () => {
                   <button
                     type="submit"
                     className="px-8 py-3 text-white font-semibold hover:opacity-90 transition-opacity"
-                    style={{ backgroundColor: '#c0aa83' }}
+                    style={{ backgroundColor: '#6F4E37' }}
                   >
                     Post Comment
                   </button>

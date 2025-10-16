@@ -52,28 +52,28 @@ const ContactUs = () => {
       title: "Phone",
       detail: "+1 (555) 123-4567",
       link: "tel:+15551234567",
-      color: "from-[#c0aa83] to-[#a38e6a]"
+      color: "from-primary-500 to-[#a38e6a]"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
       detail: "hello@coffeeking.com",
       link: "mailto:hello@coffeeking.com",
-      color: "from-[#c0aa83] to-[#a38e6a]"
+      color: "from-primary-500 to-[#a38e6a]"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: "Location",
       detail: "123 Coffee Street, Brew City",
       link: "https://maps.google.com",
-      color: "from-[#c0aa83] to-[#a38e6a]"
+      color: "from-primary-500 to-[#a38e6a]"
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: "Working Hours",
       detail: "Mon-Sun: 7AM - 10PM",
       link: null,
-      color: "from-[#c0aa83] to-[#a38e6a]"
+      color: "from-primary-500 to-[#a38e6a]"
     }
   ];
 
@@ -88,7 +88,7 @@ const ContactUs = () => {
           {contactInfo.map((info, index) => (
             <div
               key={index}
-              className="group relative bg-white/90 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-[#c0aa83]"
+              className="group relative bg-white/90 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-primary-500"
             >
               {/* Gradient Background on Hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${info.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300`}></div>
@@ -102,7 +102,7 @@ const ContactUs = () => {
 
               {/* Content */}
               <div className="relative">
-                <h3 className="text-sm font-semibold text-[#c0aa83] uppercase tracking-wide mb-1">
+                <h3 className="text-sm font-semibold text-primary-500 uppercase tracking-wide mb-1">
                   {info.title}
                 </h3>
                 {info.link ? (
@@ -110,7 +110,7 @@ const ContactUs = () => {
                     href={info.link}
                     target={info.link.startsWith('http') ? "_blank" : undefined}
                     rel={info.link.startsWith('http') ? "noopener noreferrer" : undefined}
-                    className="text-gray-900 font-bold text-lg hover:text-[#c0aa83] transition-colors duration-200 block"
+                    className="text-gray-900 font-bold text-lg hover:text-primary-500 transition-colors duration-200 block"
                   >
                     {info.detail}
                   </a>
@@ -136,7 +136,7 @@ const ContactUs = () => {
             {/* Map Overlay Label */}
             <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-[#c0aa83]" />
+                <MapPin className="w-5 h-5 text-primary-500" />
                 <span className="font-semibold text-gray-900">Visit Our Cafe</span>
               </div>
             </div>
@@ -153,14 +153,14 @@ const ContactUs = () => {
 
         {/* Contact Form */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center">
-          <div className="relative bg-white/90 p-8 lg:p-10 rounded-2xl shadow-xl border border-[#c0aa83]">
+          <div className="relative bg-white/90 p-8 lg:p-10 rounded-2xl shadow-xl border border-primary-500">
             {/* Decorative gradient blobs */}
-            <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
+            <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-primary-500 to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-br from-primary-500 to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
             
             <div className="relative">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c0aa83] to-[#a38e6a] flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-[#a38e6a] flex items-center justify-center shadow-lg">
                   <Coffee className="w-6 h-6 text-white" />
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -182,7 +182,7 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="John Doe"
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-primary-500 bg-primary-500/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
                   />
                 </div>
 
@@ -198,7 +198,7 @@ const ContactUs = () => {
                     onChange={handleChange}
                     placeholder="you@example.com"
                     required
-                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-primary-500 bg-primary-500/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200"
                   />
                 </div>
 
@@ -214,7 +214,7 @@ const ContactUs = () => {
                     placeholder="Tell us about your coffee preferences or any questions..."
                     required
                     rows="5"
-                    className="w-full px-4 py-3 rounded-xl border-2 border-[#c0aa83] bg-[#c0aa83]/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-primary-500 bg-primary-500/10 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#a38e6a] focus:bg-white transition duration-200 resize-none"
                   ></textarea>
                 </div>
 
@@ -222,7 +222,7 @@ const ContactUs = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group relative w-full py-3.5 mt-2 bg-gradient-to-r from-[#c0aa83] to-[#a38e6a] text-white font-bold text-lg rounded-xl hover:from-[#a38e6a] hover:to-[#8c7452] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                  className="group relative w-full py-3.5 mt-2 bg-gradient-to-r from-primary-500 to-[#a38e6a] text-white font-bold text-lg rounded-xl hover:from-[#a38e6a] hover:to-[#8c7452] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {loading ? (
@@ -247,9 +247,9 @@ const ContactUs = () => {
 
       {/* Additional Coffee-themed Section */}
       <div className="w-full px-4 lg:px-14 mx-auto">
-        <div className="bg-gradient-to-r from-[#c0aa83] to-[#a38e6a] rounded-3xl p-8 lg:p-12 text-white shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#c0aa83]/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#c0aa83]/20 rounded-full blur-3xl"></div>
+        <div className="bg-gradient-to-r from-primary-500 to-[#a38e6a] rounded-3xl p-8 lg:p-12 text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary-500/20 rounded-full blur-3xl"></div>
           
           <div className="relative text-center max-w-3xl mx-auto">
             <Coffee className="w-16 h-16 mx-auto mb-4" />

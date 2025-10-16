@@ -114,7 +114,7 @@ const BlogPage = () => {
                       />
                     </div>
                     <div className="py-6 p-4" onClick={() => navigate(`/blog/${post.id}`)} style={{ cursor: 'pointer' }}>
-                      <h2 className="text-2xl font-semibold mb-4" style={{ color: '#c0aa83' }}>
+                      <h2 className="text-2xl font-semibold mb-4" style={{ color: '#6F4E37' }}>
                         {post.title}
                       </h2>
                       <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-6">
@@ -122,7 +122,7 @@ const BlogPage = () => {
                       </p>
                       <div className="flex items-center justify-between text-gray-500 text-sm">
                         <div className="flex items-center space-x-3">
-                          <span className="text-5xl font-light" style={{ color: '#c0aa83' }}>
+                          <span className="text-5xl font-light" style={{ color: '#6F4E37' }}>
                             {postDate.day} {/* ✅ FIXED */}
                           </span>
                           <div className="flex flex-col text-xs">
@@ -167,7 +167,7 @@ const BlogPage = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full px-4 py-2 pr-10 border text-black border-gray-300 focus:outline-none focus:ring-2"
-                    style={{ focusRingColor: '#c0aa83' }}
+                    style={{ focusRingColor: '#6F4E37' }}
                   />
                   <Search size={20} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
@@ -186,7 +186,7 @@ const BlogPage = () => {
                             ? 'text-white'
                             : 'text-gray-700 hover:bg-gray-50'
                         }`}
-                        style={selectedCategory === category ? { backgroundColor: '#c0aa83' } : {}}
+                        style={selectedCategory === category ? { backgroundColor: '#6F4E37' } : {}}
                       >
                         <span className="mr-2">›</span>
                         {category === 'all' ? 'All Posts' : category}

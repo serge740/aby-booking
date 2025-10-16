@@ -202,7 +202,7 @@ const CoffeeShopPage = () => {
                   key={tag}
                   className={`px-2 py-1 rounded-full text-xs cursor-pointer transition-all ${
                     selectedTags.includes(tag)
-                      ? 'bg-[#c0aa83] text-white'
+                      ? 'bg-primary-500 text-white'
                       : 'text-gray-500 hover:text-gray-700 bg-gray-100'
                   }`}
                   onClick={() => handleTagToggle(tag)}
@@ -302,7 +302,7 @@ const CoffeeShopPage = () => {
                       onClick={() => addToCart(product)}
                       disabled={product.stock === 0}
                       className={`w-full py-2 text-white font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                        isInCart ? 'bg-[#c0aa83]' : 'bg-[#c0aa83]'
+                        isInCart ? 'bg-primary-500' : 'bg-primary-500'
                       }`}
                     >
                       <ShoppingCart size={18} />

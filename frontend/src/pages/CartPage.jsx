@@ -68,7 +68,7 @@ const CartPage = () => {
             </p>
             <button
               onClick={handleContinueShopping}
-              className="px-6 py-3 bg-[#c0aa83] text-white font-semibold rounded-md hover:bg-[#b8946f] transition-colors"
+              className="px-6 py-3 bg-primary-500 text-white font-semibold rounded-md hover:bg-[#b8946f] transition-colors"
             >
               Continue Shopping
             </button>
@@ -141,7 +141,7 @@ const CartPage = () => {
                               ${item.originalPrice.toFixed(2)}
                             </span>
                           )}
-                          <span className="text-xl font-bold text-[#c0aa83]">
+                          <span className="text-xl font-bold text-primary-500">
                             ${item.price.toFixed(2)}
                           </span>
                         </div>
@@ -162,7 +162,7 @@ const CartPage = () => {
                               value={item.quantity}
                               onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value) || 1)}
                               min="1"
-                              className="w-16 text-center py-2 border-0 focus:outline-none focus:ring-1 focus:ring-[#c0aa83]"
+                              className="w-16 text-center py-2 border-0 focus:outline-none focus:ring-1 focus:ring-primary-500"
                             />
                             <button
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
@@ -253,7 +253,7 @@ const CartPage = () => {
                 className={`w-full py-4 rounded-md font-semibold text-white flex items-center justify-center gap-2 transition-all ${
                   isProcessing || cart.length === 0
                     ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-[#c0aa83] hover:bg-[#b8946f]'
+                    : 'bg-primary-500 hover:bg-[#b8946f]'
                 }`}
               >
                 {isProcessing ? (
@@ -272,11 +272,11 @@ const CartPage = () => {
               {/* Shipping Info */}
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                  <Truck size={16} className="text-[#c0aa83]" />
+                  <Truck size={16} className="text-primary-500" />
                   <span>Free shipping on orders over $50</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Package size={16} className="text-[#c0aa83]" />
+                  <Package size={16} className="text-primary-500" />
                   <span>Estimated delivery: 3-5 business days</span>
                 </div>
               </div>
