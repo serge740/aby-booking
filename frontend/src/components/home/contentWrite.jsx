@@ -1,109 +1,140 @@
-import React, { useEffect } from 'react';
-import { FaPencilRuler, FaCode, FaUserGraduate, FaArrowRight } from 'react-icons/fa';
-import { IoDocumentTextSharp } from 'react-icons/io5';
-import { MdSupportAgent } from 'react-icons/md';
-import { AiOutlineShoppingCart } from 'react-icons/ai';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import React, { useEffect, useState } from 'react';
+import { Coffee, Truck, Users, Star, ShoppingCart, Handshake, ArrowRight, Sparkles } from 'lucide-react';
 
 const services = [
   {
-    title: 'Web Development',
-    icon: <FaPencilRuler size={40} />,
-    description:
-      'We design and develop modern, high-performance websites tailored to your brand identity. Our solutions ensure responsiveness, speed, and seamless user experience.',
+    title: 'Premium Coffee Blends',
+    icon: Coffee,
+    description: 'Discover the best world sorts of coffee beans, sourced globally and roasted to perfection for an unparalleled taste experience.',
   },
   {
-    title: 'App Development',
-    icon: <IoDocumentTextSharp size={40} />,
-    description:
-      'From mobile to web apps, we create high-quality, scalable, and intuitive applications with smooth functionality and stunning UI.',
+    title: 'Professional Barista Services',
+    icon: Star,
+    description: 'Our skilled baristas craft exceptional coffee beverages with precision, ensuring every cup is a masterpiece of flavor and aroma.',
   },
   {
-    title: 'Software Development',
-    icon: <FaCode size={40} />,
-    description:
-      'We build customized software solutions designed to meet your unique business needs with security and scalability.',
+    title: '24/7 Fast Delivery',
+    icon: Truck,
+    description: 'Enjoy our premium coffee products delivered to your door with our reliable and swift 24/7 delivery service.',
   },
   {
-    title: 'E-Commerce Solutions',
-    icon: <AiOutlineShoppingCart size={40} />,
-    description:
-      'We develop robust, scalable e-commerce platforms with seamless payment gateways and inventory management.',
+    title: 'Multiple Points of Sale',
+    icon: ShoppingCart,
+    description: 'Visit our numerous coffee shops and outlets for a cozy experience or to grab your favorite coffee on the go.',
   },
   {
-    title: 'IT Support',
-    icon: <MdSupportAgent size={40} />,
-    description:
-      'Reliable IT support ensures your business operates smoothly with proactive troubleshooting and network security.',
+    title: 'Become Our Dealer',
+    icon: Handshake,
+    description: 'Join our network as a CoffeeKing dealer and bring our premium coffee products to your community with exclusive benefits.',
   },
   {
-    title: 'Internship Program',
-    icon: <FaUserGraduate size={40} />,
-    description:
-      'Gain hands-on experience through our well-structured internship program with mentorship and real project work.',
+    title: 'Coffee Tasting Events',
+    icon: Users,
+    description: 'Participate in our coffee tasting events to explore new blends, learn about coffee origins, and connect with fellow coffee lovers.',
   },
 ];
 
 export default function ServicesSection() {
-  useEffect(() => {
-    AOS.init({ duration: 1000, once: true, easing: 'ease-in-out' });
-  }, []);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e, index) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
   return (
-    <section className="bg-gradient-to-b from-gray-50 to-white py-16 md:py-24 px-4 md:px-8">
-      <div className=" mx-auto">
-        
+    <section className="relative py-4 md:py-17 px-4 md:px-8 bg-gradient-to-b from-stone-50 via-stone-100/30 to-stone-50 overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#c0aa83]/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#a38e6a]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-[#c0aa83]/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      <div className=" mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Our <span className="text-primary-500">Services</span>
+        {/* <div className="text-center mb-2">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: 'linear-gradient(to right, rgba(192, 170, 131, 0.15), rgba(163, 142, 106, 0.15))' }}>
+            <Sparkles className="w-4 h-4" style={{ color: '#c0aa83' }} />
+            <span className="text-sm font-semibold tracking-wide" style={{ color: '#a38e6a' }}>WHAT WE OFFER</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
+            Crafting Coffee
+            <br />
+            <span style={{ color: '#c0aa83' }}>Experiences</span>
           </h2>
-          <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            We provide high-quality digital solutions tailored to your needs and business requirements.
+          
+          <p className="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            From bean to cup, we deliver excellence in every aspect of your coffee journey
           </p>
-        </div>
+        </div> */}
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              data-aos="fade-up"
-              data-aos-delay={index * 100}
-              className="group relative"
-            >
-              <div className="h-full bg-white border-2 border-gray-200 rounded-2xl p-8 md:p-10 transition-all duration-300 hover:border-primary-500 hover:shadow-xl overflow-hidden">
-                
-                {/* Background decoration */}
-                <div className="absolute top-10 right-10 w-16 h-16 bg-primary-50 rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                {/* Icon Container */}
-                <div className="relative z-10 inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl mb-6 group-hover:from-primary-100 group-hover:to-primary-200 transition-all duration-300">
-                  <div className="text-primary-500">
-                    {service.icon}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service, index) => {
+            const Icon = service.icon;
+            const isHovered = hoveredIndex === index;
+            
+            return (
+              <div
+                key={index}
+                className="group relative"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onMouseMove={(e) => handleMouseMove(e, index)}
+              >
+                <div className="relative h-full bg-white/80 backdrop-blur-sm rounded-3xl p-8 transition-all duration-500 hover:bg-white hover:shadow-2xl border border-gray-200/50 overflow-hidden" style={{ boxShadow: isHovered ? '0 25px 50px -12px rgba(192, 170, 131, 0.15)' : '' }}>
+                  {/* Spotlight Effect */}
+                  {isHovered && (
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(192, 170, 131, 0.1), transparent 40%)`,
+                      }}
+                    ></div>
+                  )}
+
+                  {/* Gradient Orb */}
+                  <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #c0aa83, #a38e6a)' }}></div>
+
+                  {/* Icon */}
+                  <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #c0aa83, #a38e6a)' }}>
+                    <Icon className="w-10 h-10 text-white" strokeWidth={2} />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4 transition-colors duration-300" style={{ color: isHovered ? '#a38e6a' : '' }}>
+                      {service.title}
+                    </h3>
+                    
+                    <p className="text-gray-600 leading-relaxed mb-8 group-hover:text-gray-700 transition-colors duration-300">
+                      {service.description}
+                    </p>
+
+                    {/* CTA Button */}
+                    <button className="inline-flex items-center gap-2 font-semibold group-hover:gap-4 transition-all duration-300" style={{ color: '#c0aa83' }}>
+                      <span>Learn More</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </button>
+                  </div>
+
+                  {/* Decorative Corner */}
+                  <div className="absolute bottom-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="absolute bottom-0 right-0 w-full h-full opacity-10 rounded-tl-full" style={{ background: 'linear-gradient(to top left, #c0aa83, #a38e6a)' }}></div>
                   </div>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 relative z-10">
-                  {service.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6 relative z-10 line-clamp-4">
-                  {service.description}
-                </p>
-
-                {/* Arrow Button */}
-                <div className="absolute bottom-8 right-8 z-10">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-500 rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300">
-                    <FaArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
+                {/* Floating Animation on Hover */}
+                <div className="absolute inset-0 -z-10 rounded-3xl blur-2xl transition-all duration-500 group-hover:scale-105" style={{ background: isHovered ? 'linear-gradient(to bottom right, rgba(192, 170, 131, 0.2), rgba(163, 142, 106, 0.2))' : '' }}></div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
