@@ -147,10 +147,11 @@ function NavBar() {
                 { name: "Home", path: "/" },
                 { name: "About Us", path: "/about-us" },
                 // { name: "Our Services", path: "/services" },
-                { name: "Blogs", path: "/blogs" },
                 // { name: "Product", path: "/products" },
                 // { name: "Gallery", path: "/gallery" },
                 { name: "Reviews", path: "/reviews" },
+                { name: "Our Menu", path: "/menu" },
+                { name: "Blogs", path: "/blogs" },
                 { name: "Contact Us", path: "/contact-us" },
               ].map((item, index) => (
                 <li key={index}>
@@ -202,7 +203,7 @@ function NavBar() {
         {menuOpen && (
           <>
             <div
-              className="lg:hidden fixed inset-0 bg-black bg-opacity-60 z-30 backdrop-blur-sm"
+              className="lg:hidden fixed inset-0 bg-black/50 z-30 backdrop-blur-sm"
               onClick={() => setMenuOpen(false)}
             />
             <div
@@ -221,13 +222,16 @@ function NavBar() {
 
               <ul className="flex flex-col p-6 space-y-2">
                 {[
-                  { name: "Home", path: "/" },
-                  { name: "About Us", path: "/about-us" },
-                  { name: "Our Services", path: "/services" },
-                  { name: "News and Updates", path: "/news" },
-                  { name: "Product", path: "/product" },
-                  { name: "Contact Us", path: "/contact-us" },
-                ].map((item, index) => (
+                { name: "Home", path: "/" },
+                { name: "About Us", path: "/about-us" },
+                // { name: "Our Services", path: "/services" },
+                // { name: "Product", path: "/products" },
+                // { name: "Gallery", path: "/gallery" },
+                { name: "Reviews", path: "/reviews" },
+                { name: "Our Menu", path: "/menu" },
+                { name: "Blogs", path: "/blogs" },
+                { name: "Contact Us", path: "/contact-us" },
+              ].map((item, index) => (
                   <li key={index}>
                     <NavLink
                       to={item.path}
