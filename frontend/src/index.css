@@ -2,17 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @theme {
   /* --- Colors --- */
- --color-primary-50: #e7eff8;
-  --color-primary-100: #d6e2f4;
-  --color-primary-200: #adc7e9;
-  --color-primary-300: #88acd7;
-  --color-primary-400: #578bc3;
-  --color-primary-500: #0c62c3; /* The original hex code */
-  --color-primary-600: #0a56ae;
-  --color-primary-700: #084c98;
-  --color-primary-800: #06407d;
-  --color-primary-900: #053365;
-  --color-primary-950: #021a36;
+--color-primary-50:  #f3ece8;
+--color-primary-100: #e8dcd3;
+--color-primary-200: #d6bfae;
+--color-primary-300: #c3a389;
+--color-primary-400: #a77c5c;
+--color-primary-500: #6F4E37; /* The new base color */
+--color-primary-600: #624530;
+--color-primary-700: #523a28;
+--color-primary-800: #433020;
+--color-primary-900: #352618;
+--color-primary-950: #1b120c;
+
 
  
   --color-secondary-50: #f0fdfa;
@@ -41,10 +42,18 @@
   --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
   --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
 }
+input{
+  color: black;
+}
+textarea{
+  color: black;
+}
+select{
+  color: black;
+}
 body{
     font-family: "Oswald", sans-serif;
     font-optical-sizing: auto;
-   
     font-style: normal;
   }
 

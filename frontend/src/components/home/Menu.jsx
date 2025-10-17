@@ -1,34 +1,35 @@
-import { useState } from 'react';
+import React from 'react';
+import Header from '../header';
 
 export default function Menu() {
   const breakfastItems = [
     {
       name: "Pancakes",
       description: "Fresh brewed coffee and steamed milk",
-      price: "12.50"
+      price: "12.50",
     },
     {
       name: "Toasted Waffle",
       description: "Brewed coffee and steamed milk",
       price: "12.00",
-      oldPrice: "16.50"
+      oldPrice: "16.50",
     },
     {
       name: "Fried Chips",
       description: "Rich Milk and Foam",
       price: "15.0",
-      recommended: true
+      recommended: true,
     },
     {
       name: "Pancakes",
       description: "Fresh brewed coffee and steamed milk",
-      price: "12.50"
+      price: "12.50",
     },
     {
       name: "Banana Cakes",
       description: "Rich Milk and Foam",
-      price: "18.0"
-    }
+      price: "18.0",
+    },
   ];
 
   const coffeeItems = [
@@ -36,65 +37,59 @@ export default function Menu() {
       name: "Latte",
       description: "Fresh brewed coffee and steamed milk",
       price: "7.50",
-      oldPrice: "12.50"
+      oldPrice: "12.50",
     },
     {
       name: "White Coffee",
       description: "Brewed coffee and steamed milk",
       price: "5.90",
-      recommended: true
+      recommended: true,
     },
     {
       name: "Chocolate Milk",
       description: "Rich Milk and Foam",
-      price: "5.50"
+      price: "5.50",
     },
     {
       name: "Greentea",
       description: "Fresh brewed coffee and steamed milk",
-      price: "7.50"
+      price: "7.50",
     },
     {
       name: "Dark Chocolate",
       description: "Rich Milk and Foam",
-      price: "7.25"
-    }
+      price: "7.25",
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Background Images */}
-      <div className="absolute inset-0 flex">
-        <div 
-          className="w-1/2 h-full bg-cover bg-center"
+    <div className="w-full min-h-screen bg-black">
+      {/* Header Section */}
+      {/* <Header title={'our menu'} path={'menu'} /> */}
+      {/* Menu Section */}
+      <div className="relative bg-black text-white overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&q=80')",
+            backgroundImage: `url(https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80)`,
           }}
         />
-        <div 
-          className="w-1/2 h-full bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80')",
-          }}
-        />
-      </div>
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-60" />
+        {/* Dark Overlay - makes image darker but still visible */}
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }} />
 
-      {/* Content */}
-      <div className="relative z-10">
         {/* Menu Grid */}
-        <div className="grid grid-cols-2 gap-0 pt-16">
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 md:p-16">
           {/* Breakfast Section */}
-          <div className="px-16 py-12">
+          <div className=" bg-opacity-40 rounded-3xl px-8 md:px-12 py-12 backdrop-blur-sm" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} >
             <div className="text-sm italic text-gray-300 mb-2">Delicious Menu</div>
-            <h2 className="text-5xl font-bold mb-12">Breakfast</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-12">Breakfast</h2>
 
             {/* Menu Items */}
             <div className="space-y-8">
               {breakfastItems.map((item, index) => (
-                <MenuItem 
+                <MenuItem
                   key={index}
                   name={item.name}
                   description={item.description}
@@ -107,14 +102,14 @@ export default function Menu() {
           </div>
 
           {/* Coffee Section */}
-          <div className="px-16 py-12">
+          <div className=" bg-opacity-40 rounded-3xl px-8 md:px-12 py-12 backdrop-blur-sm" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }} >
             <div className="text-sm italic text-gray-300 mb-2">Favourite Menu</div>
-            <h2 className="text-5xl font-bold mb-12">Coffee</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-12">Coffee</h2>
 
             {/* Menu Items */}
             <div className="space-y-8">
               {coffeeItems.map((item, index) => (
-                <MenuItem 
+                <MenuItem
                   key={index}
                   name={item.name}
                   description={item.description}

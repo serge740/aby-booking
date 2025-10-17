@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Coffee, Truck, Users, Star, ShoppingCart, Handshake, ArrowRight, Sparkles } from 'lucide-react';
 
 const services = [
@@ -38,7 +38,7 @@ export default function ServicesSection() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e, index) => {
+  const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePosition({
       x: e.clientX - rect.left,
@@ -50,23 +50,23 @@ export default function ServicesSection() {
     <section className="relative py-4 md:py-17 px-4 md:px-8 bg-gradient-to-b from-stone-50 via-stone-100/30 to-stone-50 overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#c0aa83]/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#a38e6a]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-[#c0aa83]/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className=" mx-auto relative z-10">
         {/* Header */}
         {/* <div className="text-center mb-2">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: 'linear-gradient(to right, rgba(192, 170, 131, 0.15), rgba(163, 142, 106, 0.15))' }}>
-            <Sparkles className="w-4 h-4" style={{ color: '#c0aa83' }} />
+            <Sparkles className="w-4 h-4" style={{ color: '#6F4E37' }} />
             <span className="text-sm font-semibold tracking-wide" style={{ color: '#a38e6a' }}>WHAT WE OFFER</span>
           </div>
           
           <h2 className="text-4xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
             Crafting Coffee
             <br />
-            <span style={{ color: '#c0aa83' }}>Experiences</span>
+            <span style={{ color: '#6F4E37' }}>Experiences</span>
           </h2>
           
           <p className="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
@@ -100,10 +100,10 @@ export default function ServicesSection() {
                   )}
 
                   {/* Gradient Orb */}
-                  <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #c0aa83, #a38e6a)' }}></div>
+                  <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #6F4E37, #a38e6a)' }}></div>
 
                   {/* Icon */}
-                  <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #c0aa83, #a38e6a)' }}>
+                  <div className="relative inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500" style={{ background: 'linear-gradient(to bottom right, #6F4E37, #a38e6a)' }}>
                     <Icon className="w-10 h-10 text-white" strokeWidth={2} />
                   </div>
 
@@ -118,7 +118,7 @@ export default function ServicesSection() {
                     </p>
 
                     {/* CTA Button */}
-                    <button className="inline-flex items-center gap-2 font-semibold group-hover:gap-4 transition-all duration-300" style={{ color: '#c0aa83' }}>
+                    <button className="inline-flex items-center gap-2 font-semibold group-hover:gap-4 transition-all duration-300" style={{ color: '#6F4E37' }}>
                       <span>Learn More</span>
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                     </button>
@@ -126,7 +126,7 @@ export default function ServicesSection() {
 
                   {/* Decorative Corner */}
                   <div className="absolute bottom-0 right-0 w-24 h-24 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="absolute bottom-0 right-0 w-full h-full opacity-10 rounded-tl-full" style={{ background: 'linear-gradient(to top left, #c0aa83, #a38e6a)' }}></div>
+                    <div className="absolute bottom-0 right-0 w-full h-full opacity-10 rounded-tl-full" style={{ background: 'linear-gradient(to top left, #6F4E37, #a38e6a)' }}></div>
                   </div>
                 </div>
 
