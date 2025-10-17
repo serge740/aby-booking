@@ -85,7 +85,7 @@ function NavBar() {
               : "bg-black/30"
           }`}
         >
-          <div className="container mx-auto flex justify-between items-center px-8 py-4 lg:py-5">
+          <div className=" mx-auto flex justify-between items-center px-8 py-4 lg:py-5">
             {/* Logo */}
             <div className="flex items-center space-x-3 transition-transform duration-300 hover:scale-105">
               <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">

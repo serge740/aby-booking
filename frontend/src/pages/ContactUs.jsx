@@ -83,14 +83,8 @@ const ContactUs = () => {
       {/* Header */}
       <Header title={"Contact Us"} path={"contact"} />
       <div
-        className=" w-full flex flex-col pb-16 items-center gap-12 pt-10 "
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundAttachment: "fixed",
-          backgroundPosition: "center",
-        }}
+        className=" w-full bg-white flex flex-col items-center gap-12 pt-12 "
+       
       >
         {/* Company Info Cards */}
         <div className="w-full px-4 lg:px-14 mx-auto -mt-4">
@@ -148,10 +142,21 @@ const ContactUs = () => {
           </div>
         </div>
 
+        <div 
+         style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+          backgroundPosition: "center",
+        }}
+        className="flex flex-col py-20 w-full gap-8 ">
+
+
         {/* Form & Map Section */}
-        <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 mx-auto ">
+        <div  className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 mx-auto ">
           {/* Google Map */}
-          <div className="w-full lg:w-1/2 flex items-center">
+          <div className="w-full lg:w-1/2 flex bg-white items-center">
             <div className="w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white relative group">
               {/* Map Overlay Label */}
               <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
@@ -301,6 +306,7 @@ const ContactUs = () => {
                 </div>
               </div>
             </div>
+        </div>
           </div>
         </div>
       </div>
