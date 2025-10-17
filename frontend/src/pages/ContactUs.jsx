@@ -149,9 +149,9 @@ const ContactUs = () => {
         </div>
 
         {/* Form & Map Section */}
-        <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 mx-auto">
+        <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-12 w-full px-4 lg:px-14 mx-auto ">
           {/* Google Map */}
-          <div className="w-full lg:w-1/2 flex items-center min-h-[400px] h-full ">
+          <div className="w-full lg:w-1/2 flex items-center">
             <div className="w-full rounded-2xl overflow-hidden shadow-xl border-4 border-white relative group">
               {/* Map Overlay Label */}
               <div className="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
@@ -165,7 +165,7 @@ const ContactUs = () => {
 
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.2176709267986!2d-73.98823492346677!3d40.75797883540513!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1709123456789!5m2!1sen!2sus"
-                className="w-full border-0 aspect-[16/9] lg:aspect-square  "
+                className="w-full border-0 aspect-[16/9] lg:aspect-square h-[750px] "
                 allowFullScreen=""
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -174,13 +174,13 @@ const ContactUs = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-center">
-            <div className="relative bg-white/90 p-9 lg:p-12 rounded-2xl shadow-xl border border-primary-500">
+          <div className="w-full h-[755px] lg:w-1/2 flex flex-col justify-center  ">
+            <div className="relative bg-white/90  lg:p-12 rounded-2xl shadow-xl border border-primary-500 h-full ">
               {/* Decorative gradient blobs */}
               <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-primary-500 to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-2 -left-2 w-32 h-32 bg-gradient-to-br from-primary-500 to-[#a38e6a] opacity-10 rounded-full blur-3xl"></div>
 
-              <div className="relative min-h-[400px] h-full ">
+              <div className="relative h-full ">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-[#a38e6a] flex items-center justify-center shadow-lg">
                     <Coffee className="w-6 h-6 text-white" />
@@ -197,7 +197,7 @@ const ContactUs = () => {
                 <form
                   ref={form}
                   onSubmit={sendEmail}
-                  className="flex flex-col gap-5"
+                  className="flex flex-col gap-5 h-full "
                 >
                   {/* Name Field */}
                   <div className="flex flex-col">
