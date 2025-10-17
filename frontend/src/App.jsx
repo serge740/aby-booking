@@ -26,6 +26,7 @@ import CoffeeShopPage from "./pages/product/Product";
 import CoffeeShop from "./pages/product/SingleProduct";
 import CartPage from "./pages/CartPage";
 import Gallery from "./components/home/Gallery";
+import ReviewsTimeLine from "./pages/Reviews";
 
 
 // Loading component
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
     { path: 'service/:id', element: <SuspenseWrapper><ServiceSingle /></SuspenseWrapper> },
     { path: 'project', element: <SuspenseWrapper><ProjectsPage /></SuspenseWrapper> },
     { path: 'team-member', element: <SuspenseWrapper><TeamMember /></SuspenseWrapper> },
+    { path: 'reviews', element: <SuspenseWrapper><ReviewsTimeLine /></SuspenseWrapper> },
     { path: 'menu', element: <SuspenseWrapper><MenuPage /></SuspenseWrapper> },
     { path: 'products', element: <SuspenseWrapper><CoffeeShopPage /></SuspenseWrapper> },
     { path: 'products/:id', element: <SuspenseWrapper><CoffeeShop /></SuspenseWrapper> },

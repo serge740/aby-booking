@@ -2,17 +2,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @theme {
   /* --- Colors --- */
---color-primary-50:  #f3ece8;
---color-primary-100: #e8dcd3;
---color-primary-200: #d6bfae;
---color-primary-300: #c3a389;
---color-primary-400: #a77c5c;
---color-primary-500: #6F4E37; /* The new base color */
---color-primary-600: #624530;
---color-primary-700: #523a28;
---color-primary-800: #433020;
---color-primary-900: #352618;
---color-primary-950: #1b120c;
+ --color-primary-50:  #f7ede4;
+  --color-primary-100: #f1ddcc;
+  --color-primary-200: #e3ba9a;
+  --color-primary-300: #d69969;
+  --color-primary-400: #c98347;
+  --color-primary-500: #b78752; /* The new base color */
+  --color-primary-600: #9f7347;
+  --color-primary-700: #845d3b;
+  --color-primary-800: #6a4a30;
+  --color-primary-900: #523726;
+  --color-primary-950: #2a1c13;
 
 
  
@@ -41,6 +41,9 @@
   /* --- Shadows --- */
   --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
   --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
+}
+html{
+  scroll-behavior: smooth;
 }
 input{
   color: black;

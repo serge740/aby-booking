@@ -1,85 +1,66 @@
 import React from 'react';
-import { CheckCircle, ArrowRight } from 'lucide-react';
-import Image from '../../assets/blog1.jpg'
 
-function HomeAbout() {
-  const services = [
-    { name: 'Specialty Coffee', col: 1 },
-    { name: 'Artisan Brewing', col: 2 },
-    { name: 'Cozy Atmosphere', col: 1 },
-    { name: 'Fresh Pastries', col: 2 }
-  ];
-
+export default function CafeAboutSection() {
   return (
-    <div className="bg-[#f8f6f2] py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-8xl px-6 mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left side - Coffee shop image */}
-          <div className="relative">
-            <div className="relative z-10">
-              <img 
-                src={Image}
-                alt="Coffee shop interior" 
-                className="rounded-2xl shadow-2xl w-full h-[500px] object-cover"
-              />
-              {/* Decorative elements */}
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-[#6F4E37] rounded-full opacity-30 blur-xl"></div>
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-[#6F4E37] rounded-full opacity-30 blur-xl"></div>
+    <div id='our-story' className="min-h-screen bg-primary-800 flex items-center justify-center p-4 py-8 md:p-8">
+      <div className=" w-full grid md:grid-cols-2 gap-8 items-center">
+        {/* Left Side - Image Card */}
+        <div className="relative">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            {/* Image */}
+            <img
+              src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&h=900&fit=crop"
+              alt="Cafe Interior"
+              className="w-full h-[600px] object-cover"
+            />
+           
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary-950/80"></div>
+           
+            {/* Bottom Text */}
+            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+              <h3 className="text-3xl md:text-4xl font-bold mb-2">
+                Brewing Excellence Since 2015
+              </h3>
+              <p className="text-2xl md:text-3xl font-bold">
+                Your Neighborhood Coffee Haven
+              </p>
             </div>
           </div>
+        </div>
 
-          {/* Right side - Content */}
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 bg-[#6F4E37] rounded-full"></div>
-                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-60"></div>
-                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-40"></div>
-                <div className="w-2 h-2 bg-[#6F4E37] rounded-full opacity-20"></div>
-              </div>
-              <span className="text-[#6F4E37] font-semibold tracking-wide text-sm uppercase">
-                About Jambokawa
-              </span>
-            </div>
-
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-              We Craft Perfect Coffee Experiences
+        {/* Right Side - Content */}
+        <div className="text-white space-y-6">
+          <div>
+            <p className="text-sm md:text-base font-light tracking-wider mb-3 text-primary-200">
+              Artisan Coffee & Community
+            </p>
+            <h2 className="text-5xl md:text-6xl font-bold mb-6">
+              Our Story
             </h2>
+          </div>
 
-            <p className="text-gray-600 text-lg leading-relaxed">
-              At Jambokawa, we believe every cup tells a story. From bean to brew, we pour passion into creating memorable moments and the perfect coffee experience for our community.
+          <div className="space-y-5 text-white/90">
+            <p className="text-base md:text-lg leading-relaxed">
+              What started as a passion for exceptional coffee has grown into a warm gathering place where the aroma of freshly roasted beans welcomes you every morning.
+            </p>
+           
+            <p className="text-base md:text-lg leading-relaxed">
+              We source our beans directly from sustainable farms across Ethiopia, Colombia, and Guatemala, ensuring every cup tells a story of quality and craftsmanship. Our skilled baristas are dedicated to perfecting each brew, whether it's a classic espresso or a creative seasonal specialty.
             </p>
 
-            {/* Services Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
-              {services.map((service, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300 border border-[#6F4E37]/10"
-                >
-                  <div className="flex-shrink-0">
-                    <CheckCircle className="w-6 h-6 text-[#6F4E37]" />
-                  </div>
-                  <span className="text-gray-800 font-semibold text-base">
-                    {service.name}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <p className="text-base md:text-lg leading-relaxed">
+              More than just coffee, we've built a community space where friends meet, ideas flourish, and every visit feels like coming home.
+            </p>
+          </div>
 
-            {/* CTA Button */}
-            <div className="-pt-16">
-              <button className="bg-[#6F4E37] hover:bg-[#b39a76] text-white font-semibold px-6 py-2 rounded-lg flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                Our Story
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
+          <div className="pt-4">
+            <button className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-full hover:bg-white hover:text-primary-900 transition-all duration-300 font-medium text-base">
+              Meet Our Baristas
+            </button>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default HomeAbout;

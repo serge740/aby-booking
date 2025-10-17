@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FiMenu,
@@ -12,10 +11,10 @@ import {
   FiInstagram,
   FiLinkedin,
 } from "react-icons/fi";
-import React from "react";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const socialLinks = [
     { icon: FiFacebook, href: "https://www.facebook.com/inf@JamboKawa.com" },
@@ -32,8 +31,17 @@ function NavBar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <>
+    <div className="w-full flex justify-center items-center">
       <style>{`
         .nav-transition {
           transition: all 0.4s ease;
@@ -49,88 +57,66 @@ function NavBar() {
           left: 50%;
           width: 0;
           height: 2px;
-          background: #6F4E37;
+          background: #c98347;
           transition: all 0.3s ease;
           transform: translateX(-50%);
         }
-        .nav-link:hover::before {
+        .nav-link:hover::before,
+        .nav-link.active::before {
           width: 100%;
+        }
+        .reservation-btn {
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+        }
+        .reservation-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.5);
         }
       `}</style>
 
-      <header className="fixed top-0 left-0 w-full z-50">
-        {/* Top Info Bar */}
-        <div
-          className="text-white py-2 px-4 hidden lg:block pl-12 pr-10"
-          style={{ backgroundColor: "#6F4E37" }}
+      <header className="fixed top-5 rounded-2xl overflow-hidden mx-auto  w-29/30 z-50">
+        {/* Main Navigation with blur effect */}
+        <nav
+          className={`nav-transition backdrop-blur-md ${
+            scrolled
+              ? "bg-black/60"
+              : "bg-black/30"
+          }`}
         >
-          <div className="container mx-auto flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-6">
-              <a
-                href="tel:+250791813289"
-                className="flex items-center space-x-2 hover:text-white/80 transition-colors"
-              >
-                <FiPhone className="w-4 h-4" />
-                <span>+250 791813289</span>
-              </a>
-              <p>|</p>
-              <a
-                href="mailto:inf@JamboKawa.com"
-                className="flex items-center space-x-2 hover:text-white/80 transition-colors"
-              >
-                <FiMail className="w-4 h-4" />
-                <span>info@JamboKawa.com</span>
-              </a>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <FiMapPin className="w-4 h-4" />
-                <span>Kigali, Rwanda</span>
+          <div className="container mx-auto flex justify-between items-center px-8 py-4 lg:py-5">
+            {/* Logo */}
+            <div className="flex items-center space-x-3 transition-transform duration-300 hover:scale-105">
+              <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
               </div>
-              <p>|</p>
-              {socialLinks.map(({ icon: Icon, href }, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-white/80 transition-all hover:scale-110"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Main Navigation */}
-        <nav className="shadow-md nav-transition bg-white text-[#6F4E37]">
-          <div className="container mx-auto flex justify-between items-center px-4 py-3 lg:py-4 pl-12 pr-10">
-            {/* Text Logo */}
-            <div className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105">
-              <h1 className="text-2xl font-bold text-[#6F4E37] tracking-wide">
-                JamboKawa
+              <h1 className="text-2xl font-bold tracking-wide text-white">
+                Jambokawa
               </h1>
             </div>
 
-            {/* Nav Links */}
-            <ul className="hidden lg:flex lg:space-x-2 lg:items-center absolute left-1/2 transform -translate-x-1/2">
+            {/* Nav Links - Centered */}
+            <ul className="hidden lg:flex lg:space-x-8 lg:items-center absolute left-1/2 transform -translate-x-1/2">
               {[
                 { name: "Home", path: "/" },
-                { name: "About Us", path: "/about-us" },
-                { name: "Blogs", path: "/blogs" },
+                { name: "About", path: "/about-us" },
                 { name: "Our Menu", path: "/menu" },
+                { name: "Reviews", path: "/reviews" },
+                { name: "Blogs", path: "/blogs" },
                 { name: "Contact Us", path: "/contact-us" },
               ].map((item, index) => (
                 <li key={index}>
                   <NavLink
                     to={item.path}
                     className={({ isActive }) =>
-                      `nav-link block px-4 py-2 text-base font-semibold capitalize transition-all duration-200 rounded-lg ${
+                      `nav-link block px-2 py-2 text-base font-medium capitalize transition-all duration-200 ${
                         isActive
-                          ? "text-[#6F4E37] underline underline-offset-4"
-                          : "text-[#6F4E37] hover:text-[#a68c64]"
+                          ? "text-primary-400 active"
+                          : "text-white hover:text-primary-400"
                       }`
                     }
                   >
@@ -140,14 +126,17 @@ function NavBar() {
               ))}
             </ul>
 
-            {/* Contact / Mobile Button */}
-            <div className="flex items-center bg-[#6F4E37] p-2 rounded-md w-36 text-white">
-              <div className="hidden lg:block ml-4">
+            {/* Reservation Button */}
+            <div className="flex items-center space-x-4">
+              <div className="hidden lg:block">
                 <NavLink
                   to="/contact-us"
-                  className="block text-base font-bold transition-all duration-200 hover:opacity-80 text-white"
+                  className="reservation-btn px-6 py-2.5 rounded-full text-white font-medium flex items-center space-x-2"
                 >
-                  Get Quote
+                  <span>Reservation</span>
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
                 </NavLink>
               </div>
 
@@ -155,7 +144,7 @@ function NavBar() {
               <div className="lg:hidden">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-2 rounded-lg transition-all duration-300 text-[#6F4E37] hover:text-[#a68c64]"
+                  className="p-2 rounded-lg transition-all duration-300 text-white hover:bg-white/10"
                 >
                   {menuOpen ? <FiX className="w-7 h-7" /> : <FiMenu className="w-7 h-7" />}
                 </button>
@@ -168,18 +157,15 @@ function NavBar() {
         {menuOpen && (
           <>
             <div
-              className="lg:hidden fixed inset-0 bg-black bg-opacity-60 z-30 backdrop-blur-sm"
+              className="lg:hidden fixed inset-0 bg-black/70 z-30 backdrop-blur-sm"
               onClick={() => setMenuOpen(false)}
             />
-            <div
-              className="lg:hidden fixed top-0 left-0 w-4/5 max-w-sm h-full z-40 shadow-2xl"
-              style={{ backgroundColor: "#ffffff" }}
-            >
-              <div className="flex justify-between items-center p-6 border-b border-[#6F4E37] text-[#6F4E37]">
-                <h1 className="text-xl font-bold">JamboKawa</h1>
+            <div className="lg:hidden fixed top-0 right-0 w-4/5 max-w-sm h-full z-40 bg-black/95 backdrop-blur-lg shadow-2xl">
+              <div className="flex justify-between items-center p-6 border-b border-white/10">
+                <h1 className="text-xl font-bold text-white">Jambokawa</h1>
                 <button
                   onClick={() => setMenuOpen(false)}
-                  className="text-[#6F4E37] hover:text-[#a68c64] transition-all p-2"
+                  className="text-white hover:text-primary-400 transition-all p-2"
                 >
                   <FiX className="w-6 h-6" />
                 </button>
@@ -188,17 +174,21 @@ function NavBar() {
               <ul className="flex flex-col p-6 space-y-2">
                 {[
                   { name: "Home", path: "/" },
-                  { name: "About Us", path: "/about-us" },
-                  { name: "Our Services", path: "/services" },
-                  { name: "News and Updates", path: "/news" },
-                  { name: "Product", path: "/product" },
-                  { name: "Contact Us", path: "/contact-us" },
+                  { name: "About", path: "/about-us" },
+                  { name: "Our Menu", path: "/menu" },
+                  { name: "Reviews", path: "/reviews" },
+                  { name: "Blogs", path: "/blogs" },
+                 
                 ].map((item, index) => (
                   <li key={index}>
                     <NavLink
                       to={item.path}
                       onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-3 text-base font-semibold text-[#6F4E37] hover:text-[#a68c64] transition-colors duration-200"
+                       className={({ isActive }) => `nav-link block px-2 py-2 text-base font-medium capitalize transition-all duration-200 ${
+                        isActive
+                          ? "text-primary-400 active"
+                          : "text-white hover:text-primary-400"
+                      }`}
                     >
                       {item.name}
                     </NavLink>
@@ -206,26 +196,25 @@ function NavBar() {
                 ))}
               </ul>
 
-              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-[#6F4E37]">
-                <div className="flex justify-center space-x-6">
-                  {socialLinks.map(({ icon: Icon, href }, i) => (
-                    <a
-                      key={i}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[#6F4E37] hover:text-[#a68c64] transition-all hover:scale-110"
-                    >
-                      <Icon className="w-5 h-5" />
-                    </a>
-                  ))}
-                </div>
+              <div className="absolute bottom-8 left-0 right-0 px-6">
+                <NavLink
+                  to="/reservation"
+                  onClick={() => setMenuOpen(false)}
+                  className="reservation-btn w-full px-6 py-3 rounded-full text-white font-medium flex items-center justify-center space-x-2"
+                >
+                  <span>Reservation</span>
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
+                </NavLink>
               </div>
             </div>
           </>
         )}
       </header>
-    </>
+
+
+    </div>
   );
 }
 

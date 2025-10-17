@@ -63,7 +63,7 @@ export default function Menu() {
   ];
 
   return (
-    <div className="w-full min-h-screen bg-black">
+    <div id='our-menu' className="w-full min-h-screen bg-black">
       {/* Header Section */}
       {/* <Header title={'our menu'} path={'menu'} /> */}
       {/* Menu Section */}

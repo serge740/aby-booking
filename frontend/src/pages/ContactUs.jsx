@@ -52,30 +52,30 @@ const ContactUs = () => {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
       detail: "+250 791 813 289",
-      link: "tel:+15551234567",
-      color: "from-primary-500 to-[#a38e6a]",
+      link: "tel:+250791813289",
+      color: "from-primary-600 to-primary-700"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
       detail: "hello@jambokawa.com",
       link: "mailto:hello@jambokawa.com",
-      color: "from-primary-500 to-[#a38e6a]",
+      color: "from-primary-600 to-primary-700"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
       title: "Location",
       detail: "kigali, Rwanda",
       link: "https://maps.google.com",
-      color: "from-primary-500 to-[#a38e6a]",
+      color: "from-primary-600 to-primary-700"
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: "Working Hours",
       detail: "Mon-Sun: 7AM - 10PM",
       link: null,
-      color: "from-primary-500 to-[#a38e6a]",
-    },
+      color: "from-primary-600 to-primary-700"
+    }
   ];
 
   return (
