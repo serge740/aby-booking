@@ -17,13 +17,13 @@ const FooterContent = () => {
           {/* Left Section */}
           <div className="text-left max-w-2xl space-y-6">
             <span className="text-2xl font-semibold text-white bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm inline-block">
-              CoffeeKing
+              JamboKawa
             </span>
             <h2 className="text-5xl md:text-6xl font-bold leading-tight">
               Brewed with <span className="text-[#f2e0bf]">Passion</span>
             </h2>
             <p className="text-lg text-white/90 leading-relaxed" style={{ lineHeight: "2" }}>
-              Welcome to CoffeeKing! We source the finest coffee beans from around the world, crafted by our professional baristas. Explore our range of premium coffee products, visit our many points of sale, or enjoy 24/7 fast delivery. Stay connected for exclusive offers and coffee tips!
+              Welcome to JamboKawa! We source the finest coffee beans from around the world, crafted by our professional baristas. Explore our range of premium coffee products, visit our many points of sale, or enjoy 24/7 fast delivery. Stay connected for exclusive offers and coffee tips!
             </p>
           </div>
 
@@ -31,7 +31,7 @@ const FooterContent = () => {
           <div className="relative flex items-center justify-center mt-8 lg:mt-0">
             <img
               src={Image} // Update with a coffee-themed image (e.g., coffee cup or beans)
-              alt="CoffeeKing Brew"
+              alt="JamboKawa Brew"
               className="w-[450px] lg:w-[550px]  transition duration-500 rounded-lg"
             />
           </div>
@@ -43,7 +43,7 @@ const FooterContent = () => {
         {/* Left Section - Social Media */}
         <div className="flex space-x-4">
           <a
-            href="https://www.facebook.com/coffeeking"
+            href="https://www.facebook.com/JamboKawa"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
@@ -52,7 +52,7 @@ const FooterContent = () => {
           </a>
 
           <a
-            href="https://x.com/coffeeking"
+            href="https://x.com/JamboKawa"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
@@ -61,7 +61,7 @@ const FooterContent = () => {
           </a>
 
           <a
-            href="https://www.instagram.com/coffeeking"
+            href="https://www.instagram.com/JamboKawa"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
@@ -79,7 +79,7 @@ const FooterContent = () => {
           </a>
 
           <a
-            href="mailto:info@coffeeking.com"
+            href="mailto:info@JamboKawa.com"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[#6F4E37] to-[#a38e6a] text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
@@ -90,7 +90,7 @@ const FooterContent = () => {
 
         {/* Right Section - Copyright */}
         <p className="text-white/80 text-sm mt-3 md:mt-0">
-          &copy; {new Date().getFullYear()} CoffeeKing - All Rights Reserved
+          &copy; {new Date().getFullYear()} JamboKawa - All Rights Reserved
         </p>
       </div>
 

@@ -120,8 +120,8 @@ function NavBar() {
                 { name: "Home", path: "/" },
                 { name: "About Us", path: "/about-us" },
                 { name: "Blogs", path: "/blogs" },
-                { name: "Contact Us", path: "/contact-us" },
                 { name: "Our Menu", path: "/menu" },
+                { name: "Contact Us", path: "/contact-us" },
               ].map((item, index) => (
                 <li key={index}>
                   <NavLink
