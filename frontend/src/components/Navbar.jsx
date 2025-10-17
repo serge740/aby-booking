@@ -16,6 +16,7 @@ import React from "react";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const socialLinks = [
     { icon: FiFacebook, href: "https://www.facebook.com/inf@JamboKawa.com" },
@@ -30,6 +31,19 @@ function NavBar() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -61,7 +75,9 @@ function NavBar() {
       <header className="fixed top-0 left-0 w-full z-50">
         {/* Top Info Bar */}
         <div
-          className="text-white py-2 px-4 hidden lg:block pl-12 pr-10"
+          className={`text-white py-2 px-4 hidden lg:block pl-12 pr-10 transition-all duration-400 ${
+            "opacity-100"
+          }`}
           style={{ backgroundColor: "#6F4E37" }}
         >
           <div className="container mx-auto flex justify-between items-center text-sm">
@@ -105,11 +121,22 @@ function NavBar() {
         </div>
 
         {/* Main Navigation */}
-        <nav className="shadow-md nav-transition bg-white text-[#6F4E37]">
+        <nav
+          className={`shadow-md nav-transition ${
+            scrolled
+              ? "bg-white"
+              : "bg-white/10 backdrop-blur-sm"
+          }`}
+          style={scrolled ? {} : { borderBottom: "1px solid rgba(255, 255, 255, 0.1)" }}
+        >
           <div className="container mx-auto flex justify-between items-center px-4 py-3 lg:py-4 pl-12 pr-10">
             {/* Text Logo */}
             <div className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105">
-              <h1 className="text-2xl font-bold text-[#6F4E37] tracking-wide">
+              <h1
+                className={`text-2xl font-bold tracking-wide transition-colors duration-400 ${
+                  scrolled ? "text-[#6F4E37]" : "text-white"
+                }`}
+              >
                 JamboKawa
               </h1>
             </div>
@@ -119,10 +146,11 @@ function NavBar() {
               {[
                 { name: "Home", path: "/" },
                 { name: "About Us", path: "/about-us" },
-                { name: "Our Services", path: "/services" },
+                // { name: "Our Services", path: "/services" },
                 { name: "Blogs", path: "/blogs" },
-                { name: "Product", path: "/products" },
-                { name: "Gallery", path: "/gallery" },
+                // { name: "Product", path: "/products" },
+                // { name: "Gallery", path: "/gallery" },
+                { name: "Reviews", path: "/reviews" },
                 { name: "Contact Us", path: "/contact-us" },
               ].map((item, index) => (
                 <li key={index}>
@@ -130,9 +158,13 @@ function NavBar() {
                     to={item.path}
                     className={({ isActive }) =>
                       `nav-link block px-4 py-2 text-base font-semibold capitalize transition-all duration-200 rounded-lg ${
-                        isActive
-                          ? "text-[#6F4E37] underline underline-offset-4"
-                          : "text-[#6F4E37] hover:text-[#a68c64]"
+                        scrolled
+                          ? isActive
+                            ? "text-[#6F4E37] underline underline-offset-4"
+                            : "text-[#6F4E37] hover:text-[#a68c64]"
+                          : isActive
+                          ? "text-white underline underline-offset-4"
+                          : "text-white hover:text-white/80"
                       }`
                     }
                   >
@@ -157,7 +189,7 @@ function NavBar() {
               <div className="lg:hidden">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="p-2 rounded-lg transition-all duration-300 text-[#6F4E37] hover:text-[#a68c64]"
+                  className="p-2 rounded-lg transition-all duration-300 text-white"
                 >
                   {menuOpen ? <FiX className="w-7 h-7" /> : <FiMenu className="w-7 h-7" />}
                 </button>
