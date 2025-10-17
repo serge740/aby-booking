@@ -2,8 +2,8 @@ import React from 'react';
 
 export default function CafeAboutSection() {
   return (
-    <div id='our-story' className="min-h-screen bg-primary-800 flex items-center justify-center p-4 md:p-8">
-      <div className="max-w-7xl w-full grid md:grid-cols-2 gap-8 items-center">
+    <div id='our-story' className="min-h-screen bg-primary-800 flex items-center justify-center p-4 py-8 md:p-8">
+      <div className=" w-full grid md:grid-cols-2 gap-8 items-center">
         {/* Left Side - Image Card */}
         <div className="relative">
           <div className="relative rounded-3xl overflow-hidden shadow-2xl">

@@ -5,7 +5,7 @@ const Header = ({title, path}) => {
         <div className='relative w-full h-[50vh] flex justify-center items-center overflow-hidden'>
             {/* Background Image with Overlay */}
             <div 
-                className='absolute inset-0 bg-cover bg-center bg-no-repeat'
+                className='absolute bg-fixed  inset-0 bg-cover bg-center bg-no-repeat'
                 style={{
                     backgroundImage: `url(https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2000&auto=format&fit=crop)`,
                 }}

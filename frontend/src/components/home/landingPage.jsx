@@ -6,17 +6,17 @@ export default function CafeHeroSlider() {
   const slides = [
     {
       image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1920&h=1080&fit=crop',
-      title: 'Cafe Klang',
+      title: 'Jambokawa',
       subtitle: 'your favourite coffee daily lives.'
     },
     {
       image: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1920&h=1080&fit=crop',
-      title: 'Cafe Klang',
+      title: 'Jambokawa',
       subtitle: 'Where every cup tells a story.'
     },
     {
       image: 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=1920&h=1080&fit=crop',
-      title: 'Cafe Klang',
+      title: 'Jambokawa',
       subtitle: 'Experience the perfect blend.'
     }
   ];
