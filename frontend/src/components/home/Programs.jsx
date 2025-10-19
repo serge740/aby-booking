@@ -1,165 +1,181 @@
-import React, { useState } from 'react';
-import { Coffee, Cookie, Users, Wifi, ChevronDown } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Phone } from 'lucide-react';
 
-function Programs() {
-  const [activeTab, setActiveTab] = useState('programs');
-  const [openAccordion, setOpenAccordion] = useState(null);
+export default function AbyDeliverySection() {
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const programs = [
-    {
-      icon: <Coffee className="w-8 h-8" />,
-      title: "Signature Blends",
-      description: "Experience our carefully crafted coffee blends sourced from the finest beans across Africa and beyond, roasted to perfection.",
-      features: ["Ethiopian Yirgacheffe", "Rwandan Bourbon", "Kenyan AA", "House Blend"]
-    },
-    {
-      icon: <Cookie className="w-8 h-8" />,
-      title: "Fresh Pastries",
-      description: "Indulge in our daily selection of freshly baked pastries, cakes, and treats made with premium ingredients.",
-      features: ["Croissants & Danishes", "Custom Cakes", "Local Mandazi", "Artisan Cookies"]
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Event Space",
-      description: "Host your meetings, celebrations, or gatherings in our welcoming space designed for connection and collaboration.",
-      features: ["Private Meetings", "Coffee Tastings", "Birthday Parties", "Corporate Events"]
-    },
-    {
-      icon: <Wifi className="w-8 h-8" />,
-      title: "Work & Relax",
-      description: "Enjoy a productive day or unwind with friends in our comfortable space with high-speed WiFi and cozy seating.",
-      features: ["Free High-Speed WiFi", "Power Outlets", "Quiet Zones", "Outdoor Seating"]
-    }
+  const galleryImages = [
+    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop',
+    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop',
   ];
 
-  const howItWorks = [
-    {
-      step: "1",
-      title: "Choose Your Experience",
-      content: "Browse our menu of premium coffee blends, fresh pastries, and specialty drinks. Whether you're grabbing a quick espresso or settling in for the afternoon, we have something perfect for every mood and moment."
-    },
-    {
-      step: "2",
-      title: "Place Your Order",
-      content: "Order at our counter or through our mobile app for quick pickup. Our friendly baristas are always happy to recommend drinks based on your taste preferences and provide details about our coffee origins."
-    },
-    {
-      step: "3",
-      title: "Enjoy Your Space",
-      content: "Find your perfect spot in our cozy café. Whether you need a quiet corner for work, a communal table for meetings, or our outdoor patio for fresh air, we've designed every area for comfort and productivity."
-    },
-    {
-      step: "4",
-      title: "Join Our Community",
-      content: "Become a Jambo regular and enjoy member perks, exclusive tastings, and invitations to special events. Follow us on social media to stay updated on new blends, seasonal treats, and community gatherings."
-    }
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setScrollPosition(prev => (prev + 1) % (galleryImages.length * 2));
+    }, 3000);
 
-  const toggleAccordion = (index) => {
-    setOpenAccordion(openAccordion === index ? null : index);
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#6F4E37' }}>
-      {/* Header */}
-      <div className="bg-black/20 backdrop-blur-sm border-b border-black/10">
-        <div className="max-w-8xl mx-auto px-6 md:px-14 py-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">JamboKawa Coffee Shop</h1>
-          <p className="text-xl text-white/90">Where every cup tells a story</p>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="max-w-8xl mx-auto px-6 md:px-14 mt-8">
-        <div className="flex gap-4 mb-8">
-          <button
-            onClick={() => setActiveTab('programs')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              activeTab === 'programs'
-                ? 'bg-white text-amber-900 shadow-lg'
-                : 'bg-black/20 text-white hover:bg-black/30'
-            }`}
+    <div className="w-full bg-gradient-to-b from-orange-50 to-white py-16 md:py-24 px-4">
+      <div className=" mx-auto">
+        {/* Gallery Strip */}
+        <div className="relative mb-16 overflow-hidden rounded-3xl shadow-2xl">
+          <div 
+            className="flex  transition-transform duration-1000 ease-linear"
+            style={{
+              transform: `translateX(-${(scrollPosition * 100) / galleryImages.length}%)`
+            }}
           >
-            What We Offer
-          </button>
-          <button
-            onClick={() => setActiveTab('howItWorks')}
-            className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-              activeTab === 'howItWorks'
-                ? 'bg-white text-amber-900 shadow-lg'
-                : 'bg-black/20 text-white hover:bg-black/30'
-            }`}
-          >
-            How It Works
-          </button>
-        </div>
-
-        {/* Programs Tab Content */}
-        {activeTab === 'programs' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
-            {programs.map((program, index) => (
+            {[...galleryImages, ...galleryImages].map((image, index) => (
               <div
                 key={index}
-                className="bg-white/20 backdrop-blur-md rounded-2xl p-8 border border-white/30 hover:bg-white/25 transition-all hover:scale-105 hover:shadow-2xl"
+                className="flex-shrink-0 w-80 h-56  overflow-hidden"
               >
-                <div className="text-white mb-4">{program.icon}</div>
-                <h3 className="text-2xl font-bold text-white mb-3">{program.title}</h3>
-                <p className="text-white/95 mb-6">{program.description}</p>
-                <div className="space-y-2">
-                  {program.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                      <span className="text-white/95">{feature}</span>
-                    </div>
-                  ))}
-                </div>
+                <img
+                  src={image}
+                  alt={`Gallery ${index + 1}`}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                />
               </div>
             ))}
           </div>
-        )}
+          
+          {/* Gradient Overlays */}
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-orange-50 to-transparent pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+        </div>
 
-        {/* How It Works Tab Content */}
-        {activeTab === 'howItWorks' && (
-          <div className="max-w-7xl mx-auto pb-12">
-            <div className="space-y-4">
-              {howItWorks.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-white/20 backdrop-blur-md rounded-xl border border-white/30 overflow-hidden"
-                >
-                  <button
-                    onClick={() => toggleAccordion(index)}
-                    className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/10 transition-all"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">{item.step}</span>
-                      </div>
-                      <h3 className="text-xl font-bold text-white text-left">{item.title}</h3>
-                    </div>
-                    <ChevronDown
-                      className={`w-6 h-6 text-white transition-transform ${
-                        openAccordion === index ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openAccordion === index ? 'max-h-96' : 'max-h-0'
-                    }`}
-                  >
-                    <div className="px-6 pb-6 pl-20 md:pl-24">
-                      <p className="text-white/95 leading-relaxed">{item.content}</p>
-                    </div>
-                  </div>
+        {/* Main Content */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Side - Large Food Image */}
+          <div className="relative ">
+            {/* Decorative Elements */}
+            <div className="absolute -top-8 -left-8 w-24 h-24 bg-orange-200 rounded-full opacity-30 blur-2xl"></div>
+            <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-red-200 rounded-full opacity-30 blur-2xl"></div>
+            
+            {/* Single Large Image Card */}
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
+              <img
+                src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&h=800&fit=crop"
+                alt="Delicious Food"
+                className="w-full h-[60vh] object-cover transform group-hover:scale-110 transition-transform duration-700"
+              />
+              
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              
+              {/* Delivery Badge */}
+              <div className="absolute top-6 right-6 bg-gradient-to-r from-red-600 to-orange-600 px-6 py-3 rounded-full shadow-lg animate-pulse">
+                <p className="text-white font-bold text-lg">Fast Delivery</p>
+              </div>
+              
+              {/* Bottom Info */}
+              <div className="absolute bottom-6 left-6 right-6">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
+                  <p className="text-white font-bold text-xl mb-1">30 Min Delivery</p>
+                  <p className="text-white/80 text-sm">Hot & Fresh to Your Door</p>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Right Side - Content */}
+          <div className="space-y-6">
+            {/* Badge */}
+            <div className="inline-block">
+              <p className="text-red-600 italic text-lg md:text-xl font-semibold">
+                Delivery
+              </p>
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-gray-900">A Moments Of Delivered</span>
+              <br />
+              <span className="text-red-600">On Right Time & Place</span>
+            </h2>
+
+            {/* Description */}
+            <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-xl">
+              Food Khan is a restaurant, bar and coffee roastery located on a busy corner site in Farringdon's Exmouth Market. With glazed frontage on two sides of the building, overlooking the market and a bustling London inteon.
+            </p>
+
+            {/* Delivery Contact Card */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+              <div className="flex items-center gap-4">
+                {/* Delivery Icon */}
+                <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  </svg>
+                </div>
+
+                {/* Contact Info */}
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">Delivery Order Num.</p>
+                  <a href="tel:123-59794069" className="text-red-600 text-2xl font-bold hover:text-red-700 transition-colors">
+                    123-59794069
+                  </a>
+                </div>
+              </div>
+
+              {/* Order Button */}
+              <button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white px-10 py-3.5 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
+                Order Now
+              </button>
+            </div>
+
+            {/* Additional Features */}
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">Fast Delivery</p>
+                  <p className="text-sm text-gray-600">Within 30 minutes</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">Fresh Food</p>
+                  <p className="text-sm text-gray-600">Quality guaranteed</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-15px);
+          }
+        }
+
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
-
-export default Programs;
