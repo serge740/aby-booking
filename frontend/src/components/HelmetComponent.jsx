@@ -12,7 +12,7 @@ const HelmetComponent = () => {
       <meta property="og:title" content="Abytech Hub - Technology Solutions" />
       <meta property="og:description" content="Explore innovative projects and services at Abytech Hub, your go-to tech partner for web development and digital solutions." />
       <meta property="og:image" content="./abyteh_hub_logo.png" />
-      <meta property="og:url" content="https://abytehhub.com" />
+      <meta property="og:url" content="https://abytechhub.com" />
       <meta property="og:type" content="website" />
 
       {/* Twitter Meta Tags */}

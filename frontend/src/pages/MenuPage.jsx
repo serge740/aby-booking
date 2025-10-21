@@ -10,21 +10,21 @@ const MenuPage = () => {
       <Header title={`our menu`} path={`menu`} />
       
       {/* Menu Introduction Section */}
-      <div className="py-16 md:py-24 px-6 max-w-4xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-          Our Coffee <span className="text-primary-500"> Shop Menu</span>
-        </h2>
-        <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-4">
-          Welcome to our cozy coffee shop! We serve freshly brewed coffee, artisanal lattes, 
-          and delicious breakfast treats to start your day right. Every cup is crafted with 
-          passion and the finest beans.
-        </p>
-        <p className="text-base md:text-lg text-gray-500">
-          Whether you're craving a perfectly brewed espresso or a warm breakfast bite, 
-          we've created the perfect menu for coffee lovers.
-        </p>
-      </div>
-      
+    <div className="py-16 md:py-10 px-6 max-w-5xl mx-auto">
+  <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+    Our <span className="text-primary-500">Restaurant Menu</span>
+  </h2>
+  <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-4">
+    Welcome to our Kigali kitchen! We serve mouth-watering burgers, cheesy pizzas, 
+    fresh salads, and local Rwandan specialties prepared with love and the finest ingredients. 
+    Every dish is crafted to delight your taste buds.
+  </p>
+  <p className="text-base md:text-lg text-gray-500">
+    From juicy gourmet burgers to classic wood-fired pizzas, our menu brings together 
+    international flavors and local Rwandan ingredients — perfect for lunch, dinner, or a casual weekend treat.
+  </p>
+</div>
+
       <Menu />
     </section>
   );

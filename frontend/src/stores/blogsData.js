@@ -3,116 +3,179 @@
 export const blogPosts = [
   {
     id: 1,
-    title: 'The Journey of Coffee: From Ethiopia to Rwanda',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80',
+    title: 'The Rise of Fine Dining in Kigali — A Culinary Revolution',
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80',
     date: new Date(2024, 9, 10),
-    views: 4260,
-    comments: 3,
-    category: ['Coffee Culture'],
-    tags: ['#Coffee', '#RwandaCoffee', '#History'],
-    content: `Coffee’s story is a tale that crosses continents, cultures, and centuries — and Rwanda proudly stands at its heart today.  
-    The legend begins in 9th-century Ethiopia, where a goat herder named Kaldi noticed his goats dancing after nibbling on bright red coffee cherries.  
-    Curious, he tried them himself — and soon, the world’s love affair with coffee was born.  
-    From Ethiopia, coffee traveled to Yemen, then across the Arabian Peninsula, where monks brewed “qahwa” to stay awake during long nights of study.  
-    By the 16th century, coffeehouses spread across the Ottoman Empire, becoming meeting points for poets, merchants, and philosophers.  
-    The Dutch carried coffee to Java, the French took it to the Caribbean, and by the 17th century, it had conquered Europe — even earning the Pope’s blessing after initial suspicion.  
-    London’s ‘penny universities’ brewed not just coffee but ideas that shaped modern culture.  
-    Today, here in Rwanda, coffee has found one of its most beautiful homes — from the misty hills of Nyamagabe to the fertile soils of Gakenke, where smallholder farmers cultivate some of the world’s finest Arabica beans.`,
-    quote: `At Jambokawa, every cup connects you to centuries of coffee history — from Kaldi’s goats to Rwanda’s rolling hills.`,
-    content2: `Coffee’s journey didn’t stop at discovery — it evolved through innovation and care.  
-    Rwanda’s coffee renaissance began after the 1990s, when farmers shifted from bulk exports to specialty-grade micro-lots celebrated worldwide for their floral aroma, sweet citrus, and silky body.  
-    Through programs like the Cup of Excellence, Rwandan farmers now compete on a global stage — their beans fetching record prices and admiration from international roasters.  
-    The Third Wave Coffee movement, which values traceability and craftsmanship, perfectly aligns with Rwanda’s dedication to quality and sustainability.  
-    At **Jambokawa Coffee**, we proudly source beans from local cooperatives that champion ethical practices, women-led farming, and community empowerment.  
-    So the next time you sip your cappuccino or pour-over at our café in Kigali, remember: it’s more than a drink.  
-    It’s a story that began a thousand years ago — now reborn in Rwanda’s heart, brewed with passion, patience, and purpose.`
+    views: 5480,
+    comments: 12,
+    category: ['Fine Dining', 'Kigali'],
+    tags: ['#KigaliDining', '#RwandaCuisine', '#FoodScene'],
+    content: `Kigali has emerged as East Africa's most exciting culinary destination, where world-class chefs blend traditional Rwandan flavors with international techniques.
+    Over the past decade, the capital has transformed from a city of modest eateries into a vibrant food scene boasting rooftop restaurants, fusion bistros, and chef-driven experiences.
+    Restaurants like Heaven, Repub Lounge, and The Hut have set new standards — proving that Rwanda's culinary identity is as rich as its coffee.
+    From Nyungwe tea-infused sauces to grilled tilapia from Lake Kivu, local ingredients are being celebrated with creativity and pride.
+    The city's growing expat community, coupled with a thriving tourism sector, has created demand for diverse cuisines — Japanese, Italian, Lebanese, and contemporary African fusion.
+    What makes Kigali special isn't just the food — it's the warmth of Rwandan hospitality, the attention to presentation, and the stories behind every dish.`,
+    quote: `In Kigali, every meal is an experience — where tradition meets innovation on every plate.`,
+    content2: `The rise of farm-to-table movements has also taken root here, with restaurants sourcing directly from local farmers and cooperatives.
+    Chefs are rediscovering forgotten Rwandan ingredients like cassava leaves (isombe), sweet potatoes, and indigenous vegetables, reimagining them in modern contexts.
+    Pop-up dining events, food festivals, and collaborative chef dinners are becoming regular features of Kigali's social calendar.
+    Whether you're enjoying brochettes at a street-side grill or a seven-course tasting menu at a boutique restaurant, Kigali offers something for every palate and budget.
+    For visitors and locals alike, dining in Kigali is more than sustenance — it's a celebration of Rwanda's past, present, and delicious future.
+    Come hungry, leave inspired — that's the Kigali promise.`
   },
   {
     id: 2,
-    title: 'Discovering the Americano — The Kigali Way',
-    image: 'https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=1200&q=80',
+    title: 'Street Food Secrets — Rwanda\'s Best Brochettes & Where to Find Them',
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1600&q=80',
     date: new Date(2024, 10, 3),
-    views: 3720,
-    comments: 2,
-    category: ['Aroma Bar', 'Espresso'],
-    tags: ['#Americano', '#Espresso', '#KigaliCoffee'],
-    content: `Simple, elegant, and smooth — the Americano is one of coffee’s most approachable classics.  
-    It was born during World War II when American soldiers stationed in Italy found espresso too strong and diluted it with hot water to create a lighter version reminiscent of their home-brewed coffee.  
-    The result was a drink that retained espresso’s rich aroma but carried a gentle balance — smooth, mellow, and endlessly drinkable.  
-    At **Jambokawa Coffee**, we’ve made the Americano our go-to for those who appreciate purity in every sip.  
-    Using Rwandan single-origin espresso, our baristas blend it with precise amounts of hot water to let the beans’ floral sweetness shine.  
-    It’s a drink that celebrates minimalism — two ingredients, infinite character.`,
-    quote: `The Americano is elegance in simplicity — espresso and water, perfectly balanced in harmony.`,
-    content2: `Brewing a great Americano at home is easier than you think.  
-    Start with freshly roasted Rwandan beans — we recommend Gakenke or Nyamasheke for their balanced fruit and chocolate notes.  
-    Grind finely, extract a double espresso shot, and then slowly add hot water in a 1:2 or 1:3 ratio depending on your strength preference.  
-    Want a local twist? Add a hint of Rwandan honey or a sprinkle of cinnamon for warmth.  
-    For a refreshing Kigali afternoon, try the **Iced Americano** — served with ice cubes made from brewed coffee to keep it strong to the last drop.  
-    Whether you enjoy it in our shop on a breezy terrace overlooking the city or brew it at home, the Americano remains the perfect bridge between strength and serenity — a cup that connects worlds, just like Jambokawa connects tradition and modern taste.`
+    views: 6240,
+    comments: 18,
+    category: ['Street Food', 'Local Favorites'],
+    tags: ['#Brochettes', '#StreetFood', '#KigaliEats'],
+    content: `No visit to Rwanda is complete without sinking your teeth into perfectly charred brochettes — skewered meat grilled over charcoal and served with spicy pili pili sauce.
+    This beloved street food is Rwanda's answer to barbecue, found sizzling at roadside stands from dawn till late night across Kigali and beyond.
+    Traditionally made with goat, beef, or chicken, brochettes are marinated in a simple blend of salt, garlic, and sometimes ginger before being grilled to smoky perfection.
+    What sets Rwandan brochettes apart is the communal experience — grabbing skewers with friends, dipping into fresh tomato-onion salad, and washing it down with cold Primus beer or Fanta.
+    The best spots? Look for crowds — locals always know where the magic happens.`,
+    quote: `Brochettes aren't just food — they're Rwanda's social glue, bringing people together one skewer at a time.`,
+    content2: `Some legendary brochette spots in Kigali include the stands near Nyabugogo market, the evening grills in Kimihurura, and the weekend food scene in Remera.
+    Don't miss the goat brochettes (most flavorful), beef liver (tender and rich), or grilled fish from Lake Kivu vendors.
+    Vegetarians can enjoy grilled plantains, corn on the cob, or cassava chips that often accompany the meat offerings.
+    Pro tips: Always ask for extra pili pili if you like heat, arrive early evening for the freshest batches, and don't be shy about eating with your hands — it's the authentic way.
+    Whether you're a tourist or a returning local, brochettes remain the ultimate comfort food — affordable, delicious, and deeply Rwandan.
+    Grab a skewer, join the buzz, and taste the heart of Rwanda's street food culture.`
   },
   {
     id: 3,
-    title: 'The Art of Coffee Roasting at Jambokawa',
-    image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&q=80',
+    title: 'Isombe & Igikoma — Celebrating Rwanda\'s Traditional Dishes',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1600&q=80',
     date: new Date(2024, 10, 8),
-    views: 3915,
-    comments: 4,
-    category: ['Roasting'],
-    tags: ['#Roasting', '#RwandaBeans', '#BaristaLife'],
-    content: `Roasting coffee is where magic meets mastery — where green beans from Rwanda’s highlands transform into rich, aromatic perfection.  
-    At **Jambokawa**, we believe roasting is both a science and an art form.  
-    We start with carefully selected Arabica beans from smallholder farms, then roast them in small batches to unlock their unique flavor stories.  
-    During roasting, the beans undergo dramatic changes — from grassy green to golden brown, releasing complex aromas as sugars caramelize and oils emerge.  
-    Every crack, every whiff, and every shade matters.`,
-    quote: `Roasting is storytelling through heat — each bean whispers its origin through aroma and color.`,
-    content2: `Our light roast preserves floral notes — think citrus, jasmine, and sweet honey — perfect for pour-overs or cold brews.  
-    Medium roasts highlight chocolate, caramel, and nutty undertones ideal for espresso lovers.  
-    Dark roasts? Bold and smoky, perfect for those who want depth and strength.  
-    At Jambokawa, we roast daily in Kigali, ensuring your coffee is always fresh — never more than a few days from bean to brew.  
-    We invite you to watch our roasting process in person — smell the transformation, hear the first crack, and taste the difference in every cup.  
-    Because when coffee is roasted with passion, you don’t just drink it — you experience it.`
+    views: 4320,
+    comments: 9,
+    category: ['Traditional Cuisine'],
+    tags: ['#Isombe', '#RwandanFood', '#CulturalCuisine'],
+    content: `Rwandan cuisine is deeply rooted in the land — simple, nourishing, and bursting with flavor when prepared with love and tradition.
+    **Isombe**, made from mashed cassava leaves cooked with peanut paste, garlic, and palm oil, is Rwanda's most iconic dish — creamy, earthy, and utterly satisfying.
+    Often served alongside **ugali** (cornmeal porridge) or **ibihaza** (pumpkin), isombe represents the agricultural heritage of Rwandan families who've cooked it for generations.
+    Another beloved staple is **igikoma** — a hearty mixture of beans, corn, and vegetables slow-cooked until tender and flavorful.
+    These dishes aren't just meals — they're cultural symbols, passed down through mothers and grandmothers, connecting Rwandans to their roots.`,
+    quote: `To eat isombe is to taste Rwanda's soul — humble ingredients transformed into something unforgettable.`,
+    content2: `Restaurants across Kigali now offer traditional Rwandan buffets where you can sample isombe, matoke (plantains), sweet potatoes, and grilled tilapia in one sitting.
+    Places like Chez Lando, Poivre Noir, and various local buffet spots provide authentic experiences at reasonable prices.
+    The communal dining style — where multiple dishes are shared on a table — reflects Rwanda's spirit of togetherness and generosity.
+    Modern chefs are also reimagining these classics: isombe croquettes, bean stew with coconut milk, and plantain fritters with honey drizzle.
+    If you're cooking at home, cassava leaves can be found at Kimironko Market, while fresh beans and vegetables are abundant year-round.
+    Whether enjoyed in a village home or a city restaurant, traditional Rwandan food is a reminder that the best flavors often come from the simplest ingredients, prepared with care and shared with joy.`
   },
   {
     id: 4,
-    title: 'How to Make the Perfect Latte — Jambokawa Style',
-    image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80',
+    title: 'Lake Kivu\'s Freshest Catch — The Story of Rwandan Tilapia',
+    image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=1600&q=80',
     date: new Date(2024, 10, 12),
-    views: 5120,
-    comments: 6,
-    category: ['Latte Art'],
-    tags: ['#LatteArt', '#HomeBarista', '#KigaliCoffee'],
-    content: `There’s something truly comforting about a perfectly crafted latte — smooth espresso meeting creamy milk in a beautiful swirl of art.  
-    At **Jambokawa Coffee**, our baristas spend hours perfecting the texture and temperature to create balance in every cup.  
-    The secret? Freshly roasted Rwandan beans, milk steamed to 150°F for velvety microfoam, and a patient hand that pours with rhythm and care.  
-    The latte’s beauty lies not just in the design — the heart, the leaf, the tulip — but in its harmony of taste and texture.`,
-    quote: `A latte isn’t just a drink; it’s a daily ritual — calm, craft, and creativity in every pour.`,
-    content2: `Want to make café-quality lattes at home? Here’s the Jambokawa guide:  
-    - Start with **19g of medium-roast Rwandan coffee**.  
-    - Extract a 25-second espresso shot.  
-    - Steam whole milk until it’s silky and glossy (never bubbling).  
-    - Pour slowly, then tilt the cup slightly and finish with a design.  
-    Try flavoring with a hint of **Rwandan honey**, **vanilla**, or even **African chai spice** for a local twist.  
-    With a bit of practice, your mornings can feel like a Jambokawa coffee moment — right in your own kitchen.`
+    views: 3890,
+    comments: 7,
+    category: ['Seafood', 'Lake Kivu'],
+    tags: ['#Tilapia', '#LakeKivu', '#RwandanSeafood'],
+    content: `Lake Kivu, one of Africa's Great Lakes, is not just a stunning natural wonder — it's also Rwanda's seafood treasure chest, famous for its fresh tilapia and sambaza (small sardines).
+    Grilled tilapia, seasoned with garlic, lemon, and herbs, then cooked over open flames, is a lakeside ritual enjoyed by fishermen, locals, and travelers alike.
+    The fish is often served whole, crispy on the outside and tender inside, accompanied by fried plantains, spicy vegetables, and tangy tomato salad.
+    Restaurants in Gisenyi, Kibuye, and along the lake's shores specialize in this delicacy, offering meals with breathtaking water views and sunsets that steal your breath.
+    Sambaza, tiny silver fish, are fried until crunchy and enjoyed as a snack or side dish — a protein-packed treat loved across Rwanda.`,
+    quote: `Eating tilapia by Lake Kivu isn't just a meal — it's a moment of pure Rwandan bliss.`,
+    content2: `For the best tilapia experience, head to lakeside spots like Inzora Rooftop Café in Gisenyi or family-run eateries where fishermen bring in the day's catch.
+    The fish is typically grilled over charcoal, giving it a smoky depth that pairs perfectly with Rwanda's staple sides.
+    Don't miss trying **brochettes of tilapia** — skewered chunks marinated and grilled, offering a twist on the traditional meat version.
+    If you're more adventurous, order sambaza fried whole — crunchy, salty, and surprisingly addictive with a cold drink on a hot afternoon.
+    Many restaurants also offer tilapia stew, simmered in tomato and onion sauce with a hint of chili — comfort food that warms the soul.
+    Whether you're on a weekend escape or a lakeside road trip, make time for Rwanda's freshwater bounty — it's a taste of the country's natural generosity, served with a view.`
   },
   {
     id: 5,
-    title: 'Rwanda’s Coffee Paradise — From Crop to Cup',
-    image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400&q=80',
+    title: 'Rooftop Dining in Kigali — Where Food Meets Skyline',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80',
     date: new Date(2024, 10, 15),
-    views: 3640,
-    comments: 5,
-    category: ['Travel', 'Coffee Origin'],
-    tags: ['#RwandaCoffee', '#CoffeeFarm', '#TravelKigali'],
-    content: `Rwanda’s hills are more than just breathtaking — they’re alive with the scent of coffee blossoms and the hum of farmers nurturing world-class beans.  
-    Our country’s unique terroir — high altitude, volcanic soil, and gentle equatorial climate — creates conditions found almost nowhere else on Earth.  
-    From the shores of Lake Kivu to the slopes of Gakenke, smallholder farmers hand-pick cherries at their peak ripeness, ensuring every cup tells a story of care, heritage, and pride.  
-    Rwanda’s coffee industry thrives through cooperatives that emphasize quality and community — empowering thousands of families across the nation.`,
-    quote: `Every bean in your Jambokawa cup carries the heart of Rwanda — its soil, its people, and its passion.`,
-    content2: `Visit us at **Jambokawa Coffee** in Kigali and experience Rwanda’s coffee story firsthand.  
-    Taste single-origin brews from regions like Nyamasheke or Huye.  
-    Learn about washing stations where cherries are fermented and sun-dried under the Rwandan sky.  
-    Better yet, plan a coffee journey to the countryside — meet farmers, witness the harvest, and see where excellence begins.  
-    Every sip connects you to that journey — from the misty hills to your cozy café seat in Kigali.  
-    That’s the spirit of Jambokawa: celebrating Rwanda’s roots, one cup at a time.`
+    views: 5670,
+    comments: 14,
+    category: ['Rooftop Dining', 'Nightlife'],
+    tags: ['#RooftopDining', '#KigaliNights', '#CityViews'],
+    content: `Kigali's skyline is dotted with rooftop restaurants and bars that offer more than just food — they offer experiences, views, and memories against a backdrop of twinkling city lights.
+    From sunset cocktails to late-night bites, rooftop dining has become a defining feature of Kigali's cosmopolitan vibe.
+    Spots like Heaven Restaurant & Boutique Hotel, Repub Lounge, and Pili Pili blend stunning panoramic views with innovative menus that span Rwandan classics and international favorites.
+    Imagine sipping a passionfruit mojito while watching the sun dip behind Kigali's hills, the city slowly lighting up as evening descends — pure magic.
+    The ambiance is relaxed yet stylish, perfect for date nights, celebrations, or simply unwinding after a busy day.`,
+    quote: `In Kigali, the best tables are the ones closest to the sky — where food tastes better and conversations linger longer.`,
+    content2: `Heaven Restaurant is an institution, known not only for its views but its social mission — employing and training young Rwandans in hospitality.
+    Their menu features wood-fired pizzas, fresh salads, and local-inspired dishes, all served in a chic, open-air setting.
+    Repub Lounge offers a more upscale experience with craft cocktails, fusion tapas, and live music on weekends — a favorite among Kigali's young professionals.
+    For a more local vibe, check out Ubuntu Residence or Sundowner spots in Nyarutarama where you can enjoy grilled meats, cold beers, and the hum of city life below.
+    Many rooftop venues also host events — from DJ nights to themed dinners and art showcases — making them hubs of Kigali's creative energy.
+    Whether you're celebrating something special or just treating yourself to a night out, rooftop dining in Kigali is an experience that elevates every meal — literally and figuratively.`
+  },
+  {
+    id: 6,
+    title: 'Nyama Choma Culture — Rwanda\'s Love Affair with Grilled Meat',
+    image: 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=1600&q=80',
+    date: new Date(2024, 10, 18),
+    views: 4520,
+    comments: 11,
+    category: ['Grilled Meat', 'Culture'],
+    tags: ['#NyamaChoma', '#RwandaBBQ', '#Grilling'],
+    content: `In Rwanda, grilled meat — known regionally as *nyama choma* — is more than food; it's a social event, a celebration, and a way of life.
+    Whether it's goat, beef, chicken, or pork, the ritual is the same: meat seasoned simply, grilled over charcoal until smoky and tender, then shared among friends and family.
+    Nyama choma joints are found across Kigali and every town, often doubling as informal social clubs where people gather to eat, drink, laugh, and connect.
+    The meat is typically served with kachumbari (tomato-onion salad), ugali, fried plantains, and plenty of cold beer or soda.
+    What makes it special is the convivial atmosphere — conversations flow freely, jokes are shared, and time slows down as the grill continues to sizzle.`,
+    quote: `Nyama choma isn't just grilled meat — it's the soundtrack of laughter, the smell of charcoal, and the warmth of togetherness.`,
+    content2: `Popular nyama choma spots in Kigali include Simba Supermarket's grill section, Isaro in Kimihurura, and various neighborhood joints in Remera and Gikondo.
+    The best way to experience it? Go with a group, order a kilo or two of your preferred meat, and let the evening unfold naturally.
+    Goat is the most traditional choice — lean, flavorful, and slightly gamey — while beef is tender and universally loved.
+    Pork ribs have also become increasingly popular, marinated in sweet-spicy glazes and grilled until caramelized.
+    For those seeking premium experiences, some restaurants now offer gourmet versions with herb marinades, wine pairings, and plated presentations.
+    But the soul of nyama choma remains the same: simple, honest, delicious food enjoyed in good company — a reminder that the best meals are the ones shared with people you love.`
+  },
+  {
+    id: 7,
+    title: 'Vegetarian & Vegan Dining in Rwanda — A Growing Movement',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1600&q=80',
+    date: new Date(2024, 10, 22),
+    views: 3280,
+    comments: 8,
+    category: ['Vegetarian', 'Health'],
+    tags: ['#VeganRwanda', '#PlantBased', '#HealthyEating'],
+    content: `While Rwanda is traditionally a meat-loving nation, the capital is witnessing a quiet green revolution — plant-based dining is on the rise, and it's delicious.
+    From smoothie bowls to veggie-packed buffets, Kigali now offers plenty of options for vegetarians, vegans, and health-conscious eaters.
+    Restaurants like Question Coffee, Shokola Café, and Meza Malonga are leading the charge with creative plant-forward menus featuring local produce.
+    Think avocado toast with Rwandan chili oil, quinoa salads with roasted vegetables, lentil stews infused with African spices, and tropical fruit platters bursting with papaya, passion fruit, and mango.
+    The beauty of plant-based eating in Rwanda is that so much of the traditional diet is naturally vegetarian — beans, greens, plantains, sweet potatoes, and fresh vegetables are kitchen staples.`,
+    quote: `Rwanda's soil gives us abundance — eating plant-based here isn't a restriction, it's a celebration of the earth's gifts.`,
+    content2: `Many local buffets offer vegetarian-friendly options: isombe without fish, bean stew, pumpkin curry, and sautéed greens with peanut sauce.
+    Juice bars and smoothie spots are popping up across Kigali, blending fresh tropical fruits with ginger, turmeric, and even moringa — Rwanda's own superfood.
+    Farmers markets like Kimironko are treasure troves for plant-based cooking — piles of leafy greens, rainbow carrots, eggplants, tomatoes, and herbs await your creativity.
+    For vegans, navigating dining is easier than expected: many dishes can be modified, and chefs are increasingly aware of dietary preferences.
+    The movement is still growing, but the future looks green — as more Rwandans embrace wellness, sustainability, and conscious eating, the options will only expand.
+    Whether you're lifelong vegan or just curious, Rwanda's plant-based scene invites you to eat colorfully, mindfully, and joyfully.`
+  },
+  {
+    id: 8,
+    title: 'Breakfast in Kigali — From Mandazi to Café Complet',
+    image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=1600&q=80',
+    date: new Date(2024, 10, 25),
+    views: 4760,
+    comments: 10,
+    category: ['Breakfast', 'Morning Rituals'],
+    tags: ['#KigaliBreakfast', '#Mandazi', '#MorningFood'],
+    content: `Mornings in Kigali begin with the smell of fresh mandazi — sweet, fluffy fried dough that pairs perfectly with milky tea or strong Rwandan coffee.
+    Street vendors and small bakeries across the city start frying these golden treats before dawn, serving them warm to early risers and commuters.
+    The traditional Rwandan breakfast is simple but satisfying: tea (ikawa y'umutobe), bread or mandazi, maybe some boiled eggs or roasted peanuts.
+    But Kigali's evolving food scene now offers everything from continental spreads to hearty American-style brunches.
+    Cafés like Inzora, Question Coffee, and Bourbon Coffee serve avocado toast, omelets, pancakes, and smoothie bowls — catering to modern tastes while honoring local ingredients.`,
+    quote: `A great day in Kigali starts with a great breakfast — whether it's mandazi on the corner or brunch on a sunny terrace.`,
+    content2: `For a truly local experience, visit neighborhood breakfast spots where you'll find chapati, samosas, and hot tea served by friendly vendors who know their regulars by name.
+    Omelette stands are everywhere — fluffy eggs cooked fresh with onions, tomatoes, and peppers, served in a baguette for the perfect breakfast sandwich.
+    If you prefer something heartier, buffet-style restaurants offer porridge (umutsima), beans, sweet potatoes, and plantains — fuel for a long day ahead.
+    Weekend brunches have become a Kigali tradition, with spots like Heaven and Shokola offering leisurely morning meals with friends and family.
+    Don't forget fresh juices — passion fruit, tree tomato (igitoki), and mixed tropical blends are refreshing companions to any breakfast.
+    Whether you're grabbing mandazi on the go or settling in for a slow brunch, breakfast in Kigali is proof that good mornings lead to even better days.`
   }
 ];
