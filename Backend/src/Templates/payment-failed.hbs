@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Failed - NovaGems</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 650px;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #cc0000; /* red for failed */
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .info {
+      margin: 20px 0;
+      padding: 15px;
+      background: #ffeaea;
+      border: 1px solid #cc0000;
+      border-radius: 6px;
+    }
+    .info p {
+      margin: 6px 0;
+      color: #7a0000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #f5cccc;
+      padding: 10px;
+      text-align: left;
+      font-size: 15px;
+    }
+    th {
+      background-color: #cc0000;
+      color: #ffffff;
+    }
+    .footer {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #777;
+      text-align: center;
+    }
+    .retry-btn {
+      display: inline-block;
+      background-color: #008080;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .retry-btn:hover {
+      background-color: #006666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>❌ Payment Failed</h1>
+    <p>Hi {{name}},</p>
+    <p>
+      Unfortunately, your payment for order <strong>#{{orderId}}</strong> was not successful.
+    </p>
+
+    <div class="info">
+      <p><strong>Amount:</strong> {{currency}} {{amount}}</p>
+      <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+      <p><strong>Date:</strong> {{date}}</p>
+    </div>
+
+    <h3>🛍️ Attempted Items:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+        <tr>
+          <td>{{this.name}}</td>
+          <td>{{this.quantity}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.subtotal}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <p>
+      Please try completing your payment again by clicking the button below.
+    </p>
+
+    <a href="{{retryLink}}" class="retry-btn">Retry Payment</a>
+
+    <p>
+      If you believe this is an error, contact <strong>NovaGems Support</strong> for assistance.
+    </p>
+
+    <div class="footer">
+      <p>© {{year}} NovaGems | All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Push Activity Output</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.26.0/plotly.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats {
+            background: #f1f3f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .stat-item {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .calendar-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .calendar-grid {
+            display: inline-grid;
+            grid-template-columns: repeat(27, 12px);
+            grid-template-rows: repeat(7, 12px);
+            gap: 2px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .day-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        .push-day {
+            background-color: #40c463;
+        }
+        
+        .no-push-day {
+            background-color: #ebedf0;
+        }
+        
+        .weekday-labels {
+            display: grid;
+            grid-template-rows: repeat(7, 12px);
+            gap: 2px;
+            margin-right: 10px;
+            font-size: 11px;
+            color: #586069;
+        }
+        
+        .weekday-label {
+            height: 12px;
+            line-height: 12px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        
+        .calendar-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .legend {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #586069;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #e1e4e8;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #24292e;
+            margin-bottom: 30px;
+        }
+        
+        .output-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #0366d6;
+        }
+        
+        .output-title {
+            font-weight: bold;
+            color: #0366d6;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>GitHub Push Activity Analysis</h1>
+
+        <div class="output-section">
+            <div class="output-title">Console Output:</div>
+            <div id="console-output" style="font-family: monospace; background: #24292e; color: #f6f8fa; padding: 15px; border-radius: 6px;">
+                <div>Total days: 185</div>
+                <div>Missed days: 54</div>
+                <div>Days with pushes: 131</div>
+                <div>Push rate: 70.8%</div>
+                <div></div>
+                <div>Calendar matrix shape: (7, 27)</div>
+                <div>Weeks displayed: 27</div>
+                <div>Start date weekday: Wednesday</div>
+                <div>End date weekday: Friday</div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h3 style="margin-top: 0; color: #24292e;">Summary Statistics</h3>
+            <div class="stat-item">📅 <strong>Period:</strong> <span class="stat-value">January 1 - July 4, 2025</span></div>
+            <div class="stat-item">📊 <strong>Total Days:</strong> <span class="stat-value">185 days</span></div>
+            <div class="stat-item">✅ <strong>Push Days:</strong> <span class="stat-value">131 days</span></div>
+            <div class="stat-item">❌ <strong>Missed Days:</strong> <span class="stat-value">54 days</span></div>
+            <div class="stat-item">🎯 <strong>Success Rate:</strong> <span class="stat-value">70.8%</span></div>
+            <div class="stat-item">📈 <strong>Average per Week:</strong> <span class="stat-value">~5.0 push days</span></div>
+        </div>
+
+        <div class="calendar-container">
+            <h3>GitHub-Style Activity Calendar</h3>
+            <div class="calendar-wrapper">
+                <div class="weekday-labels">
+                    <div class="weekday-label">Mon</div>
+                    <div class="weekday-label"></div>
+                    <div class="weekday-label">Wed</div>
+                    <div class="weekday-label"></div>
+                    <div class="weekday-label">Fri</div>
+                    <div class="weekday-label"></div>
+                    <div class="weekday-label">Sun</div>
+                </div>
+                <div class="calendar-grid" id="calendar-grid"></div>
+            </div>
+            <div class="legend">
+                <span>Less</span>
+                <div class="legend-item">
+                    <div class="legend-color no-push-day"></div>
+                    <span>No push</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color push-day"></div>
+                    <span>Push day</span>
+                </div>
+                <span>More</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate the calendar data (same logic as Python code)
+        const startDate = new Date(2025, 0, 1); // January 1, 2025
+        const endDate = new Date(2025, 6, 4); // July 4, 2025
+        const totalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        const missedDays = 54;
+
+        // Generate random seed (simple implementation)
+        function seededRandom(seed) {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // Create push data array
+        const pushData = new Array(totalDays).fill(1);
+
+        // Use seeded random to select missed days indices
+        const missedIndices = [];
+        let seed = 42;
+        while (missedIndices.length < missedDays) {
+            const randomIndex = Math.floor(seededRandom(seed++) * totalDays);
+            if (!missedIndices.includes(randomIndex)) {
+                missedIndices.push(randomIndex);
+            }
+        }
+
+        // Mark missed days
+        missedIndices.forEach(index => {
+            pushData[index] = 0;
+        });
+
+        // Create calendar matrix
+        const weeks = Math.floor((totalDays + startDate.getDay()) / 7) + 1;
+        const calendarMatrix = Array(7).fill().map(() => Array(weeks).fill(0));
+
+        for (let i = 0; i < totalDays; i++) {
+            const currentDay = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+            const week = Math.floor(i / 7);
+            const weekday = (currentDay.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+            calendarMatrix[weekday][week] = pushData[i];
+        }
+
+        // Render calendar
+        const calendarGrid = document.getElementById('calendar-grid');
+        calendarGrid.style.gridTemplateColumns = `repeat(${weeks}, 12px)`;
+
+        for (let week = 0; week < weeks; week++) {
+            for (let day = 0; day < 7; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                if (calendarMatrix[day][week] === 1) {
+                    cell.classList.add('push-day');
+                } else {
+                    cell.classList.add('no-push-day');
+                }
+                calendarGrid.appendChild(cell);
+            }
+        }
+    </script>
+</body>
+
+</html>

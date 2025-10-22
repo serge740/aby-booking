@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to NovaGems</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #008080; /* Teal */
+      font-size: 22px;
+    }
+    p {
+      font-size: 16px;
+      color: #333;
+    }
+    .info {
+      margin: 15px 0;
+      padding: 10px;
+      background: #e6f7f7; /* light teal background */
+      border: 1px solid #008080;
+      border-radius: 6px;
+    }
+    .info p {
+      margin: 5px 0;
+      color: #004d4d; /* darker teal text */
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, {{name}} 🎉</h1>
+    <p>
+      You have been successfully registered in the <strong>NovaGems</strong> system.  
+      Below are your login details:
+    </p>
+
+    <div class="info">
+      <p><strong>Email:</strong> {{email}}</p>
+      <p><strong>Password:</strong> {{password}}</p>
+      <p><strong>Phone:</strong> {{phoneNumber}}</p>
+    </div>
+
+    <p>
+      Please log in using these credentials and to see all your recent orders.
+    </p>
+
+    <div class="footer">
+      <p>© {{year}} NovaGems | All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

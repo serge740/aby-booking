@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your OTP Code</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color:#f5f5f5; margin:0; padding:40px 0; text-align:center;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #ddd; border-radius:6px; margin:auto; text-align:center;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="border-bottom:4px solid #ff7300; padding:20px;">
+                <div style="font-size:20px; font-weight:bold; color:#ff7300;">Your OTP Code</div>
+              </td>
+            </tr>
+            
+            <!-- Body -->
+            <tr>
+              <td style="padding:30px; color:#333333; line-height:1.6;">
+                <p>Hi {{firstname}},</p>
+                <p>Use the following One-Time Password (OTP) to verify your account:</p>
+                <div style="margin:20px 0; font-size:32px; font-weight:bold; letter-spacing:4px; color:#ff7300;">
+                  {{otp}}
+                </div>
+                <p>This OTP is valid for <strong>{{validityMinutes}}</strong> minutes.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p style="margin-top:25px;">Thanks,<br/><strong>{{companyName}} Team</strong></p>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style="border-top:4px solid #ff7300; text-align:center; padding:15px; font-size:12px; color:#666;">
+                &copy; {{year}} {{companyName}}. All rights reserved.
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

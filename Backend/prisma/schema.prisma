@@ -1,0 +1,241 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+}
+
+model Admin {
+  id        String     @id @default(uuid())
+  names     String     @unique
+  email     String     @unique
+  password  String
+  isLocked  Boolean    @default(false)
+  role      AdminRole  @default(ADMIN) // Default role is ADMIN
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+
+model Category {
+  id          Int       @id @default(autoincrement()) // Primary key
+  name        String                                     // Category name
+  subCategory String?                                    // Optional subcategory
+  category_image String?
+  status      String   @default("active")                // Status (active, inactive, etc.)
+  createdAt   DateTime @default(now())                   // Auto timestamp
+  updatedAt   DateTime @updatedAt                        // Auto update timestamp
+
+  Product Product[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  images         Json     // Store multiple image URLs as JSON array
+  brand          String
+  size           String   // Jewelry size (e.g., "Size 7", "Medium", "18 inches")
+  quantity       Int
+  price          Float
+  perUnit        String   // e.g., "piece", "gram", "set", "pair"
+  description    String   @db.Text
+  subDescription String?  @db.Text
+  review         Float?   @default(0) // Average rating (0-5)
+  availability   Boolean  @default(true)
+  tags           Json     // Store multiple tags as JSON array
+  categoryId     Int
+  discount       Int  @default(0)
+  category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Indexes for better query performance
+  @@index([categoryId])
+  @@index([brand])
+  @@index([availability])
+  @@index([price])
+  @@map("products")
+  ProductReview ProductReview[]
+   orderItems     OrderItem[]
+}
+
+model ProductReview {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  fullName  String
+  email     String
+  rating    Float    // e.g., 1-5
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@map("product_reviews")
+}
+
+
+model Subscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id          String      @id @default(cuid())
+  title       String
+  description String    @db.Text
+  quote       String?
+  image       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  replies     BlogReply[] // relation
+}
+
+model BlogReply {
+  id        String   @id @default(cuid())
+  fullName  String
+  email     String
+  message   String
+  blogId    String
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  firstName  String
+  lastName  String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+
+model Testmonial{
+  id        String   @id @default(uuid())
+  fullName  String
+  profileImage     String?
+  position  String
+  message   String  @db.Text
+  rate     Int @default(0)
+  createdAt DateTime @default(now())
+}
+
+model partner{
+  id        String   @id @default(uuid())
+  name      String?
+  logo     String
+  createdAt DateTime @default(now())
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  fullName  String
+  isLocked  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Order {
+  id               String        @id @default(uuid())
+  customerName     String
+  customerEmail    String
+  customerPhone    String
+  amount           Float
+  currency         String
+  status           OrderStatus   @default(PENDING)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  // Relations
+  orderItems       OrderItem[]
+  payments         Payment[]     // ⬅️ one order → many payments
+  purchasingUserId String?         
+  purchasingUser   PurchasingUser? @relation(fields: [purchasingUserId], references: [id], onDelete: Cascade)
+}
+
+// Enums
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+
+model OrderItem {
+  id           String   @id @default(uuid())
+
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id],onDelete: Cascade)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity     Int
+  price        Float
+  subtotal     Float
+}
+
+
+model Payment {
+  id              String    @id @default(uuid())
+  txRef           String    @unique
+  orderId         String
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount          Float
+  currency        String
+  status          String
+  paymentMethod   String?
+  transactionId   String?
+  // 🔁 Self-relation (to track retries)
+  retryOfPaymentId String?  
+  retryOfPayment    Payment?   @relation("RetryRelation", fields: [retryOfPaymentId], references: [id])
+  retriedPayments   Payment[]  @relation("RetryRelation")
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+enum PaymentStatus {
+  PENDING
+  SUCCESSFUL
+  FAILED
+}
+
+model PurchasingUser {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  phoneNumber  String    @unique
+  password     String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  orders       Order[]   // A user can place multiple orders
+}
+
+

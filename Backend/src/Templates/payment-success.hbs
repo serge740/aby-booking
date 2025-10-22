@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Successful - NovaGems</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 650px;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #008080; /* Teal */
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .info {
+      margin: 20px 0;
+      padding: 15px;
+      background: #e6f7f7;
+      border: 1px solid #008080;
+      border-radius: 6px;
+    }
+    .info p {
+      margin: 6px 0;
+      color: #004d4d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #cceaea;
+      padding: 10px;
+      text-align: left;
+      font-size: 15px;
+    }
+    th {
+      background-color: #008080;
+      color: #ffffff;
+    }
+    .total {
+      text-align: right;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .footer {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #777;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Payment Successful!</h1>
+    <p>Hi {{name}},</p>
+    <p>
+      Your payment for order <strong>#{{orderId}}</strong> has been successfully completed.
+    </p>
+
+    <div class="info">
+      <p><strong>Amount Paid:</strong> {{currency}} {{amount}}</p>
+      <p><strong>Payment Method:</strong> {{paymentMethod}}</p>
+      <p><strong>Date:</strong> {{date}}</p>
+    </div>
+
+    <h3>🛍️ Purchased Items:</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each items}}
+        <tr>
+          <td>{{this.name}}</td>
+          <td>{{this.quantity}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.subtotal}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <p class="total">Total Paid: <strong>{{currency}} {{amount}}</strong></p>
+
+    <p>
+      Thank you for shopping with <strong>NovaGems</strong>!  
+      Your items will be processed shortly, and we’ll notify you once your order is shipped.
+    </p>
+
+    <div class="footer">
+      <p>© {{year}} NovaGems | All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

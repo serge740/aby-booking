@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>You’re Hired – {{jobTitle}}</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color:#f5f5f5; margin:0; padding:40px 0; text-align:center;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border:1px solid #ddd; border-radius:6px; margin:auto; text-align:left;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="border-bottom:4px solid #ff7300; padding:20px; text-align:center;">
+                <div style="font-size:16px; color:#555;">{{companyName}}</div>
+                <div style="font-size:24px; font-weight:bold; color:#ff7300; margin-top:8px;">
+                  🎉 You’re Hired!
+                </div>
+                <div style="font-size:14px; color:#555; margin-top:4px;">
+                  Official Offer for <strong>{{jobTitle}}</strong>
+                </div>
+              </td>
+            </tr>
+            
+            <!-- Body -->
+            <tr>
+              <td style="padding:30px; color:#333333; line-height:1.6;">
+                <p style="margin:0 0 15px;">{{startDate}}</p>
+                <p>Dear {{firstname}} {{lastname}},</p>
+                <p>We are delighted to offer you the role of <strong>{{jobTitle}}</strong> at <strong>{{companyName}}</strong>.</p>
+                <p>Your official start date will be <strong>{{startDate}}</strong>. Please prepare any necessary documents and let us know if you have any questions before your first day.</p>
+                <p>We look forward to working with you and seeing the contributions you will make.</p>
+                <p style="margin-top:25px;">Sincerely,<br/><strong>The {{companyName}} Team</strong></p>
+              </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+              <td style="border-top:4px solid #ff7300; text-align:center; padding:15px; font-size:12px; color:#666;">
+                &copy; {{year}} {{companyName}}. All rights reserved.
+              </td>
+            </tr>
+          
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
