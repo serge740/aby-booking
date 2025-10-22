@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Navigate, useLocation} from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import useAdminAuth from '../../context/AdminAuthContext';
 
@@ -8,9 +8,10 @@ interface ProtectPrivateAdminRouteProps {
 }
 
 const ProtectPrivateAdminRoute: React.FC<ProtectPrivateAdminRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLocked, isLoading } = useAdminAuth();
+  const { isAuthenticated, isLoading } = useAdminAuth();
   const location = useLocation();
 
+  // Show loader while checking auth status
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-primary-50">
@@ -22,16 +23,12 @@ const ProtectPrivateAdminRoute: React.FC<ProtectPrivateAdminRouteProps> = ({ chi
     );
   }
 
+  // Redirect only if not authenticated after loading
   if (!isAuthenticated) {
-    // Redirect to login page with the current location as state
     return <Navigate to="/auth/admin/login" state={{ from: location }} replace />;
   }
 
-  if (isLocked) {
-    // Redirect to unlock screen with the current location as state
-    return <Navigate to="/auth/admin/unlock" state={{ from: location }} replace />;
-  }
-
+  // Render children if authenticated
   return <>{children}</>;
 };
 

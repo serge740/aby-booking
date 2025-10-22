@@ -28,13 +28,13 @@ const useEmployeeAuth = ()=>{
 const Header: React.FC<HeaderProps> = ({ onToggle}) => {
   const role = 'admin'
   const navigate = useNavigate();
-  const { user: adminUser, logout: adminLogout, lockAdmin } = useAdminAuth();
+  const { user: adminUser, logout: adminLogout,  } = useAdminAuth();
   const { user: employeeUser, logout: employeeLogout, lockEmployee } = useEmployeeAuth();
 
   // Use the appropriate user and logout function based on role
   const user = role === "admin" ? adminUser : employeeUser;
   const logout = role === "admin" ? adminLogout : employeeLogout;
-  const lock = role === "admin" ? lockAdmin : lockEmployee;
+
 
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isLocking, setIsLocking] = useState<boolean>(false);
@@ -52,22 +52,11 @@ const Header: React.FC<HeaderProps> = ({ onToggle}) => {
     }
   };
 
-  const handleLock = async () => {
-    setIsLocking(true);
-    try {
-      await lock();
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error("Lock error:", error);
-    } finally {
-      setIsLocking(false);
-    }
-  };
 
   // Get display name based on role
   const getDisplayName = (): string => {
     if (role === "admin") {
-      return adminUser?.adminName || "Admin";
+      return adminUser?.names || "Admin";
     }
     return employeeUser?.first_name
       ? `${employeeUser.first_name} ${employeeUser.last_name || ""}`.trim()
@@ -80,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({ onToggle}) => {
   };
 
   const getEmail = (): string | undefined => {
-    return role === "admin" ? adminUser?.adminEmail : employeeUser?.email;
+    return role === "admin" ? adminUser?.email : employeeUser?.email;
   };
 
   // Close dropdown when clicking outside
@@ -186,20 +175,7 @@ const Header: React.FC<HeaderProps> = ({ onToggle}) => {
                         My Profile
                       </button>
 
-                      <button
-                        onClick={() => {
-                          handleLock();
-                          setIsDropdownOpen(false);
-                        }}
-                        disabled={isLocking}
-                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Lock className="w-4 h-4 mr-2" />
-                        {isLocking ? "Locking..." : "Lock Screen"}
-                      </button>
-
-                      <div className="border-t border-gray-100 my-1"></div>
-
+      
                       <button
                         onClick={() => {
                           onLogout();

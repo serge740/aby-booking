@@ -1,52 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Camera } from 'lucide-react';
 import Swal from 'sweetalert2';
-import useAdminAuth from '../../../../context/AdminAuthContext';
-import { API_URL } from '../../../../api/api';
+import useAdminAuth  from '../../../../context/AdminAuthContext';
 
-interface AdminUser {
-  id?: string;
-  adminName?: string;
-  adminEmail?: string;
-  isLocked?: boolean;
-  createdAt?: string;
-  profileImage?: string;
-  phone?: string;
+interface User {
+  id: number;
+  names: string;
+  email: string;
+
+  role: { name: string };
+  active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface FormData {
-  adminName: string;
-  adminEmail: string;
-  phone: string;
-  createdAt: string;
-  profileImage: string;
+  names: string;
+  email: string;
+  
+  created_at: string;
 }
 
 const ProfileSettings: React.FC = () => {
-  const { user, updateAdmin } = useAdminAuth() as {
-    user: AdminUser | null;
-    updateAdmin: (data: Partial<AdminUser>) => Promise<AdminUser>;
-  };
+  const { user, updateProfile } = useAdminAuth() as any;
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<FormData>({
-    adminName: user?.adminName || '',
-    adminEmail: user?.adminEmail || '',
-    phone: user?.phone || '',
-    createdAt: user?.createdAt || '',
-    profileImage: `${API_URL}${user?.profileImage}` || '',
+    names: user?.names || '',
+    email: user?.email || '',
+   
+    created_at: user?.created_at || '',
   });
-
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFormData({
-      adminName: user?.adminName || '',
-      adminEmail: user?.adminEmail || '',
-      phone: user?.phone || '',
-      createdAt: user?.createdAt || '',
-      profileImage: `${API_URL}${user?.profileImage}` || '',
+      names: user?.names || '',
+      email: user?.email || '',
+     
+      created_at: user?.createdAt || '',
     });
   }, [user]);
 
@@ -58,42 +49,17 @@ const ProfileSettings: React.FC = () => {
     }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          profileImage: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSave = async () => {
     try {
       setLoading(true);
 
-      const updatePayload: Partial<AdminUser> = {
-        adminName: formData.adminName,
-        adminEmail: formData.adminEmail,
-        phone: formData.phone,
+      const updatePayload: Partial<User> = {
+        names: formData.names,
+        email: formData.email,
+       
       };
 
-      if (selectedFile) {
-        const fd = new FormData();
-        fd.append('profileImg', selectedFile);
-        fd.append('adminName', formData.adminName);
-        fd.append('adminEmail', formData.adminEmail);
-        fd.append('phone', formData.phone);
-
-        await updateAdmin(fd as unknown as Partial<AdminUser>);
-      } else {
-        await updateAdmin(updatePayload);
-      }
+      await updateProfile(updatePayload);
 
       Swal.fire({
         icon: 'success',
@@ -122,11 +88,10 @@ const ProfileSettings: React.FC = () => {
 
   const handleCancel = () => {
     setFormData({
-      adminName: user?.adminName || '',
-      adminEmail: user?.adminEmail || '',
-      phone: user?.phone || '',
-      createdAt: user?.createdAt || '',
-      profileImage: user?.profileImage || '',
+      names: user?.names || '',
+      email: user?.email || '',
+    
+      created_at: user?.created_at || '',
     });
     setIsEditing(false);
   };
@@ -148,74 +113,20 @@ const ProfileSettings: React.FC = () => {
           Basic Information
         </h2>
 
-        {/* Profile Photo */}
-        <div className="mb-4">
-          <label className="block text-xs font-medium text-gray-600 mb-1">
-            Profile Photo
-          </label>
-          <div className="flex items-center space-x-3">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-              {formData.profileImage ? (
-                <img
-                  src={formData.profileImage}
-                  alt="Profile"
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <Camera className="w-4 h-4 text-gray-400" />
-              )}
-            </div>
-            <div className="flex space-x-2">
-              <label
-                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  isEditing
-                    ? 'bg-primary-500 text-white hover:bg-primary-600 cursor-pointer'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                Upload
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  disabled={!isEditing}
-                  className="hidden"
-                />
-              </label>
-              <button
-                onClick={() =>
-                  setFormData((prev) => ({ ...prev, profileImage: '' }))
-                }
-                disabled={!isEditing}
-                className={`px-3 py-1.5 border border-gray-200 rounded text-xs font-medium transition-colors ${
-                  isEditing
-                    ? 'text-gray-600 hover:bg-gray-50'
-                    : 'text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                Remove
-              </button>
-            </div>
-          </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Recommended image size is 400px x 400px
-          </p>
-        </div>
-
         {/* Form Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
             <label
-              htmlFor="adminName"
+              htmlFor="names"
               className="block text-xs font-medium text-gray-600 mb-1"
             >
-              Admin Name
+              Full Name
             </label>
             <input
               type="text"
-              id="adminName"
-              name="adminName"
-              value={formData.adminName}
+              id="names"
+              name="names"
+              value={formData.names}
               onChange={handleInputChange}
               readOnly={!isEditing}
               className={`w-full px-3 py-1.5 border border-gray-200 rounded text-xs ${
@@ -223,43 +134,22 @@ const ProfileSettings: React.FC = () => {
                   ? 'focus:ring-primary-500 focus:border-primary-500'
                   : 'bg-gray-100 text-gray-600 cursor-not-allowed'
               }`}
-              placeholder="Enter admin name"
+              placeholder="Enter full name"
             />
           </div>
+          
           <div>
             <label
-              htmlFor="phone"
-              className="block text-xs font-medium text-gray-600 mb-1"
-            >
-              Phone
-            </label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
-              readOnly={!isEditing}
-              className={`w-full px-3 py-1.5 border border-gray-200 rounded text-xs ${
-                isEditing
-                  ? 'focus:ring-primary-500 focus:border-primary-500'
-                  : 'bg-gray-100 text-gray-600 cursor-not-allowed'
-              }`}
-              placeholder="Enter phone number"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="adminEmail"
+              htmlFor="email"
               className="block text-xs font-medium text-gray-600 mb-1"
             >
               Email
             </label>
             <input
               type="email"
-              id="adminEmail"
-              name="adminEmail"
-              value={formData.adminEmail}
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               readOnly={!isEditing}
               className={`w-full px-3 py-1.5 border border-gray-200 rounded text-xs ${
@@ -272,16 +162,16 @@ const ProfileSettings: React.FC = () => {
           </div>
           <div>
             <label
-              htmlFor="createdAt"
+              htmlFor="created_at"
               className="block text-xs font-medium text-gray-600 mb-1"
             >
               Account Created
             </label>
             <input
               type="datetime-local"
-              id="createdAt"
-              name="createdAt"
-              value={formatDate(formData.createdAt)}
+              id="created_at"
+              name="created_at"
+              value={formatDate(formData.created_at)}
               readOnly
               className="w-full px-3 py-1.5 border border-gray-200 rounded text-xs bg-gray-100 text-gray-600 cursor-not-allowed"
             />

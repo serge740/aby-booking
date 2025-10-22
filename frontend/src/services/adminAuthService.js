@@ -1,167 +1,155 @@
+/* eslint-disable no-unused-vars */
 import api from '../api/api';
 
-class AdminAuthService {
+class AuthService {
   constructor() {
     this.api = api;
   }
 
-  async registerAdmin(adminData) {
+  /**
+   * Login user (admin or regular)
+   */
+  async login(loginData, isAdmin = false) {
+    const response = await this.api.post(
+      isAdmin ? '/auth/login' : '/auth/login',
+      loginData,
+      { withCredentials: true }
+    );
+
+    if (!response.data.admin) {
+      throw new Error('Login failed: no user returned');
+    }
+
+    return response.data.admin;
+  }
+
+  /**
+   * Get user profile
+   */
+  async getProfile(isAdmin = false) {
     try {
-      const response = await this.api.post('/admin/register', adminData);
+      const response = await this.api.get(
+        isAdmin ? '/auth/profile' : '/auth/profile',
+        { withCredentials: true }
+      );
+
+      console.log(response.data);
+      return response.data; // backend returns user directly
+    } catch (error) {
+      if (error.response?.status === 401 || error.response?.status === 404)
+        return null;
+      throw error;
+    }
+  }
+
+  /**
+   * Update user profile
+   */
+  async updateProfile(updates, isAdmin = false) {
+    try {
+      const response = await this.api.put(
+        isAdmin ? '/auth/edit-profile' : '/auth/edit-profile',
+        updates
+      );
+
       return response.data;
     } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to register admin';
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        `Failed to update ${isAdmin ? 'admin' : 'user'} profile`;
       throw new Error(msg);
     }
   }
 
-  async adminLogin(loginData) {
+  /**
+   * Change password
+   */
+  async changePassword(current_password, new_password) {
     try {
-      const response = await this.api.post('/admin/login', loginData);
-      return response.data;
-    } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to login admin';
-      throw new Error(msg);
-    }
-  }
-
-  async logout() {
-    try {
-      const response = await this.api.post('/admin/logout');
-      return response.data;
-    } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to logout admin';
-      throw new Error(msg);
-    }
-  }
-
-  async getAdminProfile() {
-    try {
-      const response = await this.api.get('/admin/profile');
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 404) return null;
-      const msg = error.response?.data?.message || error.message || 'Failed to fetch admin profile';
-      throw new Error(msg);
-    }
-  }
-
-  async lockAdmin() {
-    try {
-      const response = await this.api.post('/admin/lock');
-      return response.data;
-    } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to lock admin account';
-      throw new Error(msg);
-    }
-  }
-
-  async unlockAdmin(unlockData) {
-    try {
-      const response = await this.api.post('/admin/unlock', unlockData);
-      return response.data;
-    } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to unlock admin account';
-      throw new Error(msg);
-    }
-  }
-
-  async findAdminByEmail(email) {
-    try {
-      const response = await this.api.get(`/admin/by-email/${email}`);
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 404) return null;
-      const msg = error.response?.data?.message || error.message || 'Failed to find admin';
-      throw new Error(msg);
-    }
-  }
-
-  async findAdminById(id) {
-    try {
-      const response = await this.api.get(`/admin/${id}`);
-      return response.data;
-    } catch (error) {
-      if (error.response?.status === 404) return null;
-      const msg = error.response?.data?.message || error.message || 'Failed to find admin';
-      throw new Error(msg);
-    }
-  }
-
-  async updateAdmin(id, updateData) {
-    try {
-      let payload;
-
-      if (updateData instanceof FormData) {
-        payload = updateData;
-      } else {
-        payload = new FormData();
-        Object.entries(updateData).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            payload.append(key, value);
-          }
-        });
-      }
-
-      const response = await this.api.put(`/admin/${id}`, payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await this.api.put('/auth/change-password', {
+        current_password,
+        new_password,
       });
 
-      return response.data.admin;
+      return response.data.message;
     } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to update admin';
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to change password';
       throw new Error(msg);
     }
   }
 
-  async deleteAdmin(id) {
+  /**
+   * Reset password (request reset link)
+   */
+  async resetPassword(email) {
     try {
-      const response = await this.api.delete(`/admin/${id}`);
-      return response.data;
+      const response = await this.api.post('/auth/reset-password', { email });
+
+      return response.data.message;
     } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to delete admin';
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to reset password';
       throw new Error(msg);
     }
   }
 
-  async changePassword(data) {
+  /**
+   * Delete account
+   */
+  async deleteAccount(password) {
     try {
-      const response = await this.api.patch('/admin/change-password', data);
-      return response.data;
+      const response = await this.api.delete('/auth/delete-account', {
+        data: { password },
+      });
+
+      return response.data.message;
     } catch (error) {
-      const msg = error.response?.data?.message || error.message || 'Failed to change password';
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to delete account';
       throw new Error(msg);
     }
   }
 
-  validateAdminData(adminData) {
-    const errors = [];
-    if (!adminData.adminEmail) errors.push('Email is required');
-    else if (!this.isValidEmail(adminData.adminEmail)) errors.push('Email format is invalid');
-    if (!adminData.adminName?.trim()) errors.push('Name is required');
-    if (!adminData.password) errors.push('Password is required');
-    else if (adminData.password.length < 6) errors.push('Password must be at least 6 characters');
-    return { isValid: errors.length === 0, errors };
-  }
+  /**
+   * Logout
+   */
+  async logout(isAdmin = false) {
+    try {
+      const response = await this.api.post(
+        isAdmin ? '/auth/admin/logout' : '/auth/logout',
+        {}
+      );
 
-  isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+      return response.data.message;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        `Failed to logout ${isAdmin ? 'admin' : 'user'}`;
+      throw new Error(msg);
+    }
   }
 }
 
-const adminAuthService = new AdminAuthService();
+const authService = new AuthService();
 
-export default adminAuthService;
+export default authService;
+
+// Optional named exports for convenience
 export const {
-  registerAdmin,
-  adminLogin,
-  logout,
-  getAdminProfile,
-  lockAdmin,
-  unlockAdmin,
-  findAdminByEmail,
-  findAdminById,
-  validateAdminData,
+  login,
+  getProfile,
+  updateProfile,
   changePassword,
-} = adminAuthService;
+  resetPassword,
+  deleteAccount,
+  logout,
+} = authService;

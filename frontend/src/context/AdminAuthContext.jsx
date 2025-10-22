@@ -1,184 +1,102 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import adminAuthService from '../services/adminAuthService';
-import { API_URL } from '../api/api';
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import authService from '../services/adminAuthService';
 
 export const AdminAuthContext = createContext({
   user: null,
-  login: () => Promise.resolve(),
-  logout: () => Promise.resolve(),
-  lockAdmin: () => Promise.resolve(),
-  unlockAdmin: () => Promise.resolve(),
-  updateAdmin: () => Promise.resolve({}),
-  deleteAdmin: () => Promise.resolve(),
-  loginWithGoogle: () => {},
+  login: async () => ({}),
+  logout: async () => {},
+  updateProfile: async () => ({}),
   isAuthenticated: false,
-  isLocked: false,
   isLoading: true,
 });
 
 export const AdminAuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const updateAuthState = (authData) => {
     setUser(authData.user);
     setIsAuthenticated(authData.isAuthenticated);
-    setIsLocked(authData.isLocked);
   };
 
-  // Login with email/password
   const login = async (data) => {
     try {
-      const response = await adminAuthService.adminLogin(data);
+      console.log(data);
+      const response = await authService.login(data);
 
-      if (response?.authenticated) {
-        const userProfile = await adminAuthService.getAdminProfile();
-        if (userProfile?.admin) {
-          updateAuthState({
-            user: userProfile.admin,
-            isAuthenticated: true,
-            isLocked: false,
-          });
-        }
-      }
+      updateAuthState({
+        user: response,
+        isAuthenticated: true,
+      });
 
       return response;
     } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-
-  // Login with Google
-  const loginWithGoogle = (popup = false, uri = null) => {
-    const redirectUri = uri;
-    const stateObj = { redirectUri, popup };
-    const stateParam = encodeURIComponent(JSON.stringify(stateObj));
-
-    const googleUrl = uri
-      ? `${API_URL}/admin/google?state=${stateParam}`
-      : `${API_URL}/admin/google`;
-
-    if (popup) {
-      const popupWindow = window.open(
-        googleUrl,
-        'Google Login',
-        'width=500,height=600'
-      );
-
-      window.addEventListener('message', (event) => {
-        if (event.origin !== API_URL) return;
-        const data = event.data;
-
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-          window.location.href = data.redirect;
-        } else if (data.redirect) {
-          window.location.href = data.redirect;
-        }
-      });
-    } else {
-      window.location.href = googleUrl;
+      throw new Error(error?.response?.data?.message || error.message);
     }
   };
 
   const logout = async () => {
     try {
-      const response = await adminAuthService.logout();
-      updateAuthState({ user: null, isAuthenticated: false, isLocked: false });
+      const response = await authService.logout();
+      updateAuthState({ user: null, isAuthenticated: false });
       return response;
     } catch (error) {
-      updateAuthState({ user: null, isAuthenticated: false, isLocked: false });
+      updateAuthState({ user: null, isAuthenticated: false });
       throw new Error(error.message);
     }
   };
 
-  const lockAdmin = async () => {
+  const updateProfile = async (updates) => {
     try {
-      const response = await adminAuthService.lockAdmin();
-      updateAuthState({ user, isAuthenticated, isLocked: true });
-      return response;
+      const updatedUser = await authService.updateProfile(updates);
+      updateAuthState({
+        user: updatedUser,
+        isAuthenticated: true,
+      });
+      return updatedUser;
     } catch (error) {
       throw new Error(error.message);
     }
-  };
-
-  const unlockAdmin = async (password) => {
-    try {
-      const response = await adminAuthService.unlockAdmin({ password });
-      updateAuthState({ user, isAuthenticated, isLocked: false });
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
-
-  const updateAdmin = async (updateData) => {
-    if (!user?.id) throw new Error('No logged-in admin to update');
-    const updated = await adminAuthService.updateAdmin(user.id, updateData);
-    updateAuthState({
-      user: updated,
-      isAuthenticated: true,
-      isLocked: updated.isLocked || false,
-    });
-    return updated;
-  };
-
-  const deleteAdmin = async () => {
-    if (!user?.id) throw new Error('No logged-in admin to delete');
-    const response = await adminAuthService.deleteAdmin(user.id);
-    updateAuthState({ user: null, isAuthenticated: false, isLocked: false });
-    return response;
   };
 
   const checkAuthStatus = async () => {
     setIsLoading(true);
     try {
-      const response = await adminAuthService.getAdminProfile();
-      if (response?.authenticated && response.admin) {
+      const userProfile = await authService.getProfile();
+
+      if (userProfile) {
         updateAuthState({
-          user: response.admin,
+          user: userProfile,
           isAuthenticated: true,
-          isLocked: response.admin.isLocked || false,
         });
       } else {
-        updateAuthState({ user: null, isAuthenticated: false, isLocked: false });
+        updateAuthState({ user: null, isAuthenticated: false });
       }
     } catch {
-      updateAuthState({ user: null, isAuthenticated: false, isLocked: false });
+      updateAuthState({ user: null, isAuthenticated: false });
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    // ✅ Always verify session with backend (cookie is sent automatically)
     checkAuthStatus();
   }, []);
 
   const values = {
     login,
     logout,
-    lockAdmin,
-    unlockAdmin,
-    updateAdmin,
-    deleteAdmin,
-    loginWithGoogle,
+    updateProfile,
     user,
     isLoading,
     isAuthenticated,
-    isLocked,
   };
 
   return (
-    <AdminAuthContext.Provider value={values}>
-      {children}
-    </AdminAuthContext.Provider>
+    <AdminAuthContext.Provider value={values}>{children}</AdminAuthContext.Provider>
   );
 };
 

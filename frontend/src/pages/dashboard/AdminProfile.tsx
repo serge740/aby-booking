@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 import { User, Lock, Bell, Link } from 'lucide-react';
 import ProfileSettings from '../../components/dashboard/profile/admin/ProfileSettings';
 
-
 const AdminProfilePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const validTabs = ['profile', 'security', 'notifications', 'connected-apps'] as const;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initialTab = validTabs.includes(searchParams.get('tab') as any)
     ? (searchParams.get('tab') as 'profile' | 'security' | 'notifications' | 'connected-apps')
     : 'profile';
@@ -38,6 +38,7 @@ const AdminProfilePage: React.FC = () => {
                 Profile Settings
               </button>
              
+              
             </nav>
           </div>
         </div>
@@ -59,6 +60,7 @@ const AdminProfilePage: React.FC = () => {
               </div>
               <div className="p-4">
                 {activeTab === 'profile' && <ProfileSettings />}
+                {/* {activeTab === 'security' && <SecuritySettings />} */}
                
               </div>
             </div>
