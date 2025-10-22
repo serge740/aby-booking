@@ -56,7 +56,7 @@ export default function AbyRestaurantAbout() {
           <div className="text-gray-900 space-y-6">
             <div>
               <p className="text-sm md:text-base font-light tracking-wider mb-3 text-primary-600 uppercase">
-                About Aby Restaurant
+                About Aby Booking
               </p>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Fresh Taste At A Great Price, Only For{' '}

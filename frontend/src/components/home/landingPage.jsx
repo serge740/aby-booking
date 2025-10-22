@@ -6,17 +6,17 @@ export default function AbyRestaurantHero() {
   const slides = [
     {
       image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=1920&h=1080&fit=crop',
-      title: 'Aby Restaurant',
+      title: 'Aby Booking',
       subtitle: 'Where every bite is a celebration of flavor.'
     },
     {
       image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1920&h=1080&fit=crop',
-      title: 'Aby Restaurant',
+      title: 'Aby Booking',
       subtitle: 'Authentic cuisine crafted with passion.'
     },
     {
       image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&h=1080&fit=crop',
-      title: 'Aby Restaurant',
+      title: 'Aby Booking',
       subtitle: 'Experience culinary excellence.'
     }
   ];

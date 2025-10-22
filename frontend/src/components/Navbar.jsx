@@ -95,7 +95,7 @@ function NavBar() {
                 </svg>
               </div>
               <h1 className="text-2xl font-bold tracking-wide text-white">
-                Jambokawa
+                Aby Booking
               </h1>
             </div>
 

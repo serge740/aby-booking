@@ -91,7 +91,7 @@ export default function AbyTestimonials() {
     {
       name: "Michael Chen",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-      text: "Aby Restaurant never disappoints. Their pizza is authentic and delicious, and the delivery is always on time. This is my go-to place for weekend meals with friends.",
+      text: "Aby Booking never disappoints. Their pizza is authentic and delicious, and the delivery is always on time. This is my go-to place for weekend meals with friends.",
       rating: 5.0,
       align: "right",
     },

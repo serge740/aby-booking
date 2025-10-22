@@ -67,7 +67,7 @@ export default function AbyTeamSection() {
             Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">Chefs</span>
           </h2>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            The passionate culinary artists behind every memorable dish at Aby Restaurant
+            The passionate culinary artists behind every memorable dish at Aby Booking
           </p>
         </div>
 
