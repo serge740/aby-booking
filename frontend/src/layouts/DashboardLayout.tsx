@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { use, useState } from 'react';
 
 import Header from '../components/dashboard/Header';
 
 import Sidebar from '../components/dashboard/Sidebar';
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 
-const DashboardLayout = ({role}:{role:string}) => {
+const DashboardLayout = () => {
 
     const [isOpen, setIsOpen] = useState(false)
+    const {role} = useOutletContext<{role:string}>()
  
   const onToggle = () => {
     setIsOpen(!isOpen)
@@ -20,7 +21,7 @@ const DashboardLayout = ({role}:{role:string}) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onToggle={onToggle} role={role} />
         <main className="flex-1 overflow-y-auto">
-         <Outlet />
+         <Outlet context={{role}} />
         </main>
       </div>
     </div>

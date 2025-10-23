@@ -15,6 +15,7 @@ import { EmailModule } from './Global/email/email.module';
 
 import { SubscribersModule } from './Modules/subscribers/subscribers.module';
 import { PurchasingUserModule } from './Modules/purchasingUser/purchasingUser.module';
+import { CompanyModule } from './Modules/Company-management/company.module';
 @Module({
   imports: [
 
@@ -34,7 +35,7 @@ import { PurchasingUserModule } from './Modules/purchasingUser/purchasingUser.mo
     PaymentModule,
     SubscribersModule,
     PurchasingUserModule,
-    
+    CompanyModule,
   ],
   controllers: [],
 })

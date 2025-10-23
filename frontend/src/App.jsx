@@ -17,9 +17,9 @@ import AdminLogin from "./pages/auth/admin/Login";
 import ProtectPrivateAdminRoute from "./components/protectors/ProtectPrivateAdminRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardHome from "./pages/dashboard/DashboardHome";
-import AdminProfilePage from "./pages/dashboard/AdminProfile";
+import AdminProfilePage from "./pages/dashboard/admin/AdminProfile";
 import UnlockScreen from "./pages/auth/admin/UnlockScreen";
-import ExpenseDashboard from "./pages/dashboard/ExpenseDashboard";
+import CompanyDashboard from "./pages/dashboard/CompanyDashboard";
 import ReportDashboard from "./pages/dashboard/ReportManagement";
 import CommingSoon from "./layouts/CommingSoon";
 import CoffeeShopPage from "./pages/product/Product";
@@ -27,6 +27,11 @@ import CoffeeShop from "./pages/product/SingleProduct";
 import CartPage from "./pages/CartPage";
 import Gallery from "./components/home/Gallery";
 import ReviewsTimeLine from "./pages/Reviews";
+import CompanyFormPage from "./components/dashboard/company/CompanyFormPage";
+import CompanyViewPage from "./components/dashboard/company/CompanyViewPage";
+import CompanyLoginPage from "./pages/auth/company/Login";
+import ProtectPrivateCompanyRoute from "./components/protectors/ProtectPrivateCompanyRoute";
+import CompanyProfilePage from "./pages/dashboard/company/CompanyProfilePage";
 
 
 // Loading component
@@ -68,7 +73,7 @@ const router = createBrowserRouter([
 
   {
     path:'/admin',
-    element: <ProtectPrivateAdminRoute><Outlet /></ProtectPrivateAdminRoute>,
+    element: <ProtectPrivateAdminRoute><Outlet context={{role:'admin'}} /></ProtectPrivateAdminRoute>,
     children:[
        { index: true, element: <Navigate to={'/admin/dashboard'}></Navigate>},
        { 
@@ -76,9 +81,29 @@ const router = createBrowserRouter([
         element: <SuspenseWrapper><DashboardLayout /> </SuspenseWrapper>,
         children:[
           {index:true , element:<DashboardHome />},
-          {path:'expense' , element:<ExpenseDashboard />},
-          {path:'report' , element:<ReportDashboard />},
+          {path:'company' , element:<CompanyDashboard />},
+          {path:'company/create' , element:<CompanyFormPage />},
+          {path:'company/edit/:id' , element:<CompanyFormPage />},
+          {path:'company/:id' , element:<CompanyViewPage />},
           {path:'profile' , element:<AdminProfilePage />},
+          
+        ]
+       },
+
+    ]
+  },
+  {
+    path:'/company',
+    element: <ProtectPrivateCompanyRoute><Outlet context={{role:'company'}} /></ProtectPrivateCompanyRoute>,
+    children:[
+       { index: true, element: <Navigate to={'/company/dashboard'}></Navigate>},
+       { 
+        path: 'dashboard', 
+        element: <SuspenseWrapper><DashboardLayout /> </SuspenseWrapper>,
+        children:[
+          {index:true , element:<DashboardHome />},
+ 
+          {path:'profile' , element:<CompanyProfilePage />},
           
         ]
        },
@@ -90,6 +115,14 @@ const router = createBrowserRouter([
     element: (
       <SuspenseWrapper>
         <AdminLogin />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: '/auth/company/login',
+    element: (
+      <SuspenseWrapper>
+        <CompanyLoginPage />
       </SuspenseWrapper>
     ),
   },

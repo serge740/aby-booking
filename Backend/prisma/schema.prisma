@@ -239,3 +239,35 @@ model PurchasingUser {
 }
 
 
+
+  model Company {
+  id             String      @id @default(cuid())
+  name           String
+  email          String?     @unique
+  phone          String?
+  description    Json?
+  logo           String?
+  address        String?
+  city           String?
+  country        String?
+
+  password       String
+
+  type           CompanyType @default(OTHER)
+  isActive       Boolean     @default(true)
+  
+  // Relations
+ 
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum CompanyType {
+  RESTAURANT
+  SUPERMARKET
+  SHOP
+  HOTEL
+  BAR
+  LOUNGE
+  OTHER
+}

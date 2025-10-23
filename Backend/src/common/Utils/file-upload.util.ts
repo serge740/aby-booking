@@ -11,8 +11,12 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
 
       if (file.fieldname === 'profileImage') {
         subFolder = 'testmonial-photos';
-      }else if (file.fieldname === 'logo') {
+      }
+      else if (file.fieldname === 'logo') {
         subFolder = 'partner-photos'; 
+      }
+      else if (file.fieldname === 'companyLogo') {
+        subFolder = 'company_logos'; 
       }
       else if(file.fieldname === 'blog_image'){
         subFolder = 'blog-photos'
@@ -82,8 +86,12 @@ export const BlogFileFields = [
 export const CategoryFileFields = [
   { name: 'category_image', maxCount: 1 },
 ]
+export const CompanyFileFields = [
+  { name: 'companyLogo', maxCount: 1 },
+]
 
 export const testimonialUploadConfig = createUnifiedUploadConfig()
 export const partnerUploadConfig = createUnifiedUploadConfig()
 export const blogUploadConfig = createUnifiedUploadConfig()
 export const CategoryUploadConfig = createUnifiedUploadConfig()
+export const CompanyUploadConfig = createUnifiedUploadConfig()

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { User, Lock, Bell, Link } from 'lucide-react';
-import ProfileSettings from '../../components/dashboard/profile/admin/ProfileSettings';
+import ProfileSettings from '../../../components/dashboard/profile/admin/ProfileSettings';
 
 const AdminProfilePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
