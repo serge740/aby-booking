@@ -257,6 +257,8 @@ model PurchasingUser {
   isActive       Boolean     @default(true)
   
   // Relations
+  category MenuCategory[]
+  items     MenuItem[] // One category can have many items
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -271,3 +273,35 @@ enum CompanyType {
   LOUNGE
   OTHER
 }
+
+model MenuCategory {
+  id        String     @id @default(cuid())
+  name      String
+  companyId String
+  company   Company    @relation(fields: [companyId], references: [id])
+  items     MenuItem[] // One category can have many items
+}
+
+model MenuItem {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  price         Float
+
+  mainImage     String?   // Front cover photo
+  otherImages   Json?         @default("[]") // Gallery of supporting images
+
+  isActive      Boolean   @default(true)
+
+  // Relations
+  company       Company     @relation(fields: [companyId], references: [id])
+  companyId     String
+
+  category      MenuCategory? @relation(fields: [categoryId], references: [id])
+  categoryId    String?
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+
