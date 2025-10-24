@@ -62,7 +62,7 @@ export class CompanyService {
                     firstName: data.name ? data.name.split(" ")[0] : '',
                     lastName: data.name ? last.call(data.name.split(" ")) : '',
                     email: data.email,
-                    loginUrl: `${process.env.FRONTEND_URL}/auth/admin/login`,
+                    loginUrl: `${process.env.FRONTEND_URL}/auth/company/login`,
                     password: plainPassword,
                     year: new Date().getFullYear(),
                 }
