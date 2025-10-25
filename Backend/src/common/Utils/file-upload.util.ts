@@ -24,6 +24,12 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
       else if(file.fieldname === 'category_image'){
         subFolder = 'category-photos'
       }
+      else if(file.fieldname === 'mainImage'){
+        subFolder = 'menu'
+      }
+      else if(file.fieldname === 'otherImages'){
+        subFolder = 'menu'
+      }
 
       console.log('Received file.fieldname:', file.fieldname);
 

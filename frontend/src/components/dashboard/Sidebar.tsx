@@ -83,6 +83,13 @@ const getNavlinks = (role: string): (NavItem | DropdownGroup)[] => {
         path: `${basePath}/bookings`,
         allowedRoles: ["company", "admin"],
       },
+      {
+        id: "menu-category",
+        label: "Menu Category",
+        icon: ClipboardList,
+        path: `${basePath}/menu-category`,
+        allowedRoles: ["company", "admin"],
+      },
      
 
     ];

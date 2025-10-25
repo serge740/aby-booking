@@ -32,6 +32,7 @@ import CompanyViewPage from "./components/dashboard/company/CompanyViewPage";
 import CompanyLoginPage from "./pages/auth/company/Login";
 import ProtectPrivateCompanyRoute from "./components/protectors/ProtectPrivateCompanyRoute";
 import CompanyProfilePage from "./pages/dashboard/company/CompanyProfilePage";
+import MenuCategoryDashboard from "./pages/dashboard/company/MenuCategoryDashboard";
 
 
 // Loading component
@@ -104,6 +105,7 @@ const router = createBrowserRouter([
           {index:true , element:<DashboardHome />},
  
           {path:'profile' , element:<CompanyProfilePage />},
+          {path:'menu-category' , element:<MenuCategoryDashboard />},
           
         ]
        },

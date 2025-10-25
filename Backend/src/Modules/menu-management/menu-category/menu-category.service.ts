@@ -12,14 +12,15 @@ export class MenuCategoryService {
       data: {
         name,
         companyId
-      }
+      } ,
+     include: { items: true ,company:true } 
     });
   }
 
   async findAll(companyId: string) {
     return await this.prisma.menuCategory.findMany({
       where: { companyId },
-      include: { items: true }
+      include: { items: true ,company:true }
     });
   }
 
@@ -33,7 +34,8 @@ export class MenuCategoryService {
 
     return await this.prisma.menuCategory.update({
       where: { id: categoryId },
-      data: { name }
+      data: { name },
+      include: { items: true ,company: true }
     });
   }
 

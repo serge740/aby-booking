@@ -17,8 +17,8 @@ const CompanyLoginPage = () => {
   const backgroundImages = [
     'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&h=1200&fit=crop',
     'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&h=1200&fit=crop',
-    'https://images.unsplash.com/photo-1495474472287-4d71bc168240?w=1200&h=1200&fit=crop',
-    'https://images.unsplash.com/photo-1578662996442-48f60103fcbf?w=1200&h=1200&fit=crop',
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1200&h=1200&fit=crop',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1920&h=1080&fit=crop',
   ];
 
   // Auto-slide carousel
