@@ -51,7 +51,7 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail({
-        from: `abyhr <${process.env.SMTP_USERNAME}>`,
+        from: `Aby Booking <${process.env.SMTP_USERNAME}>`,
         to,
         subject,
         html,

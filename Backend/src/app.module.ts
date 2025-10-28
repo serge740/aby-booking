@@ -15,6 +15,9 @@ import { EmailModule } from './Global/email/email.module';
 
 import { SubscribersModule } from './Modules/subscribers/subscribers.module';
 import { PurchasingUserModule } from './Modules/purchasingUser/purchasingUser.module';
+import { CompanyModule } from './Modules/Company-management/company.module';
+import { MenuItemModule } from './Modules/menu-management/menu-item/menu-item.module';
+import { MenuCategoryModule } from './Modules/menu-management/menu-category/menu-category.module';
 @Module({
   imports: [
 
@@ -34,7 +37,9 @@ import { PurchasingUserModule } from './Modules/purchasingUser/purchasingUser.mo
     PaymentModule,
     SubscribersModule,
     PurchasingUserModule,
-    
+    CompanyModule,
+    MenuItemModule,
+    MenuCategoryModule,
   ],
   controllers: [],
 })
