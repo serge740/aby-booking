@@ -6,8 +6,11 @@ export interface Client {
   name?: string;
   email?: string;
   phoneNumber?: string;
+  profileImage?:string;
   token?: string;
   status?: string;
+  google_id?: string;
+  createdAt: string;
 }
 
 const TOKEN_KEY = 'client_token';

@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next'; // ADD THIS
 
-export default function Bus() {
+export default function Companies() {
+  const { t } = useTranslation(); // ADD THIS
+
   const busCompanies = [
     'EBENEZER EXPRESS LTD', 'GICUMBI TRANSPORT COOP', 'KIVU BELT EXPRESS',
     'TRIPARTITE TOURS', 'SELECT EXPRESS', 'SHALOM TRANSPORT', 'JALI TRANSPORT',
@@ -17,7 +20,7 @@ export default function Bus() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Bus Companies in Rwanda</Text>
+      <Text style={styles.header}>{t('guest.bus.header')}</Text>
       <FlatList
         data={busCompanies}
         keyExtractor={(item, index) => index.toString()}

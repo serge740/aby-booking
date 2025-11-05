@@ -5,6 +5,9 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { ClientAuthProvider } from '@/contexts/ClientAuthContext';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '@/i18n';
+import info from '@/constants/info';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -15,6 +18,7 @@ export default function RootLayout() {
 
   return (
     <ClientAuthProvider>
+<I18nextProvider i18n={i18n}>
 
     <ThemeProvider value={DefaultTheme}>
       <Stack>
@@ -25,8 +29,9 @@ export default function RootLayout() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       
-      <StatusBar style="auto" />
+      <StatusBar style="dark" backgroundColor={'#fff'}/>
     </ThemeProvider>
+</I18nextProvider>
     </ClientAuthProvider>
   );
 }

@@ -4,15 +4,16 @@
     "slug": "aby-booking",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo/logo.png",
+    "icon": "./assets/logo/aby_booking.png",
     "scheme": "abybooking",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-
     "description": "Aby Booking is Rwanda’s all-in-one platform to discover, book, and order from local restaurants, supermarkets, salons, and service providers. Enjoy convenient bookings, secure payments, and effortless access to the best businesses in Kigali and beyond.",
-
-    "platforms": ["ios", "android", "web"],
-
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.abybooking.client",
@@ -21,26 +22,23 @@
         "NSLocationWhenInUseUsageDescription": "Aby Booking uses your location to help you find nearby restaurants, salons, and local businesses for a better booking experience."
       }
     },
-
     "android": {
       "package": "com.abybooking.client",
       "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo/logo.png",
+        "foregroundImage": "./assets/logo/aby_booking.png",
         "backgroundColor": "#E6F4FE"
       },
       "permissions": [],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
-
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png",
       "bundler": "metro",
       "description": "Discover and book your favorite restaurants, supermarkets, and local services with Aby Booking — your gateway to Kigali’s best experiences."
     },
-
     "plugins": [
       "expo-router",
       [
@@ -58,12 +56,10 @@
       "expo-localization",
       "expo-secure-store"
     ],
-
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
-
     "extra": {
       "appDisplayName": "Aby Booking",
       "appTagline": "Discover, Book & Order Easily",
@@ -76,8 +72,16 @@
           "Convenience",
           "Trust",
           "Innovation",
+          "Community Empowerment",
+          "Convenience",
+          "Trust",
+          "Innovation",
           "Community Empowerment"
         ]
+      },
+      "router": {},
+      "eas": {
+        "projectId": "664ad42f-96ca-4e37-acf7-2f71735bded9"
       }
     }
   }

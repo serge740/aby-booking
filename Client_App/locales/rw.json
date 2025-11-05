@@ -1,4 +1,279 @@
 {
-  "welcome": "Murakaza neza!",
-  "greeting": "Muraho, {{name}}!"
+  "onboarding": {
+    "slides": [
+      {
+        "title": "Menya ubucuruzi bwo mu karere",
+        "description": "Murakaza neza kuri Aby Booking — urubuga rukuganisha ku mareshyo y’amasitora, amaresitora, amasupermaketi, na serivisi ziza cyane muri Kigali. Byose ubibona ahantu hamwe."
+      },
+      {
+        "title": "Bika no gutumiza byoroshye",
+        "description": "Ukoresheje Aby Booking, ushobora gushakisha, gutegura gahunda, cyangwa gutumiza ibicuruzwa ku bacuruzi b’inyangamugayo bo hafi yawe — byihuse kandi byoroshye."
+      },
+      {
+        "title": "Ishyura mu mutekano",
+        "description": "Koresha uburyo bwo kwishyura bwizewe bwa MTN MoMo na Airtel Money. Bwihuse, butekanye kandi bwateguwe ku banyarwanda."
+      }
+    ],
+    "skip": "Simbuka",
+    "next": "Ibikurikira",
+    "getStarted": "Tangira"
+  },
+  "loginAuth": {
+    "welcome": "Murakaza neza !",
+    "back": "Kuri AbyBooking",
+    "subtitle": "Injira kugira ngo ushire amatsiko ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi, urebe gahunda zawe, kandi utumize ibicuruzwa byoroshye.",
+    "placeholder_identifier": "Andika numero ya telefone cyangwa imeri yawe",
+    "placeholder_phone": "Andika numero ya telefone",
+    "placeholder_email": "Andika imeri yawe",
+    "placeholder_password": "Andika ijambo ry’ibanga",
+    "remember_me": "Ushaka Ko Nkwibuka",
+    "forgot_password": "",
+    "sign_in": "Injira",
+    "or": "CYANGWA",
+    "continue_as_guest": "Komeza utanditseho",
+    "no_account": "Nta konti ufite?",
+    "create_account": "Hanga konti yawe",
+    "error_identifier_required": "Andika numero ya telefone cyangwa imeri yawe",
+    "error_identifier_invalid": "Andika numero ya telefone cyangwa imeri iboneye",
+    "error_password_required": "Ijambo ry’ibanga ntirishobora kuba ubusa",
+    "error_password_length": "Ijambo ry’ibanga rigomba kuba rifite byibura inyuguti 6",
+    "login_failed": "Kwinjira byanze",
+    "login_failed_message": "Ntibyashobotse kugukorera login. Saba kugenzura amakuru yawe none wongere ugerageze."
+  },
+   "registerAuth": {
+    "hello": "Muraho",
+    "there": "neza!",
+    "register_subtitle": "Intambwe nke gusa maze witegure kugera ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi ukoresheje Aby Booking.",
+    "placeholder_name": "Andika izina ryawe ryuzuye",
+    "placeholder_email": "Andika imeri yawe",
+    "placeholder_phone": "Andika numero ya telefone",
+    "placeholder_password": "Hanga ijambo ry’ibanga",
+    "placeholder_confirm_password": "Ongera wandike ijambo ry’ibanga",
+    "terms": "Ukwiyandikisha bisobanura ko wemera ",
+    "terms_service": "Amategeko yo gukoresha serivisi",
+    "and": " na ",
+    "privacy_policy": "Politiki y’ibanga",
+    "signup": "Iyandikishe",
+    "or": "Cyangwa",
+    "already_have_account": "Uramaze kugira konti?",
+    "sign_in": "Injira",
+
+    "error_name_required": "Andika izina ryawe",
+    "error_email_required": "Imeri irakenewe",
+    "error_email_invalid": "Andika imeri iboneye",
+    "error_phone_required": "Numero ya telefone irakenewe",
+    "error_phone_invalid": "Andika numero ya telefone iboneye",
+    "error_password_required": "Ijambo ry’ibanga ntirishobora kuba ubusa",
+    "error_password_length": "Ijambo ry’ibanga rigomba kuba rifite byibura inyuguti 6",
+    "error_confirm_required": "Saba kwemeza ijambo ry’ibanga",
+    "error_confirm_mismatch": "Amagambo y’ibanga ntahuje",
+    "register_failed": "Iyandikishirizwa ryanze",
+    "register_failed_message": "Ntibyashobotse gukora konti yawe. Saba gusuzuma amakuru yawe none wongere ugerageze."
+  },
+   "guest": {
+      "index": {
+    "app_name": "Aby Booking",
+    "app_subtitle": "Isoko ryawe ry’aho uri",
+    "location": "Kigali, Rwanda",
+    "banner": [
+      {
+        "title": "Sura amaresitora meza yo i Kigali",
+        "subtitle": "Tegereza ibyo ukunda kurya byihuse kandi byoroshye"
+      },
+      {
+        "title": "Ibicuruzwa bishya bitumizwa aho uri",
+        "subtitle": "Gura muri za supermaketi zikomeye hafi yawe"
+      },
+      {
+        "title": "Bika serivisi z’ubwiza",
+        "subtitle": "Shaka salon, spa cyangwa serivisi y’ubwiza ihuye n’ibyo ukunda"
+      },
+      {
+        "title": "Shyigikira ubucuruzi bwo hafi",
+        "subtitle": "Menya abatanga serivisi b’inyangamugayo hafi yawe"
+      }
+    ],
+    "stats": {
+      "businesses": "350+ Ubucuruzi bwo hafi",
+      "customers": "10K+ Abakiriya bishimye",
+      "orders": "50K+ Ibyo watumije byagejejweho"
+    },
+    "section_title": "Sura ibyiciro",
+    "section_subtitle": "Menya ubucuruzi bwiza bwo hafi yawe",
+    "categories": [
+      { "title": "Amaresitora", "subtitle": "120+ ahantu" },
+      { "title": "Amasupermaketi", "subtitle": "50+ amaduka" },
+      { "title": "Ubwiza & Spa", "subtitle": "80+ salons" },
+      { "title": "Ibikoresho bya elegitoroniki", "subtitle": "30+ amaduka" },
+      { "title": "Imyambaro", "subtitle": "45+ amaduka" },
+      { "title": "Serivisi zo mu rugo", "subtitle": "25+ abatanga serivisi" }
+    ],
+    "cta_title": "Uri nyiri ubucuruzi?",
+    "cta_subtitle": "Shyira ubucuruzi bwawe kuri Aby Booking maze ugere ku bakiriya benshi i Kigali",
+    "cta_button": "Tangira"
+  },
+    "settings": {
+    "header": "Igenamiterere",
+    "section_general": "Rusange",
+    "notifications": "Amakuru",
+    "dark_mode": "Imiterere yijimye",
+    "change_language": "Hindura ururimi",
+    "section_account": "Konti",
+    "logout": "Sohoka",
+    "logout_confirm": "Urabizi neza ko ushaka gusohoka muri Aby Booking?",
+    "language_alert": "Amahitamo y’indimi azaboneka vuba.",
+    "footer": "Aby Booking Verisiyo 1.0.0"
+  },
+    "support": {
+    "header": "Ikigo cy’Ubujyanama",
+    "subheader": "Duhari kugira ngo tugufashe ku bibazo byose cyangwa amakuru wifuza ku Aby Booking.",
+    "contact_title": "Twandikire",
+    "phone": "Telefone: +250 788 123 456",
+    "email": "Imeri: support@abybooking.rw",
+    "whatsapp_title": "Inkunga kuri WhatsApp",
+    "whatsapp_link": "Vugana natwe kuri WhatsApp",
+    "faq_title": "Ibibazo Bikunze Kubazwa",
+    "faq": [
+      "Nigute nashobora gutumiza serivisi cyangwa igicuruzwa?",
+      "Nshobora guhindura cyangwa gusiba gahunda yanjye?",
+      "Nigute nakurikirana ibyo natumije cyangwa gahunda yanjye?",
+      "Nakora iki niba habaye ikibazo ku gahunda yanjye?"
+    ],
+    "footer": "Murakoze gukoresha Aby Booking!"
+  },
+   "bus": {
+    "header": "Ubucuruzi bwo hafi yawe"
+  }
+  },
+  "dashboard": {
+   "index": {
+      "welcome": "Murakaza neza",
+      "search_placeholder": "Shakisha inzira, imijyi, cyangwa kompanyi...",
+      "quick_actions": {
+        "find_routes": "Shakisha inzira",
+        "schedule": "Tegura urugendo",
+        "stations": "Ahahagarara",
+        "help": "Ubufasha"
+      },
+      "upcoming_trips": "Inzira zigiye kuza",
+      "completed_trips": "Inzira zarangije",
+      "promo_title": "Bona 20% ku rugendo rwawe rukurikira!",
+      "promo_subtitle": "Bika vuba none ubike kuri byose.",
+      "promo_button": "Bika Ubu",
+      "section_title": "Amatike Yawe",
+      "section_subtitle": "Genura amatike yawe yose ya bisi hamwe ahantu hamwe",
+      "tabs": {
+        "all": "Yose",
+        "upcoming": "Kuzaza",
+        "past": "Zarangije"
+      },
+      "status": {
+        "upcoming": "Kuzaza",
+        "completed": "Yarangije"
+      },
+      "ticket": {
+        "details": "Reba ibisobanuro"
+      },
+      "empty": {
+        "no_tickets": "Nta matike yabonetse",
+        "no_upcoming": "Nta rugendo ruzaza. Bika urwo none!",
+        "no_history": "Amateka y'urugendo rwawe ni ubusa.",
+        "start_booking": "Tangira urugendo rwawe ubika itike.",
+        "book_now": "Bika Ubu"
+      }
+    },
+    "settings": {
+    "quick_actions": "Ibikorwa byihuse",
+    "account_management": "Gucunga konti",
+    "preferences": "Ibyo uhitamo",
+    "support_info": "Inkunga & Amakuru",
+    "danger_zone": "Agace k’ibyago",
+    "edit_profile": "Hindura profil",
+    "change_password": "Hindura ijambo ry’ibanga",
+    "privacy_security": "Ibanga & Umutekano",
+    "saved_addresses": "Aderesi zibitswe",
+    "push_notifications": "Amakuru yihutirwa",
+    "email_notifications": "Amakuru kuri imeri",
+    "language": "Ururimi",
+    "dark_mode": "Imiterere yijimye",
+    "help_center": "Ikigo cy’ubujyanama",
+    "contact_support": "Twandikire",
+    "rate_app": "Tanga igitekerezo kuri Aby Booking",
+    "terms_conditions": "Amategeko & Amabwiriza",
+    "privacy_policy": "Politiki y’ibanga",
+    "logout": "Sohoka",
+    "delete_account": "Siba konti",
+    "footer_brand": "Aby Booking",
+    "footer_version": "Verisiyo 1.0.0",
+    "footer_member_since": "Uhuye na konti kuva",
+    "footer_copyright": "© 2024 Aby Booking. Uburenganzira bwose burabitswe.",
+    "alerts": {
+      "logout_title": "Sohoka",
+      "logout_message": "Urabizi neza ko ushaka gusohoka muri Aby Booking?",
+      "logout_cancel": "Hagarika",
+      "logout_confirm": "Sohoka",
+      "delete_title": "Siba konti",
+      "delete_message": "Urabizi neza ko ushaka gusiba konti yawe ya Aby Booking? Ibi ntibishobora gusubizwa inyuma.",
+      "delete_cancel": "Hagarika",
+      "delete_confirm": "Siba",
+      "error_logout": "Ntibyashobotse gusohoka. Ongera ugerageze.",
+      "error_delete": "Ntibyashobotse gusiba konti. Ongera ugerageze."
+    },
+    "quick_items": {
+      "orders": "Ibyo natumije",
+      "favorites": "Ibikunzwe",
+      "wallet": "Mufuka",
+      "rewards": "Ibihembo"
+    }
+  },
+  "profile": {
+    "header_title": "Hindura Profil",
+    "image_hint": "Kanda kugira ngo uhindure ifoto ya profil",
+    "full_name_label": "Izina ryuzuye *",
+    "full_name_placeholder": "Andika izina ryawe ryuzuye",
+    "email_label": "Imeri *",
+    "email_placeholder": "Andika imeri yawe",
+    "phone_label": "Numero ya telefone",
+    "phone_placeholder": "Andika numero ya telefone yawe",
+    "account_status": "Uko konti ihagaze",
+    "member_since": "Uhuye na konti kuva",
+    "connected": "Yahujwe",
+    "save_button": "Bika Impinduka",
+    "alerts": {
+      "image_permission_title": "Uburenganzira Burakenewe",
+      "image_permission_message": "Tanga uburenganzira bwo kubona amafoto kugira ngo uhindure ifoto ya profil.",
+      "camera_permission_message": "Tanga uburenganzira bwo gukoresha camera kugira ngo ufate ifoto nshya.",
+      "image_error": "Ntibyashobotse guhitamo ifoto. Ongera ugerageze.",
+      "photo_error": "Ntibyashobotse gufata ifoto. Ongera ugerageze.",
+      "validation_name": "Izina ryuzuye rirakenewe.",
+      "validation_email": "Imeri irakenewe.",
+      "validation_email_format": "Andika imeri iboneye.",
+      "success_title": "Byakozwe",
+      "success_message": "Profil yawe yahinduwe neza!",
+      "success_ok": "OK",
+      "error_title": "Ikosa",
+      "error_default": "Ntibyashobotse guhindura profil. Ongera ugerageze.",
+      "discard_title": "Hagarika Impinduka?",
+      "discard_message": "Ufite impinduka zitabitswe. Urashaka koko gusubira inyuma?",
+      "discard_keep": "Komeza guhindura",
+      "discard_confirm": "Hagarika",
+      "image_options_title": "Hindura Ifoto ya Profil",
+      "image_options_take": "Fata Ifoto",
+      "image_options_library": "Hitamo muri Library",
+      "image_options_cancel": "Hagarika"
+    }
+  },
+  "tabs": {
+    "home": "Ahabanza",
+    "settings": "Igenamiterere"
+  },
+    "exitApp": {
+    "title": "Sohoka muri App",
+    "message": "Urashaka gusohoka muri iyi app?",
+    "cancel": "Hagarika",
+    "confirm": "Yego"
+  }
+
+  }
+
 }

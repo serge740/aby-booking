@@ -1,5 +1,286 @@
 {
-  "welcome": "Welcome!",
-  "greeting": "Hello, {{name}}!"
+  "onboarding": {
+    "slides": [
+      {
+        "title": "Discover Local Businesses",
+        "description": "Welcome to Aby Booking — your gateway to the best restaurants, supermarkets, salons, and services in Kigali. Discover everything you need, all in one place."
+      },
+      {
+        "title": "Book & Order Easily",
+        "description": "With Aby Booking, you can explore, book appointments, and order products from trusted local businesses — quickly and conveniently."
+      },
+      {
+        "title": "Pay Securely",
+        "description": "Enjoy safe and easy payments with MTN MoMo and Airtel Money. Fast, reliable, and built for Rwandans."
+      }
+    ],
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started"
+  },
+  
+  "loginAuth": {
+    "welcome": "Welcome back!",
+    "back": "to Aby Booking",
+    "subtitle": "Sign in to explore local restaurants, salons, supermarkets, and services, manage your bookings, and order products easily.",
+    "placeholder_identifier": "Enter your phone number or email",
+    "placeholder_phone": "Enter your phone number",
+    "placeholder_email": "Enter your email",
+    "placeholder_password": "Enter your password",
+    "remember_me": "Keep me signed in",
+    "forgot_password": "Forgot your password?",
+    "sign_in": "Sign in",
+    "or": "OR",
+    "continue_as_guest": "Continue as a guest",
+    "no_account": "Don’t have an account yet?",
+    "create_account": "Create your account",
+    "error_identifier_required": "Please enter your phone number or email",
+    "error_identifier_invalid": "Please enter a valid phone number or email",
+    "error_password_required": "Password cannot be empty",
+    "error_password_length": "Password must be at least 6 characters",
+    "login_failed": "Sign in failed",
+    "login_failed_message": "We couldn’t log you in. Please check your details and try again."
+  },
+  "registerAuth": {
+    "hello": "Hello",
+    "there": "there!",
+    "register_subtitle": "Just a few steps and you’re ready to explore local restaurants, salons, supermarkets, and services with Aby Booking.",
+    "placeholder_name": "Enter your full name",
+    "placeholder_email": "Enter your email",
+    "placeholder_phone": "Enter your phone number",
+    "placeholder_password": "Create a password",
+    "placeholder_confirm_password": "Re-type your password",
+    "terms": "By signing up, you agree to our ",
+    "terms_service": "Terms of Service",
+    "and": " and ",
+    "privacy_policy": "Privacy Policy",
+    "signup": "Sign Up",
+    "or": "Or",
+    "already_have_account": "Already have an account?",
+    "sign_in": "Sign In",
+
+    "error_name_required": "Please enter your name",
+    "error_email_required": "Email is required",
+    "error_email_invalid": "Please enter a valid email",
+    "error_phone_required": "Phone number is required",
+    "error_phone_invalid": "Please enter a valid phone number",
+    "error_password_required": "Password cannot be empty",
+    "error_password_length": "Password must be at least 6 characters",
+    "error_confirm_required": "Please confirm your password",
+    "error_confirm_mismatch": "Passwords do not match",
+    "register_failed": "Sign Up Failed",
+    "register_failed_message": "We couldn’t create your account. Please check your details and try again."
+  },
+  "guest": {
+
  
+  "index": {
+    "app_name": "Aby Booking",
+    "app_subtitle": "Your Local Marketplace",
+    "location": "Kigali, Rwanda",
+    "banner": [
+      {
+        "title": "Explore Kigali's Best Restaurants",
+        "subtitle": "Order your favorite meals quickly and easily"
+      },
+      {
+        "title": "Fresh Groceries Delivered",
+        "subtitle": "Shop from top supermarkets near you"
+      },
+      {
+        "title": "Book Beauty Services",
+        "subtitle": "Find your perfect salon, spa, or beauty service"
+      },
+      {
+        "title": "Support Local Businesses",
+        "subtitle": "Discover trusted providers and services nearby"
+      }
+    ],
+    "stats": {
+      "businesses": "350+ Local Businesses",
+      "customers": "10K+ Happy Customers",
+      "orders": "50K+ Orders Delivered"
+    },
+    "section_title": "Explore Categories",
+    "section_subtitle": "Discover amazing local businesses near you",
+    "categories": [
+      { "title": "Restaurants", "subtitle": "120+ options" },
+      { "title": "Supermarkets", "subtitle": "50+ stores" },
+      { "title": "Beauty & Spa", "subtitle": "80+ salons" },
+      { "title": "Electronics", "subtitle": "30+ shops" },
+      { "title": "Fashion", "subtitle": "45+ stores" },
+      { "title": "Home Services", "subtitle": "25+ providers" }
+    ],
+    "cta_title": "Are you a business owner?",
+    "cta_subtitle": "List your business on Aby Booking and reach thousands of customers in Kigali",
+    "cta_button": "Get Started"
+  }
+,
+    
+  "settings": {
+    "header": "Settings",
+    "section_general": "General",
+    "notifications": "Notifications",
+    "dark_mode": "Dark Mode",
+    "change_language": "Change Language",
+    "section_account": "Account",
+    "logout": "Log Out",
+    "logout_confirm": "Are you sure you want to log out of Aby Booking?",
+    "language_alert": "Language options will be available soon.",
+    "footer": "Aby Booking App Version 1.0.0"
+  },
+   "support": {
+    "header": "Support Center",
+    "subheader": "We’re here to help you with any questions or issues while using Aby Booking.",
+    "contact_title": "Contact Us",
+    "phone": "Phone: +250 788 123 456",
+    "email": "Email: support@abybooking.rw",
+    "whatsapp_title": "WhatsApp Support",
+    "whatsapp_link": "Chat with us on WhatsApp",
+    "faq_title": "Frequently Asked Questions",
+    "faq": [
+      "How do I book a service or product?",
+      "Can I cancel or change my booking?",
+      "How do I track my order or reservation?",
+      "What should I do if I encounter a problem with my booking?"
+    ],
+    "footer": "Thank you for using Aby Booking!"
+  },
+  
+  "bus": {
+    "header": "Local Businesses Near You"
+  }
+
+  },
+  "dashboard": {
+    "index": {
+      "welcome": "Welcome back",
+      "search_placeholder": "Search routes, cities, or companies...",
+      "quick_actions": {
+        "find_routes": "Find Routes",
+        "schedule": "Schedule",
+        "stations": "Stations",
+        "help": "Help"
+      },
+      "upcoming_trips": "Upcoming Trips",
+      "completed_trips": "Completed Trips",
+      "promo_title": "Get 20% Off Your Next Ride!",
+      "promo_subtitle": "Book now and save big on all routes.",
+      "promo_button": "Book Now",
+      "section_title": "Your Tickets",
+      "section_subtitle": "Manage all your bus bookings in one place",
+      "tabs": {
+        "all": "All",
+        "upcoming": "Upcoming",
+        "past": "Past"
+      },
+      "status": {
+        "upcoming": "Upcoming",
+        "completed": "Completed"
+      },
+      "ticket": {
+        "details": "View Details"
+      },
+      "empty": {
+        "no_tickets": "No tickets found",
+        "no_upcoming": "You have no upcoming trips. Book one now!",
+        "no_history": "Your travel history is empty.",
+        "start_booking": "Start your journey by booking a ticket.",
+        "book_now": "Book Now"
+      }
+    },
+      "settings": {
+    "quick_actions": "Quick Actions",
+    "account_management": "Account Management",
+    "preferences": "Preferences",
+    "support_info": "Support & Info",
+    "danger_zone": "Danger Zone",
+    "edit_profile": "Edit Profile",
+    "change_password": "Change Password",
+    "privacy_security": "Privacy & Security",
+    "saved_addresses": "Saved Addresses",
+    "push_notifications": "Push Notifications",
+    "email_notifications": "Email Notifications",
+    "language": "Language",
+    "dark_mode": "Dark Mode",
+    "help_center": "Help Center",
+    "contact_support": "Contact Support",
+    "rate_app": "Rate Aby Booking",
+    "terms_conditions": "Terms & Conditions",
+    "privacy_policy": "Privacy Policy",
+    "logout": "Logout",
+    "delete_account": "Delete Account",
+    "footer_brand": "Aby Booking",
+    "footer_version": "Version 1.0.0",
+    "footer_member_since": "Member since",
+    "footer_copyright": "© 2024 Aby Booking. All rights reserved.",
+    "alerts": {
+      "logout_title": "Logout",
+      "logout_message": "Are you sure you want to log out of Aby Booking?",
+      "logout_cancel": "Cancel",
+      "logout_confirm": "Logout",
+      "delete_title": "Delete Account",
+      "delete_message": "Are you sure you want to delete your Aby Booking account? This action cannot be undone.",
+      "delete_cancel": "Cancel",
+      "delete_confirm": "Delete",
+      "error_logout": "Failed to log out. Please try again.",
+      "error_delete": "Failed to delete account. Please try again."
+    },
+    "quick_items": {
+      "orders": "My Orders",
+      "favorites": "Favorites",
+      "wallet": "Wallet",
+      "rewards": "Rewards"
+    }
+  },
+   "profile": {
+    "header_title": "Edit Profile",
+    "image_hint": "Tap to change profile picture",
+    "full_name_label": "Full Name *",
+    "full_name_placeholder": "Enter your full name",
+    "email_label": "Email Address *",
+    "email_placeholder": "Enter your email",
+    "phone_label": "Phone Number",
+    "phone_placeholder": "Enter your phone number",
+    "account_status": "Account Status",
+    "member_since": "Member Since",
+    "connected": "Connected",
+    "save_button": "Save Changes",
+    "alerts": {
+      "image_permission_title": "Permission Required",
+      "image_permission_message": "Please grant access to your photos to update your profile picture.",
+      "camera_permission_message": "Please grant access to your camera to take a new photo.",
+      "image_error": "Failed to pick image. Please try again.",
+      "photo_error": "Failed to take photo. Please try again.",
+      "validation_name": "Full name is required.",
+      "validation_email": "Email is required.",
+      "validation_email_format": "Please enter a valid email address.",
+      "success_title": "Success",
+      "success_message": "Your profile has been updated successfully!",
+      "success_ok": "OK",
+      "error_title": "Error",
+      "error_default": "Failed to update profile. Please try again.",
+      "discard_title": "Discard Changes?",
+      "discard_message": "You have unsaved changes. Are you sure you want to go back?",
+      "discard_keep": "Keep Editing",
+      "discard_confirm": "Discard",
+      "image_options_title": "Update Profile Picture",
+      "image_options_take": "Take Photo",
+      "image_options_library": "Choose from Library",
+      "image_options_cancel": "Cancel"
+    }
+  },
+  "tabs": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+    "exitApp": {
+    "title": "Exit App",
+    "message": "Do you want to exit the app?",
+    "cancel": "Cancel",
+    "confirm": "Yes"
+  }
+
+  }
+
 }

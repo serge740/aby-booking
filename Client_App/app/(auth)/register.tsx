@@ -12,13 +12,15 @@ import {
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-// Import info
+import { useTranslation } from 'react-i18next'; // ADD THIS
 import info from '@/constants/info';
 import { router } from 'expo-router';
-import { useClientAuth } from '../../contexts/ClientAuthContext'; // Adjust the path as necessary
+import { useClientAuth } from '../../contexts/ClientAuthContext';
 import GoogleButton from '@/components/auth/GoogleButton';
 
 const RegisterScreen: React.FC = () => {
+  const { t } = useTranslation(); // ADD THIS
+
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -30,51 +32,33 @@ const RegisterScreen: React.FC = () => {
   const { register } = useClientAuth();
 
   const validateName = (value: string) => {
-    if (!value.trim()) {
-      return 'Name is required';
-    }
+    if (!value.trim()) return t('registerAuth.error_name_required');
     return '';
   };
 
   const validateEmail = (value: string) => {
-    if (!value.trim()) {
-      return 'Email is required';
-    }
+    if (!value.trim()) return t('registerAuth.error_email_required');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-      return 'Invalid email format';
-    }
+    if (!emailRegex.test(value)) return t('registerAuth.error_email_invalid');
     return '';
   };
 
   const validatePhoneNumber = (value: string) => {
-    if (!value.trim()) {
-      return 'Phone number is required';
-    }
+    if (!value.trim()) return t('registerAuth.error_phone_required');
     const phoneRegex = /^\+?[\d\s-]{7,15}$/;
-    if (!phoneRegex.test(value)) {
-      return 'Invalid phone number format';
-    }
+    if (!phoneRegex.test(value)) return t('registerAuth.error_phone_invalid');
     return '';
   };
 
   const validatePassword = (value: string) => {
-    if (!value) {
-      return 'Password is required';
-    }
-    if (value.length <= 6) {
-      return 'Password must be more than 6 characters';
-    }
+    if (!value) return t('registerAuth.error_password_required');
+    if (value.length <= 6) return t('registerAuth.error_password_length');
     return '';
   };
 
   const validateConfirmPassword = (value: string) => {
-    if (!value) {
-      return 'Confirm password is required';
-    }
-    if (value !== password) {
-      return 'Passwords do not match';
-    }
+    if (!value) return t('registerAuth.error_confirm_required');
+    if (value !== password) return t('registerAuth.error_confirm_mismatch');
     return '';
   };
 
@@ -118,7 +102,6 @@ const RegisterScreen: React.FC = () => {
   };
 
   const handleSignUp = async () => {
-    // Validate all fields before submission
     const nameError = validateName(name);
     const emailError = validateEmail(email);
     const phoneError = validatePhoneNumber(phoneNumber);
@@ -133,15 +116,16 @@ const RegisterScreen: React.FC = () => {
       confirmPassword: confirmError,
     });
 
-    if (nameError || emailError || phoneError || passwordError || confirmError) {
-      return;
-    }
+    if (nameError || emailError || phoneError || passwordError || confirmError) return;
 
     try {
       await register({ name, email, phoneNumber, password });
       router.replace('/(dashboard)');
-    } catch (error:any) {
-      Alert.alert('Registration Failed', error.message  || 'Please check your details and try again.');
+    } catch (error: any) {
+      Alert.alert(
+        t('registerAuth.register_failed'),
+        error.message || t('registerAuth.register_failed_message')
+      );
     }
   };
 
@@ -161,21 +145,21 @@ const RegisterScreen: React.FC = () => {
         >
           {/* Welcome Text */}
           <View style={styles.welcomeContainer}>
-            <Text style={styles.helloText}>Hello</Text>
-            <Text style={styles.thereText}>there!</Text>
+            <Text style={styles.helloText}>{t('registerAuth.hello')}</Text>
+            <Text style={styles.thereText}>{t('registerAuth.there')}</Text>
           </View>
+
           {/* Subtitle */}
-          <Text style={styles.subtitleText}>
-            Just few clicks and we become friends and let's enjoy every day get updates on all your shipments
-          </Text>
+          <Text style={styles.subtitleText}>{t('registerAuth.register_subtitle')}</Text>
+
           {/* Input Fields */}
           <View style={styles.inputContainer}>
-            {/* Name Input */}
+            {/* Name */}
             <View style={styles.inputWrapper}>
               <Ionicons name="person-outline" size={20} color="#999" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter your full name"
+                placeholder={t('registerAuth.placeholder_name')}
                 placeholderTextColor="#999"
                 value={name}
                 onChangeText={(value) => handleInputChange('name', value)}
@@ -183,12 +167,13 @@ const RegisterScreen: React.FC = () => {
               />
             </View>
             {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
-            {/* Email Input */}
+
+            {/* Email */}
             <View style={styles.inputWrapper}>
               <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter your email"
+                placeholder={t('registerAuth.placeholder_email')}
                 placeholderTextColor="#999"
                 value={email}
                 onChangeText={(value) => handleInputChange('email', value)}
@@ -197,12 +182,13 @@ const RegisterScreen: React.FC = () => {
               />
             </View>
             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-            {/* Phone Number Input */}
+
+            {/* Phone */}
             <View style={styles.inputWrapper}>
               <Ionicons name="call-outline" size={20} color="#999" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                placeholder="Enter your phone number"
+                placeholder={t('registerAuth.placeholder_phone')}
                 placeholderTextColor="#999"
                 value={phoneNumber}
                 onChangeText={(value) => handleInputChange('phoneNumber', value)}
@@ -210,46 +196,42 @@ const RegisterScreen: React.FC = () => {
               />
             </View>
             {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
-            {/* Password Input */}
+
+            {/* Password */}
             <View style={styles.inputWrapper}>
               <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.passwordInput]}
-                placeholder="Create password"
+                placeholder={t('registerAuth.placeholder_password')}
                 placeholderTextColor="#999"
                 value={password}
                 onChangeText={(value) => handleInputChange('password', value)}
                 secureTextEntry={!showPassword}
               />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeIcon}
-              >
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
                 <Ionicons
-                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
                   color="#999"
                 />
               </TouchableOpacity>
             </View>
             {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-            {/* Confirm Password Input */}
+
+            {/* Confirm Password */}
             <View style={styles.inputWrapper}>
               <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
               <TextInput
                 style={[styles.input, styles.passwordInput]}
-                placeholder="Re-type your password"
+                placeholder={t('registerAuth.placeholder_confirm_password')}
                 placeholderTextColor="#999"
                 value={confirmPassword}
                 onChangeText={(value) => handleInputChange('confirmPassword', value)}
                 secureTextEntry={!showConfirmPassword}
               />
-              <TouchableOpacity
-                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                style={styles.eyeIcon}
-              >
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
                 <Ionicons
-                  name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+                  name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
                   color="#999"
                 />
@@ -257,31 +239,34 @@ const RegisterScreen: React.FC = () => {
             </View>
             {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
           </View>
+
           {/* Terms and Privacy */}
           <View style={styles.termsContainer}>
             <Text style={styles.termsText}>
-              By signing up, you agree to our{' '}
+              {t('registerAuth.terms')}
               <Text style={[styles.termsLink, { color: info.primary[500] }]}>
-                Terms of Service
+                {t('registerAuth.terms_service')}
               </Text>
-              {' '}and{'\n'}
+              {t('registerAuth.and')}
               <Text style={[styles.termsLink, { color: info.primary[500] }]}>
-                Privacy Policy
+                {t('registerAuth.privacy_policy')}
               </Text>
             </Text>
           </View>
+
           {/* Sign Up Button */}
           <TouchableOpacity
             style={[styles.signUpButton, { backgroundColor: info.primary[500] }]}
             onPress={handleSignUp}
             disabled={hasErrors()}
           >
-            <Text style={styles.signUpButtonText}>Signup</Text>
+            <Text style={styles.signUpButtonText}>{t('registerAuth.signup')}</Text>
           </TouchableOpacity>
+
           {/* OR Divider */}
           <View style={styles.dividerContainer}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>Or</Text>
+            <Text style={styles.dividerText}>{t('registerAuth.or')}</Text>
             <View style={styles.dividerLine} />
           </View>
 
@@ -289,10 +274,10 @@ const RegisterScreen: React.FC = () => {
 
           {/* Sign In Link */}
           <View style={styles.signInContainer}>
-            <Text style={styles.signInText}>Already have an account? </Text>
+            <Text style={styles.signInText}>{t('registerAuth.already_have_account')} </Text>
             <TouchableOpacity onPress={handleSignIn}>
               <Text style={[styles.signInLink, { color: info.primary[500] }]}>
-                Sign In
+                {t('registerAuth.sign_in')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -302,14 +287,12 @@ const RegisterScreen: React.FC = () => {
   );
 };
 
+/* ------------------------------------------------------------------ */
+/* Styles – unchanged                                                 */
+/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  keyboardView: {
-    flex: 1,
-  },
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
+  keyboardView: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
@@ -317,28 +300,11 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     justifyContent: 'center',
   },
-  welcomeContainer: {
-    marginBottom: 12,
-  },
-  helloText: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: info.primary[500],
-  },
-  thereText: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#000',
-  },
-  subtitleText: {
-    fontSize: 13,
-    color: '#666',
-    lineHeight: 19,
-    marginBottom: 28,
-  },
-  inputContainer: {
-    marginBottom: 12,
-  },
+  welcomeContainer: { marginBottom: 12 },
+  helloText: { fontSize: 32, fontWeight: '700', color: info.primary[500] },
+  thereText: { fontSize: 32, fontWeight: '700', color: '#000' },
+  subtitleText: { fontSize: 13, color: '#666', lineHeight: 19, marginBottom: 28 },
+  inputContainer: { marginBottom: 12 },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -350,41 +316,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E5E5',
   },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    color: '#000',
-  },
-  passwordInput: {
-    paddingRight: 40,
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: 16,
-    padding: 4,
-  },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginBottom: 10,
-    marginLeft: 10,
-  },
-  termsContainer: {
-    marginBottom: 24,
-    paddingHorizontal: 4,
-  },
-  termsText: {
-    fontSize: 12,
-    color: '#666',
-    lineHeight: 18,
-    textAlign: 'center',
-  },
-  termsLink: {
-    fontWeight: '600',
-  },
+  inputIcon: { marginRight: 12 },
+  input: { flex: 1, fontSize: 14, color: '#000' },
+  passwordInput: { paddingRight: 40 },
+  eyeIcon: { position: 'absolute', right: 16, padding: 4 },
+  errorText: { color: 'red', fontSize: 12, marginBottom: 10, marginLeft: 10 },
+  termsContainer: { marginBottom: 24, paddingHorizontal: 4 },
+  termsText: { fontSize: 12, color: '#666', lineHeight: 18, textAlign: 'center' },
+  termsLink: { fontWeight: '600' },
   signUpButton: {
     borderRadius: 25,
     paddingVertical: 16,
@@ -396,39 +335,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  signUpButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E5E5E5',
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: '#999',
-  },
-  signInContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  signInText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  signInLink: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
+  signUpButtonText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E5E5' },
+  dividerText: { marginHorizontal: 16, fontSize: 14, color: '#999' },
+  signInContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+  signInText: { fontSize: 14, color: '#666' },
+  signInLink: { fontSize: 14, fontWeight: '600' },
 });
 
 export default RegisterScreen;

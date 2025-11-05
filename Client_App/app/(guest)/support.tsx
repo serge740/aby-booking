@@ -1,34 +1,45 @@
 import React from 'react';
-import { View, Text, StyleSheet, Linking, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Linking,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import { useTranslation } from 'react-i18next'; // ADD THIS
 
 export default function Support() {
+  const { t } = useTranslation(); // ADD THIS
+
+  const faqItems = t('guest.support.faq', { returnObjects: true }) as string[];
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Support Center</Text>
-      <Text style={styles.subheader}>We’re here to help you with any issues or questions.</Text>
+      <Text style={styles.header}>{t('guest.support.header')}</Text>
+      <Text style={styles.subheader}>{t('guest.support.subheader')}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.title}>📞 Contact Us</Text>
-        <Text style={styles.text}>Phone: +250 788 123 456</Text>
-        <Text style={styles.text}>Email: support@rwandabus.com</Text>
+        <Text style={styles.title}>{t('guest.support.contact_title')}</Text>
+        <Text style={styles.text}>{t('guest.support.phone')}</Text>
+        <Text style={styles.text}>{t('guest.support.email')}</Text>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>💬 WhatsApp Support</Text>
+        <Text style={styles.title}>{t('guest.support.whatsapp_title')}</Text>
         <TouchableOpacity onPress={() => Linking.openURL('https://wa.me/250788123456')}>
-          <Text style={styles.link}>Chat with us on WhatsApp</Text>
+          <Text style={styles.link}>{t('guest.support.whatsapp_link')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.title}>❓ Frequently Asked Questions</Text>
-        <Text style={styles.text}>• How do I book a bus ticket?</Text>
-        <Text style={styles.text}>• Can I cancel or change my trip?</Text>
-        <Text style={styles.text}>• How can I get a refund?</Text>
-        <Text style={styles.text}>• What should I do if I lose my ticket?</Text>
+        <Text style={styles.title}>{t('guest.support.faq_title')}</Text>
+        {faqItems.map((item, index) => (
+          <Text key={index} style={styles.text}>• {item}</Text>
+        ))}
       </View>
 
-      <Text style={styles.footer}>Thank you for traveling with us!</Text>
+      <Text style={styles.footer}>{t('guest.support.footer')}</Text>
     </ScrollView>
   );
 }

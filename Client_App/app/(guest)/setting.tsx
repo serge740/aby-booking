@@ -1,27 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import { useTranslation } from 'react-i18next'; // ADD THIS
 
 export default function Setting() {
+  const { t } = useTranslation(); // ADD THIS
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
 
   const handleLanguageChange = () => {
-    Alert.alert('Change Language', 'Language settings will be available soon.');
+    Alert.alert(t('guest.settings.change_language'), t('guest.settings.language_alert'));
   };
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to log out?');
+    Alert.alert(t('guest.settings.logout'), t('guest.settings.logout_confirm'));
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Settings</Text>
+      <Text style={styles.header}>{t('guest.settings.header')}</Text>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>General</Text>
+        <Text style={styles.sectionTitle}>{t('guest.settings.section_general')}</Text>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Notifications</Text>
+          <Text style={styles.label}>{t('guest.settings.notifications')}</Text>
           <Switch
             value={notifications}
             onValueChange={setNotifications}
@@ -30,7 +40,7 @@ export default function Setting() {
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>Dark Mode</Text>
+          <Text style={styles.label}>{t('guest.settings.dark_mode')}</Text>
           <Switch
             value={darkMode}
             onValueChange={setDarkMode}
@@ -39,19 +49,19 @@ export default function Setting() {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleLanguageChange}>
-          <Text style={styles.buttonText}>Change Language</Text>
+          <Text style={styles.buttonText}>{t('guest.settings.change_language')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
+        <Text style={styles.sectionTitle}>{t('guest.settings.section_account')}</Text>
 
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
-          <Text style={[styles.buttonText, { color: '#EF4444' }]}>Log Out</Text>
+          <Text style={[styles.buttonText, { color: '#EF4444' }]}>{t('guest.settings.logout')}</Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.footer}>App Version 1.0.0</Text>
+      <Text style={styles.footer}>{t('guest.settings.footer')}</Text>
     </ScrollView>
   );
 }

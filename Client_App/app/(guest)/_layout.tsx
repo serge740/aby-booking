@@ -2,8 +2,10 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+
 import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
+import info from '@/constants/info';
 
 export default function TabLayout() {
   return (
@@ -30,9 +32,9 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="house.fill" 
+            <Ionicons 
+              size={focused ? 28 : 24} 
+              name="home" 
               color={color} 
             />
           ),
@@ -41,13 +43,13 @@ export default function TabLayout() {
 
       {/* Bus Agency Tab */}
       <Tabs.Screen
-        name="bus"
+        name="company"
         options={{
           title: 'Bus Agency',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="bus.fill" 
+            <Ionicons 
+              size={focused ? 28 : 24} 
+              name="bus" 
               color={color} 
             />
           ),
@@ -60,9 +62,9 @@ export default function TabLayout() {
         options={{
           title: 'Support',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="lifepreserver.fill" 
+            <Ionicons 
+              size={focused ? 28 : 24} 
+              name="help-circle" 
               color={color} 
             />
           ),
@@ -75,9 +77,9 @@ export default function TabLayout() {
         options={{
           title: 'Setting',
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={focused ? 32 : 28} 
-              name="gearshape.fill" 
+            <Ionicons 
+              size={focused ? 28 : 24} 
+              name="settings" 
               color={color} 
             />
           ),
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 8,
     elevation: 15,
-    shadowColor: '#0e8a74',
+    shadowColor: info.primary[500],
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 16,
@@ -116,7 +118,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   tabBarActive: {
-    color: '#0e8a74',
+    color: info.primary[500],
   },
   tabBarInactive: {
     color: '#a0a0a0',

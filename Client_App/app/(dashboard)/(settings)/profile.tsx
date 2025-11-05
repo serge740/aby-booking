@@ -19,10 +19,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useClientAuth } from '@/contexts/ClientAuthContext';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next'; // ADD THIS
 import ENV from '@/env';
 import info from '@/constants/info';
 
 const EditProfileScreen: React.FC = () => {
+  const { t } = useTranslation(); // ADD THIS
   const { client, updateProfile } = useClientAuth();
   
   const [name, setName] = useState('');
@@ -37,7 +39,7 @@ const EditProfileScreen: React.FC = () => {
       setName(client.name || '');
       setEmail(client.email || '');
       setPhoneNumber(client.phoneNumber || '');
-      setProfileImage( client.profileImage ? `${ENV.API_URL}${client.profileImage}`:null);
+      setProfileImage(client.profileImage ? `${ENV.API_URL}${client.profileImage}` : null);
     }
   }, [client]);
 
@@ -47,7 +49,7 @@ const EditProfileScreen: React.FC = () => {
         name !== client.name ||
         email !== client.email ||
         phoneNumber !== (client.phoneNumber || '') ||
-        profileImage !== client.profileImage;
+        profileImage !== (client.profileImage ? `${ENV.API_URL}${client.profileImage}` : null);
       setHasChanges(changed);
     }
   }, [name, email, phoneNumber, profileImage, client]);
@@ -55,11 +57,10 @@ const EditProfileScreen: React.FC = () => {
   const pickImage = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
       if (status !== 'granted') {
         Alert.alert(
-          'Permission Required',
-          'Please grant permission to access your photos to change your profile picture.'
+          t('dashboard.profile.alerts.image_permission_title'),
+          t('dashboard.profile.alerts.image_permission_message')
         );
         return;
       }
@@ -76,18 +77,17 @@ const EditProfileScreen: React.FC = () => {
       }
     } catch (error) {
       console.error('Error picking image:', error);
-      Alert.alert('Error', 'Failed to pick image. Please try again.');
+      Alert.alert('Error', t('dashboard.profile.alerts.image_error'));
     }
   };
 
   const takePhoto = async () => {
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      
       if (status !== 'granted') {
         Alert.alert(
-          'Permission Required',
-          'Please grant permission to access your camera to take a photo.'
+          t('dashboard.profile.alerts.image_permission_title'),
+          t('dashboard.profile.alerts.camera_permission_message')
         );
         return;
       }
@@ -103,36 +103,34 @@ const EditProfileScreen: React.FC = () => {
       }
     } catch (error) {
       console.error('Error taking photo:', error);
-      Alert.alert('Error', 'Failed to take photo. Please try again.');
+      Alert.alert('Error', t('dashboard.profile.alerts.photo_error'));
     }
   };
 
   const handleImagePress = () => {
     Alert.alert(
-      'Update Profile Picture',
-      'Choose an option',
+      t('dashboard.profile.alerts.image_options_title'),
+      '',
       [
-        { text: 'Take Photo', onPress: takePhoto },
-        { text: 'Choose from Library', onPress: pickImage },
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('dashboard.profile.alerts.image_options_take'), onPress: takePhoto },
+        { text: t('dashboard.profile.alerts.image_options_library'), onPress: pickImage },
+        { text: t('dashboard.profile.alerts.image_options_cancel'), style: 'cancel' },
       ]
     );
   };
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert('Validation Error', 'Name is required.');
+      Alert.alert('Validation Error', t('dashboard.profile.alerts.validation_name'));
       return;
     }
-
     if (!email.trim()) {
-      Alert.alert('Validation Error', 'Email is required.');
+      Alert.alert('Validation Error', t('dashboard.profile.alerts.validation_email'));
       return;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      Alert.alert('Validation Error', 'Please enter a valid email address.');
+      Alert.alert('Validation Error', t('dashboard.profile.alerts.validation_email_format'));
       return;
     }
 
@@ -144,17 +142,12 @@ const EditProfileScreen: React.FC = () => {
         phoneNumber: phoneNumber.trim() || null,
       };
 
-      // If image changed, create file object for upload
-      if (profileImage && profileImage !== client?.profileImage) {
-        // Extract filename from URI
+      if (profileImage && profileImage !== (client?.profileImage ? `${ENV.API_URL}${client.profileImage}` : null)) {
         const uriParts = profileImage.split('/');
         const fileName = uriParts[uriParts.length - 1];
-        
-        // Determine file type
         const fileType = fileName.split('.').pop() || 'jpg';
         const mimeType = `image/${fileType}`;
 
-        // Create file object
         updateData.profileImage = {
           uri: profileImage,
           name: fileName,
@@ -165,21 +158,13 @@ const EditProfileScreen: React.FC = () => {
       await updateProfile(updateData);
       
       Alert.alert(
-        'Success',
-        'Profile updated successfully!',
-        [
-          {
-            text: 'OK',
-            onPress: () => router.back(),
-          },
-        ]
+        t('dashboard.profile.alerts.success_title'),
+        t('dashboard.profile.alerts.success_message'),
+        [{ text: t('dashboard.profile.alerts.success_ok'), onPress: () => router.back() }]
       );
     } catch (error: any) {
-      console.error('Update profile error:', error);
-      const errorMessage = error?.response?.data?.message || 
-                          error?.message || 
-                          'Failed to update profile. Please try again.';
-      Alert.alert('Error', errorMessage);
+      const errorMessage = error?.response?.data?.message || error?.message || t('dashboard.profile.alerts.error_default');
+      Alert.alert(t('dashboard.profile.alerts.error_title'), errorMessage);
     } finally {
       setLoading(false);
     }
@@ -188,11 +173,11 @@ const EditProfileScreen: React.FC = () => {
   const handleCancel = () => {
     if (hasChanges) {
       Alert.alert(
-        'Discard Changes?',
-        'You have unsaved changes. Are you sure you want to go back?',
+        t('dashboard.profile.alerts.discard_title'),
+        t('dashboard.profile.alerts.discard_message'),
         [
-          { text: 'Keep Editing', style: 'cancel' },
-          { text: 'Discard', style: 'destructive', onPress: () => router.back() },
+          { text: t('dashboard.profile.alerts.discard_keep'), style: 'cancel' },
+          { text: t('dashboard.profile.alerts.discard_confirm'), style: 'destructive', onPress: () => router.back() },
         ]
       );
     } else {
@@ -224,10 +209,7 @@ const EditProfileScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
         {/* Header */}
         <LinearGradient
           colors={[info.primary[500], info.primary[600]]}
@@ -239,13 +221,13 @@ const EditProfileScreen: React.FC = () => {
             <TouchableOpacity onPress={handleCancel} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="#FFF" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Edit Profile</Text>
+            <Text style={styles.headerTitle}>{t('dashboard.profile.header_title')}</Text>
             <View style={styles.placeholder} />
           </View>
         </LinearGradient>
 
         <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-          {/* Profile Image Section */}
+          {/* Profile Image */}
           <View style={styles.imageSection}>
             <TouchableOpacity onPress={handleImagePress} style={styles.imageContainer}>
               {profileImage ? (
@@ -259,36 +241,36 @@ const EditProfileScreen: React.FC = () => {
                 <Ionicons name="camera" size={20} color="#FFF" />
               </View>
             </TouchableOpacity>
-            <Text style={styles.imageHint}>Tap to change profile picture</Text>
+            <Text style={styles.imageHint}>{t('dashboard.profile.image_hint')}</Text>
           </View>
 
-          {/* Form Section */}
+          {/* Form */}
           <View style={styles.formSection}>
-            {/* Name Input */}
+            {/* Name */}
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Full Name *</Text>
+              <Text style={styles.label}>{t('dashboard.profile.full_name_label')}</Text>
               <View style={styles.inputWrapper}>
                 <Ionicons name="person-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={name}
                   onChangeText={setName}
-                  placeholder="Enter your full name"
+                  placeholder={t('dashboard.profile.full_name_placeholder')}
                   placeholderTextColor="#9CA3AF"
                 />
               </View>
             </View>
 
-            {/* Email Input */}
+            {/* Email */}
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email Address *</Text>
+              <Text style={styles.label}>{t('dashboard.profile.email_label')}</Text>
               <View style={styles.inputWrapper}>
                 <Ionicons name="mail-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={email}
                   onChangeText={setEmail}
-                  placeholder="Enter your email"
+                  placeholder={t('dashboard.profile.email_placeholder')}
                   placeholderTextColor="#9CA3AF"
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -296,16 +278,16 @@ const EditProfileScreen: React.FC = () => {
               </View>
             </View>
 
-            {/* Phone Number Input */}
+            {/* Phone */}
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Phone Number</Text>
+              <Text style={styles.label}>{t('dashboard.profile.phone_label')}</Text>
               <View style={styles.inputWrapper}>
                 <Ionicons name="call-outline" size={20} color="#9CA3AF" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={phoneNumber}
                   onChangeText={setPhoneNumber}
-                  placeholder="Enter your phone number"
+                  placeholder={t('dashboard.profile.phone_placeholder')}
                   placeholderTextColor="#9CA3AF"
                   keyboardType="phone-pad"
                 />
@@ -315,26 +297,24 @@ const EditProfileScreen: React.FC = () => {
             {/* Account Info */}
             <View style={styles.infoCard}>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Account Status</Text>
+                <Text style={styles.infoLabel}>{t('dashboard.profile.account_status')}</Text>
                 <View style={styles.statusBadge}>
-                  <View style={[styles.statusDot, 
+                  <View style={[
+                    styles.statusDot,
                     { backgroundColor: client.status === 'ACTIVE' ? '#10B981' : '#EF4444' }
                   ]} />
                   <Text style={styles.statusText}>{client.status}</Text>
                 </View>
               </View>
               <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Member Since</Text>
+                <Text style={styles.infoLabel}>{t('dashboard.profile.member_since')}</Text>
                 <Text style={styles.infoValue}>
-                  {new Date(client.createdAt).toLocaleDateString('en-US', {
-                    month: 'long',
-                    year: 'numeric'
-                  })}
+                  {new Date(client.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </Text>
               </View>
               {client.google_id && (
                 <View style={styles.infoRow}>
-                  <Text style={styles.infoLabel}>Connected</Text>
+                  <Text style={styles.infoLabel}>{t('dashboard.profile.connected')}</Text>
                   <View style={styles.googleBadge}>
                     <Ionicons name="logo-google" size={14} color="#EA4335" />
                     <Text style={styles.googleText}>Google</Text>
@@ -361,7 +341,7 @@ const EditProfileScreen: React.FC = () => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               >
-                <Text style={styles.saveButtonText}>Save Changes</Text>
+                <Text style={styles.saveButtonText}>{t('dashboard.profile.save_button')}</Text>
               </LinearGradient>
             )}
           </TouchableOpacity>
@@ -371,214 +351,47 @@ const EditProfileScreen: React.FC = () => {
   );
 };
 
+/* ------------------------------------------------------------------ */
+/* Styles – unchanged                                                 */
+/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F9FAFB',
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#6B7280',
-  },
-  header: {
-    paddingTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFF',
-  },
-  placeholder: {
-    width: 40,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  imageSection: {
-    alignItems: 'center',
-    paddingVertical: 30,
-  },
-  imageContainer: {
-    position: 'relative',
-  },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 4,
-    borderColor: '#FFF',
-  },
-  profileImagePlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: info.primary[500],
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 4,
-    borderColor: '#FFF',
-  },
-  initialsText: {
-    fontSize: 40,
-    fontWeight: '700',
-    color: '#FFF',
-  },
-  cameraIconContainer: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: info.primary[500],
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: '#FFF',
-  },
-  imageHint: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  formSection: {
-    paddingHorizontal: 20,
-    paddingBottom: 100,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    paddingHorizontal: 16,
-  },
-  inputIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 14,
-    fontSize: 16,
-    color: '#1F2937',
-  },
-  infoCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 12,
-    padding: 16,
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: '#6B7280',
-  },
-  infoValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1F2937',
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F3F4F6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 6,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  googleBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FEF2F2',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    gap: 6,
-  },
-  googleText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#EA4335',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
-    backgroundColor: '#FFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-  },
-  saveButton: {
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  saveButtonDisabled: {
-    opacity: 0.6,
-  },
-  saveButtonGradient: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
+  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  keyboardView: { flex: 1 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 12, fontSize: 16, color: '#6B7280' },
+  header: { paddingTop: 10, paddingBottom: 20, paddingHorizontal: 20 },
+  headerContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  backButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: '#FFF' },
+  placeholder: { width: 40 },
+  scrollView: { flex: 1 },
+  imageSection: { alignItems: 'center', paddingVertical: 30 },
+  imageContainer: { position: 'relative' },
+  profileImage: { width: 120, height: 120, borderRadius: 60, borderWidth: 4, borderColor: '#FFF' },
+  profileImagePlaceholder: { width: 120, height: 120, borderRadius: 60, backgroundColor: info.primary[500], alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: '#FFF' },
+  initialsText: { fontSize: 40, fontWeight: '700', color: '#FFF' },
+  cameraIconContainer: { position: 'absolute', bottom: 0, right: 0, width: 40, height: 40, borderRadius: 20, backgroundColor: info.primary[500], alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
+  imageHint: { marginTop: 12, fontSize: 14, color: '#6B7280' },
+  formSection: { paddingHorizontal: 20, paddingBottom: 100 },
+  inputContainer: { marginBottom: 20 },
+  label: { fontSize: 14, fontWeight: '600', color: '#374151', marginBottom: 8 },
+  inputWrapper: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB', paddingHorizontal: 16 },
+  inputIcon: { marginRight: 12 },
+  input: { flex: 1, paddingVertical: 14, fontSize: 16, color: '#1F2937' },
+  infoCard: { backgroundColor: '#FFF', borderRadius: 12, padding: 16, marginTop: 8, borderWidth: 1, borderColor: '#E5E7EB' },
+  infoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 },
+  infoLabel: { fontSize: 14, color: '#6B7280' },
+  infoValue: { fontSize: 14, fontWeight: '600', color: '#1F2937' },
+  statusBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12 },
+  statusDot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
+  statusText: { fontSize: 12, fontWeight: '600', color: '#374151' },
+  googleBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FEF2F2', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, gap: 6 },
+  googleText: { fontSize: 12, fontWeight: '600', color: '#EA4335' },
+  buttonContainer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 20, backgroundColor: '#FFF', borderTopWidth: 1, borderTopColor: '#E5E7EB' },
+  saveButton: { borderRadius: 12, overflow: 'hidden' },
+  saveButtonDisabled: { opacity: 0.6 },
+  saveButtonGradient: { paddingVertical: 16, alignItems: 'center', justifyContent: 'center' },
+  saveButtonText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
 });
 
 export default EditProfileScreen;
