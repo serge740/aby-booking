@@ -1,0 +1,74 @@
+{
+  "expo": {
+    "name": "Aby Ticket",
+    "slug": "aby-ticket",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo/logo.png",
+    "scheme": "abyticket",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+
+    "description": "Aby Ticket is a smart and convenient platform for booking and buying bus tickets. Enjoy a seamless travel experience with secure payments, instant booking, and digital tickets — all in one place.",
+
+    "platforms": ["ios", "android", "web"],
+
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.abyticket.client",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Aby Ticket uses your location to find nearby bus stations and improve your booking experience."
+      }
+    },
+
+    "android": {
+      "package": "com.abyticket.client",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo/logo.png",
+        "backgroundColor": "#E6F4FE"
+      },
+      "permissions": [],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro",
+      "description": "Book and buy bus tickets online with Aby Ticket — fast, easy, and secure."
+    },
+
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "backgroundColor": "#000000"
+          }
+        }
+      ],
+      "expo-localization",
+      "expo-secure-store"
+    ],
+
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+
+    "extra": {
+      "appDisplayName": "Aby Ticket",
+      "appTagline": "Book, Buy, and Travel Smarter",
+      "supportEmail": "support@abyticket.com",
+      "website": "https://abyticket.com"
+    }
+  }
+}

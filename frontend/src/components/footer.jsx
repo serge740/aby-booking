@@ -6,214 +6,211 @@ export default function AbyRestaurantFooter() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const quickLinks = [
+    { label: 'Home', path: "/" },
+    { label: 'About Us', path: "/about" },
+    { label: 'Menu', path: "/menu" },
+    { label: 'Reservations', path: "/reservations" },
+    { label: 'Gallery', path: "/gallery" },
+    { label: 'Contact', path: "/contact" }
+  ];
+
+  const services = [
+    { label: 'Dine In', path: '/dine-in' },
+    { label: 'Takeaway', path: '/takeaway' },
+    { label: 'Delivery', path: '/delivery' },
+    { label: 'Catering', path: '/catering' },
+    { label: 'Private Events', path: '/events' },
+    { label: 'Gift Cards', path: '/gift-cards' }
+  ];
+
+  const socialLinks = [
+    { icon: Facebook, href: 'https://facebook.com', name: 'Facebook' },
+    { icon: Twitter, href: 'https://twitter.com', name: 'Twitter' },
+    { icon: Instagram, href: 'https://instagram.com', name: 'Instagram' },
+    { icon: Mail, href: 'mailto:info@abyrestaurant.com', name: 'Email' }
+  ];
+
   return (
-    <footer className="relative bg-black text-white overflow-hidden">
+    <footer className="relative bg-gray-900 text-white w-full overflow-hidden">
+      {/* Background with gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/100 via-zinc-800/100 to-black/100 z-[10]">
+        <div 
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        ></div>
+      </div>
+
       {/* Floating Decorative Elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 opacity-20 animate-float">
-        <div className="w-full h-full bg-primary-500 rounded-full"></div>
+      <div className="absolute top-10 left-10 w-20 h-20 opacity-10 animate-float">
+        <div className="w-full h-full bg-red-500 rounded-full"></div>
       </div>
-      <div className="absolute bottom-20 right-20 w-16 h-16 opacity-20 animate-float" style={{ animationDelay: '1s' }}>
-        <div className="w-full h-full bg-secondary-500 rounded-full"></div>
-      </div>
-      <div className="absolute top-1/2 right-10 w-24 h-24 opacity-10 animate-float" style={{ animationDelay: '2s' }}>
-        <div className="w-full h-full bg-green-500 rounded-full transform rotate-45"></div>
+      <div className="absolute bottom-20 right-20 w-16 h-16 opacity-10 animate-float" style={{ animationDelay: '1s' }}>
+        <div className="w-full h-full bg-orange-500 rounded-full"></div>
       </div>
 
-      {/* Pizza Slice Decoration */}
-      <div className="absolute top-8 left-8 w-32 h-32 opacity-30">
-        <img 
-          src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200&h=200&fit=crop"
-          alt="Pizza"
-          className="w-full h-full object-cover rounded-full"
-        />
-      </div>
-
-      {/* Tomato Decoration */}
-      <div className="absolute top-8 right-12 w-24 h-24 opacity-40">
-        <div className="w-full h-full bg-primary-500 rounded-full"></div>
-      </div>
-
-      {/* Stars/Dots Background */}
-      <div className="absolute inset-0">
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 3}s`,
-              opacity: 0.3
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Top Section */}
-      <section className="relative z-10 py-12 px-6 md:px-16">
-        <div className=" mx-auto">
-          {/* CTA Banner */}
-          <div className="flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-secondary-600/20 to-primary-600/20 backdrop-blur-sm rounded-2xl p-8 mb-12 border border-secondary-500/20">
-            <div className="flex items-center gap-6 mb-6 md:mb-0">
-              <div className="w-16 h-16 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+      {/* Content */}
+      <div className="relative z-10 w-full mx-auto px-6 sm:px-8 lg:px-16 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
+          {/* Company Info - Takes more space */}
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xl font-bold">A</span>
               </div>
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold">
-                  Feel Hunger! Order Your <span className="text-primary-500">Like Food.</span>
-                </h3>
+              <h2 className="text-3xl font-bold">Aby Restaurant</h2>
+            </div>
+              
+            <p className="text-gray-300 mb-8 leading-relaxed max-w-md">
+              Experience culinary excellence with fresh ingredients and authentic flavors. We serve passion on every plate, creating unforgettable dining moments.
+            </p>
+              
+            {/* Newsletter */}
+            <div className="max-w-md">
+              <p className="text-gray-400 mb-4 text-sm">
+                Subscribe to get special offers and updates.
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className="flex-1 px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                />
+                <button className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-600 px-4 py-3 rounded-lg transition-all transform hover:scale-105 flex items-center justify-center">
+                  <Send size={20} />
+                </button>
               </div>
             </div>
-            <button className="bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-500 hover:to-secondary-600 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
-              Order Now
-            </button>
           </div>
 
-          {/* Main Footer Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {/* Brand Section */}
+          {/* Quicklinks */}
+          <div className="lg:col-span-2">
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-2 h-2 bg-orange-400 rounded-full mt-2"></div>
+              <h3 className="text-lg font-semibold">Quicklinks</h3>
+            </div>
+            <ul className="space-y-3">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href={link.path}
+                    className="text-gray-300 hover:text-red-400 transition-colors text-sm flex items-center gap-2 group"
+                  >
+                    <span className="text-red-400 group-hover:translate-x-1 transition-transform">↗</span>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Our Services */}
+          <div className="lg:col-span-2">
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-2 h-2 bg-orange-400 rounded-full mt-2"></div>
+              <h3 className="text-lg font-semibold">Our Services</h3>
+            </div>
+            <ul className="space-y-3">
+              {services.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href={link.path}
+                    className="text-gray-300 hover:text-red-400 transition-colors text-sm flex items-center gap-2 group"
+                  >
+                    <span className="text-red-400 group-hover:translate-x-1 transition-transform">↗</span>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div className="lg:col-span-3">
+            <div className="flex items-start gap-2 mb-6">
+              <div className="w-2 h-2 bg-orange-400 rounded-full mt-2"></div>
+              <h3 className="text-lg font-semibold">Contact Info</h3>
+            </div>
+            
             <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl font-bold">A</span>
-                </div>
-                <h2 className="text-3xl font-bold">Aby Restaurant</h2>
-              </div>
-              <p className="text-gray-400 leading-relaxed">
-                Experience culinary excellence with fresh ingsecondaryients and authentic flavors. We serve passion on every plate.
-              </p>
-              <div className="flex gap-3">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary-600 to-primary-600 text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://twitter.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary-600 to-primary-600 text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
-                >
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary-600 to-primary-600 text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a
-                  href="mailto:info@abyrestaurant.com"
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-secondary-600 to-primary-600 text-white hover:scale-110 hover:shadow-lg transition-all duration-300"
-                >
-                  <Mail className="w-5 h-5" />
-                </a>
-              </div>
-            </div>
-
-            {/* Address */}
-            <div>
-              <h3 className="text-xl font-bold mb-6 text-primary-500">Address</h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-primary-500 flex-shrink-0 mt-1" />
-                  <p className="text-gray-400">
-                    570 8th Ave, New York, NY 10018 United States
-                  </p>
-                </div>
-                <a 
-                  href="https://maps.google.com" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-500 hover:text-primary-400 transition-colors inline-flex items-center gap-2"
-                >
-                  View Google Map →
-                </a>
-              </div>
-            </div>
-
-            {/* Book A Table & Hours */}
-            <div>
-              <h3 className="text-xl font-bold mb-6 text-primary-500">Book A Table</h3>
-              <div className="space-y-4 mb-6">
-                <p className="text-gray-400">
-                  Reserve your table for an unforgettable dining experience.
-                </p>
-                <a 
-                  href="tel:123-59794069"
-                  className="text-primary-500 hover:text-primary-400 transition-colors inline-flex items-center gap-2"
-                >
+              <div>
+                <p className="text-orange-400 text-sm mb-2">Reservations</p>
+                <a href="tel:123-59794069" className="text-white text-lg font-semibold hover:text-red-400 transition-colors flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  Make A Call
+                  123-59794069
                 </a>
               </div>
               
-              <h3 className="text-xl font-bold mb-4 text-primary-500">Opening Hours</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <Clock className="w-4 h-4 text-primary-500" />
-                  <span>Monday-Friday: 8am - 4pm</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-400">
-                  <Clock className="w-4 h-4 text-primary-500" />
-                  <span>Saturday: 9am - 5pm</span>
+              <div className="border-t border-gray-700 pt-6">
+                <p className="text-orange-400 text-sm mb-2">Email</p>
+                <a href="mailto:info@abyrestaurant.com" className="text-white hover:text-red-400 transition-colors">
+                  info@abyrestaurant.com
+                </a>
+              </div>
+              
+              <div className="border-t border-gray-700 pt-6">
+                <p className="text-orange-400 text-sm mb-2">Location</p>
+                <p className="text-white flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" />
+                  <span>570 8th Ave, New York, NY 10018 United States</span>
+                </p>
+              </div>
+
+              <div className="border-t border-gray-700 pt-6">
+                <p className="text-orange-400 text-sm mb-2">Opening Hours</p>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-gray-300 text-sm">
+                    <Clock className="w-4 h-4 text-red-400" />
+                    <span>Mon-Fri: 8am - 4pm</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-300 text-sm">
+                    <Clock className="w-4 h-4 text-red-400" />
+                    <span>Saturday: 9am - 5pm</span>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Newsletter */}
-            <div>
-              <h3 className="text-xl font-bold mb-6 text-primary-500">Newsletter</h3>
-              <p className="text-gray-400 mb-4">
-                Subscribe to get special offers and updates.
-              </p>
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="email"
-                  placeholder="Enter Your Email"
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-                />
-                <button className="bg-gradient-to-r from-secondary-600 to-secondary-500 hover:from-secondary-500 hover:to-secondary-600 p-3 rounded-lg transition-all duration-300 hover:scale-105">
-                  <Send className="w-5 h-5 text-white" />
-                </button>
-              </div>
-              <button className="text-primary-500 hover:text-primary-400 transition-colors text-sm">
-                Subscribe Now →
-              </button>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8"></div>
-
-          {/* Bottom Bar */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm">
-              Copyright © {new Date().getFullYear()} <span className="text-primary-500">Aby Restaurant</span> - All Rights Reserved
-            </p>
-            <div className="flex gap-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">Privacy Policy</a>
-              <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">Terms of Service</a>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="relative z-10 border-t border-gray-800">
+        <div className="w-full mx-auto px-6 sm:px-8 lg:px-16 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">
+              © Copyright {new Date().getFullYear()}. All rights reserved. <span className="text-red-400">Aby Restaurant</span>
+            </p>
+            
+            <div className="flex items-center gap-4">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  className="w-10 h-10 bg-gray-800 hover:bg-gradient-to-br hover:from-red-600 hover:to-orange-600 rounded-full flex items-center justify-center transition-all transform hover:scale-110"
+                  aria-label={social.name}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <social.icon size={18} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Scroll to Top Button */}
       <button
         onClick={scrollToTop}
-        className="fixed bottom-6 right-6 bg-gradient-to-br from-secondary-600 to-primary-600 p-4 rounded-full shadow-2xl hover:scale-110 hover:shadow-primary-500/50 transition-all duration-300 z-50 group"
+        className="fixed bottom-6 right-6 bg-gradient-to-br from-orange-600 to-red-600 p-4 rounded-full shadow-2xl hover:scale-110 hover:shadow-red-500/50 transition-all duration-300 z-50 group"
         aria-label="Scroll to Top"
       >
-        <ArrowUp className="text-white text-xl group-hover:translate-y-[-2px] transition-transform" />
+        <ArrowUp className="text-white group-hover:translate-y-[-2px] transition-transform" size={20} />
       </button>
 
       <style>{`
