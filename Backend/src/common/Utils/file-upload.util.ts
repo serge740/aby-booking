@@ -10,7 +10,7 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
       let subFolder: string | undefined;
 
       if (file.fieldname === 'profileImage') {
-        subFolder = 'testmonial-photos';
+        subFolder = 'profile';
       }
       else if (file.fieldname === 'logo') {
         subFolder = 'partner-photos'; 
@@ -80,6 +80,9 @@ export const deleteFile = (filepath: string) => {
 
 
 export const TestimonialFileFields = [
+  { name: 'profileImage', maxCount: 1 },
+];
+export const ClientFileFields = [
   { name: 'profileImage', maxCount: 1 },
 ];
 

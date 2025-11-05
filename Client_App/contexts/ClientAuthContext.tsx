@@ -135,7 +135,7 @@ export const ClientAuthProvider: React.FC<Props> = ({ children }) => {
     // 1. Build redirect URI
     const redirectUri = __DEV__
       ? Linking.createURL("/")
-      : "abyticket://";
+      : "abybooking://";
 
     const stateObj = { redirectUri, platform: "mobile" };
     const encodedState = encodeURIComponent(JSON.stringify(stateObj));

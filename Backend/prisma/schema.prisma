@@ -305,3 +305,24 @@ model MenuItem {
 }
 
 
+
+model Client {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  phoneNumber  String?   
+  password     String
+  profileImage String?
+  status       Status    @default(ACTIVE)
+  google_id    String?   
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([email])
+  @@index([name])
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}

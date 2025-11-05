@@ -1,29 +1,29 @@
 {
   "expo": {
-    "name": "Aby Ticket",
-    "slug": "aby-ticket",
+    "name": "Aby Booking",
+    "slug": "aby-booking",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo/logo.png",
-    "scheme": "abyticket",
+    "scheme": "abybooking",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
 
-    "description": "Aby Ticket is a smart and convenient platform for booking and buying bus tickets. Enjoy a seamless travel experience with secure payments, instant booking, and digital tickets — all in one place.",
+    "description": "Aby Booking is Rwanda’s all-in-one platform to discover, book, and order from local restaurants, supermarkets, salons, and service providers. Enjoy convenient bookings, secure payments, and effortless access to the best businesses in Kigali and beyond.",
 
     "platforms": ["ios", "android", "web"],
 
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.abyticket.client",
+      "bundleIdentifier": "com.abybooking.client",
       "buildNumber": "1.0.0",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Aby Ticket uses your location to find nearby bus stations and improve your booking experience."
+        "NSLocationWhenInUseUsageDescription": "Aby Booking uses your location to help you find nearby restaurants, salons, and local businesses for a better booking experience."
       }
     },
 
     "android": {
-      "package": "com.abyticket.client",
+      "package": "com.abybooking.client",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo/logo.png",
@@ -38,7 +38,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png",
       "bundler": "metro",
-      "description": "Book and buy bus tickets online with Aby Ticket — fast, easy, and secure."
+      "description": "Discover and book your favorite restaurants, supermarkets, and local services with Aby Booking — your gateway to Kigali’s best experiences."
     },
 
     "plugins": [
@@ -65,10 +65,20 @@
     },
 
     "extra": {
-      "appDisplayName": "Aby Ticket",
-      "appTagline": "Book, Buy, and Travel Smarter",
-      "supportEmail": "support@abyticket.com",
-      "website": "https://abyticket.com"
+      "appDisplayName": "Aby Booking",
+      "appTagline": "Discover, Book & Order Easily",
+      "supportEmail": "support@abybooking.com",
+      "website": "https://abybooking.com",
+      "about": {
+        "mission": "Empowering local businesses and simplifying daily life for Rwandans through a seamless digital platform.",
+        "vision": "To become Rwanda’s leading booking and service marketplace, transforming the way people connect with local businesses.",
+        "values": [
+          "Convenience",
+          "Trust",
+          "Innovation",
+          "Community Empowerment"
+        ]
+      }
     }
   }
 }

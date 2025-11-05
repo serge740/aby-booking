@@ -1,8 +1,8 @@
-// src/common/interfaces/client-payload.interface.ts
-export interface ClientPayload {
-id: number;
-Client_email: string;
-Client_phoneNumber: string
+import { Request } from 'express';
 
-
-} 
+export interface RequestWithClient extends Request {
+  client?: {
+    id: string;
+    role: string;
+  };
+}
