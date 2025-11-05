@@ -23,7 +23,7 @@ async function bootstrap() {
 
   // Enable CORS
   app.enableCors({
-    origin:[ process.env.CORS_ORIGIN , 'null', 'http://localhost:5173'],
+    origin:[ process.env.CORS_ORIGIN , 'http://localhost:5173'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
@@ -90,6 +90,6 @@ res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     }),
   );
 
-  await app.listen(process.env.PORT ?? 8000);
+  await app.listen(process.env.PORT ?? 10000);
 }
 bootstrap();

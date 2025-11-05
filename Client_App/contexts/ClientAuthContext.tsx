@@ -13,7 +13,7 @@ interface ClientAuthContextProps {
 
   register: (data: { name: string; email: string; phoneNumber: string; password: string }) => Promise<void>;
   login: (login: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  nloginWithGoogle: () => Promise<void>;
   getProfile: () => Promise<void>;
   updateProfile: (data: Partial<Client>) => Promise<void>;
   logout: () => Promise<void>;
