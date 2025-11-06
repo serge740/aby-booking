@@ -8,41 +8,54 @@ import {
   StyleSheet,
   Dimensions,
   Animated,
+  TextInput,
   FlatList,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import info from '@/constants/info';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
-const BANNER_HEIGHT = 200;
+const BANNER_HEIGHT = 220;
+
+const COLORS = {
+  primary: '#FF6B35',
+  secondary: '#F7931E',
+  accent: '#E63946',
+  dark: '#1A1A1A',
+  gray: '#666',
+  lightGray: '#f5f5f5',
+  white: '#fff',
+};
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const scrollY = useRef(new Animated.Value(0)).current;
   const [activeSlide, setActiveSlide] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const textAnim = useRef(new Animated.Value(0)).current;
 
-  // Banner data with images only (text from i18n)
+  const categories = t('guest.index.categories', { returnObjects: true }) as Array<{ title: string; subtitle: string }>;
+  const stats = t('guest.index.stats', { returnObjects: true }) as { businesses: string; customers: string; orders: string };
+  const bannerTexts = t('guest.index.banner', { returnObjects: true }) as Array<{ title: string; subtitle: string }>;
+
+  // Banner carousel data
   const bannerData = [
-    { id: 1, image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80' },
-    { id: 2, image: 'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=800&q=80' },
-    { id: 3, image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80' },
-    { id: 4, image: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&q=80' },
+    { id: 1, image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80' },
+    { id: 2, image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80' },
+    { id: 3, image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80' },
+    { id: 4, image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800&q=80' },
   ];
 
   const categoryItems = [
-    { id: 1, image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80', size: 'large', icon: 'restaurant' },
-    { id: 2, image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&q=80', size: 'medium', icon: 'cart' },
-    { id: 3, image: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&q=80', size: 'medium', icon: 'cut' },
-    { id: 4, image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&q=80', size: 'small', icon: 'phone-portrait' },
-    { id: 5, image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&q=80', size: 'small', icon: 'shirt' },
-    { id: 6, image: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=300&q=80', size: 'small', icon: 'home' },
+    { id: 1, image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80', size: 'large', icon: 'restaurant' },
+    { id: 2, image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=600&q=80', size: 'medium', icon: 'cart' },
+    { id: 3, image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&q=80', size: 'medium', icon: 'wine' },
+    { id: 4, image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80', size: 'small', icon: 'fast-food' },
+    { id: 5, image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&q=80', size: 'small', icon: 'beer' },
+    { id: 6, image: 'https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=400&q=80', size: 'small', icon: 'cafe' },
   ];
-
-  const bannerTexts = t('guest.index.banner', { returnObjects: true }) as Array<{ title: string; subtitle: string }>;
-  const categoryTexts = t('guest.index.categories', { returnObjects: true }) as Array<{ title: string; subtitle: string }>;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,14 +79,22 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, [activeSlide, textAnim]);
 
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
   const renderBannerItem = ({ item, index }: { item: typeof bannerData[0]; index: number }) => {
     const { title, subtitle } = bannerTexts[index];
 
     return (
       <View style={{ width }}>
         <Image source={{ uri: item.image }} style={styles.bannerImage} />
-        <View style={styles.bannerOverlay} />
-
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.7)']}
+          style={styles.bannerOverlay}
+        />
         <Animated.View style={[styles.bannerTextContainer, { transform: [{ translateX: textAnim }] }]}>
           <Text style={styles.bannerTitle}>{title}</Text>
           <Text style={styles.bannerSubtitle}>{subtitle}</Text>
@@ -83,7 +104,7 @@ export default function HomeScreen() {
   };
 
   const renderCategoryItem = (item: typeof categoryItems[0], textIndex: number) => {
-    const { title, subtitle } = categoryTexts[textIndex];
+    const { title, subtitle } = categories[textIndex];
     const itemStyle = item.size === 'large' 
       ? styles.largeItem 
       : item.size === 'medium' 
@@ -93,11 +114,19 @@ export default function HomeScreen() {
     return (
       <TouchableOpacity key={item.id} style={[styles.categoryItem, itemStyle]}>
         <Image source={{ uri: item.image }} style={styles.categoryImage} />
-        <View style={styles.categoryOverlay} />
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.65)']}
+          style={styles.categoryOverlay}
+        />
         <View style={styles.categoryContent}>
-          <View style={styles.iconCircle}>
-            <Ionicons name={item.icon as any} size={20} color="#fff" />
-          </View>
+          <LinearGradient
+            colors={['#FF6B35', '#FF4757']}
+            style={styles.iconCircle}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <Ionicons name={item.icon as any} size={24} color="#fff" />
+          </LinearGradient>
           <Text style={styles.categoryTitle}>{title}</Text>
           <Text style={styles.categorySubtitle}>{subtitle}</Text>
         </View>
@@ -105,32 +134,68 @@ export default function HomeScreen() {
     );
   };
 
-  const stats = t('guest.index.stats', { returnObjects: true }) as { businesses: string; customers: string; orders: string };
-
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-          {/* Header */}
-          <View style={styles.header}>
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        {/* Fixed Header */}
+        <Animated.View >
+          <LinearGradient
+            colors={['#FF6B35', '#FF4757']}
+            style={styles.header}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
             <View style={styles.headerContent}>
-              <Image source={require('../../assets/logo/aby_booking.png')} style={styles.logoImage} />
-              <View style={styles.textContainer}>
-                <Text style={styles.logo}>{t('guest.index.app_name')}</Text>
-                <Text style={styles.logoSubtext}>{t('guest.index.app_subtitle')}</Text>
-              </View>
+              <Image source={require('../../assets/logo/aby_booking.png')} style={styles.headerLogo} />
+              <Text style={styles.headerTitle}>{t('guest.index.app_name')}</Text>
             </View>
             <TouchableOpacity style={styles.notificationButton}>
-              <Ionicons name="notifications-outline" size={24} color="#333" />
+              <Ionicons name="notifications-outline" size={24} color={COLORS.white} />
+              <View style={styles.notificationBadge} />
             </TouchableOpacity>
-          </View>
+          </LinearGradient>
+        </Animated.View>
 
-          {/* Location Bar */}
-          <View style={styles.locationBar}>
-            <Ionicons name="location" size={20} color={info.primary[600]} />
-            <Text style={styles.locationText}>{t('guest.index.location')}</Text>
-            <Ionicons name="chevron-down" size={20} color="#666" />
-          </View>
+        <Animated.ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+        >
+          {/* Hero Section */}
+          <LinearGradient
+            colors={['#FF6B35', '#FF4757']}
+            style={styles.hero}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <View style={styles.heroContent}>
+              <Image source={require('../../assets/logo/aby_booking.png')} style={styles.heroLogo} />
+              <Text style={styles.heroTitle}>{t('guest.index.hero_title')}</Text>
+              <Text style={styles.heroSubtitle}>{t('guest.index.hero_subtitle')}</Text>
+              
+              {/* Search Bar */}
+              <View style={styles.searchContainer}>
+                <Ionicons name="search" size={20} color={COLORS.gray} />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder={t('guest.index.search_placeholder')}
+                  placeholderTextColor={COLORS.gray}
+                />
+                <Ionicons name="options-outline" size={20} color={COLORS.primary} />
+              </View>
+
+              {/* Location */}
+              <View style={styles.locationTag}>
+                <Ionicons name="location" size={16} color={COLORS.accent} />
+                <Text style={styles.locationText}>{t('guest.index.location')}</Text>
+                <Ionicons name="chevron-down" size={16} color={COLORS.dark} />
+              </View>
+            </View>
+          </LinearGradient>
 
           {/* Banner Carousel */}
           <View style={styles.bannerWrapper}>
@@ -145,8 +210,8 @@ export default function HomeScreen() {
               scrollEnabled={false}
               bounces={false}
               getItemLayout={(_, index) => ({
-                length: width,
-                offset: width * index,
+                length: width - 40,
+                offset: (width - 40) * index,
                 index,
               })}
             />
@@ -160,119 +225,259 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* Quick Stats */}
+          {/* Stats Section */}
           <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
+            <LinearGradient
+              colors={['#FF6B35', '#FF4757']}
+              style={styles.statCard}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="storefront" size={28} color={COLORS.white} />
               <Text style={styles.statNumber}>{stats.businesses.split(' ')[0]}</Text>
               <Text style={styles.statLabel}>{stats.businesses.split(' ').slice(1).join(' ')}</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
+            </LinearGradient>
+            <LinearGradient
+              colors={['#FF6B35', '#FF4757']}
+              style={styles.statCard}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="people" size={28} color={COLORS.white} />
               <Text style={styles.statNumber}>{stats.customers.split(' ')[0]}</Text>
               <Text style={styles.statLabel}>{stats.customers.split(' ').slice(1).join(' ')}</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
+            </LinearGradient>
+            <LinearGradient
+              colors={['#FF6B35', '#FF4757']}
+              style={styles.statCard}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="checkmark-circle" size={28} color={COLORS.white} />
               <Text style={styles.statNumber}>{stats.orders.split(' ')[0]}</Text>
               <Text style={styles.statLabel}>{stats.orders.split(' ').slice(1).join(' ')}</Text>
+            </LinearGradient>
+          </View>
+
+          {/* What is Aby Booking Section */}
+          <View style={styles.whatSection}>
+            <View style={styles.whatHeader}>
+              <LinearGradient
+                colors={['#FF6B35', '#FF4757']}
+                style={styles.sparkle}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Ionicons name="restaurant" size={24} color={COLORS.white} />
+              </LinearGradient>
+              <Text style={styles.whatTitle}>{t('guest.index.what_title')}</Text>
+            </View>
+            <Text style={styles.whatText}>{t('guest.index.what_text')}</Text>
+          </View>
+
+          {/* Categories Section - Hierarchical Grid */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('guest.index.categories_title')}</Text>
+            <Text style={styles.sectionSubtitle}>{t('guest.index.categories_subtitle')}</Text>
+            
+            <View style={styles.gridContainer}>
+              <View style={styles.gridRow}>{renderCategoryItem(categoryItems[0], 0)}</View>
+              <View style={styles.gridRow}>
+                {renderCategoryItem(categoryItems[1], 1)}
+                {renderCategoryItem(categoryItems[2], 2)}
+              </View>
+              <View style={styles.gridRow}>
+                {renderCategoryItem(categoryItems[3], 3)}
+                {renderCategoryItem(categoryItems[4], 4)}
+                {renderCategoryItem(categoryItems[5], 5)}
+              </View>
             </View>
           </View>
 
-          {/* Section Header */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{t('guest.index.section_title')}</Text>
-            <Text style={styles.sectionSubtitle}>{t('guest.index.section_subtitle')}</Text>
-          </View>
-
-          {/* Hierarchical Grid */}
-          <View style={styles.gridContainer}>
-            <View style={styles.gridRow}>{renderCategoryItem(categoryItems[0], 0)}</View>
-            <View style={styles.gridRow}>
-              {renderCategoryItem(categoryItems[1], 1)}
-              {renderCategoryItem(categoryItems[2], 2)}
+          {/* How It Works Section */}
+          <LinearGradient
+            colors={['#FFF5F2', '#FFEBE8']}
+            style={styles.howSection}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <Text style={styles.howTitle}>{t('guest.index.how_title')}</Text>
+            <View style={styles.stepsContainer}>
+              <View style={styles.stepCard}>
+                <LinearGradient
+                  colors={['#FF6B35', '#FF4757']}
+                  style={styles.stepNumber}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="search" size={24} color={COLORS.white} />
+                </LinearGradient>
+                <Text style={styles.stepTitle}>{t('guest.index.step_1_title')}</Text>
+                <Text style={styles.stepSubtitle}>{t('guest.index.step_1_subtitle')}</Text>
+              </View>
+              
+              <View style={styles.stepCard}>
+                <LinearGradient
+                  colors={['#FF6B35', '#FF4757']}
+                  style={styles.stepNumber}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="calendar" size={24} color={COLORS.white} />
+                </LinearGradient>
+                <Text style={styles.stepTitle}>{t('guest.index.step_2_title')}</Text>
+                <Text style={styles.stepSubtitle}>{t('guest.index.step_2_subtitle')}</Text>
+              </View>
+              
+              <View style={styles.stepCard}>
+                <LinearGradient
+                  colors={['#FF6B35', '#FF4757']}
+                  style={styles.stepNumber}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="checkmark-done" size={24} color={COLORS.white} />
+                </LinearGradient>
+                <Text style={styles.stepTitle}>{t('guest.index.step_3_title')}</Text>
+                <Text style={styles.stepSubtitle}>{t('guest.index.step_3_subtitle')}</Text>
+              </View>
+              
+              <View style={styles.stepCard}>
+                <LinearGradient
+                  colors={['#FF6B35', '#FF4757']}
+                  style={styles.stepNumber}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Ionicons name="happy" size={24} color={COLORS.white} />
+                </LinearGradient>
+                <Text style={styles.stepTitle}>{t('guest.index.step_4_title')}</Text>
+                <Text style={styles.stepSubtitle}>{t('guest.index.step_4_subtitle')}</Text>
+              </View>
             </View>
-            <View style={styles.gridRow}>
-              {renderCategoryItem(categoryItems[3], 3)}
-              {renderCategoryItem(categoryItems[4], 4)}
-              {renderCategoryItem(categoryItems[5], 5)}
-            </View>
-          </View>
+          </LinearGradient>
 
-          {/* CTA Section */}
+          {/* Business CTA Section */}
           <View style={styles.ctaSection}>
-            <View style={styles.ctaContent}>
-              <Ionicons name="storefront" size={40} color={info.primary[600]} />
-              <Text style={styles.ctaTitle}>{t('guest.index.cta_title')}</Text>
-              <Text style={styles.ctaSubtitle}>{t('guest.index.cta_subtitle')}</Text>
+            <LinearGradient
+              colors={['#FF4757', '#E63946']}
+              style={styles.ctaGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.ctaIconWrapper}>
+                <Ionicons name="storefront" size={48} color={COLORS.white} />
+              </View>
+              <Text style={styles.ctaTitle}>{t('guest.index.business_title')}</Text>
+              <Text style={styles.ctaSubtitle}>{t('guest.index.business_subtitle')}</Text>
               <TouchableOpacity style={styles.ctaButton}>
                 <Text style={styles.ctaButtonText}>{t('guest.index.cta_button')}</Text>
-                <Ionicons name="arrow-forward" size={18} color="#fff" />
+                <Ionicons name="arrow-forward" size={20} color={COLORS.primary} />
               </TouchableOpacity>
-            </View>
+            </LinearGradient>
           </View>
 
           <View style={{ height: 40 }} />
-        </ScrollView>
+        </Animated.ScrollView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-/* ------------------------------------------------------------------ */
-/* Styles – unchanged                                                 */
-/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: info.primary[500] },
-  container: { flex: 1, backgroundColor: '#f8f9fa' },
+  safeArea: { flex: 1, backgroundColor: COLORS.primary },
+  container: { flex: 1, backgroundColor: COLORS.white },
+  
+  // Header
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
-    paddingTop: 20,
-    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  logoImage: {
-    width: 50,
-    height: 50,
-    resizeMode: 'contain',
-    marginRight: 12,
-  },
-  textContainer: { justifyContent: 'center' },
-  logo: { fontSize: 22, fontWeight: '700', color: info.primary[500] },
-  logoSubtext: { fontSize: 12, color: '#666', marginTop: 2 },
+  headerContent: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  headerLogo: { width: 36, height: 36, resizeMode: 'contain',borderRadius:20 },
+  headerTitle: { fontSize: 18, fontWeight: '700', color: COLORS.white },
   notificationButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  locationBar: {
+  notificationBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.white,
+  },
+
+  // Hero Section
+  hero: {
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  heroContent: {
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 30,
+    alignItems: 'center',
+  },
+  heroLogo: { width: 70, height: 70, resizeMode: 'contain', marginBottom: 16,borderRadius:20 },
+  heroTitle: {
+    fontSize: 26,
+    fontWeight: '800',
+    color: COLORS.white,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  heroSubtitle: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'center',
+    marginBottom: 20,
+    lineHeight: 22,
+  },
+  searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    width: '100%',
+    gap: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  searchInput: { flex: 1, fontSize: 15, color: COLORS.dark },
+  locationTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#fff',
-    gap: 8,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginTop: 14,
+    gap: 6,
   },
-  locationText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#333',
-    fontWeight: '500',
-  },
+  locationText: { fontSize: 14, fontWeight: '600', color: COLORS.dark },
+
+  // Banner
   bannerWrapper: {
     height: BANNER_HEIGHT,
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 16,
+    marginHorizontal: 20,
+    marginTop: -20,
+    borderRadius: 20,
     overflow: 'hidden',
     elevation: 8,
     shadowColor: '#000',
@@ -281,12 +486,12 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
   },
   bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  bannerOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
-  bannerTextContainer: { position: 'absolute', bottom: 24, left: 20, right: 20 },
+  bannerOverlay: { ...StyleSheet.absoluteFillObject },
+  bannerTextContainer: { position: 'absolute', bottom: 20, left: 20, right: 20 },
   bannerTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '700',
-    color: '#fff',
+    color: COLORS.white,
     textShadowColor: 'rgba(0,0,0,0.8)',
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 6,
@@ -301,7 +506,7 @@ const styles = StyleSheet.create({
   },
   indicatorWrapper: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 12,
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -309,28 +514,64 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   indicator: { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.5)' },
-  activeIndicator: { width: 24, backgroundColor: '#fff' },
+  activeIndicator: { width: 24, backgroundColor: COLORS.white },
+
+  // Stats
   statsContainer: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 20,
+    marginHorizontal: 20,
+    marginTop: 20,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
     borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+  },
+  statNumber: { fontSize: 20, fontWeight: '800', color: COLORS.white, marginTop: 8, marginBottom: 4 },
+  statLabel: { fontSize: 10, color: COLORS.white, textAlign: 'center', lineHeight: 14 },
+
+  // What Section
+  whatSection: {
+    marginHorizontal: 20,
+    marginTop: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
+    padding: 24,
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
   },
-  statItem: { flex: 1, alignItems: 'center' },
-  statNumber: { fontSize: 24, fontWeight: '700', color: info.primary[500] },
-  statLabel: { fontSize: 12, color: '#666', marginTop: 4, textAlign: 'center' },
-  statDivider: { width: 1, backgroundColor: '#e0e0e0', marginHorizontal: 8 },
-  sectionHeader: { paddingHorizontal: 16, marginTop: 32, marginBottom: 16 },
-  sectionTitle: { fontSize: 24, fontWeight: '700', color: info.primary[500] },
-  sectionSubtitle: { fontSize: 14, color: '#666', marginTop: 6 },
-  gridContainer: { paddingHorizontal: 16, gap: 12 },
+  whatHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 12 },
+  sparkle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  whatTitle: { fontSize: 20, fontWeight: '700', color: COLORS.dark, flex: 1 },
+  whatText: {
+    fontSize: 15,
+    color: COLORS.gray,
+    lineHeight: 24,
+  },
+
+  // Section
+  section: { marginHorizontal: 20, marginTop: 28 },
+  sectionTitle: { fontSize: 24, fontWeight: '800', color: COLORS.dark, marginBottom: 8 },
+  sectionSubtitle: { fontSize: 14, color: COLORS.gray, marginBottom: 20 },
+
+  // Hierarchical Grid Categories
+  gridContainer: { gap: 12 },
   gridRow: { flexDirection: 'row', gap: 12 },
   categoryItem: {
     borderRadius: 16,
@@ -345,13 +586,12 @@ const styles = StyleSheet.create({
   mediumItem: { flex: 1, height: 160 },
   smallItem: { flex: 1, height: 140 },
   categoryImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  categoryOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.35)' },
+  categoryOverlay: { ...StyleSheet.absoluteFillObject },
   categoryContent: { position: 'absolute', bottom: 16, left: 16, right: 16 },
   iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: info.primary[500],
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
@@ -359,43 +599,108 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: COLORS.white,
     textShadowColor: 'rgba(0,0,0,0.8)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 4,
   },
   categorySubtitle: {
     fontSize: 12,
-    color: '#f0f0f0',
+    color: 'rgba(255,255,255,0.9)',
     marginTop: 4,
     textShadowColor: 'rgba(0,0,0,0.6)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },
-  ctaSection: {
-    marginHorizontal: 16,
-    marginTop: 32,
-    backgroundColor: '#fff',
+
+  // How It Works
+  howSection: {
+    marginHorizontal: 20,
+    marginTop: 28,
+    borderRadius: 20,
+    padding: 20,
+  },
+  howTitle: { fontSize: 24, fontWeight: '800', color: COLORS.dark, marginBottom: 20 },
+  stepsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 12,width:'100%' },
+  stepCard: {
+    width: '48%',
+    backgroundColor: COLORS.white,
     borderRadius: 16,
-    padding: 24,
+    padding: 20,
+    alignItems: 'center',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
   },
-  ctaContent: { alignItems: 'center' },
-  ctaTitle: { fontSize: 20, fontWeight: '700', color: '#333', marginTop: 16, textAlign: 'center' },
-  ctaSubtitle: { fontSize: 14, color: '#666', marginTop: 8, textAlign: 'center', lineHeight: 20 },
+  stepNumber: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  stepTitle: { fontSize: 15, fontWeight: '700', color: COLORS.dark, marginBottom: 6, textAlign: 'center' },
+  stepSubtitle: { fontSize: 12, color: COLORS.gray, textAlign: 'center', lineHeight: 18 },
+
+  // CTA Section
+  ctaSection: {
+    marginHorizontal: 20,
+    marginTop: 28,
+    borderRadius: 24,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+  },
+  ctaGradient: {
+    padding: 32,
+    alignItems: 'center',
+  },
+  ctaIconWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ctaTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: COLORS.white,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  ctaSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 12,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
   ctaButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: info.primary[500],
-    paddingHorizontal: 24,
-    paddingVertical: 12,
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
     borderRadius: 25,
-    marginTop: 16,
+    marginTop: 20,
     gap: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
-  ctaButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  ctaButtonText: {
+    color: COLORS.primary,
+    fontSize: 16,
+    fontWeight: '700',
+  },
 });

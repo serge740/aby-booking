@@ -11,15 +11,16 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next'; // ADD THIS
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import info from '@/constants/info';
 import { router } from 'expo-router';
 import { useClientAuth } from '../../contexts/ClientAuthContext';
 import GoogleButton from '@/components/auth/GoogleButton';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const RegisterScreen: React.FC = () => {
-  const { t } = useTranslation(); // ADD THIS
+  const { t } = useTranslation();
 
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -143,20 +144,37 @@ const RegisterScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
+          {/* Header with Logo */}
+           {/* Gradient Header */}
+                  <LinearGradient
+                                    colors={['#FF6B35', '#FF4757']}
+                                    style={styles.headerGradient}
+                                    start={{ x: 1, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                  >
+                   <View style={styles.logoContainer}>
+                     <View style={styles.logoCircle}>
+                       <MaterialIcons name="storefront" size={32} color="#FFF" />
+                     </View>
+                     <Text style={styles.brandName}>Aby Booking</Text>
+                     <Text style={styles.tagline}>Your Local Marketplace</Text>
+                   </View>
+                 </LinearGradient>
+
           {/* Welcome Text */}
           <View style={styles.welcomeContainer}>
             <Text style={styles.helloText}>{t('registerAuth.hello')}</Text>
             <Text style={styles.thereText}>{t('registerAuth.there')}</Text>
+            <Text style={styles.subtitleText}>{t('registerAuth.register_subtitle')}</Text>
           </View>
-
-          {/* Subtitle */}
-          <Text style={styles.subtitleText}>{t('registerAuth.register_subtitle')}</Text>
 
           {/* Input Fields */}
           <View style={styles.inputContainer}>
             {/* Name */}
             <View style={styles.inputWrapper}>
-              <Ionicons name="person-outline" size={20} color="#999" style={styles.inputIcon} />
+              <View style={styles.iconCircle}>
+                <Ionicons name="person-outline" size={18} color="#FF6B35" />
+              </View>
               <TextInput
                 style={styles.input}
                 placeholder={t('registerAuth.placeholder_name')}
@@ -170,7 +188,9 @@ const RegisterScreen: React.FC = () => {
 
             {/* Email */}
             <View style={styles.inputWrapper}>
-              <Ionicons name="mail-outline" size={20} color="#999" style={styles.inputIcon} />
+              <View style={styles.iconCircle}>
+                <Ionicons name="mail-outline" size={18} color="#FF6B35" />
+              </View>
               <TextInput
                 style={styles.input}
                 placeholder={t('registerAuth.placeholder_email')}
@@ -185,7 +205,9 @@ const RegisterScreen: React.FC = () => {
 
             {/* Phone */}
             <View style={styles.inputWrapper}>
-              <Ionicons name="call-outline" size={20} color="#999" style={styles.inputIcon} />
+              <View style={styles.iconCircle}>
+                <Ionicons name="call-outline" size={18} color="#FF6B35" />
+              </View>
               <TextInput
                 style={styles.input}
                 placeholder={t('registerAuth.placeholder_phone')}
@@ -199,7 +221,9 @@ const RegisterScreen: React.FC = () => {
 
             {/* Password */}
             <View style={styles.inputWrapper}>
-              <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
+              <View style={styles.iconCircle}>
+                <Ionicons name="lock-closed-outline" size={18} color="#FF6B35" />
+              </View>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
                 placeholder={t('registerAuth.placeholder_password')}
@@ -212,7 +236,7 @@ const RegisterScreen: React.FC = () => {
                 <Ionicons
                   name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
-                  color="#999"
+                  color="#FF6B35"
                 />
               </TouchableOpacity>
             </View>
@@ -220,7 +244,9 @@ const RegisterScreen: React.FC = () => {
 
             {/* Confirm Password */}
             <View style={styles.inputWrapper}>
-              <Ionicons name="lock-closed-outline" size={20} color="#999" style={styles.inputIcon} />
+              <View style={styles.iconCircle}>
+                <Ionicons name="lock-closed-outline" size={18} color="#FF6B35" />
+              </View>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
                 placeholder={t('registerAuth.placeholder_confirm_password')}
@@ -233,7 +259,7 @@ const RegisterScreen: React.FC = () => {
                 <Ionicons
                   name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
-                  color="#999"
+                  color="#FF6B35"
                 />
               </TouchableOpacity>
             </View>
@@ -242,25 +268,29 @@ const RegisterScreen: React.FC = () => {
 
           {/* Terms and Privacy */}
           <View style={styles.termsContainer}>
-            <Text style={styles.termsText}>
-              {t('registerAuth.terms')}
-              <Text style={[styles.termsLink, { color: info.primary[500] }]}>
-                {t('registerAuth.terms_service')}
+            <View style={styles.termsBox}>
+              <Ionicons name="shield-checkmark" size={16} color="#FF6B35" style={styles.shieldIcon} />
+              <Text style={styles.termsText}>
+                {t('registerAuth.terms')}
+                <Text style={styles.termsLink}>
+                  {t('registerAuth.terms_service')}
+                </Text>
+                {t('registerAuth.and')}
+                <Text style={styles.termsLink}>
+                  {t('registerAuth.privacy_policy')}
+                </Text>
               </Text>
-              {t('registerAuth.and')}
-              <Text style={[styles.termsLink, { color: info.primary[500] }]}>
-                {t('registerAuth.privacy_policy')}
-              </Text>
-            </Text>
+            </View>
           </View>
 
           {/* Sign Up Button */}
           <TouchableOpacity
-            style={[styles.signUpButton, { backgroundColor: info.primary[500] }]}
+            style={[styles.signUpButton, hasErrors() && styles.signUpButtonDisabled]}
             onPress={handleSignUp}
             disabled={hasErrors()}
           >
             <Text style={styles.signUpButtonText}>{t('registerAuth.signup')}</Text>
+            <Ionicons name="arrow-forward" size={20} color="#FFF" style={styles.buttonIcon} />
           </TouchableOpacity>
 
           {/* OR Divider */}
@@ -276,10 +306,16 @@ const RegisterScreen: React.FC = () => {
           <View style={styles.signInContainer}>
             <Text style={styles.signInText}>{t('registerAuth.already_have_account')} </Text>
             <TouchableOpacity onPress={handleSignIn}>
-              <Text style={[styles.signInLink, { color: info.primary[500] }]}>
+              <Text style={styles.signInLink}>
                 {t('registerAuth.sign_in')}
               </Text>
             </TouchableOpacity>
+          </View>
+
+          {/* Bottom Decoration */}
+          <View style={styles.bottomDecoration}>
+            <View style={styles.decorCircle} />
+            <View style={[styles.decorCircle, styles.decorCircle2]} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -287,61 +323,233 @@ const RegisterScreen: React.FC = () => {
   );
 };
 
-/* ------------------------------------------------------------------ */
-/* Styles – unchanged                                                 */
-/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F5F5' },
+    container: { 
+    flex: 1, 
+    backgroundColor: '#FFF5F0' 
+  },
   keyboardView: { flex: 1 },
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingBottom: 40,
-    paddingTop: 30,
-    justifyContent: 'center',
   },
-  welcomeContainer: { marginBottom: 12 },
-  helloText: { fontSize: 32, fontWeight: '700', color: info.primary[500] },
-  thereText: { fontSize: 32, fontWeight: '700', color: '#000' },
-  subtitleText: { fontSize: 13, color: '#666', lineHeight: 19, marginBottom: 28 },
-  inputContainer: { marginBottom: 12 },
+  headerGradient: {
+    marginHorizontal: -24,
+    marginTop: -10,
+    paddingTop: 40,
+    paddingBottom: 30,
+    paddingHorizontal: 24,
+    backgroundColor: '#FF6B35',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: '#FF4757',
+    
+  },
+  logoContainer: {
+    alignItems: 'center',
+  },
+  logoCircle: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#FF4757',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  brandName: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#FFF',
+    letterSpacing: 0.5,
+  },
+  tagline: {
+    fontSize: 13,
+    color: '#FFE8E0',
+    marginTop: 4,
+    fontWeight: '500',
+  },
+
+  welcomeContainer: { 
+    marginBottom: 24,
+  },
+  helloText: { 
+    fontSize: 30, 
+    fontWeight: '700', 
+    color: '#FF6B35',
+    marginBottom: 2,
+  },
+  thereText: { 
+    fontSize: 30, 
+    fontWeight: '700', 
+    color: '#2C2C2C',
+    marginBottom: 8,
+  },
+  subtitleText: { 
+    fontSize: 14, 
+    color: '#666', 
+    lineHeight: 20,
+  },
+  inputContainer: { marginBottom: 16 },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginBottom: 4,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-  },
-  inputIcon: { marginRight: 12 },
-  input: { flex: 1, fontSize: 14, color: '#000' },
-  passwordInput: { paddingRight: 40 },
-  eyeIcon: { position: 'absolute', right: 16, padding: 4 },
-  errorText: { color: 'red', fontSize: 12, marginBottom: 10, marginLeft: 10 },
-  termsContainer: { marginBottom: 24, paddingHorizontal: 4 },
-  termsText: { fontSize: 12, color: '#666', lineHeight: 18, textAlign: 'center' },
-  termsLink: { fontWeight: '600' },
-  signUpButton: {
-    borderRadius: 25,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 20,
-    shadowColor: '#000',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#FFE8E0',
+    shadowColor: '#FF6B35',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
-  signUpButtonText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
-  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: '#E5E5E5' },
-  dividerText: { marginHorizontal: 16, fontSize: 14, color: '#999' },
-  signInContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
-  signInText: { fontSize: 14, color: '#666' },
-  signInLink: { fontSize: 14, fontWeight: '600' },
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFF5F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  input: { 
+    flex: 1, 
+    fontSize: 15, 
+    color: '#2C2C2C',
+    fontWeight: '500',
+  },
+  passwordInput: { paddingRight: 40 },
+  eyeIcon: { 
+    position: 'absolute', 
+    right: 16, 
+    padding: 4,
+  },
+  errorText: { 
+    color: '#FF4757', 
+    fontSize: 12, 
+    marginBottom: 8, 
+    marginLeft: 14,
+    fontWeight: '500',
+  },
+  termsContainer: { 
+    marginBottom: 20,
+  },
+  termsBox: {
+    flexDirection: 'row',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#FFE8E0',
+    alignItems: 'flex-start',
+  },
+  shieldIcon: {
+    marginRight: 10,
+    marginTop: 2,
+  },
+  termsText: { 
+    flex: 1,
+    fontSize: 12, 
+    color: '#666', 
+    lineHeight: 18,
+  },
+  termsLink: { 
+    fontWeight: '700',
+    color: '#FF6B35',
+  },
+  signUpButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FF6B35',
+    borderRadius: 16,
+    paddingVertical: 16,
+    marginBottom: 20,
+    shadowColor: '#FF4757',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  signUpButtonDisabled: {
+    backgroundColor: '#FFCDB8',
+    shadowOpacity: 0.1,
+  },
+  signUpButtonText: { 
+    color: '#FFF', 
+    fontSize: 17, 
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  buttonIcon: {
+    marginLeft: 8,
+  },
+  dividerContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 20,
+  },
+  dividerLine: { 
+    flex: 1, 
+    height: 1, 
+    backgroundColor: '#FFE8E0',
+  },
+  dividerText: { 
+    marginHorizontal: 16, 
+    fontSize: 14, 
+    color: '#999',
+    fontWeight: '500',
+  },
+  signInContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  signInText: { 
+    fontSize: 14, 
+    color: '#666',
+  },
+  signInLink: { 
+    fontSize: 14, 
+    fontWeight: '700',
+    color: '#FF6B35',
+  },
+  bottomDecoration: {
+    position: 'relative',
+    height: 80,
+    marginTop: 20,
+  },
+  decorCircle: {
+    position: 'absolute',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#FFE8E0',
+    opacity: 0.3,
+    bottom: -30,
+    left: -20,
+  },
+  decorCircle2: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    right: -15,
+    left: 'auto',
+    bottom: -15,
+    backgroundColor: '#FF6B35',
+    opacity: 0.2,
+  },
 });
 
 export default RegisterScreen;

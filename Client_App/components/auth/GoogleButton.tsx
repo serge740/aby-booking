@@ -19,38 +19,39 @@ export default function GoogleButton() {
 
   return (
     <TouchableOpacity
-            style={styles.googleButton}
+            style={styles.guestButton}
             onPress={handleGoogleSignIn}
           >
             <Image
               source={{ uri: 'https://www.google.com/favicon.ico' }}
-              style={styles.googleIcon}
+              style={styles.guestIcon}
             />
-            <Text style={styles.googleButtonText}>Continue with Google</Text>
+            <Text style={styles.guestButtonText}>Continue with Google</Text>
           </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-googleButton: {
+  guestButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFF',
-    borderRadius: 25,
+    borderRadius: 16,
     paddingVertical: 14,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#FFE8E0',
+    marginBottom: 24,
+    shadowColor: '#FF6B35',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
-  },
-  googleButtonText: {
-    fontSize: 15,
-    color: '#000',
-    fontWeight: '500',
+  guestIcon: { marginRight: 8, width:20,height:20 },
+  guestButtonText: { 
+    fontSize: 15, 
+    color: '#FF6B35', 
+    fontWeight: '600',
   },
 });

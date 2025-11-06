@@ -1,34 +1,53 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useTranslation } from 'react-i18next'; // ADD THIS
+import { View, Text, FlatList, Image, StyleSheet, Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+const { width } = Dimensions.get('window');
 
 export default function Companies() {
-  const { t } = useTranslation(); // ADD THIS
+  const { t } = useTranslation();
 
-  const busCompanies = [
-    'EBENEZER EXPRESS LTD', 'GICUMBI TRANSPORT COOP', 'KIVU BELT EXPRESS',
-    'TRIPARTITE TOURS', 'SELECT EXPRESS', 'SHALOM TRANSPORT', 'JALI TRANSPORT',
-    'ROYAL EXPRESS', 'KIGALI BUS SERVICES', 'LA COLOMBE EXPRESS', 'YAHOO CAR',
-    'NYABUGOGO TC', 'KAYONZA TC', 'MUSANZE TC', 'NYAGATARE TC', 'NGOMA TC',
-    'MUHANGA TC', 'HUYE TC', 'RUSIZI TC', 'STAR EXPRESS', 'DIFFERENT EXPRESS',
-    'RUBAVU TC', 'RITCO LTD', 'RUHIRE EXPRESS', 'INDONYI EXPRESS', 'KIGALI COACH',
-    'CAPITAL LTD', 'FIDELITY EXPRESS', 'CITY EXPRESS', 'EXCEL TRAVEL', 'VOLCANO LTD',
-    'HORIZON EXPRESS', 'STELLA EXPRESS', 'MATUNDA EXPRESS', 'OMEGA LTD',
-    'VIRUNGA EXPRESS', 'ALPHA EXPRESS', 'INTERNATIONAL EXPRESS', 'EA BUS & TRAVEL',
-    'MASH BUS SERVICES', 'TRINITY TRANSPORTERS', 'SIMBA COACH', 'MODERN COAST'
+  // Using one verified Unsplash image that works on React Native
+  const businesses = [
+    {
+      name: 'Kigali Grill & Lounge',
+      category: 'Restaurant',
+      image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      name: 'Pili Pili Rwanda',
+      category: 'Restaurant & Bar',
+      image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      name: 'Question Coffee Café',
+      category: 'Coffee Shop',
+      image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80',
+    },
+    {
+      name: 'Simba Supermarket',
+      category: 'Supermarket',
+      image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80',
+    },
   ];
+
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
+      <View style={styles.textContainer}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.category}>{item.category}</Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{t('guest.bus.header')}</Text>
       <FlatList
-        data={busCompanies}
+        data={businesses}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item}</Text>
-          </View>
-        )}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -48,18 +67,33 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     color: '#111827',
   },
-  itemContainer: {
+  card: {
     backgroundColor: '#FFFFFF',
-    padding: 14,
-    marginVertical: 6,
-    borderRadius: 10,
+    borderRadius: 14,
+    marginVertical: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 6,
+    elevation: 3,
+    overflow: 'hidden',
   },
-  itemText: {
-    fontSize: 16,
+  image: {
+    width: width - 32,
+    height: 180,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+  },
+  textContainer: {
+    padding: 12,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#1F2937',
+  },
+  category: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 4,
   },
 });
