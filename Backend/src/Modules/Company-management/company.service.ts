@@ -95,7 +95,7 @@ export class CompanyService {
 
     // ✅ GET ONE
     async getCompanyById(id: string) {
-        const company = await this.prisma.company.findUnique({ where: { id } });
+        const company = await this.prisma.company.findUnique({ where: { id },include:{category:true,items:true} });
         if (!company) throw new NotFoundException('Company not found');
         return company;
     }
@@ -127,7 +127,7 @@ export class CompanyService {
             if (exists) throw new BadRequestException('Email already exists');
         }
 
-
+        const preparedDescription =  typeof data.description == 'string' ? data.description : JSON.stringify(data.description)
 
 
         const updatedCompany = await this.prisma.company.update({
@@ -136,7 +136,7 @@ export class CompanyService {
                 name: data.name ?? company.name,
                 email: data.email ?? company.email,
                 phone: data.phone ?? company.phone,
-                description: JSON.stringify(data.description) ?? company.description,
+                description: preparedDescription     ?? company.description,
                 logo: data.logo ?? company.logo,
                 address: data.address ?? company.address,
                 city: data.city ?? company.city,

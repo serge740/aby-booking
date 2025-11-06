@@ -33,6 +33,10 @@ import CompanyLoginPage from "./pages/auth/company/Login";
 import ProtectPrivateCompanyRoute from "./components/protectors/ProtectPrivateCompanyRoute";
 import CompanyProfilePage from "./pages/dashboard/company/CompanyProfilePage";
 import MenuCategoryDashboard from "./pages/dashboard/company/MenuCategoryDashboard";
+import MenuItemDashboard from "./pages/dashboard/company/MenuItemDashboard";
+import CompanyDisplay from "./pages/company/CompanyDisplayPage";
+import CompanyDetailsPage from "./pages/company/CompanyDetailsPage";
+import CompanyMenuPage from "./pages/company/CompanyMenuPage";
 
 
 // Loading component
@@ -68,6 +72,9 @@ const router = createBrowserRouter([
     { path: 'products/:id', element: <SuspenseWrapper><CoffeeShop /></SuspenseWrapper> },
     { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
     { path: 'gallery', element: <SuspenseWrapper><Gallery /></SuspenseWrapper> },
+    { path: 'companies', element: <SuspenseWrapper><CompanyDisplay /></SuspenseWrapper> },
+    { path: 'companies/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
+    { path: 'companies/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
  
   ]
 },
@@ -106,6 +113,7 @@ const router = createBrowserRouter([
  
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
+          {path:'menu-item' , element:<MenuItemDashboard />},
           
         ]
        },

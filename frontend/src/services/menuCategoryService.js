@@ -1,10 +1,22 @@
 import api from '../api/api';
 
 class MenuCategoryService {
-  // ✅ Create new category
-  async createCategory(name) {
+  // ✅ Create new category with optional image upload
+  async createCategory(name, imageFile = null) {
     try {
-      const response = await api.post('/menu-category', { name });
+      const formData = new FormData();
+      formData.append('name', name);
+
+      if (imageFile) {
+        formData.append('category_image', imageFile); // Must match backend field name
+      }
+
+      const response = await api.post('/menu-category', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       return response.data;
     } catch (error) {
       const msg =
@@ -29,10 +41,22 @@ class MenuCategoryService {
     }
   }
 
-  // ✅ Update a category name
-  async updateCategory(id, name) {
+  // ✅ Update a category with optional new image
+  async updateCategory(id, name, imageFile = null) {
     try {
-      const response = await api.put(`/menu-category/${id}`, { name });
+      const formData = new FormData();
+      formData.append('name', name);
+
+      if (imageFile) {
+        formData.append('category_image', imageFile); // Must match backend field name
+      }
+
+      const response = await api.put(`/menu-category/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       return response.data;
     } catch (error) {
       const msg =
@@ -66,5 +90,5 @@ export const {
   createCategory,
   getCategories,
   updateCategory,
-  deleteCategory
+  deleteCategory,
 } = menuCategoryService;

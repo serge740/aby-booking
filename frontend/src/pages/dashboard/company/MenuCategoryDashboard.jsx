@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Plus, Edit, Trash2, Search, ChevronDown, Eye, ChevronLeft, ChevronRight,
-  AlertTriangle, CheckCircle, XCircle, X, AlertCircle, RefreshCw, Filter, Grid3X3, List, Menu
+  AlertTriangle, CheckCircle, XCircle, X, AlertCircle, RefreshCw, Filter, Grid3X3, List, Menu, Upload, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,8 @@ const MenuCategoryDashboard = () => {
   const [viewMode, setViewMode] = useState('table');
   const [showFormModal, setShowFormModal] = useState(false);
   const [editCategory, setEditCategory] = useState(null);
-  const [formData, setFormData] = useState({ name: '' });
+  const [formData, setFormData] = useState({ name: '', imageFile: null, imagePreview: null });
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,16 +65,38 @@ const MenuCategoryDashboard = () => {
     }
 
     filtered.sort((a, b) => {
-      const aValue = a[sortBy];
-      const bValue = b[sortBy];
+      const aValue = a[sortBy] || '';
+      const bValue = b[sortBy] || '';
 
-      const aStr = aValue ? aValue.toString().toLowerCase() : '';
-      const bStr = bValue ? bValue.toString().toLowerCase() : '';
+      const aStr = aValue.toString().toLowerCase();
+      const bStr = bValue.toString().toLowerCase();
       return sortOrder === 'asc' ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
     });
 
     setCategories(filtered);
     setCurrentPage(1);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        showOperationStatus('error', 'Please select a valid image file');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        showOperationStatus('error', 'Image size must be less than 5MB');
+        return;
+      }
+
+      const preview = URL.createObjectURL(file);
+      setFormData(prev => ({ ...prev, imageFile: file, imagePreview: preview }));
+    }
+  };
+
+  const removeImage = () => {
+    setFormData(prev => ({ ...prev, imageFile: null, imagePreview: null }));
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleCreateOrUpdateCategory = async () => {
@@ -85,13 +108,15 @@ const MenuCategoryDashboard = () => {
     try {
       setOperationLoading(true);
       if (editCategory) {
-        await menuCategoryService.updateCategory(editCategory.id, formData.name);
-        showOperationStatus('success', `Category ${formData.name} updated successfully!`);
+        await menuCategoryService.updateCategory(editCategory.id, formData.name, formData.imageFile);
+        showOperationStatus('success', `Category "${formData.name}" updated successfully!`);
       } else {
-        await menuCategoryService.createCategory(formData.name);
-        showOperationStatus('success', `Category ${formData.name} created successfully!`);
+        await menuCategoryService.createCategory(formData.name, formData.imageFile);
+        showOperationStatus('success', `Category "${formData.name}" created successfully!`);
       }
-      setFormData({ name: '' });
+
+      // Reset form
+      setFormData({ name: '', imageFile: null, imagePreview: null });
       setEditCategory(null);
       setShowFormModal(false);
       await loadData();
@@ -104,7 +129,11 @@ const MenuCategoryDashboard = () => {
 
   const handleEditCategory = (category) => {
     setEditCategory(category);
-    setFormData({ name: category.name });
+    setFormData({
+      name: category.name,
+      imageFile: null,
+      imagePreview: category.image_url || null
+    });
     setShowFormModal(true);
   };
 
@@ -132,11 +161,21 @@ const MenuCategoryDashboard = () => {
   };
 
   const totalCategories = allCategories.length;
-
   const totalPages = Math.ceil(categories.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentCategories = categories.slice(startIndex, endIndex);
+
+  const renderImage = (url, size = 'w-10 h-10') => {
+    if (!url) {
+      return (
+        <div className={`${size} bg-gray-100 rounded-full flex items-center justify-center`}>
+          <ImageIcon className="w-5 h-5 text-gray-400" />
+        </div>
+      );
+    }
+    return <img src={url} alt="" className={`${size} rounded-full object-cover border border-gray-200`} />;
+  };
 
   const renderTableView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100">
@@ -144,6 +183,7 @@ const MenuCategoryDashboard = () => {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Image</th>
               <th
                 className="text-left py-3 px-4 text-gray-600 font-semibold cursor-pointer hover:bg-gray-100"
                 onClick={() => {
@@ -170,6 +210,9 @@ const MenuCategoryDashboard = () => {
                 transition={{ duration: 0.3 }}
                 className="hover:bg-gray-50"
               >
+                <td className="py-3 px-4">
+                  {renderImage(category.image_url, 'w-10 h-10')}
+                </td>
                 <td className="py-3 px-4 font-medium text-gray-900">{category.name || 'N/A'}</td>
                 <td className="py-3 px-4 text-gray-600 hidden lg:table-cell">{category.company?.name || 'N/A'}</td>
                 <td className="py-3 px-4 text-gray-600 hidden md:table-cell">{category.items?.length || 0}</td>
@@ -220,9 +263,7 @@ const MenuCategoryDashboard = () => {
           className="bg-white rounded-lg shadow border border-gray-100 p-4 hover:shadow-md transition-shadow"
         >
           <div className="flex flex-col items-center space-y-3 mb-3">
-            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-              <Menu className="w-8 h-8 text-blue-600" />
-            </div>
+            {renderImage(category.image_url, 'w-16 h-16')}
             <div className="text-center w-full">
               <div className="font-semibold text-gray-900 text-sm truncate">{category.name || 'N/A'}</div>
               <div className="text-gray-500 text-xs">Items: {category.items?.length || 0}</div>
@@ -273,9 +314,7 @@ const MenuCategoryDashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                <Menu className="w-5 h-5 text-blue-600" />
-              </div>
+              {renderImage(category.image_url, 'w-10 h-10')}
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900 text-sm truncate">{category.name || 'N/A'}</div>
                 <div className="text-gray-500 text-xs truncate">Items: {category.items?.length || 0}</div>
@@ -380,7 +419,7 @@ const MenuCategoryDashboard = () => {
             <div className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Menu Category Management</h1>
-                <p className="text-sm text-gray-500">Manage your menu categories</p>
+                <p className="text-sm text-gray-500">Manage your menu categories with images</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -399,7 +438,7 @@ const MenuCategoryDashboard = () => {
                 onClick={() => {
                   setShowFormModal(true);
                   setEditCategory(null);
-                  setFormData({ name: '' });
+                  setFormData({ name: '', imageFile: null, imagePreview: null });
                 }}
                 disabled={operationLoading}
                 className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
@@ -437,13 +476,13 @@ const MenuCategoryDashboard = () => {
             className="bg-white rounded-lg shadow border border-gray-100 p-4"
           >
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-full flex items-center justify-center">
-                <Menu className="w-5 h-5 text-blue-600" />
+              <div className="p-3 bg-green-50 rounded-full flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Menu Items</p>
+                <p className="text-sm text-gray-600">With Images</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {allCategories.reduce((sum, category) => sum + (category.items?.length || 0), 0)}
+                  {allCategories.filter(c => c.image_url).length}
                 </p>
               </div>
             </div>
@@ -548,6 +587,7 @@ const MenuCategoryDashboard = () => {
           </div>
         )}
 
+        {/* Modals and Toasts */}
         <AnimatePresence>
           {operationStatus && (
             <motion.div
@@ -560,14 +600,11 @@ const MenuCategoryDashboard = () => {
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-sm ${
                   operationStatus.type === 'success'
                     ? 'bg-green-50 border border-green-200 text-green-800'
-                    : operationStatus.type === 'error'
-                    ? 'bg-red-50 border border-red-200 text-red-800'
-                    : 'bg-blue-50 border border-blue-200 text-blue-800'
+                    : 'bg-red-50 border border-red-200 text-red-800'
                 }`}
               >
                 {operationStatus.type === 'success' && <CheckCircle className="w-5 h-5 text-green-600" />}
                 {operationStatus.type === 'error' && <XCircle className="w-5 h-5 text-red-600" />}
-                {operationStatus.type === 'info' && <AlertCircle className="w-5 h-5 text-blue-600" />}
                 <span className="font-medium">{operationStatus.message}</span>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -599,6 +636,7 @@ const MenuCategoryDashboard = () => {
           )}
         </AnimatePresence>
 
+        {/* Delete Confirm Modal */}
         <AnimatePresence>
           {deleteConfirm && (
             <motion.div
@@ -643,6 +681,7 @@ const MenuCategoryDashboard = () => {
           )}
         </AnimatePresence>
 
+        {/* Form Modal */}
         <AnimatePresence>
           {showFormModal && (
             <motion.div
@@ -660,25 +699,71 @@ const MenuCategoryDashboard = () => {
                     <h3 className="text-lg font-semibold text-gray-900">
                       {editCategory ? 'Edit Category' : 'Create New Category'}
                     </h3>
-                    <p className="text-sm text-gray-500">Enter the category details below</p>
+                    <p className="text-sm text-gray-500">Enter details and upload an image</p>
                   </div>
                 </div>
                 <div className="space-y-4 mb-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Category Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) => setFormData({ name: e.target.value })}
-                      className="mt-1 w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Enter category name"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category Image</label>
+                    <div className="flex items-center space-x-3">
+                      {formData.imagePreview ? (
+                        <div className="relative">
+                          <img
+                            src={formData.imagePreview}
+                            alt="Preview"
+                            className="w-16 h-16 rounded-lg object-cover border border-gray-200"
+                          />
+                          <button
+                            onClick={removeImage}
+                            className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                          <ImageIcon className="w-6 h-6 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="hidden"
+                          id="category-image"
+                        />
+                        <label
+                          htmlFor="category-image"
+                          className="cursor-pointer inline-flex items-center space-x-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+                        >
+                          <Upload className="w-4 h-4" />
+                          <span>{formData.imageFile ? 'Change Image' : 'Upload Image'}</span>
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1">Max 5MB, JPG/PNG</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center justify-end space-x-3">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
-                    onClick={() => setShowFormModal(false)}
+                    onClick={() => {
+                      setShowFormModal(false);
+                      setFormData({ name: '', imageFile: null, imagePreview: null });
+                    }}
                     className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50"
                   >
                     Cancel

@@ -1,17 +1,19 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { deleteFile } from 'src/common/Utils/file-upload.util';
 import { PrismaService } from 'src/Prisma/prisma.service';
 
 @Injectable()
 export class MenuCategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async create(companyId: string, name: string) {
+  async create(companyId: string, name: string, image?: string) {
     if (!name) throw new HttpException('Category name is required', 400);
 
     return await this.prisma.menuCategory.create({
       data: {
         name,
-        companyId
+        companyId,
+        image
       } ,
      include: { items: true ,company:true } 
     });
@@ -24,19 +26,27 @@ export class MenuCategoryService {
     });
   }
 
-  async update(companyId: string, categoryId: string, name: string) {
+  async update(companyId: string, categoryId: string, name: string,image?:string) {
     const category = await this.prisma.menuCategory.findUnique({
       where: { id: categoryId }
     });
 
+    
     if (!category || category.companyId !== companyId)
       throw new HttpException('Category not found or unauthorized', 403);
 
-    return await this.prisma.menuCategory.update({
+    const updateCategory =  await this.prisma.menuCategory.update({
       where: { id: categoryId },
-      data: { name },
+      data: { name,image },
       include: { items: true ,company: true }
     });
+
+    if(image && category.image){
+      deleteFile(category.image)
+    }
+
+    return updateCategory;
+
   }
 
   async delete(companyId: string, categoryId: string) {
@@ -52,8 +62,13 @@ export class MenuCategoryService {
       data: { categoryId: null }
     });
 
+    if(category.image){
+     deleteFile(category.image)
+   }
     return await this.prisma.menuCategory.delete({
       where: { id: categoryId }
     });
+
+
   }
 }

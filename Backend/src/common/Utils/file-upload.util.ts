@@ -12,6 +12,7 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
       if (file.fieldname === 'profileImage') {
         subFolder = 'profile';
       }
+ 
       else if (file.fieldname === 'logo') {
         subFolder = 'partner-photos'; 
       }
@@ -59,7 +60,7 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
   },
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB
-    files: 4,
+    files: 20,
   },
   // Image transformation should be handled after upload, not in MulterOptions
 });
