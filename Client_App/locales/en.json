@@ -74,46 +74,66 @@
   "guest": {
 
  
-  "index": {
+ "index": {
     "app_name": "Aby Booking",
-    "app_subtitle": "Your Local Marketplace",
+    "app_subtitle": "Book Your Table",
     "location": "Kigali, Rwanda",
+    "hero_title": "Reserve Your Perfect Dining Experience",
+    "hero_subtitle": "Book tables at Kigali's best restaurants, bars, and cafes",
+    "search_placeholder": "Search restaurants, bars, cafes...",
+    
     "banner": [
       {
-        "title": "Explore Kigali's Best Restaurants",
-        "subtitle": "Order your favorite meals quickly and easily"
+        "title": "Fine Dining Restaurants",
+        "subtitle": "Reserve tables at premium restaurants in Kigali"
       },
       {
-        "title": "Fresh Groceries Delivered",
-        "subtitle": "Shop from top supermarkets near you"
+        "title": "Vibrant Nightlife & Bars",
+        "subtitle": "Book your spot at the hottest bars and lounges"
       },
       {
-        "title": "Book Beauty Services",
-        "subtitle": "Find your perfect salon, spa, or beauty service"
+        "title": "Cozy Cafes & Bistros",
+        "subtitle": "Find your perfect coffee spot or casual dining"
       },
       {
-        "title": "Support Local Businesses",
-        "subtitle": "Discover trusted providers and services nearby"
+        "title": "Order Food Delivery",
+        "subtitle": "Browse menus and order from your favorite places"
       }
     ],
+    
     "stats": {
-      "businesses": "350+ Local Businesses",
-      "customers": "10K+ Happy Customers",
-      "orders": "50K+ Orders Delivered"
+      "businesses": "350+ Restaurants & Bars",
+      "customers": "10K+ Happy Diners",
+      "orders": "50K+ Reservations Made"
     },
-    "section_title": "Explore Categories",
-    "section_subtitle": "Discover amazing local businesses near you",
+    
+    "what_title": "What is Aby Booking?",
+    "what_text": "Aby Booking makes it easy to discover and book tables at restaurants, bars, cafes, and supermarkets across Kigali. Browse menus, check availability, make reservations, and order food delivery — all in one app.",
+    
+    "categories_title": "Browse by Category",
+    "categories_subtitle": "Find the perfect place for any occasion",
     "categories": [
-      { "title": "Restaurants", "subtitle": "120+ options" },
-      { "title": "Supermarkets", "subtitle": "50+ stores" },
-      { "title": "Beauty & Spa", "subtitle": "80+ salons" },
-      { "title": "Electronics", "subtitle": "30+ shops" },
-      { "title": "Fashion", "subtitle": "45+ stores" },
-      { "title": "Home Services", "subtitle": "25+ providers" }
+      { "title": "Restaurants", "subtitle": "Fine dining & casual" },
+      { "title": "Supermarkets", "subtitle": "Fresh groceries delivered" },
+      { "title": "Bars & Lounges", "subtitle": "Nightlife & drinks" },
+      { "title": "Fast Food", "subtitle": "Quick bites" },
+      { "title": "Pubs & Breweries", "subtitle": "Craft beer & food" },
+      { "title": "Cafes & Bakeries", "subtitle": "Coffee & pastries" }
     ],
-    "cta_title": "Are you a business owner?",
-    "cta_subtitle": "List your business on Aby Booking and reach thousands of customers in Kigali",
-    "cta_button": "Get Started"
+    
+    "how_title": "How It Works",
+    "step_1_title": "Browse",
+    "step_1_subtitle": "Explore restaurants and check menus",
+    "step_2_title": "Book",
+    "step_2_subtitle": "Reserve your table or order food",
+    "step_3_title": "Confirm",
+    "step_3_subtitle": "Get instant confirmation",
+    "step_4_title": "Enjoy",
+    "step_4_subtitle": "Have a great dining experience",
+    
+    "business_title": "Own a Restaurant or Bar?",
+    "business_subtitle": "Join Aby Booking to accept reservations, manage tables, and reach thousands of hungry customers in Kigali.",
+    "cta_button": "List Your Business"
   }
 ,
     
@@ -152,43 +172,50 @@
   }
 
   },
-  "dashboard": {
+ "dashboard": {
     "index": {
       "welcome": "Welcome back",
-      "search_placeholder": "Search routes, cities, or companies...",
+      "location": "Kigali, Rwanda",
+      "search_placeholder": "Search for restaurants, shops, services...",
       "quick_actions": {
-        "find_routes": "Find Routes",
-        "schedule": "Schedule",
-        "stations": "Stations",
-        "help": "Help"
+        "order_food": "Order Food",
+        "book_service": "Book Service",
+        "shop_now": "Shop Now",
+        "favorites": "Favorites"
       },
-      "upcoming_trips": "Upcoming Trips",
-      "completed_trips": "Completed Trips",
-      "promo_title": "Get 20% Off Your Next Ride!",
-      "promo_subtitle": "Book now and save big on all routes.",
-      "promo_button": "Book Now",
-      "section_title": "Your Tickets",
-      "section_subtitle": "Manage all your bus bookings in one place",
-      "tabs": {
+      "promo_title": "Welcome to Aby Booking! 🎉",
+      "promo_subtitle": "Discover local businesses and services in Kigali",
+      "promo_button": "Explore Now",
+      "browse_categories": "Browse Categories",
+      "categories": {
         "all": "All",
-        "upcoming": "Upcoming",
-        "past": "Past"
+        "restaurants": "Restaurants",
+        "supermarkets": "Supermarkets",
+        "salons": "Salons",
+        "services": "Services"
       },
+      "section_title": "Popular Near You",
+      "see_all": "See All",
+      "featured": "Featured",
       "status": {
-        "upcoming": "Upcoming",
-        "completed": "Completed"
-      },
-      "ticket": {
-        "details": "View Details"
+        "open": "Open",
+        "closed": "Closed"
       },
       "empty": {
-        "no_tickets": "No tickets found",
-        "no_upcoming": "You have no upcoming trips. Book one now!",
-        "no_history": "Your travel history is empty.",
-        "start_booking": "Start your journey by booking a ticket.",
-        "book_now": "Book Now"
-      }
+        "no_services": "No businesses found",
+        "try_different": "Try a different category or search term"
+      },
+      "info_title": "What is Aby Booking?",
+      "info_text": "Rwanda's local marketplace for booking services and ordering products — helping you save time and businesses grow digitally.",
+      "learn_more": "Learn More"
     },
+    "exitApp": {
+      "title": "Exit App",
+      "message": "Do you want to exit the app?",
+      "cancel": "Cancel",
+      "confirm": "Yes"
+    }
+  ,
       "settings": {
     "quick_actions": "Quick Actions",
     "account_management": "Account Management",

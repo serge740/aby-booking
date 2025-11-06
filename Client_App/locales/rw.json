@@ -73,44 +73,64 @@
    "guest": {
       "index": {
     "app_name": "Aby Booking",
-    "app_subtitle": "Isoko ryawe ry’aho uri",
-    "location": "Kigali, Rwanda",
+    "app_subtitle": "Bukinga ameza yawe",
+    "location": "Kigali, u Rwanda",
+    "hero_title": "Bukinga ahantu heza ho kurira",
+    "hero_subtitle": "Bukinga ameza mu maresitora, utubari, n’utunyobwa twa Kigali",
+    "search_placeholder": "Shakisha amaresitora, utubari, utunyobwa...",
+    
     "banner": [
       {
-        "title": "Sura amaresitora meza yo i Kigali",
-        "subtitle": "Tegereza ibyo ukunda kurya byihuse kandi byoroshye"
+        "title": "Amaresitora yo ku rwego rwo hejuru",
+        "subtitle": "Bukinga ameza mu maresitora akomeye muri Kigali"
       },
       {
-        "title": "Ibicuruzwa bishya bitumizwa aho uri",
-        "subtitle": "Gura muri za supermaketi zikomeye hafi yawe"
+        "title": "Utubari n’ubuzima bwo nijoro",
+        "subtitle": "Shaka aho kwicarira mu tubari dukunzwe cyane"
       },
       {
-        "title": "Bika serivisi z’ubwiza",
-        "subtitle": "Shaka salon, spa cyangwa serivisi y’ubwiza ihuye n’ibyo ukunda"
+        "title": "Cafés & Bistro byiza",
+        "subtitle": "Shaka aho kunywera ikawa cyangwa gusangira byoroheje"
       },
       {
-        "title": "Shyigikira ubucuruzi bwo hafi",
-        "subtitle": "Menya abatanga serivisi b’inyangamugayo hafi yawe"
+        "title": "Tegereza ifunguro",
+        "subtitle": "Reba menu hanyuma utegereze aho ukunda"
       }
     ],
+    
     "stats": {
-      "businesses": "350+ Ubucuruzi bwo hafi",
+      "businesses": "350+ Amarestora n’utubari",
       "customers": "10K+ Abakiriya bishimye",
-      "orders": "50K+ Ibyo watumije byagejejweho"
+      "orders": "50K+ Amaserivisi yakoreshejwe"
     },
-    "section_title": "Sura ibyiciro",
-    "section_subtitle": "Menya ubucuruzi bwiza bwo hafi yawe",
+    
+    "what_title": "Aby Booking ni iki?",
+    "what_text": "Aby Booking igufasha kubona no kubukinga ameza mu maresitora, utubari, cafés, n’amaduka yo muri Kigali. Reba menu, urebe uboneka, ubukinge cyangwa utegereze ifunguro — byose muri app imwe.",
+    
+    "categories_title": "Reba ibyiciro",
+    "categories_subtitle": "Hitamo ahabereye buri gihe",
     "categories": [
-      { "title": "Amaresitora", "subtitle": "120+ ahantu" },
-      { "title": "Amasupermaketi", "subtitle": "50+ amaduka" },
-      { "title": "Ubwiza & Spa", "subtitle": "80+ salons" },
-      { "title": "Ibikoresho bya elegitoroniki", "subtitle": "30+ amaduka" },
-      { "title": "Imyambaro", "subtitle": "45+ amaduka" },
-      { "title": "Serivisi zo mu rugo", "subtitle": "25+ abatanga serivisi" }
+      { "title": "Amaresitora", "subtitle": "Kurira neza cyangwa bisanzwe" },
+      { "title": "Amaduka makuru", "subtitle": "Ibiribwa bishya bitangirwa iwe" },
+      { "title": "Utubari & Lounges", "subtitle": "Ijoro ryiza & ibinyobwa" },
+      { "title": "Fast Food", "subtitle": "Ifunguro ryihuse" },
+      { "title": "Pubs & Brasseries", "subtitle": "Biya n’amafunguro" },
+      { "title": "Cafés & Bakeries", "subtitle": "Ikawa & amandazi" }
     ],
-    "cta_title": "Uri nyiri ubucuruzi?",
-    "cta_subtitle": "Shyira ubucuruzi bwawe kuri Aby Booking maze ugere ku bakiriya benshi i Kigali",
-    "cta_button": "Tangira"
+    
+    "how_title": "Uko bikora",
+    "step_1_title": "Reba",
+    "step_1_subtitle": "Tembera urebemo amaresitora na menu",
+    "step_2_title": "Bukinga",
+    "step_2_subtitle": "Bukinga ameza cyangwa utegereze ifunguro",
+    "step_3_title": "Emeza",
+    "step_3_subtitle": "Bona ubutumwa bwemeza ako kanya",
+    "step_4_title": "Nezerwa",
+    "step_4_subtitle": "Ibiryo byiza n’uburambe bwiza",
+    
+    "business_title": "Ufite resitora cyangwa akabari?",
+    "business_subtitle": "Injira kuri Aby Booking wakire abakiriya, utegure ameza, kandi ugererwe abakiriya benshi bo muri Kigali.",
+    "cta_button": "Andikisha ubucuruzi bwawe"
   },
     "settings": {
     "header": "Igenamiterere",
@@ -146,42 +166,43 @@
   }
   },
   "dashboard": {
-   "index": {
-      "welcome": "Murakaza neza",
-      "search_placeholder": "Shakisha inzira, imijyi, cyangwa kompanyi...",
+     "index": {
+      "welcome": "Murakaza neza kongera",
+      "location": "Kigali, u Rwanda",
+      "search_placeholder": "Shakisha amaresitora, amaduka, serivisi...",
       "quick_actions": {
-        "find_routes": "Shakisha inzira",
-        "schedule": "Tegura urugendo",
-        "stations": "Ahahagarara",
-        "help": "Ubufasha"
+        "order_food": "Tegereza ifunguro",
+        "book_service": "Bukinga serivisi",
+        "shop_now": "Gura nonaha",
+        "favorites": "Ibyakunzwe"
       },
-      "upcoming_trips": "Inzira zigiye kuza",
-      "completed_trips": "Inzira zarangije",
-      "promo_title": "Bona 20% ku rugendo rwawe rukurikira!",
-      "promo_subtitle": "Bika vuba none ubike kuri byose.",
-      "promo_button": "Bika Ubu",
-      "section_title": "Amatike Yawe",
-      "section_subtitle": "Genura amatike yawe yose ya bisi hamwe ahantu hamwe",
-      "tabs": {
-        "all": "Yose",
-        "upcoming": "Kuzaza",
-        "past": "Zarangije"
+      "promo_title": "Murakaza neza kuri Aby Booking! 🎉",
+      "promo_subtitle": "Menya ubucuruzi n’amaserivisi yo mu karere ka Kigali",
+      "promo_button": "Tangira gusura",
+      "browse_categories": "Reba ibyiciro",
+      "categories": {
+        "all": "Byose",
+        "restaurants": "Amaresitora",
+        "supermarkets": "Amaduka makuru",
+        "salons": "Amasaloni",
+        "services": "Serivisi"
       },
+      "section_title": "Bizwi hafi yawe",
+      "see_all": "Reba byose",
+      "featured": "Byatoranyijwe",
       "status": {
-        "upcoming": "Kuzaza",
-        "completed": "Yarangije"
-      },
-      "ticket": {
-        "details": "Reba ibisobanuro"
+        "open": "Bifunguye",
+        "closed": "Bifunze"
       },
       "empty": {
-        "no_tickets": "Nta matike yabonetse",
-        "no_upcoming": "Nta rugendo ruzaza. Bika urwo none!",
-        "no_history": "Amateka y'urugendo rwawe ni ubusa.",
-        "start_booking": "Tangira urugendo rwawe ubika itike.",
-        "book_now": "Bika Ubu"
-      }
+        "no_services": "Nta bucuruzi bubonetse",
+        "try_different": "Gerageza icyiciro cyangwa ijambo rishya"
+      },
+      "info_title": "Aby Booking ni iki?",
+      "info_text": "Isoko rya serivisi n’ibicuruzwa byo mu Rwanda — rifasha abakiriya kuzigama igihe n’abacuruzi gukura mu ikoranabuhanga.",
+      "learn_more": "Menya byinshi"
     },
+    
     "settings": {
     "quick_actions": "Ibikorwa byihuse",
     "account_management": "Gucunga konti",

@@ -19,12 +19,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useClientAuth } from '@/contexts/ClientAuthContext';
 import { router } from 'expo-router';
-import { useTranslation } from 'react-i18next'; // ADD THIS
+import { useTranslation } from 'react-i18next';
 import ENV from '@/env';
-import info from '@/constants/info';
 
 const EditProfileScreen: React.FC = () => {
-  const { t } = useTranslation(); // ADD THIS
+  const { t } = useTranslation();
   const { client, updateProfile } = useClientAuth();
   
   const [name, setName] = useState('');
@@ -198,7 +197,7 @@ const EditProfileScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3B82F6" />
+          <ActivityIndicator size="large" color="#FF6B35" />
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </SafeAreaView>
@@ -212,7 +211,7 @@ const EditProfileScreen: React.FC = () => {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
         {/* Header */}
         <LinearGradient
-          colors={[info.primary[500], info.primary[600]]}
+          colors={['#FF6B35', '#FF4757']}
           style={styles.header}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
@@ -336,7 +335,7 @@ const EditProfileScreen: React.FC = () => {
               <ActivityIndicator color="#FFF" />
             ) : (
               <LinearGradient
-                colors={hasChanges ? [info.primary[500], info.primary[600]] : ['#D1D5DB', '#D1D5DB']}
+                colors={hasChanges ? ['#FF6B35', '#FF4757'] : ['#D1D5DB', '#D1D5DB']}
                 style={styles.saveButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -351,9 +350,6 @@ const EditProfileScreen: React.FC = () => {
   );
 };
 
-/* ------------------------------------------------------------------ */
-/* Styles – unchanged                                                 */
-/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F9FAFB' },
   keyboardView: { flex: 1 },
@@ -368,9 +364,9 @@ const styles = StyleSheet.create({
   imageSection: { alignItems: 'center', paddingVertical: 30 },
   imageContainer: { position: 'relative' },
   profileImage: { width: 120, height: 120, borderRadius: 60, borderWidth: 4, borderColor: '#FFF' },
-  profileImagePlaceholder: { width: 120, height: 120, borderRadius: 60, backgroundColor: info.primary[500], alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: '#FFF' },
+  profileImagePlaceholder: { width: 120, height: 120, borderRadius: 60, backgroundColor: '#FF6B35', alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: '#FFF' },
   initialsText: { fontSize: 40, fontWeight: '700', color: '#FFF' },
-  cameraIconContainer: { position: 'absolute', bottom: 0, right: 0, width: 40, height: 40, borderRadius: 20, backgroundColor: info.primary[500], alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
+  cameraIconContainer: { position: 'absolute', bottom: 0, right: 0, width: 40, height: 40, borderRadius: 20, backgroundColor: '#FF6B35', alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
   imageHint: { marginTop: 12, fontSize: 14, color: '#6B7280' },
   formSection: { paddingHorizontal: 20, paddingBottom: 100 },
   inputContainer: { marginBottom: 20 },

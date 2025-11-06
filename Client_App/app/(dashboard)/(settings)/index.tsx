@@ -18,12 +18,10 @@ import { useClientAuth } from '@/contexts/ClientAuthContext';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import ENV from '@/env';
-
-// ---------- NEW ----------
 import { LanguageModal } from '@/components/modal/LanguageModal';
-import i18n from '@/i18n';
+import i18n, { LANGUAGE_KEY } from '@/i18n';
 import type { Language } from '@/i18n';
-// -------------------------
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsProfileScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -31,13 +29,9 @@ const SettingsProfileScreen: React.FC = () => {
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(true);
-
-  // ---- Language Modal state ----
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState<Language>('rw');
-  // ------------------------------
 
-  // Keep UI in sync with i18n (useful when language is changed elsewhere)
   useEffect(() => {
     const listener = (lng: string) => setCurrentLanguage(lng as Language);
     i18n.on('languageChanged', listener);
@@ -45,7 +39,6 @@ const SettingsProfileScreen: React.FC = () => {
     return () => i18n.off('languageChanged', listener);
   }, []);
 
-  // ---- Handlers ----
   const handleLogout = () => {
     Alert.alert(
       t('dashboard.settings.alerts.logout_title'),
@@ -94,13 +87,12 @@ const SettingsProfileScreen: React.FC = () => {
     router.push('/profile');
   };
 
-  // ---- Language selection ----
   const openLanguageModal = () => setLanguageModalVisible(true);
   const handleLanguageSelect = async (lng: Language) => {
-    await i18n.changeLanguage(lng);          // <-- persists automatically (see i18n.ts)
+    await i18n.changeLanguage(lng);
+        await AsyncStorage.setItem(LANGUAGE_KEY, lng);
     setLanguageModalVisible(false);
   };
-  // ----------------------------
 
   const getInitials = (name: string): string => {
     return name
@@ -134,7 +126,7 @@ const SettingsProfileScreen: React.FC = () => {
       icon: 'receipt-outline',
       label: t('dashboard.settings.quick_items.orders'),
       count: '12',
-      color: '#0e8a74',
+      color: '#FF6B35',
       onPress: () => router.push('/orders'),
     },
     {
@@ -155,41 +147,39 @@ const SettingsProfileScreen: React.FC = () => {
       icon: 'gift-outline',
       label: t('dashboard.settings.quick_items.rewards'),
       count: '450',
-      color: '#8B5CF6',
+      color: '#FF8C42',
       onPress: () => router.push('/rewards'),
     },
   ];
 
-  // ---- Language name for the right-text ----
   const languageNames: Record<Language, string> = {
     rw: 'Kinyarwanda',
     en: 'English',
     fr: 'Français',
   };
-  // -----------------------------------------
 
   const menuSections = [
     {
       title: t('dashboard.settings.account_management'),
       items: [
-        { icon: 'person-outline', label: t('dashboard.settings.edit_profile'), onPress: handleEditProfile, showChevron: true, color: '#0e8a74' },
-        { icon: 'lock-closed-outline', label: t('dashboard.settings.change_password'), onPress: () => router.push('/profile/change-password'), showChevron: true, color: '#3B82F6' },
-        { icon: 'shield-checkmark-outline', label: t('dashboard.settings.privacy_security'), onPress: () => router.push('/profile/privacy'), showChevron: true, color: '#8B5CF6' },
+        { icon: 'person-outline', label: t('dashboard.settings.edit_profile'), onPress: handleEditProfile, showChevron: true, color: '#FF6B35' },
+        { icon: 'lock-closed-outline', label: t('dashboard.settings.change_password'), onPress: () => router.push('/profile/change-password'), showChevron: true, color: '#FF8C42' },
+        { icon: 'shield-checkmark-outline', label: t('dashboard.settings.privacy_security'), onPress: () => router.push('/profile/privacy'), showChevron: true, color: '#FFA94D' },
         { icon: 'location-outline', label: t('dashboard.settings.saved_addresses'), onPress: () => router.push('/profile/addresses'), showChevron: true, color: '#F59E0B' },
       ],
     },
     {
       title: t('dashboard.settings.preferences'),
       items: [
-        { icon: 'notifications-outline', label: t('dashboard.settings.push_notifications'), showSwitch: true, value: notificationsEnabled, onValueChange: setNotificationsEnabled, color: '#0e8a74' },
-        { icon: 'mail-outline', label: t('dashboard.settings.email_notifications'), showSwitch: true, value: emailNotifications, onValueChange: setEmailNotifications, color: '#3B82F6' },
+        { icon: 'notifications-outline', label: t('dashboard.settings.push_notifications'), showSwitch: true, value: notificationsEnabled, onValueChange: setNotificationsEnabled, color: '#FF6B35' },
+        { icon: 'mail-outline', label: t('dashboard.settings.email_notifications'), showSwitch: true, value: emailNotifications, onValueChange: setEmailNotifications, color: '#FF8C42' },
         {
           icon: 'language-outline',
           label: t('dashboard.settings.language'),
           onPress: openLanguageModal,
           showChevron: true,
-          rightText: languageNames[currentLanguage],   // <-- dynamic
-          color: '#8B5CF6',
+          rightText: languageNames[currentLanguage],
+          color: '#FFA94D',
         },
         { icon: 'moon-outline', label: t('dashboard.settings.dark_mode'), showSwitch: true, value: false, onValueChange: () => {}, color: '#6B7280' },
       ],
@@ -197,8 +187,8 @@ const SettingsProfileScreen: React.FC = () => {
     {
       title: t('dashboard.settings.support_info'),
       items: [
-        { icon: 'help-circle-outline', label: t('dashboard.settings.help_center'), onPress: () => router.push('/support/help'), showChevron: true, color: '#0e8a74' },
-        { icon: 'chatbubble-ellipses-outline', label: t('dashboard.settings.contact_support'), onPress: () => router.push('/support/contact'), showChevron: true, color: '#3B82F6' },
+        { icon: 'help-circle-outline', label: t('dashboard.settings.help_center'), onPress: () => router.push('/support/help'), showChevron: true, color: '#FF6B35' },
+        { icon: 'chatbubble-ellipses-outline', label: t('dashboard.settings.contact_support'), onPress: () => router.push('/support/contact'), showChevron: true, color: '#FF8C42' },
         { icon: 'star-outline', label: t('dashboard.settings.rate_app'), onPress: () => Alert.alert('Rate App', 'Thank you for your support!'), showChevron: true, color: '#F59E0B' },
         { icon: 'document-text-outline', label: t('dashboard.settings.terms_conditions'), onPress: () => router.push('/support/terms'), showChevron: true, color: '#6B7280' },
         { icon: 'shield-outline', label: t('dashboard.settings.privacy_policy'), onPress: () => router.push('/support/privacy-policy'), showChevron: true, color: '#6B7280' },
@@ -221,9 +211,6 @@ const SettingsProfileScreen: React.FC = () => {
       <StatusBar barStyle="light-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* ... (Header, Profile Card, Quick Actions, Menu Sections, Danger Zone, Footer) ... */}
-        {/* The UI you already have – unchanged except the language item above */}
-        {/* ------------------------------------------------------------------- */}
         {/* Header */}
         <View style={styles.headerWrapper}>
           <ImageBackground
@@ -232,7 +219,7 @@ const SettingsProfileScreen: React.FC = () => {
             resizeMode="cover"
           >
             <LinearGradient
-              colors={['rgba(0,0,0,0.2)', 'rgba(14,138,116,0.8)']}
+              colors={['rgba(0,0,0,0.2)', 'rgba(255,107,53,0.8)']}
               style={styles.coverGradient}
             >
               <SafeAreaView>
@@ -254,7 +241,7 @@ const SettingsProfileScreen: React.FC = () => {
               {client.profileImage ? (
                 <Image source={{ uri: `${ENV.API_URL}${client.profileImage}` }} style={styles.profileImage} />
               ) : (
-                <LinearGradient colors={['#0e8a74', '#0a6d5c']} style={styles.profileImagePlaceholder}>
+                <LinearGradient colors={['#FF6B35', '#FF4757']} style={styles.profileImagePlaceholder}>
                   <Text style={styles.initialsText}>{getInitials(client.name)}</Text>
                 </LinearGradient>
               )}
@@ -282,7 +269,7 @@ const SettingsProfileScreen: React.FC = () => {
             </View>
 
             <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
-              <Ionicons name="create-outline" size={18} color="#0e8a74" />
+              <Ionicons name="create-outline" size={18} color="#FF6B35" />
               <Text style={styles.editProfileText}>{t('dashboard.settings.edit_profile')}</Text>
             </TouchableOpacity>
           </View>
@@ -330,8 +317,8 @@ const SettingsProfileScreen: React.FC = () => {
                           <Switch
                             value={item.value}
                             onValueChange={item.onValueChange}
-                            trackColor={{ false: '#E5E7EB', true: '#0e8a7440' }}
-                            thumbColor={item.value ? '#0e8a74' : '#9CA3AF'}
+                            trackColor={{ false: '#E5E7EB', true: '#FF6B3540' }}
+                            thumbColor={item.value ? '#FF6B35' : '#9CA3AF'}
                           />
                         )}
                         {item.showChevron && <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />}
@@ -386,19 +373,14 @@ const SettingsProfileScreen: React.FC = () => {
         </View>
       </ScrollView>
 
-      {/* ---------- LANGUAGE MODAL ---------- */}
       <LanguageModal
         visible={languageModalVisible}
         onSelect={handleLanguageSelect}
       />
-      {/* ------------------------------------ */}
     </View>
   );
 };
 
-/* ------------------------------------------------------------------ */
-/* Styles – unchanged (copy-paste the same StyleSheet you already have) */
-/* ------------------------------------------------------------------ */
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F9FAFB' },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -414,7 +396,7 @@ const styles = StyleSheet.create({
   profileImage: { width: 100, height: 100, borderRadius: 50, borderWidth: 4, borderColor: '#FFF' },
   profileImagePlaceholder: { width: 100, height: 100, borderRadius: 50, alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: '#FFF' },
   initialsText: { fontSize: 36, fontWeight: '700', color: '#FFF' },
-  cameraButton: { position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: 18, backgroundColor: '#0e8a74', alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
+  cameraButton: { position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: 18, backgroundColor: '#FF6B35', alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
   profileDetails: { alignItems: 'center', marginBottom: 16 },
   profileName: { fontSize: 24, fontWeight: '700', color: '#1F2937', marginBottom: 6 },
   profileEmail: { fontSize: 14, color: '#6B7280', marginBottom: 6 },
@@ -422,8 +404,8 @@ const styles = StyleSheet.create({
   profilePhone: { fontSize: 14, color: '#6B7280' },
   statusBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#F3F4F6', borderRadius: 20 },
   statusText: { fontSize: 13, fontWeight: '600' },
-  editProfileButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 24, paddingVertical: 12, backgroundColor: '#0e8a7410', borderRadius: 25, borderWidth: 1, borderColor: '#0e8a74' },
-  editProfileText: { fontSize: 15, fontWeight: '600', color: '#0e8a74' },
+  editProfileButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 24, paddingVertical: 12, backgroundColor: '#FF6B3510', borderRadius: 25, borderWidth: 1, borderColor: '#FF6B35' },
+  editProfileText: { fontSize: 15, fontWeight: '600', color: '#FF6B35' },
   quickActionsSection: { paddingHorizontal: 16, marginBottom: 24 },
   quickActionsTitle: { fontSize: 18, fontWeight: '700', color: '#1F2937', marginBottom: 16 },
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', gap: 12 },
@@ -446,7 +428,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: '#F3F4F6', marginLeft: 74 },
   footer: { alignItems: 'center', paddingTop: 32, paddingBottom: 16 },
   footerLogo: { width: 60, height: 60, resizeMode: 'contain', marginBottom: 12 },
-  footerBrand: { fontSize: 18, fontWeight: '700', color: '#0e8a74', marginBottom: 4 },
+  footerBrand: { fontSize: 18, fontWeight: '700', color: '#FF6B35', marginBottom: 4 },
   footerVersion: { fontSize: 12, color: '#9CA3AF', marginBottom: 12 },
   footerText: { fontSize: 13, color: '#6B7280', marginBottom: 6 },
   footerCopyright: { fontSize: 11, color: '#9CA3AF' },

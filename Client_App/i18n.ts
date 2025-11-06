@@ -16,7 +16,7 @@ export const resources = {
 
 export type Language = keyof typeof resources;
 
-const LANGUAGE_KEY = 'user-language';
+export const LANGUAGE_KEY = 'user-language';
 
 i18n
   .use(initReactI18next)
