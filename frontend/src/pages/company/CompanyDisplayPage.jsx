@@ -45,7 +45,7 @@ const CompanyDisplay = () => {
 
   // ---- UI helpers --------------------------------------------------
   const companyTypes = [
-    { value: 'ALL', label: 'All Companies', icon: Building2 },
+    { value: 'ALL', label: 'All', icon: Building2 },
     { value: 'RESTAURANT', label: 'Restaurants', icon: Utensils },
     { value: 'SUPERMARKET', label: 'Supermarkets', icon: ShoppingCart },
     { value: 'SHOP', label: 'Shops', icon: Store },
@@ -84,7 +84,7 @@ const CompanyDisplay = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
-        <div className="text-xl text-slate-600">Loading companies…</div>
+        <div className="text-xl text-slate-600">Loading Partners</div>
       </div>
     );
   }
@@ -117,7 +117,7 @@ const CompanyDisplay = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search companies by name, city, or description..."
+                placeholder="Search partners by name, city, or description..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border border-orange-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
@@ -150,13 +150,13 @@ const CompanyDisplay = () => {
         {filteredCompanies.length === 0 ? (
           <div className="text-center py-16">
             <Building2 className="w-16 h-16 text-orange-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700 mb-2">No companies found</h3>
+            <h3 className="text-xl font-semibold text-slate-700 mb-2">No partners found</h3>
             <p className="text-slate-500">Try adjusting your search or filter criteria</p>
           </div>
         ) : (
           <>
             <div className="text-slate-600 mb-6">
-              Showing {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'}
+              Showing {filteredCompanies.length} {filteredCompanies.length === 1 ? 'partner' : 'partners'}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
@@ -228,7 +228,7 @@ const CompanyDisplay = () => {
                       </div>
 
                       <button 
-                      onClick={()=> navigate(`/companies/details/${company.id}`)}
+                      onClick={()=> navigate(`/partners/details/${company.id}`)}
                       className="w-full mt-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-medium py-2 px-4 rounded-lg transition shadow-md hover:shadow-lg">
                         View Details
                       </button>

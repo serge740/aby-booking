@@ -72,9 +72,9 @@ const router = createBrowserRouter([
     { path: 'products/:id', element: <SuspenseWrapper><CoffeeShop /></SuspenseWrapper> },
     { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
     { path: 'gallery', element: <SuspenseWrapper><Gallery /></SuspenseWrapper> },
-    { path: 'companies', element: <SuspenseWrapper><CompanyDisplay /></SuspenseWrapper> },
-    { path: 'companies/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
-    { path: 'companies/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
+    { path: 'partners', element: <SuspenseWrapper><CompanyDisplay /></SuspenseWrapper> },
+    { path: 'partners/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
+    { path: 'partners/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
  
   ]
 },
