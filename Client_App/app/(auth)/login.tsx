@@ -143,7 +143,7 @@ const LoginScreen: React.FC = () => {
               <View style={styles.logoCircle}>
                 <MaterialIcons name="storefront" size={32} color="#FFF" />
               </View>
-              <Text style={styles.brandName}>Aby Booking</Text>
+              <Text style={styles.brandName}>FRESH CART</Text>
               <Text style={styles.tagline}>Your Local Marketplace</Text>
             </View>
           </LinearGradient>

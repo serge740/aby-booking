@@ -164,7 +164,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       ? user?.email || "admin@abybooking.com"
       : user?.email || "company@abybooking.com";
 
-  const portalTitle = "Aby Booking";
+  const portalTitle = "FRESH CART";
 
   const isDropdownActive = (dropdown: DropdownGroup) => {
     const currentPath = location.pathname;
@@ -279,9 +279,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-primary-200">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="Aby Booking" className="w-10 h-10 rounded-lg" />
+            <img src={logo} alt="FRESH CART" className="w-10 h-10 rounded-lg" />
             <div>
-              <h2 className="font-bold text-base text-primary-800">Aby Booking</h2>
+              <h2 className="font-bold text-base text-primary-800">FRESH CART</h2>
               <p className="text-xs text-primary-500">{portalTitle}</p>
             </div>
           </div>

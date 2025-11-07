@@ -1,305 +1,303 @@
 {
-  "onboarding": {
-    "slides": [
-      {
-        "title": "Découvrez les entreprises locales",
-        "description": "Bienvenue sur Aby Booking — votre passerelle vers les meilleurs restaurants, supermarchés, salons et services de Kigali. Tout ce dont vous avez besoin, réuni au même endroit."
-      },
-      {
-        "title": "Réservez et commandez facilement",
-        "description": "Avec Aby Booking, explorez, prenez des rendez-vous et commandez des produits auprès d’entreprises locales de confiance — rapidement et facilement."
-      },
-      {
-        "title": "Payez en toute sécurité",
-        "description": "Profitez de paiements simples et sécurisés avec MTN MoMo et Airtel Money. Rapide, fiable et conçu pour les Rwandais."
-      }
-    ],
-    "skip": "Passer",
-    "next": "Suivant",
-    "getStarted": "Commencer"
-  },
-   "loginAuth": {
-    "welcome": "Bon retour !",
-    "back": "Bienvenue sur Aby Booking",
-    "subtitle": "Connectez-vous pour découvrir les restaurants, salons, supermarchés et services locaux, gérer vos réservations et commander vos produits facilement.",
-    "placeholder_identifier": "Entrez votre numéro de téléphone ou votre e-mail",
-    "placeholder_phone": "Entrez votre numéro de téléphone",
-    "placeholder_email": "Entrez votre adresse e-mail",
-    "placeholder_password": "Entrez votre mot de passe",
-    "remember_me": "Rester connecté",
-    "forgot_password": "Mot de passe oublié ?",
-    "sign_in": "Se connecter",
-    "or": "OU",
-    "continue_as_guest": "Continuer en tant qu’invité",
-    "no_account": "Vous n’avez pas encore de compte ?",
-    "create_account": "Créez votre compte",
-    "error_identifier_required": "Veuillez entrer votre numéro de téléphone ou e-mail",
-    "error_identifier_invalid": "Veuillez entrer un numéro de téléphone ou e-mail valide",
-    "error_password_required": "Le mot de passe ne peut pas être vide",
-    "error_password_length": "Le mot de passe doit contenir au moins 6 caractères",
-    "login_failed": "Échec de la connexion",
-    "login_failed_message": "Nous n’avons pas pu vous connecter. Veuillez vérifier vos informations et réessayer."
-  },
-   "registerAuth": {
-    "hello": "Bonjour",
-    "there": "!",
-    "register_subtitle": "Quelques étapes seulement et vous êtes prêt à découvrir les restaurants, salons, supermarchés et services locaux avec Aby Booking.",
-    "placeholder_name": "Entrez votre nom complet",
-    "placeholder_email": "Entrez votre e-mail",
-    "placeholder_phone": "Entrez votre numéro de téléphone",
-    "placeholder_password": "Créez un mot de passe",
-    "placeholder_confirm_password": "Confirmez votre mot de passe",
-    "terms": "En vous inscrivant, vous acceptez nos ",
-    "terms_service": "Conditions d’utilisation",
-    "and": " et ",
-    "privacy_policy": "Politique de confidentialité",
-    "signup": "S’inscrire",
-    "or": "Ou",
-    "already_have_account": "Vous avez déjà un compte ?",
-    "sign_in": "Se connecter",
+    "onboarding": {
+        "slides": [{
+                "title": "Découvrez les entreprises locales",
+                "description": "Bienvenue sur Fresh cart — votre passerelle vers les meilleurs restaurants, supermarchés, salons et services de Kigali. Tout ce dont vous avez besoin, réuni au même endroit."
+            },
+            {
+                "title": "Réservez et commandez facilement",
+                "description": "Avec FRESH CART, explorez, prenez des rendez-vous et commandez des produits auprès d’entreprises locales de confiance — rapidement et facilement."
+            },
+            {
+                "title": "Payez en toute sécurité",
+                "description": "Profitez de paiements simples et sécurisés avec MTN MoMo et Airtel Money. Rapide, fiable et conçu pour les Rwandais."
+            }
+        ],
+        "skip": "Passer",
+        "next": "Suivant",
+        "getStarted": "Commencer"
+    },
+    "loginAuth": {
+        "welcome": "Bon retour !",
+        "back": "Bienvenue sur FRESH CART",
+        "subtitle": "Connectez-vous pour découvrir les restaurants, salons, supermarchés et services locaux, gérer vos réservations et commander vos produits facilement.",
+        "placeholder_identifier": "Entrez votre numéro de téléphone ou votre e-mail",
+        "placeholder_phone": "Entrez votre numéro de téléphone",
+        "placeholder_email": "Entrez votre adresse e-mail",
+        "placeholder_password": "Entrez votre mot de passe",
+        "remember_me": "Rester connecté",
+        "forgot_password": "Mot de passe oublié ?",
+        "sign_in": "Se connecter",
+        "or": "OU",
+        "continue_as_guest": "Continuer en tant qu’invité",
+        "no_account": "Vous n’avez pas encore de compte ?",
+        "create_account": "Créez votre compte",
+        "error_identifier_required": "Veuillez entrer votre numéro de téléphone ou e-mail",
+        "error_identifier_invalid": "Veuillez entrer un numéro de téléphone ou e-mail valide",
+        "error_password_required": "Le mot de passe ne peut pas être vide",
+        "error_password_length": "Le mot de passe doit contenir au moins 6 caractères",
+        "login_failed": "Échec de la connexion",
+        "login_failed_message": "Nous n’avons pas pu vous connecter. Veuillez vérifier vos informations et réessayer."
+    },
+    "registerAuth": {
+        "hello": "Bonjour",
+        "there": "!",
+        "register_subtitle": "Quelques étapes seulement et vous êtes prêt à découvrir les restaurants, salons, supermarchés et services locaux avec FRESH CART.",
+        "placeholder_name": "Entrez votre nom complet",
+        "placeholder_email": "Entrez votre e-mail",
+        "placeholder_phone": "Entrez votre numéro de téléphone",
+        "placeholder_password": "Créez un mot de passe",
+        "placeholder_confirm_password": "Confirmez votre mot de passe",
+        "terms": "En vous inscrivant, vous acceptez nos ",
+        "terms_service": "Conditions d’utilisation",
+        "and": " et ",
+        "privacy_policy": "Politique de confidentialité",
+        "signup": "S’inscrire",
+        "or": "Ou",
+        "already_have_account": "Vous avez déjà un compte ?",
+        "sign_in": "Se connecter",
 
-    "error_name_required": "Veuillez entrer votre nom",
-    "error_email_required": "L’e-mail est requis",
-    "error_email_invalid": "Veuillez entrer un e-mail valide",
-    "error_phone_required": "Le numéro de téléphone est requis",
-    "error_phone_invalid": "Veuillez entrer un numéro de téléphone valide",
-    "error_password_required": "Le mot de passe ne peut pas être vide",
-    "error_password_length": "Le mot de passe doit contenir au moins 6 caractères",
-    "error_confirm_required": "Veuillez confirmer votre mot de passe",
-    "error_confirm_mismatch": "Les mots de passe ne correspondent pas",
-    "register_failed": "Échec de l’inscription",
-    "register_failed_message": "Nous n’avons pas pu créer votre compte. Veuillez vérifier vos informations et réessayer."
-  },
-  "guest": {
- "index": {
-    "app_name": "Aby Booking",
-    "app_subtitle": "Réservez votre table",
-    "location": "Kigali, Rwanda",
-    "hero_title": "Réservez votre expérience culinaire idéale",
-    "hero_subtitle": "Réservez des tables dans les meilleurs restaurants, bars et cafés de Kigali",
-    "search_placeholder": "Recherchez restaurants, bars, cafés...",
-    
-    "banner": [
-      {
-        "title": "Restaurants gastronomiques",
-        "subtitle": "Réservez dans les restaurants haut de gamme de Kigali"
-      },
-      {
-        "title": "Bars et vie nocturne",
-        "subtitle": "Trouvez une place dans les bars et lounges les plus branchés"
-      },
-      {
-        "title": "Cafés et bistrots chaleureux",
-        "subtitle": "Trouvez le lieu parfait pour un café ou un repas détendu"
-      },
-      {
-        "title": "Commandez une livraison",
-        "subtitle": "Consultez les menus et commandez vos plats préférés"
-      }
-    ],
-    
-    "stats": {
-      "businesses": "350+ Restaurants et Bars",
-      "customers": "10K+ Clients satisfaits",
-      "orders": "50K+ Réservations effectuées"
+        "error_name_required": "Veuillez entrer votre nom",
+        "error_email_required": "L’e-mail est requis",
+        "error_email_invalid": "Veuillez entrer un e-mail valide",
+        "error_phone_required": "Le numéro de téléphone est requis",
+        "error_phone_invalid": "Veuillez entrer un numéro de téléphone valide",
+        "error_password_required": "Le mot de passe ne peut pas être vide",
+        "error_password_length": "Le mot de passe doit contenir au moins 6 caractères",
+        "error_confirm_required": "Veuillez confirmer votre mot de passe",
+        "error_confirm_mismatch": "Les mots de passe ne correspondent pas",
+        "register_failed": "Échec de l’inscription",
+        "register_failed_message": "Nous n’avons pas pu créer votre compte. Veuillez vérifier vos informations et réessayer."
     },
-    
-    "what_title": "Qu’est-ce qu’Aby Booking ?",
-    "what_text": "Aby Booking vous permet de découvrir et réserver des tables dans les restaurants, bars, cafés et supermarchés de Kigali. Consultez les menus, vérifiez la disponibilité, réservez et commandez — le tout dans une seule application.",
-    
-    "categories_title": "Parcourir par catégorie",
-    "categories_subtitle": "Trouvez l’endroit idéal pour chaque occasion",
-    "categories": [
-      { "title": "Restaurants", "subtitle": "Gastronomiques & décontractés" },
-      { "title": "Supermarchés", "subtitle": "Courses livrées à domicile" },
-      { "title": "Bars & Lounges", "subtitle": "Sorties et boissons" },
-      { "title": "Restauration rapide", "subtitle": "Repas rapides" },
-      { "title": "Pubs & Brasseries", "subtitle": "Bières artisanales & plats" },
-      { "title": "Cafés & Boulangeries", "subtitle": "Café & pâtisseries" }
-    ],
-    
-    "how_title": "Comment ça marche",
-    "step_1_title": "Explorer",
-    "step_1_subtitle": "Découvrez les restaurants et leurs menus",
-    "step_2_title": "Réserver",
-    "step_2_subtitle": "Réservez une table ou commandez à manger",
-    "step_3_title": "Confirmer",
-    "step_3_subtitle": "Recevez une confirmation instantanée",
-    "step_4_title": "Profiter",
-    "step_4_subtitle": "Savourez votre expérience culinaire",
-    
-    "business_title": "Vous avez un restaurant ou un bar ?",
-    "business_subtitle": "Rejoignez Aby Booking pour recevoir des réservations, gérer vos tables et atteindre des milliers de clients à Kigali.",
-    "cta_button": "Inscrire mon établissement"
-  },
-    
-  "settings": {
-    "header": "Paramètres",
-    "section_general": "Général",
-    "notifications": "Notifications",
-    "dark_mode": "Mode sombre",
-    "change_language": "Changer de langue",
-    "section_account": "Compte",
-    "logout": "Se déconnecter",
-    "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter d’Aby Booking ?",
-    "language_alert": "Les options de langue seront bientôt disponibles.",
-    "footer": "Version de l’application Aby Booking 1.0.0"
-  
-},
-"support": {
-    "header": "Centre d’assistance",
-    "subheader": "Nous sommes là pour vous aider pour toutes questions ou problèmes liés à Aby Booking.",
-    "contact_title": "Contactez-nous",
-    "phone": "Téléphone : +250 788 123 456",
-    "email": "E-mail : support@abybooking.rw",
-    "whatsapp_title": "Support WhatsApp",
-    "whatsapp_link": "Discutez avec nous sur WhatsApp",
-    "faq_title": "Questions fréquentes",
-    "faq": [
-      "Comment réserver un service ou un produit ?",
-      "Puis-je annuler ou modifier ma réservation ?",
-      "Comment suivre ma commande ou réservation ?",
-      "Que faire si je rencontre un problème avec ma réservation ?"
-    ],
-    "footer": "Merci d’utiliser Aby Booking !"
-  },
-  
-  "bus": {
-    "header": "Entreprises locales près de chez vous"
-  }
+    "guest": {
+        "index": {
+            "app_name": "FRESH CART",
+            "app_subtitle": "Réservez votre table",
+            "location": "Kigali, Rwanda",
+            "hero_title": "Réservez votre expérience culinaire idéale",
+            "hero_subtitle": "Réservez des tables dans les meilleurs restaurants, bars et cafés de Kigali",
+            "search_placeholder": "Recherchez restaurants, bars, cafés...",
 
-  },
-  "dashboard": {
-  "index": {
-      "welcome": "Bon retour",
-      "location": "Kigali, Rwanda",
-      "search_placeholder": "Recherchez des restaurants, magasins, services...",
-      "quick_actions": {
-        "order_food": "Commander à manger",
-        "book_service": "Réserver un service",
-        "shop_now": "Acheter maintenant",
-        "favorites": "Favoris"
-      },
-      "promo_title": "Bienvenue sur Aby Booking ! 🎉",
-      "promo_subtitle": "Découvrez les entreprises et services locaux à Kigali",
-      "promo_button": "Explorer maintenant",
-      "browse_categories": "Parcourir les catégories",
-      "categories": {
-        "all": "Tout",
-        "restaurants": "Restaurants",
-        "supermarkets": "Supermarchés",
-        "salons": "Salons",
-        "services": "Services"
-      },
-      "section_title": "Populaire près de chez vous",
-      "see_all": "Voir tout",
-      "featured": "En vedette",
-      "status": {
-        "open": "Ouvert",
-        "closed": "Fermé"
-      },
-      "empty": {
-        "no_services": "Aucune entreprise trouvée",
-        "try_different": "Essayez une autre catégorie ou un autre terme de recherche"
-      },
-      "info_title": "Qu’est-ce qu’Aby Booking ?",
-      "info_text": "Le marché local du Rwanda pour réserver des services et commander des produits — vous aide à gagner du temps et à faire croître les entreprises localement.",
-      "learn_more": "En savoir plus"
+            "banner": [{
+                    "title": "Restaurants gastronomiques",
+                    "subtitle": "Réservez dans les restaurants haut de gamme de Kigali"
+                },
+                {
+                    "title": "Bars et vie nocturne",
+                    "subtitle": "Trouvez une place dans les bars et lounges les plus branchés"
+                },
+                {
+                    "title": "Cafés et bistrots chaleureux",
+                    "subtitle": "Trouvez le lieu parfait pour un café ou un repas détendu"
+                },
+                {
+                    "title": "Commandez une livraison",
+                    "subtitle": "Consultez les menus et commandez vos plats préférés"
+                }
+            ],
+
+            "stats": {
+                "businesses": "350+ Restaurants et Bars",
+                "customers": "10K+ Clients satisfaits",
+                "orders": "50K+ Réservations effectuées"
+            },
+
+            "what_title": "Qu’est-ce qu’Fresh cart ?",
+            "what_text": "Fresh cart vous permet de découvrir et réserver des tables dans les restaurants, bars, cafés et supermarchés de Kigali. Consultez les menus, vérifiez la disponibilité, réservez et commandez — le tout dans une seule application.",
+
+            "categories_title": "Parcourir par catégorie",
+            "categories_subtitle": "Trouvez l’endroit idéal pour chaque occasion",
+            "categories": [
+                { "title": "Restaurants", "subtitle": "Gastronomiques & décontractés" },
+                { "title": "Supermarchés", "subtitle": "Courses livrées à domicile" },
+                { "title": "Bars & Lounges", "subtitle": "Sorties et boissons" },
+                { "title": "Restauration rapide", "subtitle": "Repas rapides" },
+                { "title": "Pubs & Brasseries", "subtitle": "Bières artisanales & plats" },
+                { "title": "Cafés & Boulangeries", "subtitle": "Café & pâtisseries" }
+            ],
+
+            "how_title": "Comment ça marche",
+            "step_1_title": "Explorer",
+            "step_1_subtitle": "Découvrez les restaurants et leurs menus",
+            "step_2_title": "Réserver",
+            "step_2_subtitle": "Réservez une table ou commandez à manger",
+            "step_3_title": "Confirmer",
+            "step_3_subtitle": "Recevez une confirmation instantanée",
+            "step_4_title": "Profiter",
+            "step_4_subtitle": "Savourez votre expérience culinaire",
+
+            "business_title": "Vous avez un restaurant ou un bar ?",
+            "business_subtitle": "Rejoignez Fresh cart pour recevoir des réservations, gérer vos tables et atteindre des milliers de clients à Kigali.",
+            "cta_button": "Inscrire mon établissement"
+        },
+
+        "settings": {
+            "header": "Paramètres",
+            "section_general": "Général",
+            "notifications": "Notifications",
+            "dark_mode": "Mode sombre",
+            "change_language": "Changer de langue",
+            "section_account": "Compte",
+            "logout": "Se déconnecter",
+            "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter d’Fresh cart ?",
+            "language_alert": "Les options de langue seront bientôt disponibles.",
+            "footer": "Version de l’application Fresh cart 1.0.0"
+
+        },
+        "support": {
+            "header": "Centre d’assistance",
+            "subheader": "Nous sommes là pour vous aider pour toutes questions ou problèmes liés à FRESH CART.",
+            "contact_title": "Contactez-nous",
+            "phone": "Téléphone : +250 788 123 456",
+            "email": "E-mail : support@abybooking.rw",
+            "whatsapp_title": "Support WhatsApp",
+            "whatsapp_link": "Discutez avec nous sur WhatsApp",
+            "faq_title": "Questions fréquentes",
+            "faq": [
+                "Comment réserver un service ou un produit ?",
+                "Puis-je annuler ou modifier ma réservation ?",
+                "Comment suivre ma commande ou réservation ?",
+                "Que faire si je rencontre un problème avec ma réservation ?"
+            ],
+            "footer": "Merci d’utiliser Fresh cart !"
+        },
+
+        "bus": {
+            "header": "Entreprises locales près de chez vous"
+        }
+
     },
-   
-     "settings": {
-    "quick_actions": "Actions rapides",
-    "account_management": "Gestion du compte",
-    "preferences": "Préférences",
-    "support_info": "Support & Infos",
-    "danger_zone": "Zone de danger",
-    "edit_profile": "Modifier le profil",
-    "change_password": "Changer le mot de passe",
-    "privacy_security": "Confidentialité & Sécurité",
-    "saved_addresses": "Adresses enregistrées",
-    "push_notifications": "Notifications Push",
-    "email_notifications": "Notifications par e-mail",
-    "language": "Langue",
-    "dark_mode": "Mode sombre",
-    "help_center": "Centre d’assistance",
-    "contact_support": "Contacter le support",
-    "rate_app": "Noter Aby Booking",
-    "terms_conditions": "Termes & Conditions",
-    "privacy_policy": "Politique de confidentialité",
-    "logout": "Se déconnecter",
-    "delete_account": "Supprimer le compte",
-    "footer_brand": "Aby Booking",
-    "footer_version": "Version 1.0.0",
-    "footer_member_since": "Membre depuis",
-    "footer_copyright": "© 2024 Aby Booking. Tous droits réservés.",
-    "alerts": {
-      "logout_title": "Déconnexion",
-      "logout_message": "Êtes-vous sûr de vouloir vous déconnecter d’Aby Booking ?",
-      "logout_cancel": "Annuler",
-      "logout_confirm": "Se déconnecter",
-      "delete_title": "Supprimer le compte",
-      "delete_message": "Êtes-vous sûr de vouloir supprimer votre compte Aby Booking ? Cette action est irréversible.",
-      "delete_cancel": "Annuler",
-      "delete_confirm": "Supprimer",
-      "error_logout": "Échec de la déconnexion. Veuillez réessayer.",
-      "error_delete": "Échec de la suppression du compte. Veuillez réessayer."
-    },
-    "quick_items": {
-      "orders": "Mes commandes",
-      "favorites": "Favoris",
-      "wallet": "Portefeuille",
-      "rewards": "Récompenses"
+    "dashboard": {
+        "index": {
+            "welcome": "Bon retour",
+            "location": "Kigali, Rwanda",
+            "search_placeholder": "Recherchez des restaurants, magasins, services...",
+            "quick_actions": {
+                "order_food": "Commander à manger",
+                "book_service": "Réserver un service",
+                "shop_now": "Acheter maintenant",
+                "favorites": "Favoris"
+            },
+            "promo_title": "Bienvenue sur Fresh cart ! 🎉",
+            "promo_subtitle": "Découvrez les entreprises et services locaux à Kigali",
+            "promo_button": "Explorer maintenant",
+            "browse_categories": "Parcourir les catégories",
+            "categories": {
+                "all": "Tout",
+                "restaurants": "Restaurants",
+                "supermarkets": "Supermarchés",
+                "salons": "Salons",
+                "services": "Services"
+            },
+            "section_title": "Populaire près de chez vous",
+            "see_all": "Voir tout",
+            "featured": "En vedette",
+            "status": {
+                "open": "Ouvert",
+                "closed": "Fermé"
+            },
+            "empty": {
+                "no_services": "Aucune entreprise trouvée",
+                "try_different": "Essayez une autre catégorie ou un autre terme de recherche"
+            },
+            "info_title": "Qu’est-ce qu’Fresh cart ?",
+            "info_text": "Le marché local du Rwanda pour réserver des services et commander des produits — vous aide à gagner du temps et à faire croître les entreprises localement.",
+            "learn_more": "En savoir plus"
+        },
+
+        "settings": {
+            "quick_actions": "Actions rapides",
+            "account_management": "Gestion du compte",
+            "preferences": "Préférences",
+            "support_info": "Support & Infos",
+            "danger_zone": "Zone de danger",
+            "edit_profile": "Modifier le profil",
+            "change_password": "Changer le mot de passe",
+            "privacy_security": "Confidentialité & Sécurité",
+            "saved_addresses": "Adresses enregistrées",
+            "push_notifications": "Notifications Push",
+            "email_notifications": "Notifications par e-mail",
+            "language": "Langue",
+            "dark_mode": "Mode sombre",
+            "help_center": "Centre d’assistance",
+            "contact_support": "Contacter le support",
+            "rate_app": "Noter FRESH CART",
+            "terms_conditions": "Termes & Conditions",
+            "privacy_policy": "Politique de confidentialité",
+            "logout": "Se déconnecter",
+            "delete_account": "Supprimer le compte",
+            "footer_brand": "FRESH CART",
+            "footer_version": "Version 1.0.0",
+            "footer_member_since": "Membre depuis",
+            "footer_copyright": "© 2024 FRESH CART. Tous droits réservés.",
+            "alerts": {
+                "logout_title": "Déconnexion",
+                "logout_message": "Êtes-vous sûr de vouloir vous déconnecter d’Fresh cart ?",
+                "logout_cancel": "Annuler",
+                "logout_confirm": "Se déconnecter",
+                "delete_title": "Supprimer le compte",
+                "delete_message": "Êtes-vous sûr de vouloir supprimer votre compte Fresh cart ? Cette action est irréversible.",
+                "delete_cancel": "Annuler",
+                "delete_confirm": "Supprimer",
+                "error_logout": "Échec de la déconnexion. Veuillez réessayer.",
+                "error_delete": "Échec de la suppression du compte. Veuillez réessayer."
+            },
+            "quick_items": {
+                "orders": "Mes commandes",
+                "favorites": "Favoris",
+                "wallet": "Portefeuille",
+                "rewards": "Récompenses"
+            }
+        },
+        "profile": {
+            "header_title": "Modifier le profil",
+            "image_hint": "Touchez pour changer la photo de profil",
+            "full_name_label": "Nom complet *",
+            "full_name_placeholder": "Entrez votre nom complet",
+            "email_label": "Adresse e-mail *",
+            "email_placeholder": "Entrez votre e-mail",
+            "phone_label": "Numéro de téléphone",
+            "phone_placeholder": "Entrez votre numéro de téléphone",
+            "account_status": "Statut du compte",
+            "member_since": "Membre depuis",
+            "connected": "Connecté",
+            "save_button": "Enregistrer les modifications",
+            "alerts": {
+                "image_permission_title": "Autorisation requise",
+                "image_permission_message": "Veuillez autoriser l'accès à vos photos pour mettre à jour votre photo de profil.",
+                "camera_permission_message": "Veuillez autoriser l'accès à votre caméra pour prendre une nouvelle photo.",
+                "image_error": "Impossible de sélectionner l'image. Veuillez réessayer.",
+                "photo_error": "Impossible de prendre la photo. Veuillez réessayer.",
+                "validation_name": "Le nom complet est requis.",
+                "validation_email": "L’e-mail est requis.",
+                "validation_email_format": "Veuillez entrer une adresse e-mail valide.",
+                "success_title": "Succès",
+                "success_message": "Votre profil a été mis à jour avec succès !",
+                "success_ok": "OK",
+                "error_title": "Erreur",
+                "error_default": "Échec de la mise à jour du profil. Veuillez réessayer.",
+                "discard_title": "Annuler les modifications ?",
+                "discard_message": "Vous avez des modifications non enregistrées. Voulez-vous vraiment revenir en arrière ?",
+                "discard_keep": "Continuer l’édition",
+                "discard_confirm": "Annuler",
+                "image_options_title": "Mettre à jour la photo de profil",
+                "image_options_take": "Prendre une photo",
+                "image_options_library": "Choisir dans la bibliothèque",
+                "image_options_cancel": "Annuler"
+            }
+        },
+        "tabs": {
+            "home": "Accueil",
+            "settings": "Paramètres"
+        },
+        "exitApp": {
+            "title": "Quitter l'application",
+            "message": "Voulez-vous quitter l'application ?",
+            "cancel": "Annuler",
+            "confirm": "Oui"
+        }
+
     }
-  },
-  "profile": {
-    "header_title": "Modifier le profil",
-    "image_hint": "Touchez pour changer la photo de profil",
-    "full_name_label": "Nom complet *",
-    "full_name_placeholder": "Entrez votre nom complet",
-    "email_label": "Adresse e-mail *",
-    "email_placeholder": "Entrez votre e-mail",
-    "phone_label": "Numéro de téléphone",
-    "phone_placeholder": "Entrez votre numéro de téléphone",
-    "account_status": "Statut du compte",
-    "member_since": "Membre depuis",
-    "connected": "Connecté",
-    "save_button": "Enregistrer les modifications",
-    "alerts": {
-      "image_permission_title": "Autorisation requise",
-      "image_permission_message": "Veuillez autoriser l'accès à vos photos pour mettre à jour votre photo de profil.",
-      "camera_permission_message": "Veuillez autoriser l'accès à votre caméra pour prendre une nouvelle photo.",
-      "image_error": "Impossible de sélectionner l'image. Veuillez réessayer.",
-      "photo_error": "Impossible de prendre la photo. Veuillez réessayer.",
-      "validation_name": "Le nom complet est requis.",
-      "validation_email": "L’e-mail est requis.",
-      "validation_email_format": "Veuillez entrer une adresse e-mail valide.",
-      "success_title": "Succès",
-      "success_message": "Votre profil a été mis à jour avec succès !",
-      "success_ok": "OK",
-      "error_title": "Erreur",
-      "error_default": "Échec de la mise à jour du profil. Veuillez réessayer.",
-      "discard_title": "Annuler les modifications ?",
-      "discard_message": "Vous avez des modifications non enregistrées. Voulez-vous vraiment revenir en arrière ?",
-      "discard_keep": "Continuer l’édition",
-      "discard_confirm": "Annuler",
-      "image_options_title": "Mettre à jour la photo de profil",
-      "image_options_take": "Prendre une photo",
-      "image_options_library": "Choisir dans la bibliothèque",
-      "image_options_cancel": "Annuler"
-    }
-  },
-  "tabs": {
-    "home": "Accueil",
-    "settings": "Paramètres"
-  },
-  "exitApp": {
-    "title": "Quitter l'application",
-    "message": "Voulez-vous quitter l'application ?",
-    "cancel": "Annuler",
-    "confirm": "Oui"
-  }
-
-  }
 
 
 }

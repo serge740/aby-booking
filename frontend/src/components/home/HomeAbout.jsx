@@ -5,7 +5,7 @@ import { Store, Users, Smartphone, MapPin, ArrowRight, Globe, Lightbulb, Handsha
 
 export default function AbyBookingAbout() {
   return (
-    <section className="w-full bg-gray-50 py-16 md:py-24 px-4 md:px-16">
+    <section className="w-full bg-gray-50 py-16 md:py-10 px-4 md:px-12">
       <div className="mx-auto ">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* ── LEFT: Image Grid ── */}
@@ -15,7 +15,7 @@ export default function AbyBookingAbout() {
               <div className="col-span-2 row-span-2 overflow-hidden rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300">
                 <img
                   src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&h=800&fit=crop"
-                  alt="Aby Booking app on smartphone"
+                  alt="Fresh cart app on smartphone"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -31,7 +31,7 @@ export default function AbyBookingAbout() {
               <div className="col-span-2 row-span-2 overflow-hidden rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300">
                 <img
                   src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070"
-                  alt="Rwandans using Aby Booking"
+                  alt="Rwandans using FRESH CART"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -40,7 +40,7 @@ export default function AbyBookingAbout() {
               <div className="col-span-1 row-span-2 overflow-hidden rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300">
                 <img
                   src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&h=800&fit=crop"
-                  alt="Aby Booking mobile interface"
+                  alt="Fresh cart mobile interface"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -57,7 +57,7 @@ export default function AbyBookingAbout() {
             <div>
               <p className="text-sm md:text-base font-light tracking-wider mb-3 text-primary-600 uppercase flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                About Aby Booking
+                About FRESH CART
               </p>
               <h2 className="text-3xl md:text-4xl  font-bold mb-6 leading-tight">
                 Rwanda’s All-in-One Platform for{' '}
@@ -68,7 +68,7 @@ export default function AbyBookingAbout() {
             {/* Body paragraphs */}
             <div className="space-y-5 text-gray-600">
               <p className="text-base md:text-lg leading-relaxed">
-                Welcome to <strong>Aby Booking</strong> — Rwanda’s all-in-one platform that connects people to the best local businesses, services, and products. From delicious restaurant meals to convenient supermarket orders, Aby Booking makes it simple to discover, book, and enjoy what Kigali has to offer — all in one place.
+                Welcome to <strong>FRESH CART</strong> — Rwanda’s all-in-one platform that connects people to the best local businesses, services, and products. From delicious restaurant meals to convenient supermarket orders, Fresh cart makes it simple to discover, book, and enjoy what Kigali has to offer — all in one place.
               </p>
 
               <p className="text-base md:text-lg leading-relaxed flex items-start gap-2">
@@ -99,7 +99,7 @@ export default function AbyBookingAbout() {
                 <div className="w-20 h-20 rounded-full overflow-hidden">
                   <img
                     src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&h=200&fit=crop"
-                    alt="Aby Booking app"
+                    alt="Fresh cart app"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -119,13 +119,7 @@ export default function AbyBookingAbout() {
               </div>
             </div>
 
-            {/* CTA */}
-            <div className="pt-4">
-              <button className="group inline-flex items-center gap-2 px-8 py-3 bg-transparent border-2 border-primary-600 text-primary-600 rounded-full hover:bg-primary-600 hover:text-white transition-all duration-300 font-medium text-base">
-                Explore Businesses
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
-            </div>
+          
           </div>
         </div>
       </div>

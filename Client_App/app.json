@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Aby Booking",
+    "name": "FRESH CART",
     "slug": "aby-booking",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "scheme": "abybooking",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "description": "Aby Booking is Rwanda’s all-in-one platform to discover, book, and order from local restaurants, supermarkets, salons, and service providers. Enjoy convenient bookings, secure payments, and effortless access to the best businesses in Kigali and beyond.",
+    "description": "Fresh cart is Rwanda’s all-in-one platform to discover, book, and order from local restaurants, supermarkets, salons, and service providers. Enjoy convenient bookings, secure payments, and effortless access to the best businesses in Kigali and beyond.",
     "platforms": [
       "ios",
       "android",
@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.abybooking.client",
       "buildNumber": "1.0.0",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Aby Booking uses your location to help you find nearby restaurants, salons, and local businesses for a better booking experience."
+        "NSLocationWhenInUseUsageDescription": "Fresh cart uses your location to help you find nearby restaurants, salons, and local businesses for a better booking experience."
       }
     },
     "android": {
@@ -37,7 +37,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png",
       "bundler": "metro",
-      "description": "Discover and book your favorite restaurants, supermarkets, and local services with Aby Booking — your gateway to Kigali’s best experiences."
+      "description": "Discover and book your favorite restaurants, supermarkets, and local services with Fresh cart — your gateway to Kigali’s best experiences."
     },
     "plugins": [
       "expo-router",
@@ -61,7 +61,7 @@
       "reactCompiler": true
     },
     "extra": {
-      "appDisplayName": "Aby Booking",
+      "appDisplayName": "FRESH CART",
       "appTagline": "Discover, Book & Order Easily",
       "supportEmail": "support@abybooking.com",
       "website": "https://abybooking.com",

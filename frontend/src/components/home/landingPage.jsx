@@ -1,296 +1,235 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Coffee, UtensilsCrossed, Hotel, ShoppingBag, Pizza, IceCream, ArrowRight, Check, Zap, Shield, Sparkles } from 'lucide-react';
+import { Star, ArrowRight, ShoppingCart, Truck, Coffee, Croissant, Beef, Store, Utensils } from 'lucide-react';
 
-export default function AbyBookingHero() {
+export default function GroceryHero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-const slides = [
-  {
-    title: 'Restaurant Ordering',
-    subtitle: 'Transform your dining experience',
-    description:
-      'Reimagine in-restaurant dining with seamless digital ordering that connects tables to the kitchen in real time. Enable guests to browse interactive menus, customize dishes, and receive live status updates — all while enhancing staff efficiency and reducing wait times. Personalized recommendations help diners discover new favorites and elevate every meal.',
-    icon: UtensilsCrossed,
-    color: 'orange',
-    gradient: 'from-orange-500 to-red-600'
-  },
-  {
-    title: 'Coffee Shop Management',
-    subtitle: 'Perfect every cup',
-    description:
-      'Streamline your café operations from bean to cup. Manage complex orders, handle modifiers, and track barista performance effortlessly. With real-time updates and integrated inventory tools, ensure consistency and speed in every espresso, cappuccino, or latte — delivering that perfect brew, every time.',
-    icon: Coffee,
-    color: 'amber',
-    gradient: 'from-amber-500 to-orange-600'
-  },
-  {
-    title: 'Hotel Services',
-    subtitle: 'Luxury at your fingertips',
-    description:
-      'Elevate the guest experience with an all-in-one digital concierge. From room service and dining reservations to spa bookings and housekeeping requests, every service is just a tap away. Delight guests with personalized offers, instant confirmations, and a frictionless interface that reflects your brand’s elegance and hospitality.',
-    icon: Hotel,
-    color: 'blue',
-    gradient: 'from-blue-500 to-purple-600'
-  },
-  {
-    title: 'Fast Food Orders',
-    subtitle: 'Speed meets convenience',
-    description:
-      'Boost throughput and customer satisfaction with an optimized fast-food ordering system. Handle large order volumes with ease through smart queue management, automated notifications, and real-time kitchen coordination. Designed for peak-hour performance — where every second counts and every order matters.',
-    icon: Pizza,
-    color: 'red',
-    gradient: 'from-red-500 to-pink-600'
-  },
-  {
-    title: 'Bakery & Desserts',
-    subtitle: 'Sweet moments delivered',
-    description:
-      'Bring your bakery to life with a digital ordering system built for freshness and creativity. Showcase your pastries, breads, and custom cakes with rich visuals and easy pre-order scheduling. Customers can personalize their treats, track pickup times, and enjoy the sweetest convenience possible.',
-    icon: IceCream,
-    color: 'pink',
-    gradient: 'from-pink-500 to-rose-600'
-  },
-  {
-    title: 'Food Court Hub',
-    subtitle: 'One platform, endless choices',
-    description:
-      'Unite multiple food vendors under one digital ecosystem. Customers can browse menus, mix and match from different stalls, and complete split or group payments effortlessly. Streamlined operations, centralized analytics, and an intuitive ordering flow make food courts smarter and more enjoyable than ever.',
-    icon: ShoppingBag,
-    color: 'purple',
-    gradient: 'from-purple-500 to-indigo-600'
-  }
-];
 
-
-
+  const slides = [
+    {
+      title: 'Order Food from Top Restaurants',
+      subtitle: 'You can order food from your preferred restaurant, café, bakery, or supermarket — delivered fresh in minutes.',
+      tag: '50% Off First Order',
+      tagColor: 'orange',
+      icon: Utensils,
+      gradient: 'from-orange-500 to-red-600',
+      productImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070',
+      productName: 'Margherita Pizza',
+      productRating: '4.8',
+      floatingProduct: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=2070',
+      floatingName: 'Pasta Carbonara',
+      floatingRating: '4.9',
+      mainImage: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074',
+      bgColor: 'bg-gradient-to-br from-orange-50 to-red-50'
+    },
+    {
+      title: 'Fresh Coffee & Pastries Daily',
+      subtitle: 'Start your day with artisanal coffee and freshly baked croissants from local cafés and bakeries.',
+      tag: 'Free Delivery on Coffee',
+      tagColor: 'orange',
+      icon: Coffee,
+      gradient: 'from-orange-500 to-red-600',
+      productImage: 'https://images.unsplash.com/photo-1495474472287-4d71bc168240?q=80&w=2070',
+      productName: 'Cappuccino',
+      productRating: '4.7',
+      floatingProduct: 'https://images.unsplash.com/photo-1550259979-a1c8e070c7bc?q=80&w=2070',
+      floatingName: 'Butter Croissant',
+      floatingRating: '4.9',
+      mainImage: 'https://images.unsplash.com/photo-1498804108-7d28b79d4a2b?q=80&w=2074',
+      bgColor: 'bg-gradient-to-br from-amber-50 to-orange-50'
+    },
+    {
+      title: 'Premium Butchery & Meats',
+      subtitle: 'Hand-cut premium meats, marinated cuts, and gourmet sausages from trusted local butcheries.',
+      tag: 'BBQ Specials',
+      tagColor: 'orange',
+      icon: Beef,
+      gradient: 'from-orange-500 to-red-600',
+      productImage: 'https://images.unsplash.com/photo-1607623816116-7e2b19c6b5b4?q=80&w=2070',
+      productName: 'Ribeye Steak',
+      productRating: '4.9',
+      floatingProduct: 'https://images.unsplash.com/photo-1627308595228-f9f0a50ee1c3?q=80&w=2070',
+      floatingName: 'Lamb Chops',
+      floatingRating: '4.8',
+      mainImage: 'https://images.unsplash.com/photo-1603360948881-66a7e0d5e3b5?q=80&w=2074',
+      bgColor: 'bg-gradient-to-br from-red-50 to-rose-50'
+    },
+    {
+      title: 'Bakery Fresh Every Morning',
+      subtitle: 'Sourdough, baguettes, cakes, and pastries — baked fresh and delivered warm to your door.',
+      tag: 'Artisan Bread',
+      tagColor: 'orange',
+      icon: Croissant,
+      gradient: 'from-orange-500 to-red-600',
+      productImage: 'https://images.unsplash.com/photo-1509440156595-820a6a5a0af8?q=80&w=2070',
+      productName: 'Sourdough Loaf',
+      productRating: '4.8',
+      floatingProduct: 'https://images.unsplash.com/photo-1576613152-6e0d0ac88a8a?q=80&w=2070',
+      floatingName: 'Chocolate Éclair',
+      floatingRating: '4.9',
+      mainImage: 'https://images.unsplash.com/photo-1556909114-f6e7ad2d3136?q=80&w=2074',
+      bgColor: 'bg-gradient-to-br from-yellow-50 to-amber-50'
+    },
+    {
+      title: 'Supermarket Essentials',
+      subtitle: 'Groceries, dairy, snacks, and household items — everything you need from your favorite supermarket.',
+      tag: 'Daily Deals',
+      tagColor: 'orange',
+      icon: Store,
+      gradient: 'from-orange-500 to-red-600',
+      productImage: 'https://images.unsplash.com/photo-1588964896361-c0a0741c63d1?q=80&w=2070',
+      productName: 'Organic Milk',
+      productRating: '4.6',
+      floatingProduct: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2070',
+      floatingName: 'Fresh Eggs',
+      floatingRating: '4.7',
+      mainImage: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2074',
+      bgColor: 'bg-gradient-to-br from-emerald-50 to-teal-50'
+    }
+  ];
 
   useEffect(() => {
     setIsVisible(true);
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
   const Icon = slides[currentSlide].icon;
 
   return (
-    <div className="relative h-screen overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-black">
-  
-
- 
-      {/* Main Content Grid */}
-      <div className="relative z-10  flex items-center">
-        <div className="px-10 w-[100%]  min-h-screen mt-24">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <div className={`relative  overflow-hidden transition-all duration-1000 ${slides[currentSlide].bgColor}`}>
+      
+      {/* Main Content Container */}
+      <div className="relative z-10 min-h-screen  md:-mt-24 flex items-center">
+        <div className="container mx-auto px-6 lg:px-12 py-4">
+          
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
-            {/* Left Section - Content */}
-            <div className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+            {/* Left Content */}
+            <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`} key={currentSlide}>
               
-              {/* Brand Logo */}
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-md border border-orange-400/30 px-4 py-2 rounded-full">
-                  <Star className="w-4 h-4 text-orange-400 fill-orange-400 animate-pulse" />
-                  <span className="text-orange-300 text-sm font-medium tracking-wide">Next-Gen Ordering</span>
-                </div>
-                
-                <h1 className="text-6xl lg:text-7xl font-bold tracking-tight">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 animate-gradient">
-                    Aby Booking
-                  </span>
-                </h1>
-                <p className="text-gray-400 text-xl">Smart Order Management System</p>
+              {/* Discount Tag */}
+              <div className={`inline-flex items-center gap-2 bg-${slides[currentSlide].tagColor}-500 text-white px-4 py-2 rounded-full shadow-lg`}>
+                <span className="text-sm font-bold tracking-wide">
+                  {slides[currentSlide].tag}
+                </span>
               </div>
-
-              {/* Dynamic Category */}
-              <div className="space-y-4 transition-all duration-700" key={currentSlide}>
-                <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${slides[currentSlide].gradient} rounded-2xl flex items-center justify-center transform hover:scale-110 hover:rotate-6 transition-all duration-300 shadow-2xl shadow-orange-500/50 animate-bounce-slow`}>
-                    <Icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white">
-                      {slides[currentSlide].title}
-                    </h2>
-                    <p className="text-orange-400 text-lg font-medium mt-1">
-                      {slides[currentSlide].subtitle}
-                    </p>
-                  </div>
-                </div>
+              
+              {/* Main Heading */}
+              <div className="space-y-4">
+                <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
+                  {slides[currentSlide].title}
+                </h1>
                 
-                <p className="text-gray-300 text-lg leading-relaxed ">
-                  {slides[currentSlide].description}
+                <p className="text-lg lg:text-xl text-gray-600 max-w-xl leading-relaxed">
+                  {slides[currentSlide].subtitle}
                 </p>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-wrap gap-4 ">
-                <button className="group px-8 py-2 bg-gradient-to-r from-orange-500 to-red-600 rounded-full text-white font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 flex items-center gap-2">
-                  Start Ordering
+              {/* CTA Button */}
+              <div className="pt-4">
+                <button className={`group px-8 py-4 bg-gradient-to-r ${slides[currentSlide].gradient} rounded-full text-white font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-3 shadow-lg`}>
+                  Order Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button className="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white font-semibold text-lg hover:bg-white/20 hover:scale-105 transition-all duration-300">
-                  Watch Demo
                 </button>
               </div>
 
+              {/* Progress Indicators */}
+              <div className="flex gap-2 pt-6">
+                {slides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      idx === currentSlide 
+                        ? `w-12 bg-gradient-to-r ${slides[currentSlide].gradient}` 
+                        : 'w-8 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
-            {/* Right Section - Animated Visual */}
-            <div className={`relative transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-              <div className="relative w-full h-[600px]">
-                
-                {/* Main Display Card */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative w-full max-w-md">
-                    
-                    {/* Floating Phone Mockup */}
-                    <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-[3rem] p-3 shadow-2xl border border-white/10 animate-float-slow">
-                      <div className="bg-black rounded-[2.5rem] overflow-hidden">
-                        
-                        {/* Phone Screen Content */}
-                        <div className="relative h-[550px] bg-gradient-to-br from-gray-900 via-gray-800 to-black">
-                          
-                          {/* Dynamic Content based on slide */}
-                          <div className="p-6 space-y-4" key={currentSlide}>
-                            
-                            {/* Header */}
-                            <div className="flex items-center justify-between animate-fade-in">
-                              <div>
-                                <p className="text-gray-400 text-sm">Welcome to</p>
-                                <h3 className="text-white text-xl font-bold">{slides[currentSlide].title}</h3>
-                              </div>
-                              <div className={`w-12 h-12 bg-gradient-to-br ${slides[currentSlide].gradient} rounded-xl flex items-center justify-center animate-pulse`}>
-                                <Icon className="w-6 h-6 text-white" />
-                              </div>
-                            </div>
-
-                            {/* Featured Item Card */}
-                            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-2xl p-4 space-y-3 animate-slide-up">
-                              <div className="w-full h-28 bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center">
-                                <Icon className="w-16 h-16 text-orange-400" />
-                              </div>
-                              <div>
-                                <h4 className="text-white font-semibold">Featured Special</h4>
-                                <p className="text-gray-400 text-sm">Today's recommended selection</p>
-                              </div>
-                             
-                            </div>
-
-                         
-
-                            {/* Live Orders Animation */}
-                            <div className="space-y-2">
-                              <p className="text-gray-400 text-xs uppercase tracking-wide">Live Orders</p>
-                              {[1, 2, 3].map((_, idx) => (
-                                <div 
-                                  key={idx}
-                                  className="flex items-center gap-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-2 animate-pulse"
-                                  style={{ animationDelay: `${idx * 200}ms` }}
-                                >
-                                  <div className="w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
-                                  <div className="flex-1">
-                                    <div className="h-2 bg-white/20 rounded w-3/4 mb-1"></div>
-                                    {/* <div className="h-2 bg-white/10 rounded w-1/2"></div> */}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+            {/* Right Content - Image Section */}
+            <div className={`relative transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
+              
+              {/* Main Circle Background - Reduced Height */}
+              <div className={`relative w-full max-w-xl mx-auto aspect-[4/3] bg-gradient-to-br ${slides[currentSlide].gradient} rounded-3xl p-2 shadow-2xl`}>
+                <div className="w-full h-full bg-white rounded-3xl overflow-hidden relative">
+                  
+                  {/* Main Image */}
+                  <img 
+                    src={slides[currentSlide].mainImage}
+                    alt="Category visual"
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Floating Product Card - Top Left */}
+                  <div className="absolute top-6 left-4 bg-white rounded-2xl shadow-xl p-3 animate-float" style={{animationDelay: '0s'}}>
+                    <img 
+                      src={slides[currentSlide].productImage}
+                      alt={slides[currentSlide].productName}
+                      className="w-14 h-14 object-cover rounded-lg mb-1"
+                    />
+                    <p className="text-xs font-bold text-gray-900 truncate">{slides[currentSlide].productName}</p>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                      <span className="text-xs text-gray-600">{slides[currentSlide].productRating}</span>
                     </div>
+                  </div>
 
-                
+                  {/* Floating Product Card - Bottom Right */}
+                  <div className="absolute bottom-6 right-4 bg-white rounded-2xl shadow-xl p-3 animate-float" style={{animationDelay: '0.8s'}}>
+                    <img 
+                      src={slides[currentSlide].floatingProduct}
+                      alt={slides[currentSlide].floatingName}
+                      className="w-14 h-14 object-cover rounded-lg mb-1"
+                    />
+                    <p className="text-xs font-bold text-gray-900 truncate">{slides[currentSlide].floatingName}</p>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                      <span className="text-xs text-gray-600">{slides[currentSlide].floatingRating}</span>
+                    </div>
+                  </div>
+
+                  {/* Delivery Badge */}
+                  <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-xl px-5 py-2 flex items-center gap-2 animate-bounce-slow">
+                    <div className={`w-7 h-7 bg-gradient-to-r ${slides[currentSlide].gradient} rounded-full flex items-center justify-center`}>
+                      <Truck className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sm font-bold text-gray-900">Fast Delivery!</span>
                   </div>
                 </div>
               </div>
+
+              {/* Decorative Blobs */}
+              <div className={`absolute -top-8 -right-8 w-20 h-20 bg-gradient-to-br ${slides[currentSlide].gradient} rounded-full opacity-30 animate-pulse`}></div>
+              <div className={`absolute -bottom-10 -left-10 w-28 h-28 bg-gradient-to-br ${slides[currentSlide].gradient} rounded-full opacity-20 animate-pulse`} style={{animationDelay: '1s'}}></div>
             </div>
+
           </div>
         </div>
       </div>
 
-
-
-      <style>{`
-        @keyframes gradient {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        
-        @keyframes drift {
-          0% { transform: translate(0, 0); }
-          100% { transform: translate(-40px, -40px); }
-        }
-        
+      <style jsx>{`
         @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
         }
         
-        @keyframes float-delayed {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-30px); }
-        }
-
-        @keyframes float-slow {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(2deg); }
-        }
-
         @keyframes bounce-slow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fade-in-delay {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
+          0%, 100% { transform: translate(-50%, 0); }
+          50% { transform: translate(-50%, -8px); }
         }
         
         .animate-float {
-          animation: float 6s ease-in-out infinite;
+          animation: float 3s ease-in-out infinite;
         }
         
-        .animate-float-delayed {
-          animation: float-delayed 8s ease-in-out infinite;
-        }
-
-        .animate-float-slow {
-          animation: float-slow 4s ease-in-out infinite;
-        }
-
         .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
-
-        .animate-fade-in-delay {
-          animation: fade-in-delay 0.8s ease-out 0.3s forwards;
-          opacity: 0;
-        }
-
-        .animate-slide-up {
-          animation: slide-up 0.6s ease-out 0.2s forwards;
-          opacity: 0;
+          animation: bounce-slow 2s ease-in-out infinite;
         }
       `}</style>
     </div>

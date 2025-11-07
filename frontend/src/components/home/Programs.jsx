@@ -23,7 +23,8 @@ export default function AbyDeliverySection() {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-b from-orange-50 to-white py-16 md:py-24 px-4">
+<div className="w-full bg-gradient-to-b from-black/40 to-transparent py-16 md:py-10   px-12">
+
       <div className=" mx-auto">
         {/* Gallery Strip */}
         <div className="relative mb-16 overflow-hidden rounded-3xl shadow-2xl">
@@ -57,24 +58,22 @@ export default function AbyDeliverySection() {
           {/* Left Side - Large Food Image */}
           <div className="relative ">
             {/* Decorative Elements */}
-            <div className="absolute -top-8 -left-8 w-24 h-24 bg-orange-200 rounded-full opacity-30 blur-2xl"></div>
-            <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-red-200 rounded-full opacity-30 blur-2xl"></div>
-            
+        {/* Decorative Elements */}
+<div className="absolute -top-8 -left-8 w-24 h-24 bg-gradient-to-br from-black/40 to-transparent rounded-full blur-2xl"></div>
+<div className="absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-tl from-black/40 to-transparent rounded-full blur-2xl"></div>
+
             {/* Single Large Image Card */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl group">
               <img
                 src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&h=800&fit=crop"
                 alt="Delicious Food"
-                className="w-full h-[60vh] object-cover transform group-hover:scale-110 transition-transform duration-700"
+                className="w-full h-[65vh] object-cover transform group-hover:scale-110 transition-transform duration-700"
               />
               
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               
-              {/* Delivery Badge */}
-              <div className="absolute top-6 right-6 bg-gradient-to-r from-red-600 to-orange-600 px-6 py-3 rounded-full shadow-lg animate-pulse">
-                <p className="text-white font-bold text-lg">Fast Delivery</p>
-              </div>
+           
               
               {/* Bottom Info */}
               <div className="absolute bottom-6 left-6 right-6">
@@ -88,15 +87,10 @@ export default function AbyDeliverySection() {
 
           {/* Right Side - Content */}
           <div className="space-y-6">
-            {/* Badge */}
-            <div className="inline-block">
-              <p className="text-red-600 italic text-lg md:text-xl font-semibold">
-                Delivery
-              </p>
-            </div>
+        
 
             {/* Main Heading */}
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-4xl font-bold leading-tight">
               <span className="text-gray-900">A Moments Of Delivered</span>
               <br />
               <span className="text-red-600">On Right Time & Place</span>
