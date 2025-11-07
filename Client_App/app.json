@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/logo/aby_booking.png",
     "scheme": "abybooking",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "description": "Fresh cart is Rwanda’s all-in-one platform to discover, book, and order from local restaurants, supermarkets, salons, and service providers. Enjoy convenient bookings, secure payments, and effortless access to the best businesses in Kigali and beyond.",
     "platforms": [

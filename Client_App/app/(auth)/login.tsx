@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   Alert,
+  ActivityIndicator,          // <-- added for spinner
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ import { router } from 'expo-router';
 import { useClientAuth } from '@/contexts/ClientAuthContext';
 import GoogleButton from '@/components/auth/GoogleButton';
 import { LinearGradient } from 'expo-linear-gradient';
+import ThemedView from '@/components/themed/ThemedView';
 
 const LoginScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -24,28 +26,23 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);   // <-- NEW
+
   const { login } = useClientAuth();
 
   const validateIdentifier = (value: string) => {
-    if (!value.trim()) {
-      return t('loginAuth.error_identifier_required');
-    }
+    if (!value.trim()) return t('loginAuth.error_identifier_required');
     const trimmed = value.trim();
     const phoneRegex = /^\+?[\d\s-]{7,15}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!phoneRegex.test(trimmed) && !emailRegex.test(trimmed)) {
+    if (!phoneRegex.test(trimmed) && !emailRegex.test(trimmed))
       return t('loginAuth.error_identifier_invalid');
-    }
     return '';
   };
 
   const validatePassword = (value: string) => {
-    if (!value) {
-      return t('loginAuth.error_password_required');
-    }
-    if (value.length <= 6) {
-      return t('loginAuth.error_password_length');
-    }
+    if (!value) return t('loginAuth.error_password_required');
+    if (value.length <= 6) return t('loginAuth.error_password_length');
     return '';
   };
 
@@ -66,22 +63,26 @@ const LoginScreen: React.FC = () => {
     }
     setter(value);
     const error = validator(value);
-    setErrors((prev) => ({ ...prev, [field]: error }));
+    setErrors(prev => ({ ...prev, [field]: error }));
   };
 
   const hasErrors = () => {
-    return Object.values(errors).some((error) => error !== '') ||
-      !identifier || !password;
+    return (
+      Object.values(errors).some(e => e !== '') ||
+      !identifier.trim() ||
+      !password
+    );
   };
 
   const handleSignIn = async () => {
-    const identifierError = validateIdentifier(identifier);
-    const passwordError = validatePassword(password);
-    setErrors({
-      identifier: identifierError,
-      password: passwordError,
-    });
-    if (identifierError || passwordError) return;
+    // ---- run validation once ----
+    const idErr = validateIdentifier(identifier);
+    const pwErr = validatePassword(password);
+    setErrors({ identifier: idErr, password: pwErr });
+
+    if (idErr || pwErr) return;
+
+    setIsSubmitting(true);                 // <-- disable + show spinner
 
     try {
       await login(identifier.trim(), password);
@@ -91,26 +92,20 @@ const LoginScreen: React.FC = () => {
         t('loginAuth.login_failed'),
         error.message || t('loginAuth.login_failed_message')
       );
+    } finally {
+      setIsSubmitting(false);              // <-- re-enable
     }
   };
 
-  const handleContinueAsGuest = () => {
-    router.push('/(guest)');
-  };
-
-  const handleCreateAccount = () => {
-    router.push('/(auth)/register');
-  };
-
-  const handleForgotPassword = () => {
-    // router.push('/(auth)/forgot-password');
-  };
+  const handleContinueAsGuest = () => router.push('/(guest)');
+  const handleCreateAccount = () => router.push('/(auth)/register');
+  const handleForgotPassword = () => {};
 
   const getDynamicPlaceholder = () => {
     const trimmed = identifier.trim();
     const phoneRegex = /^\+?[\d\s-]{7,15}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (trimmed === '') return t('loginAuth.placeholder_identifier');
+    if (!trimmed) return t('loginAuth.placeholder_identifier');
     if (phoneRegex.test(trimmed)) return t('loginAuth.placeholder_phone');
     if (emailRegex.test(trimmed)) return t('loginAuth.placeholder_email');
     return t('loginAuth.placeholder_identifier');
@@ -122,8 +117,10 @@ const LoginScreen: React.FC = () => {
     return emailRegex.test(trimmed) ? 'mail-outline' : 'call-outline';
   };
 
+  const buttonDisabled = isSubmitting || hasErrors();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <ThemedView safe style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -132,21 +129,7 @@ const LoginScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Gradient Header */}
-            <LinearGradient
-                   colors={['#FF8C42', '#FF8C42']}
-                   style={styles.headerGradient}
-                   start={{ x: 1, y: 0 }}
-                   end={{ x: 1, y: 1 }}
-                 >
-            <View style={styles.logoContainer}>
-              <View style={styles.logoCircle}>
-                <MaterialIcons name="storefront" size={32} color="#FFF" />
-              </View>
-              <Text style={styles.brandName}>FRESH CART</Text>
-              <Text style={styles.tagline}>Your Local Marketplace</Text>
-            </View>
-          </LinearGradient>
+
 
           {/* Welcome Text */}
           <View style={styles.welcomeContainer}>
@@ -157,7 +140,7 @@ const LoginScreen: React.FC = () => {
 
           {/* Input Fields */}
           <View style={styles.inputContainer}>
-            {/* Identifier Input */}
+            {/* Identifier */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
                 <Ionicons name={getDynamicIcon()} size={18} color="#FF8C42" />
@@ -167,7 +150,7 @@ const LoginScreen: React.FC = () => {
                 placeholder={getDynamicPlaceholder()}
                 placeholderTextColor="#999"
                 value={identifier}
-                onChangeText={(value) => handleInputChange('identifier', value)}
+                onChangeText={v => handleInputChange('identifier', v)}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -175,7 +158,7 @@ const LoginScreen: React.FC = () => {
             </View>
             {errors.identifier && <Text style={styles.errorText}>{errors.identifier}</Text>}
 
-            {/* Password Input */}
+            {/* Password */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
                 <Ionicons name="lock-closed-outline" size={18} color="#FF8C42" />
@@ -185,7 +168,7 @@ const LoginScreen: React.FC = () => {
                 placeholder={t('loginAuth.placeholder_password')}
                 placeholderTextColor="#999"
                 value={password}
-                onChangeText={(value) => handleInputChange('password', value)}
+                onChangeText={v => handleInputChange('password', v)}
                 secureTextEntry={!showPassword}
               />
               <TouchableOpacity
@@ -193,7 +176,7 @@ const LoginScreen: React.FC = () => {
                 style={styles.eyeIcon}
               >
                 <Ionicons
-                  name={showPassword ? "eye-off-outline" : "eye-outline"}
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
                   color="#FF8C42"
                 />
@@ -215,14 +198,23 @@ const LoginScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Sign In Button */}
+          {/* Sign-In Button – now with spinner */}
           <TouchableOpacity
-            style={[styles.signInButton, hasErrors() && styles.signInButtonDisabled]}
+            style={[
+              styles.signInButton,
+              buttonDisabled && styles.signInButtonDisabled,
+            ]}
             onPress={handleSignIn}
-            disabled={hasErrors()}
+            disabled={buttonDisabled}
           >
-            <Text style={styles.signInButtonText}>{t('loginAuth.sign_in')}</Text>
-            <Ionicons name="arrow-forward" size={20} color="#FFF" style={styles.buttonIcon} />
+            {isSubmitting ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <>
+                <Text style={styles.signInButtonText}>{t('loginAuth.sign_in')}</Text>
+                <Ionicons name="arrow-forward" size={20} color="#FFF" style={styles.buttonIcon} />
+              </>
+            )}
           </TouchableOpacity>
 
           {/* OR Divider */}
@@ -257,21 +249,16 @@ const LoginScreen: React.FC = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ThemedView>
   );
 };
 
+/* ------------------- ORIGINAL STYLES (unchanged) ------------------- */
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#FFF5F0' 
-  },
+  container: { flex: 1, backgroundColor: '#FFF5F0' },
   keyboardView: { flex: 1 },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-  },
+  scrollContent: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
+
   headerGradient: {
     marginHorizontal: -24,
     marginTop: -10,
@@ -282,11 +269,8 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     shadowColor: '#FF8C42',
-    
   },
-  logoContainer: {
-    alignItems: 'center',
-  },
+  logoContainer: { alignItems: 'center' },
   logoCircle: {
     width: 70,
     height: 70,
@@ -301,39 +285,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
-  brandName: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#FFF',
-    letterSpacing: 0.5,
-  },
-  tagline: {
-    fontSize: 13,
-    color: '#FFE8E0',
-    marginTop: 4,
-    fontWeight: '500',
-  },
-  welcomeContainer: { 
-    marginTop: 32,
-    marginBottom: 24,
-  },
-  welcomeText: { 
-    fontSize: 30, 
-    fontWeight: '700', 
-    color: '#FF8C42',
-    marginBottom: 2,
-  },
-  welcomeBackText: { 
-    fontSize: 30, 
-    fontWeight: '700', 
-    color: '#2C2C2C',
-    marginBottom: 8,
-  },
-  subtitleText: { 
-    fontSize: 14, 
-    color: '#666', 
-    lineHeight: 20,
-  },
+  brandName: { fontSize: 28, fontWeight: '800', color: '#FFF', letterSpacing: 0.5 },
+  tagline: { fontSize: 13, color: '#FFE8E0', marginTop: 4, fontWeight: '500' },
+
+  welcomeContainer: { marginTop: 32, marginBottom: 24 },
+  welcomeText: { fontSize: 30, fontWeight: '700', color: '#FF8C42', marginBottom: 2 },
+  welcomeBackText: { fontSize: 30, fontWeight: '700', color: '#2C2C2C', marginBottom: 8 },
+  subtitleText: { fontSize: 14, color: '#666', lineHeight: 20 },
+
   inputContainer: { marginBottom: 16 },
   inputWrapper: {
     flexDirection: 'row',
@@ -360,35 +319,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
-  input: { 
-    flex: 1, 
-    fontSize: 15, 
-    color: '#2C2C2C',
-    fontWeight: '500',
-  },
+  input: { flex: 1, fontSize: 15, color: '#2C2C2C', fontWeight: '500' },
   passwordInput: { paddingRight: 40 },
-  eyeIcon: { 
-    position: 'absolute', 
-    right: 16, 
-    padding: 4,
-  },
-  errorText: { 
-    color: '#FF8C42', 
-    fontSize: 12, 
-    marginBottom: 8, 
-    marginLeft: 14,
-    fontWeight: '500',
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  rememberMeContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center',
-  },
+  eyeIcon: { position: 'absolute', right: 16, padding: 4 },
+
+  errorText: { color: '#FF8C42', fontSize: 12, marginBottom: 8, marginLeft: 14, fontWeight: '500' },
+
+  optionsRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 },
+  rememberMeContainer: { flexDirection: 'row', alignItems: 'center' },
   checkbox: {
     width: 20,
     height: 20,
@@ -398,16 +336,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     backgroundColor: '#FFF5F0',
   },
-  rememberMeText: { 
-    fontSize: 14, 
-    color: '#666',
-    fontWeight: '500',
-  },
-  forgotPasswordText: { 
-    fontSize: 14, 
-    fontWeight: '600',
-    color: '#FF8C42',
-  },
+  rememberMeText: { fontSize: 14, color: '#666', fontWeight: '500' },
+  forgotPasswordText: { fontSize: 14, fontWeight: '600', color: '#FF8C42' },
+
   signInButton: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -422,35 +353,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
-  signInButtonDisabled: {
-    backgroundColor: '#FFCDB8',
-    shadowOpacity: 0.1,
-  },
-  signInButtonText: { 
-    color: '#FFF', 
-    fontSize: 17, 
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  buttonIcon: {
-    marginLeft: 8,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  dividerLine: { 
-    flex: 1, 
-    height: 1, 
-    backgroundColor: '#FFE8E0',
-  },
-  dividerText: { 
-    marginHorizontal: 16, 
-    fontSize: 14, 
-    color: '#999',
-    fontWeight: '500',
-  },
+  signInButtonDisabled: { backgroundColor: '#FFCDB8', shadowOpacity: 0.1 },
+  signInButtonText: { color: '#FFF', fontSize: 17, fontWeight: '700', letterSpacing: 0.5 },
+  buttonIcon: { marginLeft: 8 },
+
+  dividerContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
+  dividerLine: { flex: 1, height: 1, backgroundColor: '#FFE8E0' },
+  dividerText: { marginHorizontal: 16, fontSize: 14, color: '#999', fontWeight: '500' },
+
   guestButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -468,31 +378,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   guestIcon: { marginRight: 8 },
-  guestButtonText: { 
-    fontSize: 15, 
-    color: '#FF8C42', 
-    fontWeight: '600',
-  },
-  createAccountContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  createAccountText: { 
-    fontSize: 14, 
-    color: '#666',
-  },
-  createAccountLink: { 
-    fontSize: 14, 
-    fontWeight: '700',
-    color: '#FF8C42',
-  },
-  bottomDecoration: {
-    position: 'relative',
-    height: 100,
-    marginTop: 20,
-  },
+  guestButtonText: { fontSize: 15, color: '#FF8C42', fontWeight: '600' },
+
+  createAccountContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 8 },
+  createAccountText: { fontSize: 14, color: '#666' },
+  createAccountLink: { fontSize: 14, fontWeight: '700', color: '#FF8C42' },
+
+  bottomDecoration: { position: 'relative', height: 100, marginTop: 20 },
   decorCircle: {
     position: 'absolute',
     width: 120,

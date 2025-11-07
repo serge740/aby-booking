@@ -21,14 +21,13 @@ export default function RootLayout() {
 <I18nextProvider i18n={i18n}>
 
     <ThemeProvider value={DefaultTheme}>
-      <Stack>
+      <Stack >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+        <Stack.Screen name="(dashboard)" options={{ headerShown: false,  }} />
         <Stack.Screen name="(guest)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       
-      <StatusBar style="light" backgroundColor={'#FF8C42'}/>
     </ThemeProvider>
 </I18nextProvider>
     </ClientAuthProvider>

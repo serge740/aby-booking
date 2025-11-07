@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useClientAuth } from '@/contexts/ClientAuthContext';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from 'expo-router';
+import ThemedView from '@/components/themed/ThemedView';
 
 interface Service {
   id: number;
@@ -175,7 +176,7 @@ const AbyBookingHome: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ThemedView safe style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
 
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
@@ -278,7 +279,7 @@ const AbyBookingHome: React.FC = () => {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ThemedView>
   );
 };
 

@@ -45,8 +45,6 @@ export const languageReady = (async () => {
   }
 })();
 
-i18n.on('languageChanged', lng => {
-  AsyncStorage.setItem(LANGUAGE_KEY, lng).catch(console.error);
-});
+
 
 export default i18n;

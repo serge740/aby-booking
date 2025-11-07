@@ -15,6 +15,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import ThemedView from '@/components/themed/ThemedView';
 
 const { width } = Dimensions.get('window');
 const BANNER_HEIGHT = 220;
@@ -135,8 +136,8 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+   
+      <ThemedView style={styles.safeArea} >
         {/* Fixed Header */}
         <Animated.View >
           <LinearGradient
@@ -379,8 +380,8 @@ export default function HomeScreen() {
 
           <View style={{ height: 40 }} />
         </Animated.ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      </ThemedView>
+
   );
 }
 

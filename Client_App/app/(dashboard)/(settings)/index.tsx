@@ -22,6 +22,7 @@ import { LanguageModal } from '@/components/modal/LanguageModal';
 import i18n, { LANGUAGE_KEY } from '@/i18n';
 import type { Language } from '@/i18n';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ThemedView from '@/components/themed/ThemedView';
 
 const SettingsProfileScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -207,7 +208,7 @@ const SettingsProfileScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView safe style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -377,7 +378,7 @@ const SettingsProfileScreen: React.FC = () => {
         visible={languageModalVisible}
         onSelect={handleLanguageSelect}
       />
-    </View>
+    </ThemedView>
   );
 };
 

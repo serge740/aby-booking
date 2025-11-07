@@ -15,32 +15,34 @@ export default function TabLayout() {
 
   return (
     <ClientUserOnly>
-<StatusBar style="light" backgroundColor={'#FF8C42'}/>
-    <Tabs
-      screenOptions={{
-        
-        headerShown: false,
-        tabBarButton: HapticTab,
- tabBarActiveTintColor: '#FF8C42'
-      
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      
+      <StatusBar style="light" backgroundColor={'#FF8C42'} />
 
-      <Tabs.Screen
-        name="(settings)"
-        options={{
-          title: 'Setting',
-          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="settings" color={color} />,
-        }}
-      />
-    </Tabs>
-          </ClientUserOnly>
+      <Tabs
+        screenOptions={{
+
+          headerShown: false,
+          tabBarButton: HapticTab,
+          tabBarActiveTintColor: '#FF8C42'
+          
+
+        }}>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          }}
+        />
+
+
+        <Tabs.Screen
+          name="(settings)"
+          options={{
+            title: 'Setting',
+            tabBarIcon: ({ color }) => <MaterialIcons size={28} name="settings" color={color} />,
+          }}
+        />
+      </Tabs>
+    </ClientUserOnly>
   );
 }

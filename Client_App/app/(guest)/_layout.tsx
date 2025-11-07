@@ -7,10 +7,11 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import info from '@/constants/info';
 import { StatusBar } from 'expo-status-bar';
+import ThemedView from '@/components/themed/ThemedView';
 
 export default function TabLayout() {
   return (
-    <>
+    <ThemedView safe style={{flex:1}}>
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -89,7 +90,7 @@ export default function TabLayout() {
       />
     </Tabs>
     <StatusBar style="light" backgroundColor={'#FF8C42'}/>
-        </>
+        </ThemedView>
   );
 }
 

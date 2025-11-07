@@ -19,7 +19,7 @@
     },
     "loginAuth": {
         "welcome": "Murakaza neza !",
-        "back": "Kuri AbyBooking",
+        "back": "Kuri FreshCart",
         "subtitle": "Injira kugira ngo ushire amatsiko ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi, urebe gahunda zawe, kandi utumize ibicuruzwa byoroshye.",
         "placeholder_identifier": "Andika numero ya telefone cyangwa imeri yawe",
         "placeholder_phone": "Andika numero ya telefone",
@@ -147,7 +147,7 @@
             "subheader": "Duhari kugira ngo tugufashe ku bibazo byose cyangwa amakuru wifuza ku FRESH CART.",
             "contact_title": "Twandikire",
             "phone": "Telefone: +250 788 123 456",
-            "email": "Imeri: support@abybooking.rw",
+            "email": "Imeri: support@freshcart.rw",
             "whatsapp_title": "Inkunga kuri WhatsApp",
             "whatsapp_link": "Vugana natwe kuri WhatsApp",
             "faq_title": "Ibibazo Bikunze Kubazwa",
