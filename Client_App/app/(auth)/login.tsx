@@ -134,7 +134,7 @@ const LoginScreen: React.FC = () => {
         >
           {/* Gradient Header */}
             <LinearGradient
-                   colors={['#FF6B35', '#FF4757']}
+                   colors={['#FF8C42', '#FF8C42']}
                    style={styles.headerGradient}
                    start={{ x: 1, y: 0 }}
                    end={{ x: 1, y: 1 }}
@@ -160,7 +160,7 @@ const LoginScreen: React.FC = () => {
             {/* Identifier Input */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name={getDynamicIcon()} size={18} color="#FF6B35" />
+                <Ionicons name={getDynamicIcon()} size={18} color="#FF8C42" />
               </View>
               <TextInput
                 style={styles.input}
@@ -178,7 +178,7 @@ const LoginScreen: React.FC = () => {
             {/* Password Input */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="lock-closed-outline" size={18} color="#FF6B35" />
+                <Ionicons name="lock-closed-outline" size={18} color="#FF8C42" />
               </View>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
@@ -195,7 +195,7 @@ const LoginScreen: React.FC = () => {
                 <Ionicons
                   name={showPassword ? "eye-off-outline" : "eye-outline"}
                   size={20}
-                  color="#FF6B35"
+                  color="#FF8C42"
                 />
               </TouchableOpacity>
             </View>
@@ -236,7 +236,7 @@ const LoginScreen: React.FC = () => {
 
           {/* Guest Button */}
           <TouchableOpacity style={styles.guestButton} onPress={handleContinueAsGuest}>
-            <MaterialIcons name="person-outline" size={20} color="#FF6B35" style={styles.guestIcon} />
+            <MaterialIcons name="person-outline" size={20} color="#FF8C42" style={styles.guestIcon} />
             <Text style={styles.guestButtonText}>{t('loginAuth.continue_as_guest')}</Text>
           </TouchableOpacity>
 
@@ -278,10 +278,10 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 24,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FF8C42',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#FF4757',
+    shadowColor: '#FF8C42',
     
   },
   logoContainer: {
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#FF4757',
+    backgroundColor: '#FF8C42',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
   welcomeText: { 
     fontSize: 30, 
     fontWeight: '700', 
-    color: '#FF6B35',
+    color: '#FF8C42',
     marginBottom: 2,
   },
   welcomeBackText: { 
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 2,
     borderColor: '#FFE8E0',
-    shadowColor: '#FF6B35',
+    shadowColor: '#FF8C42',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   errorText: { 
-    color: '#FF4757', 
+    color: '#FF8C42', 
     fontSize: 12, 
     marginBottom: 8, 
     marginLeft: 14,
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#FF8C42',
     marginRight: 8,
     backgroundColor: '#FFF5F0',
   },
@@ -406,17 +406,17 @@ const styles = StyleSheet.create({
   forgotPasswordText: { 
     fontSize: 14, 
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#FF8C42',
   },
   signInButton: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FF8C42',
     borderRadius: 16,
     paddingVertical: 16,
     marginBottom: 24,
-    shadowColor: '#FF4757',
+    shadowColor: '#FF8C42',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFE8E0',
     marginBottom: 24,
-    shadowColor: '#FF6B35',
+    shadowColor: '#FF8C42',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   guestIcon: { marginRight: 8 },
   guestButtonText: { 
     fontSize: 15, 
-    color: '#FF6B35', 
+    color: '#FF8C42', 
     fontWeight: '600',
   },
   createAccountContainer: {
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
   createAccountLink: { 
     fontSize: 14, 
     fontWeight: '700',
-    color: '#FF6B35',
+    color: '#FF8C42',
   },
   bottomDecoration: {
     position: 'relative',
@@ -510,7 +510,7 @@ const styles = StyleSheet.create({
     right: -20,
     left: 'auto',
     bottom: -20,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#FF8C42',
     opacity: 0.2,
   },
 });

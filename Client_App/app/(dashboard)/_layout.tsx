@@ -8,19 +8,20 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import ClientUserOnly from '@/components/auth/ClientUserOnly';
 import { MaterialIcons } from '@expo/vector-icons';
 import info from '@/constants/info';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <ClientUserOnly>
-
+<StatusBar style="light" backgroundColor={'#FF8C42'}/>
     <Tabs
       screenOptions={{
         
         headerShown: false,
         tabBarButton: HapticTab,
- tabBarActiveTintColor: '#FF6B35'
+ tabBarActiveTintColor: '#FF8C42'
       
       }}>
       <Tabs.Screen

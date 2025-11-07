@@ -28,7 +28,7 @@ export default function RootLayout() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
       
-      <StatusBar style="dark" backgroundColor={info.primary[500]}/>
+      <StatusBar style="light" backgroundColor={'#FF8C42'}/>
     </ThemeProvider>
 </I18nextProvider>
     </ClientAuthProvider>

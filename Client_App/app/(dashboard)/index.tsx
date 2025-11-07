@@ -130,33 +130,28 @@ const AbyBookingHome: React.FC = () => {
   const categories = [
     {
       id: 'all',
-      icon: 'grid',
       label: t('dashboard.index.categories.all'),
-      emoji: '🏪',
+      image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&q=80',
     },
     {
       id: 'restaurants',
-      icon: 'restaurant',
       label: t('dashboard.index.categories.restaurants'),
-      emoji: '🍽️',
+      image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200&q=80',
     },
     {
       id: 'supermarkets',
-      icon: 'cart',
       label: t('dashboard.index.categories.supermarkets'),
-      emoji: '🛒',
+      image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=200&q=80',
     },
     {
       id: 'salons',
-      icon: 'cut',
       label: t('dashboard.index.categories.salons'),
-      emoji: '💇',
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&q=80',
     },
     {
       id: 'services',
-      icon: 'construct',
       label: t('dashboard.index.categories.services'),
-      emoji: '🔧',
+      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=200&q=80',
     },
   ];
 
@@ -242,10 +237,13 @@ const AbyBookingHome: React.FC = () => {
                 onPress={() => setActiveCategory(category.id as CategoryType)}
               >
                 <View style={[
-                  styles.categoryIconContainer,
-                  activeCategory === category.id && styles.categoryIconActive
+                  styles.categoryImageContainer,
+                  activeCategory === category.id && styles.categoryImageActive
                 ]}>
-                  <Text style={styles.categoryEmoji}>{category.emoji}</Text>
+                  <Image 
+                    source={{ uri: category.image }} 
+                    style={styles.categoryImage}
+                  />
                 </View>
                 <Text style={[
                   styles.categoryLabel,
@@ -428,24 +426,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  categoryIconContainer: {
+  categoryImageContainer: {
     width: 60,
     height: 60,
     borderRadius: 30,
+    overflow: 'hidden',
     backgroundColor: '#FFF',
-    alignItems: 'center',
-    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
+    borderWidth: 3,
+    borderColor: 'transparent',
   },
-  categoryIconActive: {
-    backgroundColor: '#FF6B35',
+  categoryImageActive: {
+    borderColor: '#FF6B35',
   },
-  categoryEmoji: {
-    fontSize: 28,
+  categoryImage: {
+    width: '100%',
+    height: '100%',
   },
   categoryLabel: { 
     color: '#666', 

@@ -20,6 +20,9 @@ import i18n from '@/i18n';
 
 const { width, height } = Dimensions.get('window');
 
+// Primary brand color
+const PRIMARY_COLOR = '#FF8C42';
+
 interface Slide {
   id: string;
   title: string;
@@ -121,7 +124,7 @@ const OnboardingScreen = () => {
                 <Text style={styles.buttonText}>{t('onboarding.next')}</Text>
               )}
               <View style={styles.iconCircle}>
-                <Ionicons name="arrow-forward" size={20} color="#FF8C42" />
+                <Ionicons name="arrow-forward" size={20} color={PRIMARY_COLOR} />
               </View>
             </View>
           </TouchableOpacity>
@@ -252,7 +255,7 @@ const styles = StyleSheet.create({
   slide: { 
     flex: 1, 
     height,
-    backgroundColor: '#FF8C42' 
+    backgroundColor: PRIMARY_COLOR
   },
   backgroundImage: { 
     width: '100%', 
@@ -303,16 +306,16 @@ const styles = StyleSheet.create({
     height: 8, 
     borderRadius: 4, 
     marginHorizontal: 4,
-    backgroundColor: '#FF8C42' 
+    backgroundColor: PRIMARY_COLOR
   },
   button: {
-    backgroundColor: '#FF8C42',
+    backgroundColor: PRIMARY_COLOR,
     borderRadius: 30,
     paddingVertical: 16,
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#FF8C42',
+    shadowColor: PRIMARY_COLOR,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
