@@ -17,6 +17,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '@/i18n';
+import ThemedView from '@/components/themed/ThemedView';
 
 const { width, height } = Dimensions.get('window');
 
@@ -186,7 +187,7 @@ const OnboardingScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ThemedView safe={true} style={styles.container}>
       <LanguageModal />
 
       {!showLangModal && (
@@ -219,7 +220,7 @@ const OnboardingScreen = () => {
           />
         </>
       )}
-    </View>
+    </ThemedView>
   );
 };
 
@@ -255,7 +256,9 @@ const styles = StyleSheet.create({
   slide: { 
     flex: 1, 
     height,
-    backgroundColor: PRIMARY_COLOR
+    backgroundColor: PRIMARY_COLOR,
+  
+    
   },
   backgroundImage: { 
     width: '100%', 

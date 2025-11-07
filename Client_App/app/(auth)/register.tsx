@@ -19,9 +19,16 @@ import { useClientAuth } from '../../contexts/ClientAuthContext';
 import GoogleButton from '@/components/auth/GoogleButton';
 import { LinearGradient } from 'expo-linear-gradient';
 
+const PRIMARY_COLOR = '#FF8C42';          // ← Your new primary color
+const GRADIENT_START = '#FF8C42';         // matching gradient start
+const GRADIENT_END = '#FF6B00';           // slightly darker for depth
+const LIGHT_BG = '#FFF8F0';               // very light peach
+const INPUT_BORDER = '#FFDAC1';           // soft peach
+const DISABLED_BG = '#FFDAC1';            // muted peach
+const ERROR_COLOR = '#FF375F';            // vibrant red for errors
+
 const RegisterScreen: React.FC = () => {
   const { t } = useTranslation();
-
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -36,27 +43,23 @@ const RegisterScreen: React.FC = () => {
     if (!value.trim()) return t('registerAuth.error_name_required');
     return '';
   };
-
   const validateEmail = (value: string) => {
     if (!value.trim()) return t('registerAuth.error_email_required');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) return t('registerAuth.error_email_invalid');
     return '';
   };
-
   const validatePhoneNumber = (value: string) => {
     if (!value.trim()) return t('registerAuth.error_phone_required');
     const phoneRegex = /^\+?[\d\s-]{7,15}$/;
     if (!phoneRegex.test(value)) return t('registerAuth.error_phone_invalid');
     return '';
   };
-
   const validatePassword = (value: string) => {
     if (!value) return t('registerAuth.error_password_required');
     if (value.length <= 6) return t('registerAuth.error_password_length');
     return '';
   };
-
   const validateConfirmPassword = (value: string) => {
     if (!value) return t('registerAuth.error_confirm_required');
     if (value !== password) return t('registerAuth.error_confirm_mismatch');
@@ -66,7 +69,6 @@ const RegisterScreen: React.FC = () => {
   const handleInputChange = (field: string, value: string) => {
     let setter: (val: string) => void;
     let validator: (val: string) => string;
-
     switch (field) {
       case 'name':
         setter = setName;
@@ -91,7 +93,6 @@ const RegisterScreen: React.FC = () => {
       default:
         return;
     }
-
     setter(value);
     const error = validator(value);
     setErrors((prev) => ({ ...prev, [field]: error }));
@@ -144,22 +145,8 @@ const RegisterScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header with Logo */}
-           {/* Gradient Header */}
-                  <LinearGradient
-                                    colors={['#FF6B35', '#FF4757']}
-                                    style={styles.headerGradient}
-                                    start={{ x: 1, y: 0 }}
-                                    end={{ x: 1, y: 1 }}
-                                  >
-                   <View style={styles.logoContainer}>
-                     <View style={styles.logoCircle}>
-                       <MaterialIcons name="storefront" size={32} color="#FFF" />
-                     </View>
-                     <Text style={styles.brandName}>FRESH CART</Text>
-                     <Text style={styles.tagline}>Your Local Marketplace</Text>
-                   </View>
-                 </LinearGradient>
+          {/* Gradient Header */}
+      
 
           {/* Welcome Text */}
           <View style={styles.welcomeContainer}>
@@ -173,7 +160,7 @@ const RegisterScreen: React.FC = () => {
             {/* Name */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="person-outline" size={18} color="#FF6B35" />
+                <Ionicons name="person-outline" size={18} color={PRIMARY_COLOR} />
               </View>
               <TextInput
                 style={styles.input}
@@ -189,7 +176,7 @@ const RegisterScreen: React.FC = () => {
             {/* Email */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="mail-outline" size={18} color="#FF6B35" />
+                <Ionicons name="mail-outline" size={18} color={PRIMARY_COLOR} />
               </View>
               <TextInput
                 style={styles.input}
@@ -206,7 +193,7 @@ const RegisterScreen: React.FC = () => {
             {/* Phone */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="call-outline" size={18} color="#FF6B35" />
+                <Ionicons name="call-outline" size={18} color={PRIMARY_COLOR} />
               </View>
               <TextInput
                 style={styles.input}
@@ -222,7 +209,7 @@ const RegisterScreen: React.FC = () => {
             {/* Password */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="lock-closed-outline" size={18} color="#FF6B35" />
+                <Ionicons name="lock-closed-outline" size={18} color={PRIMARY_COLOR} />
               </View>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
@@ -236,7 +223,7 @@ const RegisterScreen: React.FC = () => {
                 <Ionicons
                   name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
-                  color="#FF6B35"
+                  color={PRIMARY_COLOR}
                 />
               </TouchableOpacity>
             </View>
@@ -245,7 +232,7 @@ const RegisterScreen: React.FC = () => {
             {/* Confirm Password */}
             <View style={styles.inputWrapper}>
               <View style={styles.iconCircle}>
-                <Ionicons name="lock-closed-outline" size={18} color="#FF6B35" />
+                <Ionicons name="lock-closed-outline" size={18} color={PRIMARY_COLOR} />
               </View>
               <TextInput
                 style={[styles.input, styles.passwordInput]}
@@ -259,7 +246,7 @@ const RegisterScreen: React.FC = () => {
                 <Ionicons
                   name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'}
                   size={20}
-                  color="#FF6B35"
+                  color={PRIMARY_COLOR}
                 />
               </TouchableOpacity>
             </View>
@@ -269,16 +256,12 @@ const RegisterScreen: React.FC = () => {
           {/* Terms and Privacy */}
           <View style={styles.termsContainer}>
             <View style={styles.termsBox}>
-              <Ionicons name="shield-checkmark" size={16} color="#FF6B35" style={styles.shieldIcon} />
+              <Ionicons name="shield-checkmark" size={16} color={PRIMARY_COLOR} style={styles.shieldIcon} />
               <Text style={styles.termsText}>
                 {t('registerAuth.terms')}
-                <Text style={styles.termsLink}>
-                  {t('registerAuth.terms_service')}
-                </Text>
+                <Text style={styles.termsLink}>{t('registerAuth.terms_service')}</Text>
                 {t('registerAuth.and')}
-                <Text style={styles.termsLink}>
-                  {t('registerAuth.privacy_policy')}
-                </Text>
+                <Text style={styles.termsLink}>{t('registerAuth.privacy_policy')}</Text>
               </Text>
             </View>
           </View>
@@ -306,9 +289,7 @@ const RegisterScreen: React.FC = () => {
           <View style={styles.signInContainer}>
             <Text style={styles.signInText}>{t('registerAuth.already_have_account')} </Text>
             <TouchableOpacity onPress={handleSignIn}>
-              <Text style={styles.signInLink}>
-                {t('registerAuth.sign_in')}
-              </Text>
+              <Text style={styles.signInLink}>{t('registerAuth.sign_in')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -324,9 +305,9 @@ const RegisterScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    container: { 
-    flex: 1, 
-    backgroundColor: '#FFF5F0' 
+  container: {
+    flex: 1,
+    backgroundColor: LIGHT_BG,
   },
   keyboardView: { flex: 1 },
   scrollContent: {
@@ -340,11 +321,9 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 24,
-    backgroundColor: '#FF6B35',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#FF4757',
-    
+    shadowColor: GRADIENT_END,
   },
   logoContainer: {
     alignItems: 'center',
@@ -353,7 +332,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 35,
-    backgroundColor: '#FF4757',
+    backgroundColor: GRADIENT_END,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
@@ -371,29 +350,28 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 13,
-    color: '#FFE8E0',
+    color: '#FFFFFFCC',
     marginTop: 4,
     fontWeight: '500',
   },
-
-  welcomeContainer: { 
+  welcomeContainer: {
     marginBottom: 24,
   },
-  helloText: { 
-    fontSize: 30, 
-    fontWeight: '700', 
-    color: '#FF6B35',
+  helloText: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: PRIMARY_COLOR,
     marginBottom: 2,
   },
-  thereText: { 
-    fontSize: 30, 
-    fontWeight: '700', 
+  thereText: {
+    fontSize: 30,
+    fontWeight: '700',
     color: '#2C2C2C',
     marginBottom: 8,
   },
-  subtitleText: { 
-    fontSize: 14, 
-    color: '#666', 
+  subtitleText: {
+    fontSize: 14,
+    color: '#666',
     lineHeight: 20,
   },
   inputContainer: { marginBottom: 16 },
@@ -406,8 +384,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 12,
     borderWidth: 2,
-    borderColor: '#FFE8E0',
-    shadowColor: '#FF6B35',
+    borderColor: INPUT_BORDER,
+    shadowColor: PRIMARY_COLOR,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -417,31 +395,31 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFF5F0',
+    backgroundColor: LIGHT_BG,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
-  input: { 
-    flex: 1, 
-    fontSize: 15, 
+  input: {
+    flex: 1,
+    fontSize: 15,
     color: '#2C2C2C',
     fontWeight: '500',
   },
   passwordInput: { paddingRight: 40 },
-  eyeIcon: { 
-    position: 'absolute', 
-    right: 16, 
+  eyeIcon: {
+    position: 'absolute',
+    right: 16,
     padding: 4,
   },
-  errorText: { 
-    color: '#FF4757', 
-    fontSize: 12, 
-    marginBottom: 8, 
+  errorText: {
+    color: ERROR_COLOR,
+    fontSize: 12,
+    marginBottom: 8,
     marginLeft: 14,
     fontWeight: '500',
   },
-  termsContainer: { 
+  termsContainer: {
     marginBottom: 20,
   },
   termsBox: {
@@ -450,80 +428,80 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#FFE8E0',
+    borderColor: INPUT_BORDER,
     alignItems: 'flex-start',
   },
   shieldIcon: {
     marginRight: 10,
     marginTop: 2,
   },
-  termsText: { 
+  termsText: {
     flex: 1,
-    fontSize: 12, 
-    color: '#666', 
+    fontSize: 12,
+    color: '#666',
     lineHeight: 18,
   },
-  termsLink: { 
+  termsLink: {
     fontWeight: '700',
-    color: '#FF6B35',
+    color: PRIMARY_COLOR,
   },
   signUpButton: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FF6B35',
+    backgroundColor: PRIMARY_COLOR,
     borderRadius: 16,
     paddingVertical: 16,
     marginBottom: 20,
-    shadowColor: '#FF4757',
+    shadowColor: GRADIENT_END,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
   },
   signUpButtonDisabled: {
-    backgroundColor: '#FFCDB8',
+    backgroundColor: DISABLED_BG,
     shadowOpacity: 0.1,
   },
-  signUpButtonText: { 
-    color: '#FFF', 
-    fontSize: 17, 
+  signUpButtonText: {
+    color: '#FFF',
+    fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.5,
   },
   buttonIcon: {
     marginLeft: 8,
   },
-  dividerContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
   },
-  dividerLine: { 
-    flex: 1, 
-    height: 1, 
-    backgroundColor: '#FFE8E0',
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: INPUT_BORDER,
   },
-  dividerText: { 
-    marginHorizontal: 16, 
-    fontSize: 14, 
+  dividerText: {
+    marginHorizontal: 16,
+    fontSize: 14,
     color: '#999',
     fontWeight: '500',
   },
-  signInContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'center', 
+  signInContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 8,
   },
-  signInText: { 
-    fontSize: 14, 
+  signInText: {
+    fontSize: 14,
     color: '#666',
   },
-  signInLink: { 
-    fontSize: 14, 
+  signInLink: {
+    fontSize: 14,
     fontWeight: '700',
-    color: '#FF6B35',
+    color: PRIMARY_COLOR,
   },
   bottomDecoration: {
     position: 'relative',
@@ -535,7 +513,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#FFE8E0',
+    backgroundColor: INPUT_BORDER,
     opacity: 0.3,
     bottom: -30,
     left: -20,
@@ -547,7 +525,7 @@ const styles = StyleSheet.create({
     right: -15,
     left: 'auto',
     bottom: -15,
-    backgroundColor: '#FF6B35',
+    backgroundColor: PRIMARY_COLOR,
     opacity: 0.2,
   },
 });

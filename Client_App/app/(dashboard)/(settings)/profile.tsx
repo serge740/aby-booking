@@ -21,6 +21,7 @@ import { useClientAuth } from '@/contexts/ClientAuthContext';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import ENV from '@/env';
+import ThemedView from '@/components/themed/ThemedView';
 
 const EditProfileScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -205,7 +206,7 @@ const EditProfileScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ThemedView safe={true} style={styles.container}>
       <StatusBar barStyle="light-content" />
       
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardView}>
@@ -346,7 +347,7 @@ const EditProfileScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ThemedView>
   );
 };
 
