@@ -162,30 +162,15 @@ export default function AbyRestaurantFooter() {
                 <p className="text-orange-400 text-sm mb-2">Email</p>
                 <a href="mailto:info@abyrestaurant.com" className="text-white hover:text-red-400 transition-colors">
                   info@abyrestaurant.com
+                </a> <br />
+ 
+                  <a href="mailto:info@abyrestaurant.com" className="text-white hover:text-red-400 transition-colors">
+                  info@abyrestaurant.com
                 </a>
               </div>
               
-              <div className="border-t border-gray-700 pt-6">
-                <p className="text-orange-400 text-sm mb-2">Location</p>
-                <p className="text-white flex items-start gap-2">
-                  <MapPin className="w-4 h-4 text-red-400 flex-shrink-0 mt-1" />
-                  <span>570 8th Ave, New York, NY 10018 United States</span>
-                </p>
-              </div>
+             
 
-              <div className="border-t border-gray-700 pt-6">
-                <p className="text-orange-400 text-sm mb-2">Opening Hours</p>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <Clock className="w-4 h-4 text-red-400" />
-                    <span>Mon-Fri: 8am - 4pm</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-300 text-sm">
-                    <Clock className="w-4 h-4 text-red-400" />
-                    <span>Saturday: 9am - 5pm</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -213,29 +198,7 @@ export default function AbyRestaurantFooter() {
                 </a>
               ))}
 
-               <div className="relative">
-                <button onClick={() => setLangOpen(!langOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all text-sm">
-                  <Globe className="w-4 h-4 text-primary-400" />
-                  <span>{currentLang.flag}</span>
-                  <span>{currentLang.name}</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {langOpen && (
-                  <div className="absolute bottom-full mb-2 right-0 bg-zinc-900 border border-white/10 rounded-lg overflow-hidden shadow-xl min-w-[180px]">
-                    {languages.map(lang => (
-                      <button
-                        key={lang.code}
-                        onClick={() => { changeLanguage(lang.code); setLangOpen(false); }}
-                        className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-left text-sm ${i18n.language === lang.code ? 'bg-white/10 text-primary-400' : 'text-gray-400'}`}
-                      >
-                        <span className="text-xl">{lang.flag}</span>
-                        <span>{lang.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+           
             </div>
           </div>
         </div>

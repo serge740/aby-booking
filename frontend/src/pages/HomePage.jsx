@@ -33,11 +33,12 @@ const HomePage = () => {
             <AbyComingSoon />
             {/* <ContentReach /> */}
             <AbyPopularDishes  />
+                    <Programs />
             <FoodPromoCards  />
  
-            <MeetPeopleSection />
-            <Programs />
-              {/* <Partners /> */}
+
+    
+
             <Testimonials />
           
             <BlogLatest />
