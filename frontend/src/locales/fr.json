@@ -1,0 +1,841 @@
+{
+    "email": "Envoyez-nous un e-mail à",
+    "phone": "Appelez-nous",
+    "adText": "Réservez votre billet maintenant et voyagez en toute sécurité !",
+    "bookRental": "Réserver une location",
+    "menu": {
+        "home": "Accueil",
+        "aboutUs": "À propos",
+        "services": "Services",
+        "blogs": "Blogs",
+        "contactUs": "Contactez-nous"
+    },
+    "cta": {
+        "bookRental": "Acheter un billet"
+
+    },
+    "welcome": "Bienvenue sur Aby Ticket",
+    "slides": {
+        "bookOnline": {
+            "title": "Réservez votre billet de bus en ligne",
+            "description": "Réservez vos billets de bus rapidement et en toute sécurité depuis n'importe où au Rwanda, sans faire la queue."
+        },
+        "trackBus": {
+            "title": "Suivez votre bus en temps réel",
+            "description": "Sachez exactement où se trouve votre bus avant qu'il n'arrive à votre arrêt pour un voyage sans stress."
+        },
+        "easyUse": {
+            "title": "Facile à utiliser sur toutes les plateformes",
+            "description": "Notre application et notre site Web sont conçus pour tout le monde, que ce soit sur ordinateur, tablette ou mobile."
+        }
+    },
+    "buttons": {
+        "bookTicket": "Réserver un billet",
+        "learnMore": "En savoir plus"
+    },
+   "footer": {
+    "readyToTravel": "Prêt à voyager ?",
+    "bookNextJourney": "Réservez Votre Prochain Voyage",
+    "bookNow": "Réserver Maintenant",
+    "abyTicket": "Aby Ticket",
+    "tagline": "Découvrez un voyage sûr et confortable à travers le Rwanda. Nous vous connectons à chaque destination avec fiabilité et soin.",
+    "mainOffice": "Bureau Principal",
+    "address": "KN 4 Ave, Kigali, Rwanda",
+    "viewMap": "Voir sur la carte",
+    "bookTicket": "Réserver un billet",
+    "bookDescription": "Réservez votre siège pour un voyage confortable à travers le Rwanda.",
+    "phone": "+250 792 888 980",
+    "serviceHours": "Heures de service",
+    "weekdays": "Lundi-Vendredi : 6h - 20h",
+    "weekends": "Week-ends : 6h - 21h",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Abonnez-vous pour recevoir des offres spéciales et des mises à jour de voyage.",
+    "emailPlaceholder": "Entrez votre email",
+    "subscribe": "S'abonner maintenant",
+    "copyright": "Copyright © 2024",
+    "allRights": "Tous droits réservés",
+    "privacyPolicy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "quickLinks": "Liens rapides",
+    "aboutUs": "À propos",
+    "ourFleet": "Notre flotte",
+    "destinations": "Destinations",
+    "contact": "Contact",
+    "home": "Accueil",
+     "howtoBook":"Comment Réserver" ,
+      "faq": "Questions Fréquemment Posées" ,
+      "help": "Aide & Support"
+  },
+    "home": "Accueil",
+    "about": "À propos",
+    "contact": "Contact",
+    "services": {
+    "sectionTitle": "Nos Services",
+    "sectionHeader": "Planifiez Votre Voyage Facilement",
+    "sectionDescription": "Réservez vos billets, suivez votre véhicule ou planifiez votre voyage facilement en ligne, hors ligne ou via USSD.",
+    "bookTicket": "Réserver un Billet",
+    "bookTicketDesc": "Planifiez votre voyage en commençant par un billet rapide adapté à votre emploi du temps.",
+    "trackCar": "Suivre le Véhicule",
+    "trackCarDesc": "Voir l’emplacement en temps réel de votre véhicule et son heure d’arrivée estimée.",
+    "onlineOfflineBooking": "Réservation En Ligne/Hors Ligne",
+    "onlineOfflineBookingDesc": "Réservez vos billets via notre application ou dans les points de vente agréés.",
+    "ussdBooking": "Réservation USSD",
+    "ussdBookingDesc": "Réservez rapidement avec un code USSD directement depuis votre téléphone.",
+    "bottomDescription": "Nous proposons des moyens simples pour planifier votre voyage, choisir votre véhicule et acheter vos billets instantanément.",
+    "viewAll": "Voir Tous les Services"
+  },
+  "about": {
+    "badge": "À Propos d'Aby Ticket",
+    "title": "Le Service de Bus le Plus Fiable du Rwanda",
+    "subtitle": "Reliant les villes à travers le Rwanda avec un transport sûr, confortable et fiable. Découvrez la différence du voyage en bus moderne avec Aby Ticket.",
+    "description": "Depuis notre création, Aby Ticket s'engage à fournir des services de bus exceptionnels à travers le Rwanda. Nous exploitons des bus modernes et bien entretenus avec des chauffeurs professionnels qui privilégient votre sécurité et votre confort. Notre vaste réseau relie les grandes villes, notamment Kigali, Musanze, Huye, Rubavu et bien d'autres.",
+    "cta": "Réservez Votre Voyage",
+    "rating": "Note Client",
+    "ratingDescription": "Basé sur plus de 15 000 avis de passagers vérifiés",
+    "stats": {
+      "passengers": "Passagers Satisfaits",
+      "routes": "Itinéraires Quotidiens",
+      "satisfaction": "Taux de Satisfaction",
+      "support": "Support Client"
+    },
+    "features": {
+      "safety": {
+        "title": "Sécurité Avant Tout",
+        "description": "Tous nos bus font l'objet de contrôles d'entretien et d'inspections de sécurité réguliers. Nos chauffeurs expérimentés sont formés à la conduite défensive et aux protocoles de sécurité des passagers."
+      },
+      "punctuality": {
+        "title": "Départs à l'Heure",
+        "description": "Nous valorisons votre temps. Nos bus partent à l'heure prévue, vous assurant d'arriver à destination quand vous en avez besoin. Le suivi en temps réel vous tient informé tout au long de votre voyage."
+      },
+      "comfort": {
+        "title": "Voyage Confortable",
+        "description": "Profitez de sièges spacieux, de la climatisation, de toilettes propres et de divertissements à bord. Nos bus sont conçus pour votre confort lors de trajets courts et longs."
+      }
+    },
+    "highlights": {
+      "modern": "Flotte moderne avec climatisation",
+      "drivers": "Chauffeurs professionnels agréés",
+      "tracking": "Suivi GPS en temps réel",
+      "support": "Support client 24/7"
+    },
+    "whyChoose": "Pourquoi Choisir Aby Ticket?",
+    "commitment": "Notre Engagement envers l'Excellence"
+  },
+  "locations": {
+    "subtitle": "Voyagez à Travers le Rwanda",
+    "title": "Nous Relions Chaque Coin",
+    "description": "Réservez des billets de bus sûrs, confortables et abordables vers toutes les grandes destinations du Rwanda.",
+    "popularAgencies": "Opérateurs de Bus Fiables",
+    "popularRoutes": "Itinéraires les Plus Populaires",
+    "viewAll": "Voir Tous les Itinéraires",
+    "popular": "Populaire",
+    "duration": "de trajet",
+    "bookNow": "Réserver un Billet",
+    "ctaTitle": "Prêt à Voyager ?",
+    "ctaDesc": "Plus de 50 départs quotidiens vers Musanze, Rubavu, Huye et plus.",
+    "exploreRoutes": "Explorer Tous les Itinéraires"
+  },
+  "hero": {
+    "watchVideo": "VOIR LA VIDÉO COMPLÈTE",
+    "title": "Voyagez au Rwanda en Toute Simplicité",
+    "subtitle": "Réservez vos billets auprès d’opérateurs fiables vers toutes les destinations — sûr, rapide et fiable."
+  },
+   "bookingProcess": {
+    "badge": "Comment Ça Marche",
+    "title": "Étapes simples pour réserver votre billet de bus",
+    "subtitle": "Réservez votre billet de bus de trois manières simples - via notre site web, application mobile ou code USSD. Réservation rapide, sécurisée et pratique à portée de main.",
+    "trustBadge": {
+      "title": "500K+ Billets Réservés",
+      "subtitle": "Approuvé par les passagers du Rwanda"
+    },
+    "steps": {
+      "choose": {
+        "title": "Choisissez Votre Voyage",
+        "content": "Sélectionnez vos villes de départ et de destination, choisissez votre date et heure de voyage préférées. Parcourez les itinéraires disponibles de Kigali à Musanze, Huye, Rubavu et plus. Comparez les prix et les opérateurs de bus."
+      },
+      "book": {
+        "title": "Réservez Votre Billet",
+        "content": "Complétez votre réservation via notre site web, application mobile, ou composez *334# pour USSD. Choisissez votre siège, ajoutez les détails des passagers et payez en toute sécurité via Mobile Money (MTN, Airtel), carte ou espèces."
+      },
+      "travel": {
+        "title": "Voyagez En Toute Tranquillité",
+        "content": "Recevez votre e-billet instantanément par SMS et email. Présentez votre code de billet à la gare routière, montez dans votre bus et profitez d'un voyage confortable. Suivez la position de votre bus en temps réel."
+      }
+    }
+  },
+   "faq": {
+    "subtitle": "Questions fréquemment posées",
+    "title": "Tout ce que vous devez savoir sur la réservation de billets",
+    "busAlt": "Bus public",
+    "q1": "Comment réserver un billet de bus ?",
+    "a1": "Vous pouvez facilement réserver vos billets en ligne en sélectionnant vos villes de départ et d'arrivée, en choisissant l'heure du voyage et en confirmant votre paiement via notre système sécurisé.",
+    "q2": "Puis-je annuler ou modifier ma réservation ?",
+    "a2": "Oui, vous pouvez annuler ou modifier votre voyage jusqu’à 24 heures avant le départ. Certaines restrictions peuvent s’appliquer pendant les périodes de forte affluence.",
+    "q3": "Y a-t-il des réductions pour les étudiants ou les seniors ?",
+    "a3": "Oui, nous offrons des réductions spéciales pour les étudiants et les passagers âgés. Une pièce d’identité valide doit être présentée lors de l’enregistrement.",
+    "q4": "Quels modes de paiement acceptez-vous ?",
+    "a4": "Nous acceptons les cartes de débit et de crédit, l’argent mobile et d’autres méthodes de paiement locales.",
+    "q5": "Dois-je imprimer mon billet ?",
+    "a5": "Non, l’impression n’est pas nécessaire. Vous pouvez simplement montrer votre billet électronique sur votre téléphone lors de l’embarquement."
+  },
+
+
+  "aboutUsPage": {
+        "header": {
+            "path": "À Propos",
+            "title": "À Propos"
+        },
+        "ourStory": "Notre Histoire",
+        "connectingCommunities": "Connecter les Communautés du Rwanda\nGrâce à des Voyages en Bus Fiables",
+        "tabs": {
+            "vision": "Notre Vision",
+            "mission": "Notre Mission",
+            "approach": "Notre Approche"
+        },
+        "vision": {
+            "title": "Notre Vision",
+            "heading": "Diriger la Révolution des Transports au Rwanda",
+            "description": "Fondé en 2018, Aby Ticket envisage un Rwanda où les voyages en bus fluides et durables connectent chaque coin du pays. Aligné sur la Vision 2050, nous visons à intégrer des technologies de pointe comme les systèmes de transport intelligents et les véhicules électriques pour rendre les voyages interurbains efficaces, écologiques et accessibles à tous les Rwandais et visiteurs.",
+            "points": {
+                "nationwide": "Couverture nationale servant plus de 50 000 passagers par mois",
+                "greenInitiatives": "Initiatives vertes pionnières avec des pilotes de bus électriques sur les routes Kigali-Musanze",
+                "digitalInnovation": "Innovation numérique pour le suivi en temps réel et les paiements sans contact"
+            }
+        },
+        "mission": {
+            "title": "Notre Mission",
+            "heading": "Voyages Sûrs et Abordables à Travers le Rwanda",
+            "description": "Notre mission est de fournir des services de bus publics fiables qui relient les zones urbaines et rurales du Rwanda. Réglementés par la RURA, nous exploitons des itinéraires étendus de Kigali vers des destinations comme Musanze pour les visites du Parc National des Volcans, Rubavu sur le Lac Kivu, et Huye au sud, garantissant des voyages sûrs et ponctuels pour les navetteurs, les touristes et les familles.",
+            "points": {
+                "safetyCompliance": {
+                    "title": "Conformité à la Sécurité Routière",
+                    "description": "Respect des normes RTDA avec contrôles de charge par essieu et audits de sécurité réguliers."
+                },
+                "extensiveNetwork": {
+                    "title": "Réseau Étendu",
+                    "description": "Couvrant toutes les provinces avec des services programmés vers les grandes villes et les points frontaliers."
+                },
+                "communityOriented": {
+                    "title": "Orienté Communauté",
+                    "description": "Tarifs abordables et partenariats avec des coopératives locales pour un transport inclusif."
+                }
+            }
+        },
+        "approach": {
+            "title": "Notre Approche",
+            "heading": "Mélanger la Technologie avec l'Hospitalité Rwandaise",
+            "description": "Nous combinons l'efficacité renommée du Rwanda avec des innovations modernes. Notre flotte de plus de 40 bus dispose d'une planification d'itinéraires basée sur les données inspirée des systèmes de transport intelligents de Kigali, garantissant des horaires optimaux tandis que notre personnel fournit un service chaleureux et professionnel ancré dans l'esprit communautaire Umuganda."
+        },
+        "values": {
+            "safetyFirst": {
+                "title": "Sécurité d'Abord",
+                "description": "Nous respectons les normes strictes de sécurité routière du Rwanda avec des inspections régulières des véhicules, des conducteurs professionnels formés à la conduite défensive, et une surveillance GPS en temps réel pour tous les voyages."
+            },
+            "punctualService": {
+                "title": "Service Ponctuel",
+                "description": "Nos horaires sont conçus en tenant compte des schémas de circulation du Rwanda, garantissant des départs à l'heure depuis les hubs clés comme la gare routière de Nyabugogo à Kigali."
+            },
+            "customerFocus": {
+                "title": "Focus sur le Client",
+                "description": "Support 24/7 en kinyarwanda, anglais et français, avec des commodités comme des sièges confortables et Wi-Fi sur certains itinéraires."
+            },
+            "sustainableInnovation": {
+                "title": "Innovation Durable",
+                "description": "Essais pionniers de bus électriques en partenariat avec les initiatives de transport vert du Rwanda, réduisant les émissions sur les itinéraires populaires."
+            }
+        },
+        "whyChoose": {
+            "heading": "Pourquoi Choisir Aby Ticket ?",
+            "description": "En tant qu'entreprise rwandaise fière, nous nous engageons à élever les normes de transport public avec sécurité, innovation et connectivité nationale."
+        },
+        "cta": {
+            "heading": "Prêt à Explorer le Rwanda ?",
+            "description": "Rejoignez des milliers de voyageurs satisfaits utilisant Aby Ticket pour des voyages sûrs vers les destinations époustouflantes du Rwanda, des rues vibrantes de Kigali aux montagnes brumeuses de Musanze.",
+            "bookNow": "Réserver un Billet Maintenant",
+            "exploreRoutes": "Explorer les Itinéraires"
+        },
+        "imageAlt": "Illustration pour {{tab}}"
+    },
+
+
+
+    
+  "servicesPage": {
+    "header": {
+      "badge": "Nos Services",
+      "title": "Solutions de Transport",
+      "highlight": "Complètes pour le Rwanda",
+      "description": "De la réservation en ligne aux services USSD hors ligne, nous offrons des solutions de transport flexibles pour tous les besoins"
+    },
+    "services": {
+      "onlineBooking": {
+        "title": "Réservation de Billets en Ligne",
+        "subtitle": "Kigali & National",
+        "description": "Réservez des billets de bus et de voiture en ligne pour les trajets à Kigali et partout au Rwanda. Paiement sécurisé via Mobile Money, cartes ou virement bancaire.",
+        "features": ["Confirmation instantanée", "Mobile Money accepté", "Billets électroniques"]
+      },
+      "interCityCar": {
+        "title": "Réservation de Voitures Inter-Villes",
+        "subtitle": "Hors de Kigali",
+        "description": "Services de voitures confortables reliant Kigali aux grandes villes : Musanze, Rubavu, Huye, Rusizi et toutes les provinces.",
+        "features": ["Chauffeurs professionnels", "Véhicules climatisés", "Porte-à-porte"]
+      },
+      "carRental": {
+        "title": "Location de Voitures",
+        "subtitle": "Journalier & Long Terme",
+        "description": "Louez des véhicules de qualité pour affaires ou loisirs. Choisissez parmi des berlines, SUV et vans avec ou sans chauffeur.",
+        "features": ["Forfaits flexibles", "Assurance complète", "Prise en charge à l'aéroport"]
+      },
+      "ussdBooking": {
+        "title": "Réservation USSD",
+        "subtitle": "Aucune Connexion Requise",
+        "description": "Réservez des billets sans internet via le code USSD *XXX#. Parfait pour les zones à faible connectivité ou téléphones basiques.",
+        "features": ["Fonctionne hors ligne", "Tout téléphone", "Réservation instantanée"]
+      },
+      "realTimeTracking": {
+        "title": "Suivi en Temps Réel",
+        "subtitle": "GPS Activé",
+        "description": "Suivez la position de votre véhicule en temps réel. Obtenez des ETA précises et partagez les détails du trajet avec votre famille.",
+        "features": ["GPS en direct", "Partage de trajet", "Alertes d'arrivée"]
+      },
+      "corporateSolutions": {
+        "title": "Solutions Entreprises",
+        "subtitle": "Pour les Organisations",
+        "description": "Solutions de transport sur mesure pour les entreprises. Forfaits mensuels, navettes employés et gestion de flotte dédiée.",
+        "features": ["Remises sur volume", "Réservation prioritaire", "Facturation mensuelle"]
+      },
+      "learnMore": "En Savoir Plus"
+    },
+    "testimonialsSection": {
+      "title": "Ce Que Disent Nos Clients",
+      "subtitle": "Fait confiance par des milliers de voyageurs à travers le Rwanda"
+    },
+    "testimonials": [
+      {
+        "name": "Jean Claude Mugabo",
+        "role": "Cadre d'Entreprise",
+        "image": "JM",
+        "rating": 5,
+        "text": "Service excellent ! J'utilise leur réservation inter-villes chaque semaine pour mes déplacements à Musanze. Toujours à l'heure et professionnel."
+      },
+      {
+        "name": "Grace Uwase",
+        "role": "Enseignante",
+        "image": "GU",
+        "rating": 5,
+        "text": "La réservation USSD change la donne. Je peux réserver des billets même sans internet. Très pratique !"
+      },
+      {
+        "name": "Patrick Niyonzima",
+        "role": "Opérateur Touristique",
+        "image": "PN",
+        "rating": 5,
+        "text": "Nous louons régulièrement des voitures chez eux pour nos circuits. Véhicules de qualité, prix compétitifs et excellent service client."
+      }
+    ]
+  },
+
+
+  
+  "contactPage": {
+    "header": {
+      "title": "Contactez-nous",
+      "path": "contact"
+    },
+    "logo": "ABY TICKET",
+    "badge": "Entrez en Contact",
+    "heading": "Nous aimerions avoir\nde vos nouvelles",
+    "cards": {
+      "phone": {
+        "title": "Appelez-nous",
+        "subtitle": "Lun-Dim de 6h à 22h",
+        "number": "+250 788 123 456"
+      },
+      "email": {
+        "title": "Envoyez-nous un email",
+        "subtitle": "Réponse sous 24 heures",
+        "address": "info@abyticket.rw"
+      },
+      "location": {
+        "title": "Visitez-nous",
+        "subtitle": "Venez nous dire bonjour à notre bureau",
+        "address": "Kigali, Rwanda\nKN 4 Ave, Nyarugenge"
+      }
+    },
+    "form": {
+      "title": "Envoyez-nous un message",
+      "subtitle": "Nous vous répondrons bientôt",
+      "labels": {
+        "name": "Nom Complet",
+        "email": "Adresse Email",
+        "phone": "Numéro de Téléphone",
+        "message": "Message"
+      },
+      "placeholders": {
+        "name": "Jean Dupont",
+        "email": "jean@example.com",
+        "phone": "+250788123456",
+        "message": "Dites-nous comment nous pouvons vous aider..."
+      },
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours...",
+      "back": "Retour à l'Accueil",
+      "success": "Message envoyé avec succès !",
+      "errors": {
+        "name": "Le nom est requis",
+        "email": "Un email valide est requis",
+        "subject": "Le sujet est requis",
+        "message": "Le message est requis"
+      }
+    },
+    "map": {
+      "title": "Trouvez-nous au Rwanda",
+      "subtitle": "Notre bureau à Kigali",
+      "iframeTitle": "Localisation du bureau Aby Ticket à Kigali, Rwanda"
+    },
+    "hours": {
+      "title": "Heures d'Ouverture",
+      "days": [
+        { "day": "Lundi - Vendredi", "time": "6:00 - 22:00" },
+        { "day": "Samedi", "time": "7:00 - 21:00" },
+        { "day": "Dimanche", "time": "8:00 - 20:00" },
+        { "day": "Support d'Urgence", "time": "24h/24 Disponible" }
+      ]
+    }
+  },
+
+  
+  "faqPage": {
+    "header": {
+      "title": "FAQ",
+      "path": "faq"
+    },
+    "hero": {
+      "badge": "Questions Fréquentes",
+      "title": "Questions Fréquemment Posées (FAQ)",
+      "description": "Trouvez des réponses rapides sur la réservation, les paiements, les billets et les voyages avec nos services de bus à travers le Rwanda.",
+      "support": "Si vous avez encore besoin d'aide, notre équipe de support est toujours prête à vous aider."
+    },
+    "sections": [
+      {
+        "title": "Réservation & Billets",
+        "icon": "Ticket",
+        "questions": [
+          {
+            "number": 1,
+            "question": "Comment réserver un billet de bus en ligne ?",
+            "answer": [
+              { "type": "text", "content": "La réservation en ligne est rapide et simple !" },
+              { "type": "steps", "steps": [
+                "Allez sur notre page de Réservation en Ligne.",
+                "Sélectionnez votre ville de départ, destination et date de voyage.",
+                "Choisissez votre bus ou type de siège.",
+                "Payez via Mobile Money, carte ou virement bancaire."
+              ]},
+              { "type": "text", "content": "Votre billet électronique sera envoyé instantanément par SMS ou email." }
+            ]
+          },
+          {
+            "number": 2,
+            "question": "Puis-je réserver un billet sans internet ?",
+            "answer": [
+              { "type": "text", "content": "Oui ! Utilisez notre service USSD — aucune connexion internet requise." },
+              { "type": "text", "content": "Composez simplement *XXX#, suivez les instructions pour choisir votre itinéraire et date, confirmez le paiement, et recevez votre billet par SMS." },
+              { "type": "list", "items": [
+                "Fonctionne sur tous les téléphones",
+                "Confirmation instantanée",
+                "Idéal pour les zones à faible connectivité"
+              ]}
+            ]
+          },
+          {
+            "number": 3,
+            "question": "Puis-je réserver un billet pour quelqu'un d'autre ?",
+            "answer": [
+              { "type": "text", "content": "Oui, vous le pouvez. Entrez leur nom et numéro de téléphone lors de la réservation, et le billet leur sera envoyé directement par SMS." }
+            ]
+          },
+          {
+            "number": 4,
+            "question": "Comment savoir si ma réservation est confirmée ?",
+            "answer": [
+              { "type": "text", "content": "Une fois le paiement effectué, vous recevrez une confirmation par SMS ou email avec les détails de votre billet et le numéro de référence du voyage." }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Paiements & Remboursements",
+        "icon": "CreditCard",
+        "questions": [
+          {
+            "number": 5,
+            "question": "Quels modes de paiement acceptez-vous ?",
+            "answer": [
+              { "type": "text", "content": "Vous pouvez payer en toute sécurité via :" },
+              { "type": "list", "items": [
+                "MTN Mobile Money",
+                "Airtel Money",
+                "Visa / Mastercard",
+                "Virement bancaire"
+              ]}
+            ]
+          },
+          {
+            "number": 6,
+            "question": "Est-il sécurisé de payer en ligne ?",
+            "answer": [
+              { "type": "text", "content": "Oui ! Notre système de paiement est entièrement crypté et sécurisé. Vos données personnelles et de paiement sont toujours protégées." }
+            ]
+          },
+          {
+            "number": 7,
+            "question": "Puis-je annuler ou modifier mon billet ?",
+            "answer": [
+              { "type": "text", "content": "Oui, selon la compagnie de bus et l'heure de départ." },
+              { "type": "text", "content": "Contactez notre équipe de support avec votre référence de réservation, ils vous guideront dans le processus." },
+              { "type": "text", "content": "Des frais d'annulation peuvent s'appliquer si c'est proche de l'heure de départ." }
+            ]
+          },
+          {
+            "number": 8,
+            "question": "Que se passe-t-il si je rate mon bus ?",
+            "answer": [
+              { "type": "text", "content": "Si vous ratez votre voyage, contactez-nous dès que possible." },
+              { "type": "text", "content": "Nous vous aiderons à reprogrammer s'il reste de la place (des frais de reprogrammation peuvent s'appliquer)." }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Informations de Voyage",
+        "icon": "Bus",
+        "questions": [
+          {
+            "number": 9,
+            "question": "Dois-je imprimer mon billet ?",
+            "answer": [
+              { "type": "text", "content": "Aucune impression nécessaire ! Montrez simplement votre billet électronique ou confirmation SMS lors de l'embarquement." }
+            ]
+          },
+          {
+            "number": 10,
+            "question": "À quelle heure dois-je arriver avant le départ ?",
+            "answer": [
+              { "type": "text", "content": "Nous recommandons d'arriver au moins 20 à 30 minutes avant le départ pour l'enregistrement et sécuriser votre siège." }
+            ]
+          },
+          {
+            "number": 11,
+            "question": "Puis-je choisir mon siège lors de la réservation ?",
+            "answer": [
+              { "type": "text", "content": "Oui, sur certains itinéraires, vous pouvez choisir votre siège en ligne avant le paiement." },
+              { "type": "text", "content": "Si la sélection de siège n'est pas disponible, nos agents vous en attribueront un à la gare." }
+            ]
+          },
+          {
+            "number": 12,
+            "question": "Que se passe-t-il si le bus est en retard ?",
+            "answer": [
+              { "type": "text", "content": "Nous vous informerons par SMS ou appel en cas de retard." },
+              { "type": "text", "content": "Notre équipe travaille pour minimiser les temps d'attente et maintenir les horaires." }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Bagages & Services à Bord",
+        "icon": "Package",
+        "questions": [
+          {
+            "number": 13,
+            "question": "Combien de bagages puis-je emporter ?",
+            "answer": [
+              { "type": "text", "content": "Chaque passager a droit à un bagage standard (jusqu'à 20 kg) plus un petit bagage à main." },
+              { "type": "text", "content": "Des bagages supplémentaires peuvent être facturés selon la disponibilité." }
+            ]
+          },
+          {
+            "number": 14,
+            "question": "La nourriture et les boissons sont-elles autorisées dans le bus ?",
+            "answer": [
+              { "type": "text", "content": "Oui, des collations légères et boissons sont autorisées — mais soyez respectueux et gardez le bus propre." }
+            ]
+          },
+          {
+            "number": 15,
+            "question": "Vos bus sont-ils confortables ?",
+            "answer": [
+              { "type": "text", "content": "Absolument ! Nos bus sont modernes, propres, climatisés, avec des sièges confortables et des chauffeurs professionnels pour rendre votre voyage agréable." }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Support & Assistance",
+        "icon": "MessageSquare",
+        "questions": [
+          {
+            "number": 16,
+            "question": "Comment contacter le service client ?",
+            "answer": [
+              { "type": "text", "content": "Vous pouvez nous joindre facilement via :" },
+              { "type": "list", "items": [
+                "Appel / WhatsApp : +250 XXX XXX XXX",
+                "Email : support@abyticket.rw",
+                "Chat en direct : Disponible sur notre site"
+              ]},
+              { "type": "text", "content": "Horaires : 7h00 – 21h00 (Lundi–Dimanche)" }
+            ]
+          },
+          {
+            "number": 17,
+            "question": "Que faire si je perds mon billet ?",
+            "answer": [
+              { "type": "text", "content": "Pas de panique — contactez le support avec votre nom et numéro, et nous vous renverrons votre billet instantanément." }
+            ]
+          },
+          {
+            "number": 18,
+            "question": "Comment donner un retour ou signaler un problème ?",
+            "answer": [
+              { "type": "text", "content": "Nous valorisons vos retours !" },
+              { "type": "text", "content": "Envoyez un email à feedback@abyticket.rw ou messagez-nous sur WhatsApp pour partager votre expérience." }
+            ]
+          }
+        ]
+      }
+    ],
+    "cta": {
+      "title": "Toujours des Questions ?",
+      "description": "Notre équipe de support est là pour vous aider 7 jours sur 7.",
+      "call": "Appeler le Support",
+      "email": "Nous Envoyer un Email"
+    }
+  },
+
+
+  "howToBookPage": {
+    "header": {
+      "title": "Comment Réserver",
+      "path": "comment-reserver"
+    },
+    "hero": {
+      "badge": "Comment Réserver",
+      "title": "Comment Réserver Votre Billet Facilement",
+      "description": "Réserver votre prochain voyage à travers le Rwanda n'a jamais été aussi simple ! Nous proposons plusieurs moyens pratiques de réservation — que vous soyez en ligne, sur votre téléphone ou en déplacement."
+    },
+    "steps": [
+      {
+        "title": "1. Réservez en Ligne",
+        "subtitle": "Rapide, sécurisé et disponible 24h/24, 7j/7",
+        "list": [
+          "Visitez notre plateforme de réservation en ligne.",
+          "Sélectionnez votre ville de départ, destination et date de voyage.",
+          "Choisissez votre siège ou type de véhicule (bus ou voiture).",
+          "Payez en toute sécurité via Mobile Money, carte ou virement bancaire.",
+          "Recevez votre billet électronique instantanément par SMS ou email."
+        ],
+        "features": [
+          "Confirmation instantanée",
+          "Mobile Money accepté",
+          "Pas besoin d'imprimer — montrez votre e-billet !"
+        ]
+      },
+      {
+        "title": "2. Réservez via USSD (Aucune Connexion Requise)",
+        "subtitle": "Parfait pour les zones à faible connectivité",
+        "list": [
+          "Composez *XXX# sur votre téléphone.",
+          "Suivez le menu pour sélectionner votre itinéraire et date de voyage.",
+          "Confirmez votre réservation et payez avec Mobile Money.",
+          "Recevez votre billet instantanément par SMS."
+        ],
+        "features": [
+          "Fonctionne hors ligne",
+          "Compatible avec tous les téléphones",
+          "Confirmation de réservation instantanée"
+        ]
+      },
+      {
+        "title": "3. Besoin d'une Voiture Privée ?",
+        "list": [
+          "Choisissez parmi des berlines, SUV ou vans confortables.",
+          "Disponible avec ou sans chauffeur.",
+          "Prises en charge à l'aéroport et options porte-à-porte.",
+          "Payez en toute sécurité et suivez votre véhicule en temps réel."
+        ],
+        "features": [
+          "Chauffeurs professionnels",
+          "Suivi GPS",
+          "Forfaits flexibles"
+        ]
+      },
+      {
+        "title": "Pour les Entreprises & Groupes",
+        "description": "À la recherche de solutions de transport fiables pour votre organisation ? Nous proposons des solutions de transport d'entreprise, incluant :",
+        "list": [
+          "Navettes pour employés",
+          "Locations mensuelles de voitures",
+          "Gestion de flotte",
+          "Réservation prioritaire & options de facturation"
+        ],
+        "cta": "Contactez-nous pour des forfaits personnalisés"
+      }
+    ],
+    "support": {
+      "title": "Besoin d'Aide ?",
+      "call": "Appel/WhatsApp",
+      "phone": "+250 XXX XXX XXX",
+      "email": "info@abyticket.rw",
+      "emailText": "Nous Envoyer un Email"
+    }
+  },
+
+
+
+  "helpSupportPage": {
+    "header": {
+      "title": "Aide & Support",
+      "path": "aide"
+    },
+    "hero": {
+      "badge": "Centre d'Aide",
+      "title": "Aide & Support",
+      "description": "Nous sommes là pour rendre votre voyage fluide et sans stress. Trouvez des réponses, contactez notre équipe ou obtenez de l'aide en temps réel ci-dessous."
+    },
+    "faqSection": {
+      "title": "Questions Fréquentes (FAQ)"
+    },
+    "faqs": [
+      {
+        "icon": "bus",
+        "question": "Comment réserver un billet en ligne ?",
+        "answer": [
+          { "type": "text", "content": "Vous pouvez réserver en ligne à tout moment !" },
+          { "type": "steps", "steps": [
+            "Accédez à notre page de Réservation en Ligne.",
+            "Choisissez votre itinéraire, date et siège.",
+            "Payez via Mobile Money, banque ou carte.",
+            "Recevez votre billet électronique instantanément par SMS ou email."
+          ]}
+        ]
+      },
+      {
+        "icon": "phone",
+        "question": "Puis-je réserver sans internet ?",
+        "answer": [
+          { "type": "text", "content": "Oui ! Composez simplement *XXX# et suivez les étapes pour réserver via USSD." },
+          { "type": "text", "content": "Vous recevrez votre billet instantanément après paiement." }
+        ]
+      },
+      {
+        "icon": "credit",
+        "question": "Quels modes de paiement sont acceptés ?",
+        "answer": [
+          { "type": "text", "content": "Nous acceptons :" },
+          { "type": "list", "items": [
+            "MTN Mobile Money",
+            "Airtel Money",
+            "Visa / Mastercard",
+            "Virements bancaires"
+          ]}
+        ]
+      },
+      {
+        "icon": "car",
+        "question": "Puis-je louer une voiture ou réserver un transport inter-villes ?",
+        "answer": [
+          { "type": "text", "content": "Oui. Nous proposons des locations de voitures (journalières ou longue durée) et des services de voiture inter-villes reliant Kigali à toutes les grandes villes du Rwanda — y compris Musanze, Rubavu, Huye et Rusizi." }
+        ]
+      },
+      {
+        "icon": "track",
+        "question": "Comment suivre mon véhicule ?",
+        "answer": [
+          { "type": "text", "content": "Vous pouvez suivre votre voiture ou bus en temps réel via GPS." },
+          { "type": "text", "content": "Recevez des heures d'arrivée précises et partagez les détails du voyage avec votre famille pour plus de sécurité." }
+        ]
+      },
+      {
+        "icon": "cancel",
+        "question": "Puis-je annuler ou modifier ma réservation ?",
+        "answer": [
+          { "type": "text", "content": "Oui, les modifications et annulations sont possibles selon le type de réservation." },
+          { "type": "text", "content": "Contactez notre équipe de support avec votre référence de réservation, nous vous aiderons." }
+        ]
+      }
+    ],
+    "contact": {
+      "title": "Contactez-Nous",
+      "description": "Besoin d'aide maintenant ? Notre équipe amicale est disponible pour vous aider tous les jours.",
+      "phone": "+250 XXX XXX XXX",
+      "email": "support@abyticket.rw",
+      "office": "Kigali, Rwanda",
+      "hours": "Lundi – Dimanche, 7h00 – 21h00"
+    },
+    "channels": {
+      "title": "Canaux de Support Rapide",
+      "items": [
+        {
+          "icon": "chat",
+          "title": "Chat en Direct",
+          "description": "Disponible sur notre site"
+        },
+        {
+          "icon": "email",
+          "title": "Support Email",
+          "description": "Réponses sous 24 heures"
+        },
+        {
+          "icon": "phone",
+          "title": "Support Téléphonique",
+          "description": "Aide immédiate de notre équipe"
+        },
+        {
+          "icon": "article",
+          "title": "Articles d'Aide",
+          "description": "Guides étape par étape pour la réservation, paiements et suivi"
+        }
+      ]
+    },
+    "feedback": {
+      "title": "Retour d'Expérience",
+      "description": "Votre avis nous aide à nous améliorer ! Envoyez des suggestions ou signalez des problèmes à tout moment.",
+      "cta": "Envoyer un Retour"
+    }
+  },
+
+  
+  "cookieConsent": {
+    "title": "Nous respectons votre vie privée",
+    "description": "Nous utilisons des cookies pour améliorer votre expérience de navigation, proposer du contenu personnalisé et analyser notre trafic. En cliquant sur \"Tout Accepter\", vous consentez à notre utilisation des cookies.",
+    "acceptAll": "Tout Accepter",
+    "rejectAll": "Tout Refuser",
+    "customize": "Personnaliser",
+    "policyLink": "Lire notre politique de cookies",
+    "closeLabel": "Fermer",
+    "settingsLabel": "Paramètres des cookies",
+    "settingsTitle": "Préférences des Cookies",
+    "savePreferences": "Enregistrer les Préférences",
+    "preferences": {
+      "necessary": {
+        "title": "Cookies Nécessaires",
+        "description": "Essentiels au bon fonctionnement du site. Impossible de les désactiver."
+      },
+      "analytics": {
+        "title": "Cookies Analytiques",
+        "description": "Nous aident à comprendre comment les visiteurs interagissent avec notre site.",
+        "toggleLabel": "Activer/Désactiver les cookies analytiques"
+      },
+      "marketing": {
+        "title": "Cookies Marketing",
+        "description": "Utilisés pour vous proposer des publicités personnalisées.",
+        "toggleLabel": "Activer/Désactiver les cookies marketing"
+      }
+    },
+    "closeSettingsLabel": "Fermer les paramètres"
+  }
+
+
+}

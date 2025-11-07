@@ -43,6 +43,24 @@ class MenuItemService {
       throw new Error(msg);
     }
   }
+  async getAllMenuItems() {
+    try {
+      const response = await api.get('/menu-item/all');
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to fetch menu items';
+      throw new Error(msg);
+    }
+  }
+  async getMenuItemsByCompanyId(id) {
+    try {
+      const response = await api.get('/menu-item/company/'+id);
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || 'Failed to fetch menu items';
+      throw new Error(msg);
+    }
+  }
 
   // ✅ Update Menu Item *(supports removing old images & uploading new ones)*
   async updateMenuItem(id, updatedData, mainImage, otherImages = []) {

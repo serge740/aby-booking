@@ -24,15 +24,28 @@ export class MenuItemService {
       data: {
         ...data,
         companyId,
+         isActive: JSON.parse(String(data.isActive )),
         price: parseFloat(price)
       }
     });
   }
 
-  async findAll(companyId: string) {
+  async findAllByCompanyId(companyId: string) {
     return await this.prisma.menuItem.findMany({
       where: { companyId },
-      include: { category: true }
+      include: { category: true,company:true }
+    });
+  }
+  async findAll() {
+    return await this.prisma.menuItem.findMany({
+    
+      include: { category: true,company:true }
+    });
+  }
+  async findOne(id:string) {
+    return await this.prisma.menuItem.findUnique({
+      where:{id},
+      include: { category: true,company:true }
     });
   }
 
@@ -73,7 +86,8 @@ export class MenuItemService {
       data: {
         ...data,
         price: data.price ? parseFloat(data.price) : item.price,
-        otherImages: finalImages
+        otherImages: finalImages,
+         isActive: JSON.parse(String(data.isActive )),
       }
     });
 

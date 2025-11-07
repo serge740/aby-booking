@@ -1,10 +1,23 @@
-import React from 'react';
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, Clock, Send, ArrowUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, Clock, Send, ArrowUp, Globe, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { changeLanguage } from '../i18n';
 
 export default function AbyRestaurantFooter() {
+  const { t, i18n } = useTranslation();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+    const [langOpen, setLangOpen] = useState(false);
+
+    const languages = [
+    { code: 'en', name: 'English', flag: 'GB' },
+    { code: 'fr', name: 'Français', flag: 'FR' },
+    { code: 'rw', name: 'Kinyarwanda', flag: 'RW' }
+  ];
+
+  const currentLang = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const quickLinks = [
     { label: 'Home', path: "/" },
@@ -62,7 +75,7 @@ export default function AbyRestaurantFooter() {
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-xl font-bold">A</span>
               </div>
-              <h2 className="text-3xl font-bold">Aby Restaurant</h2>
+              <h2 className="text-3xl font-bold">Aby Booking</h2>
             </div>
               
             <p className="text-gray-300 mb-8 leading-relaxed max-w-md">
@@ -199,6 +212,30 @@ export default function AbyRestaurantFooter() {
                   <social.icon size={18} />
                 </a>
               ))}
+
+               <div className="relative">
+                <button onClick={() => setLangOpen(!langOpen)}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-all text-sm">
+                  <Globe className="w-4 h-4 text-primary-400" />
+                  <span>{currentLang.flag}</span>
+                  <span>{currentLang.name}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {langOpen && (
+                  <div className="absolute bottom-full mb-2 right-0 bg-zinc-900 border border-white/10 rounded-lg overflow-hidden shadow-xl min-w-[180px]">
+                    {languages.map(lang => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { changeLanguage(lang.code); setLangOpen(false); }}
+                        className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-colors text-left text-sm ${i18n.language === lang.code ? 'bg-white/10 text-primary-400' : 'text-gray-400'}`}
+                      >
+                        <span className="text-xl">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

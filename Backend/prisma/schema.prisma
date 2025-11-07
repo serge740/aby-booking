@@ -277,6 +277,7 @@ enum CompanyType {
 model MenuCategory {
   id        String     @id @default(cuid())
   name      String
+  image     String?
   companyId String
   company   Company    @relation(fields: [companyId], references: [id])
   items     MenuItem[] // One category can have many items
@@ -290,6 +291,7 @@ model MenuItem {
 
   mainImage     String?   // Front cover photo
   otherImages   Json?         @default("[]") // Gallery of supporting images
+
 
   isActive      Boolean   @default(true)
 

@@ -1,0 +1,986 @@
+{
+    "email": "Email us at",
+    "phone": "Call us",
+    "adText": "Book your ticket now and travel safely!",
+    "bookRental": "Book A Rental",
+    "home": "Home",
+    "about": "About Us",
+    "contact": "Contact",
+    "menu": {
+        "home": "Home",
+        "aboutUs": "About Us",
+        "services": "Services",
+        "blogs": "Blogs",
+        "contactUs": "Contact Us"
+    },
+    "cta": {
+        "bookRental": "Book A ticket"
+    },
+    "welcome": "Welcome to Aby Ticket",
+    "slides": {
+        "bookOnline": {
+            "title": "Book Your Bus Ticket Online",
+            "description": "Reserve your bus tickets quickly and securely from anywhere in Rwanda, without waiting in line."
+        },
+        "trackBus": {
+            "title": "Track Your Bus in Real Time",
+            "description": "Know exactly where your bus is before it arrives at your stop for a stress-free journey."
+        },
+        "easyUse": {
+            "title": "Easy to Use on All Platforms",
+            "description": "Our app and website are designed for everyone, whether on desktop, tablet, or mobile."
+        }
+    },
+    "buttons": {
+        "bookTicket": "Book A Ticket",
+        "learnMore": "Learn More"
+    },
+  "footer": {
+    "readyToTravel": "Ready to Travel?",
+    "bookNextJourney": "Book Your Next Journey",
+    "bookNow": "Book Now",
+    "abyTicket": "Aby Ticket",
+    "tagline": "Experience safe and comfortable travel across Rwanda. We connect you to every destination with reliability and care.",
+    "mainOffice": "Main Office",
+    "address": "KN 4 Ave, Kigali, Rwanda",
+    "viewMap": "View on Map",
+    "bookTicket": "Book A Ticket",
+    "bookDescription": "Reserve your seat for a comfortable journey across Rwanda.",
+    "phone": "+250 792 888 980",
+    "serviceHours": "Service Hours",
+    "weekdays": "Monday-Friday: 6am - 8pm",
+    "weekends": "Weekends: 6am - 9pm",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Subscribe to get special offers and travel updates.",
+    "emailPlaceholder": "Enter Your Email",
+    "subscribe": "Subscribe Now",
+    "copyright": "Copyright © 2024",
+    "allRights": "All Rights Reserved",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "ourFleet": "Our Fleet",
+    "destinations": "Destinations",
+    "contact": "Contact",
+    "home": "Home",
+    "howtoBook":"How to Book",
+    "faq": "FAQ",
+    "help": "Help & Support"
+
+  },
+    "services": {
+        "sectionTitle": "Our Services",
+        "sectionHeader": "Plan Your Journey with Ease",
+        "sectionDescription": "Book tickets, track your vehicle, or plan your trip easily online, offline, or via USSD.",
+        "bookTicket": "Book Ticket",
+        "bookTicketDesc": "Plan your journey starting with a fast ticket that fits your schedule.",
+        "trackCar": "Track Your Vehicle",
+        "trackCarDesc": "See your vehicle’s real-time location and estimated arrival at your destination.",
+        "onlineOfflineBooking": "Online/Offline Booking",
+        "onlineOfflineBookingDesc": "Book tickets via our app or at authorized ticket points.",
+        "ussdBooking": "USSD Booking",
+        "ussdBookingDesc": "Book quickly using a USSD code directly from your phone.",
+        "bottomDescription": "We provide easy ways to plan your journey, select your vehicle, and purchase tickets instantly.",
+        "viewAll": "View All Services"
+    },
+    "about": {
+        "badge": "About Aby Ticket",
+        "title": "Rwanda's Most Trusted Bus Service",
+        "subtitle": "Connecting cities across Rwanda with safe, comfortable, and reliable transportation. Experience the difference of modern bus travel with Aby Ticket.",
+        "description": "Since our establishment, Aby Ticket has been committed to providing exceptional bus services throughout Rwanda. We operate modern, well-maintained buses with professional drivers who prioritize your safety and comfort. Our extensive network connects major cities including Kigali, Musanze, Huye, Rubavu, and more.",
+        "cta": "Book Your Journey",
+        "rating": "Customer Rating",
+        "ratingDescription": "Based on 15,000+ verified passenger reviews",
+        "stats": {
+            "passengers": "Happy Passengers",
+            "routes": "Daily Routes",
+            "satisfaction": "Satisfaction Rate",
+            "support": "Customer Support"
+        },
+        "features": {
+            "safety": {
+                "title": "Safety First",
+                "description": "All our buses undergo regular maintenance checks and safety inspections. Our experienced drivers are trained in defensive driving and passenger safety protocols."
+            },
+            "punctuality": {
+                "title": "On-Time Departures",
+                "description": "We value your time. Our buses depart on schedule, ensuring you reach your destination when you need to. Real-time tracking keeps you informed throughout your journey."
+            },
+            "comfort": {
+                "title": "Comfortable Travel",
+                "description": "Enjoy spacious seating, air conditioning, clean restrooms, and onboard entertainment. Our buses are designed for your comfort on both short and long journeys."
+            }
+        },
+        "highlights": {
+            "modern": "Modern fleet with air conditioning",
+            "drivers": "Professional, licensed drivers",
+            "tracking": "Real-time GPS tracking",
+            "support": "24/7 customer support"
+        },
+        "whyChoose": "Why Choose Aby Ticket?",
+        "commitment": "Our Commitment to Excellence"
+    },
+    "locations": {
+        "subtitle": "Travel Across Rwanda",
+        "title": "We Connect Every Corner",
+        "description": "Book safe, comfortable, and affordable bus tickets to all major destinations in Rwanda.",
+        "popularAgencies": "Trusted Bus Operators",
+        "popularRoutes": "Most Popular Routes",
+        "viewAll": "View All Routes",
+        "popular": "Popular",
+        "duration": "journey",
+        "bookNow": "Book Ticket",
+        "ctaTitle": "Ready to Travel?",
+        "ctaDesc": "Over 50+ daily departures to Musanze, Rubavu, Huye, and beyond.",
+        "exploreRoutes": "Explore All Routes"
+    },
+    "hero": {
+        "watchVideo": "WATCH FULL VIDEO",
+        "title": "Travel Rwanda with Ease & Comfort",
+        "subtitle": "Book tickets from trusted operators to any destination — safe, fast, and reliable."
+    },
+    "bookingProcess": {
+        "badge": "How It Works",
+        "title": "Simple steps to book your bus ticket",
+        "subtitle": "Book your bus ticket in three easy ways - through our website, mobile app, or using USSD code. Fast, secure, and convenient booking at your fingertips.",
+        "trustBadge": {
+            "title": "500K+ Tickets Booked",
+            "subtitle": "Trusted by passengers across Rwanda"
+        },
+        "steps": {
+            "choose": {
+                "title": "Choose Your Journey",
+                "content": "Select your departure and destination cities, pick your preferred travel date and time. Browse available routes from Kigali to Musanze, Huye, Rubavu, and more. Compare prices and bus operators to find the perfect option."
+            },
+            "book": {
+                "title": "Book Your Ticket",
+                "content": "Complete your booking through our website, mobile app, or dial *334# for USSD. Choose your seat, add passenger details, and pay securely via Mobile Money (MTN, Airtel), card, or cash at our offices."
+            },
+            "travel": {
+                "title": "Travel With Ease",
+                "content": "Receive your e-ticket via SMS and email instantly. Show your ticket code at the bus station, board your bus, and enjoy a comfortable journey. Track your bus location in real-time through our app."
+            }
+        }
+    },
+    "faq": {
+        "subtitle": "Frequently Asked Questions",
+        "title": "Everything you need to know about booking tickets",
+        "busAlt": "Public bus",
+        "q1": "How do I book a bus ticket?",
+        "a1": "You can easily book tickets online by selecting your cities, choosing your travel time, and confirming payment through our secure system.",
+        "q2": "Can I cancel or change my booking?",
+        "a2": "Yes, you can cancel or reschedule up to 24 hours before departure. Some restrictions may apply for peak times.",
+        "q3": "Are there discounts for students or seniors?",
+        "a3": "Yes, discounted fares are available for students and seniors with valid ID.",
+        "q4": "What payment methods are accepted?",
+        "a4": "We accept debit/credit cards, mobile money, and other local payment options.",
+        "q5": "Do I need to print my ticket?",
+        "a5": "No, e-tickets are accepted. Just show your ticket on your phone when boarding."
+    },
+    "aboutUsPage": {
+        "header": {
+            "path": "About Us",
+            "title": "About Us"
+        },
+        "ourStory": "Our Story",
+        "connectingCommunities": "Connecting Rwanda's Communities\nThrough Reliable Bus Travel",
+        "tabs": {
+            "vision": "Our Vision",
+            "mission": "Our Mission",
+            "approach": "Our Approach"
+        },
+        "vision": {
+            "title": "Our Vision",
+            "heading": "Leading Rwanda's Transport Revolution",
+            "description": "Founded in 2018, Aby Ticket envisions a Rwanda where seamless, sustainable bus travel connects every corner of the country. Aligned with Vision 2050, we aim to integrate cutting-edge technology like intelligent transportation systems and electric vehicles to make inter-city travel efficient, eco-friendly, and accessible for all Rwandans and visitors.",
+            "points": {
+                "nationwide": "Nationwide coverage serving over 50,000 passengers monthly",
+                "greenInitiatives": "Pioneering green initiatives with electric bus pilots on Kigali-Musanze routes",
+                "digitalInnovation": "Digital innovation for real-time tracking and contactless payments"
+            }
+        },
+        "mission": {
+            "title": "Our Mission",
+            "heading": "Safe, Affordable Journeys Across Rwanda",
+            "description": "Our mission is to provide reliable public bus services that bridge Rwanda's urban and rural areas. Regulated by RURA, we operate extensive routes from Kigali to destinations like Musanze for Volcano National Park visits, Rubavu on Lake Kivu, and Huye in the south, ensuring safe and punctual travel for commuters, tourists, and families.",
+            "points": {
+                "safetyCompliance": {
+                    "title": "Road Safety Compliance",
+                    "description": "Adhering to RTDA standards with axle load controls and regular safety audits."
+                },
+                "extensiveNetwork": {
+                    "title": "Extensive Network",
+                    "description": "Covering all provinces with scheduled services to major towns and border points."
+                },
+                "communityOriented": {
+                    "title": "Community-Oriented",
+                    "description": "Affordable fares and partnerships with local cooperatives for inclusive transport."
+                }
+            }
+        },
+        "approach": {
+            "title": "Our Approach",
+            "heading": "Blending Tech with Rwandan Hospitality",
+            "description": "We combine Rwanda's renowned efficiency with modern innovations. Our fleet of over 40 buses features data-driven route planning inspired by Kigali's smart transport systems, ensuring optimal schedules while our staff provides warm, professional service rooted in Umuganda community spirit."
+        },
+        "values": {
+            "safetyFirst": {
+                "title": "Safety First",
+                "description": "We adhere to Rwanda's strict road safety standards with regular vehicle inspections, professional drivers trained in defensive driving, and real-time GPS monitoring for all journeys."
+            },
+            "punctualService": {
+                "title": "Punctual Service",
+                "description": "Our schedules are designed with Rwanda's traffic patterns in mind, ensuring on-time departures from key hubs like Nyabugogo Bus Station in Kigali."
+            },
+            "customerFocus": {
+                "title": "Customer Focus",
+                "description": "24/7 support in Kinyarwanda, English, and French, with amenities like comfortable seating and Wi-Fi on select routes."
+            },
+            "sustainableInnovation": {
+                "title": "Sustainable Innovation",
+                "description": "Pioneering electric bus trials in partnership with Rwanda's green transport initiatives, reducing emissions on popular routes."
+            }
+        },
+        "whyChoose": {
+            "heading": "Why Choose Aby Ticket?",
+            "description": "As a proud Rwandan company, we're dedicated to elevating public transport standards with safety, innovation, and nationwide connectivity."
+        },
+        "cta": {
+            "heading": "Ready to Explore Rwanda?",
+            "description": "Join thousands of satisfied travelers using Aby Ticket for safe journeys to Rwanda's stunning destinations, from Kigali's vibrant streets to the misty mountains of Musanze.",
+            "bookNow": "Book A Ticket Now",
+            "exploreRoutes": "Explore Routes"
+        },
+        "imageAlt": "Illustration for {{tab}}"
+    },
+    "servicesPage": {
+        "header": {
+            "badge": "Our Services",
+            "title": "Complete Transportation",
+            "highlight": "Solutions for Rwanda",
+            "description": "From online booking to offline USSD services, we provide flexible transport solutions for every need"
+        },
+        "services": {
+            "onlineBooking": {
+                "title": "Online Ticket Booking",
+                "subtitle": "Kigali & Nationwide",
+                "description": "Book bus and car tickets online for routes within Kigali and across Rwanda. Secure payment via Mobile Money, cards, or bank transfer.",
+                "features": [
+                    "Instant confirmation",
+                    "Mobile Money accepted",
+                    "E-tickets"
+                ]
+            },
+            "interCityCar": {
+                "title": "Inter-City Car Booking",
+                "subtitle": "Outside Kigali",
+                "description": "Comfortable car services connecting Kigali to major cities: Musanze, Rubavu, Huye, Rusizi, and all provinces.",
+                "features": [
+                    "Professional drivers",
+                    "AC vehicles",
+                    "Door-to-door"
+                ]
+            },
+            "carRental": {
+                "title": "Car Rental Services",
+                "subtitle": "Daily & Long-term",
+                "description": "Rent quality vehicles for business or leisure. Choose from sedans, SUVs, and vans with or without driver.",
+                "features": [
+                    "Flexible packages",
+                    "Full insurance",
+                    "Airport pickup"
+                ]
+            },
+            "ussdBooking": {
+                "title": "USSD Booking",
+                "subtitle": "No Internet Required",
+                "description": "Book tickets without internet using USSD code *XXX#. Perfect for areas with limited connectivity or feature phones.",
+                "features": [
+                    "Works offline",
+                    "Any phone",
+                    "Instant booking"
+                ]
+            },
+            "realTimeTracking": {
+                "title": "Real-Time Tracking",
+                "subtitle": "GPS Enabled",
+                "description": "Track your vehicle location in real-time. Get accurate ETAs and share trip details with family for peace of mind.",
+                "features": [
+                    "Live GPS",
+                    "Trip sharing",
+                    "Arrival alerts"
+                ]
+            },
+            "corporateSolutions": {
+                "title": "Corporate Solutions",
+                "subtitle": "For Businesses",
+                "description": "Tailored transport solutions for organizations. Monthly packages, employee shuttles, and dedicated fleet management.",
+                "features": [
+                    "Volume discounts",
+                    "Priority booking",
+                    "Monthly invoicing"
+                ]
+            },
+            "learnMore": "Learn More"
+        },
+        "testimonialsSection": {
+            "title": "What Our Customers Say",
+            "subtitle": "Trusted by thousands of travelers across Rwanda"
+        },
+        "testimonials": [
+            {
+                "name": "Jean Claude Mugabo",
+                "role": "Business Executive",
+                "image": "JM",
+                "rating": 5,
+                "text": "Excellent service! I use their inter-city booking every week for business trips to Musanze. Always on time and professional."
+            },
+            {
+                "name": "Grace Uwase",
+                "role": "Teacher",
+                "image": "GU",
+                "rating": 5,
+                "text": "The USSD booking is a game-changer. I can book tickets even when I have no internet. Very convenient!"
+            },
+            {
+                "name": "Patrick Niyonzima",
+                "role": "Tour Operator",
+                "image": "PN",
+                "rating": 5,
+                "text": "We rent cars from them regularly for our tours. Great vehicles, competitive prices, and excellent customer service."
+            }
+        ]
+    },
+    "contactPage": {
+        "header": {
+            "title": "Contact Us",
+            "path": "contact"
+        },
+        "logo": "ABY TICKET",
+        "badge": "Get In Touch",
+        "heading": "We'd love to hear\nfrom you",
+        "cards": {
+            "phone": {
+                "title": "Call Us",
+                "subtitle": "Mon-Sun from 6am to 10pm",
+                "number": "+250 788 123 456"
+            },
+            "email": {
+                "title": "Email Us",
+                "subtitle": "We'll respond within 24 hours",
+                "address": "info@abyticket.rw"
+            },
+            "location": {
+                "title": "Visit Us",
+                "subtitle": "Come say hello at our office",
+                "address": "Kigali, Rwanda\nKN 4 Ave, Nyarugenge"
+            }
+        },
+        "form": {
+            "title": "Send us a message",
+            "subtitle": "We'll get back to you soon",
+            "labels": {
+                "name": "Full Name",
+                "email": "Email Address",
+                "phone": "Phone Number",
+                "message": "Message"
+            },
+            "placeholders": {
+                "name": "John Doe",
+                "email": "john@example.com",
+                "phone": "+250788123456",
+                "message": "Tell us how we can help you..."
+            },
+            "send": "Send Message",
+            "sending": "Sending...",
+            "back": "Back to Home",
+            "success": "Message sent successfully!",
+            "errors": {
+                "name": "Name is required",
+                "email": "Valid email is required",
+                "subject": "Subject is required",
+                "message": "Message is required"
+            }
+        },
+        "map": {
+            "title": "Find Us in Rwanda",
+            "subtitle": "Our office location in Kigali",
+            "iframeTitle": "Aby Ticket Office Location in Kigali, Rwanda"
+        },
+        "hours": {
+            "title": "Operating Hours",
+            "days": [
+                {
+                    "day": "Monday - Friday",
+                    "time": "6:00 AM - 10:00 PM"
+                },
+                {
+                    "day": "Saturday",
+                    "time": "7:00 AM - 9:00 PM"
+                },
+                {
+                    "day": "Sunday",
+                    "time": "8:00 AM - 8:00 PM"
+                },
+                {
+                    "day": "Emergency Support",
+                    "time": "24/7 Available"
+                }
+            ]
+        }
+    },
+    "faqPage": {
+        "header": {
+            "title": "FAQ",
+            "path": "faq"
+        },
+        "hero": {
+            "badge": "Frequently Asked Questions",
+            "title": "Frequently Asked Questions (FAQ)",
+            "description": "Find quick answers about booking, payments, tickets, and travel with our bus transport services across Rwanda.",
+            "support": "If you still need help, our support team is always ready to assist."
+        },
+        "sections": [
+            {
+                "title": "Booking & Tickets",
+                "icon": "Ticket",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "How do I book a bus ticket online?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Booking online is fast and simple!"
+                            },
+                            {
+                                "type": "steps",
+                                "steps": [
+                                    "Go to our Online Booking page.",
+                                    "Select your departure city, destination, and travel date.",
+                                    "Choose your bus or seat type.",
+                                    "Pay using Mobile Money, card, or bank transfer."
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "content": "Your E-ticket will be sent instantly via SMS or email."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 2,
+                        "question": "Can I book a ticket without internet?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes! Use our USSD service — no internet needed."
+                            },
+                            {
+                                "type": "text",
+                                "content": "Just dial *XXX#, follow the prompts to choose your route and date, confirm payment, and you’ll receive your ticket by SMS."
+                            },
+                            {
+                                "type": "list",
+                                "items": [
+                                    "Works on any phone",
+                                    "Instant booking confirmation",
+                                    "Great for areas with limited internet"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "number": 3,
+                        "question": "Can I book a ticket for someone else?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes, you can. Enter their name and phone number during booking, and the ticket will be sent directly to them via SMS."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 4,
+                        "question": "How do I know my booking is confirmed?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Once payment is complete, you’ll receive an SMS or email confirmation with your ticket details and trip reference number."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Payments & Refunds",
+                "icon": "CreditCard",
+                "questions": [
+                    {
+                        "number": 5,
+                        "question": "What payment methods do you accept?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "You can pay securely using:"
+                            },
+                            {
+                                "type": "list",
+                                "items": [
+                                    "MTN Mobile Money",
+                                    "Airtel Money",
+                                    "Visa / Mastercard",
+                                    "Bank transfer"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "number": 6,
+                        "question": "Is it safe to pay online?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes! Our payment system is fully encrypted and secure. Your personal and payment details are always protected."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 7,
+                        "question": "Can I cancel or change my ticket?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes, depending on the bus company and departure time."
+                            },
+                            {
+                                "type": "text",
+                                "content": "Contact our support team with your booking reference, and they’ll guide you through the process."
+                            },
+                            {
+                                "type": "text",
+                                "content": "Cancellation fees may apply if it’s close to departure time."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 8,
+                        "question": "What happens if I miss my bus?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "If you miss your trip, contact us as soon as possible."
+                            },
+                            {
+                                "type": "text",
+                                "content": "We’ll help you reschedule if there’s space available (a small rescheduling fee may apply)."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Travel Information",
+                "icon": "Bus",
+                "questions": [
+                    {
+                        "number": 9,
+                        "question": "Do I need to print my ticket?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "No printing needed! Just show your E-ticket or SMS confirmation when boarding."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 10,
+                        "question": "How early should I arrive before departure?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "We recommend arriving at least 20–30 minutes before departure to check in and secure your seat."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 11,
+                        "question": "Can I choose my seat when booking?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes, on selected routes you can choose your seat online before payment."
+                            },
+                            {
+                                "type": "text",
+                                "content": "If seat selection isn’t available, our agents will assign you one at the station."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 12,
+                        "question": "What happens if the bus is delayed?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "We’ll notify you by SMS or call if there’s any delay."
+                            },
+                            {
+                                "type": "text",
+                                "content": "Our team works to minimize wait times and keep trips on schedule."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Luggage & Onboard Services",
+                "icon": "Package",
+                "questions": [
+                    {
+                        "number": 13,
+                        "question": "How much luggage can I bring?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Each passenger is allowed one standard bag (up to 20kg) plus a small carry-on."
+                            },
+                            {
+                                "type": "text",
+                                "content": "Extra luggage may be charged depending on space availability."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 14,
+                        "question": "Are food and drinks allowed on the bus?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Yes, light snacks and drinks are allowed — but please be considerate and keep the bus clean."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 15,
+                        "question": "Are your buses comfortable?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Absolutely! Our buses are modern, clean, and air-conditioned, with comfortable seats and professional drivers to make your journey pleasant."
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Support & Assistance",
+                "icon": "MessageSquare",
+                "questions": [
+                    {
+                        "number": 16,
+                        "question": "How can I contact customer support?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "You can reach us easily through:"
+                            },
+                            {
+                                "type": "list",
+                                "items": [
+                                    "Call / WhatsApp: +250 XXX XXX XXX",
+                                    "Email: support@abyticket.rw",
+                                    "Live Chat: Available on our website"
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "content": "Hours: 7:00 AM – 9:00 PM (Monday–Sunday)"
+                            }
+                        ]
+                    },
+                    {
+                        "number": 17,
+                        "question": "What should I do if I lose my ticket?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "Don’t worry — contact support with your name and phone number, and we’ll resend your ticket instantly."
+                            }
+                        ]
+                    },
+                    {
+                        "number": 18,
+                        "question": "How can I give feedback or report an issue?",
+                        "answer": [
+                            {
+                                "type": "text",
+                                "content": "We value your feedback!"
+                            },
+                            {
+                                "type": "text",
+                                "content": "Send an email to feedback@abyticket.rw or message us on WhatsApp to share your experience."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "cta": {
+            "title": "Still Have Questions?",
+            "description": "Our support team is here to help you 7 days a week.",
+            "call": "Call Support",
+            "email": "Email Us"
+        }
+    },
+    "howToBookPage": {
+        "header": {
+            "title": "How to Book",
+            "path": "how-to-book"
+        },
+        "hero": {
+            "badge": "How to Book",
+            "title": "How to Book Your Ticket with Ease",
+            "description": "Booking your next trip across Rwanda has never been simpler! We offer multiple convenient ways to book — whether you’re online, on your phone, or on the go."
+        },
+        "steps": [
+            {
+                "title": "1. Book Online",
+                "subtitle": "Fast, secure, and available 24/7",
+                "list": [
+                    "Visit our online booking platform.",
+                    "Select your departure city, destination, and travel date.",
+                    "Choose your seat or vehicle type (bus or car).",
+                    "Pay securely using Mobile Money, card, or bank transfer.",
+                    "Receive your E-ticket instantly via SMS or email."
+                ],
+                "features": [
+                    "Instant confirmation",
+                    "Mobile Money accepted",
+                    "No need to print — show your e-ticket!"
+                ]
+            },
+            {
+                "title": "2. Book via USSD (No Internet Needed)",
+                "subtitle": "Perfect for areas with limited connectivity",
+                "list": [
+                    "Dial *XXX# on your phone.",
+                    "Follow the menu to select your route and travel date.",
+                    "Confirm your booking and pay with Mobile Money.",
+                    "Get your ticket instantly via SMS."
+                ],
+                "features": [
+                    "Works offline",
+                    "Compatible with all phones",
+                    "Instant booking confirmation"
+                ]
+            },
+            {
+                "title": "3. Need a Private Ride?",
+                "list": [
+                    "Choose from comfortable sedans, SUVs, or vans.",
+                    "Available with or without driver.",
+                    "Airport pickups and door-to-door options available.",
+                    "Pay securely and track your vehicle in real time."
+                ],
+                "features": [
+                    "Professional drivers",
+                    "GPS tracking",
+                    "Flexible packages"
+                ]
+            },
+            {
+                "title": "For Companies & Groups",
+                "description": "Looking for reliable transport for your organization? We offer corporate transport solutions, including:",
+                "list": [
+                    "Employee shuttles",
+                    "Monthly car rentals",
+                    "Fleet management",
+                    "Priority booking & invoicing options"
+                ],
+                "cta": "Contact us for custom packages"
+            }
+        ],
+        "support": {
+            "title": "Need Help?",
+            "call": "Call/WhatsApp",
+            "phone": "+250 XXX XXX XXX",
+            "email": "info@abyticket.rw",
+            "emailText": "Email Us"
+        }
+    },
+    "helpSupportPage": {
+        "header": {
+            "title": "Help & Support",
+            "path": "help"
+        },
+        "hero": {
+            "badge": "Help Center",
+            "title": "Help & Support",
+            "description": "We’re here to make your travel smooth and stress-free. Find answers, contact our team, or get real-time help below."
+        },
+        "faqSection": {
+            "title": "Frequently Asked Questions (FAQs)"
+        },
+        "faqs": [
+            {
+                "icon": "bus",
+                "question": "How do I book a ticket online?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "You can book online anytime!"
+                    },
+                    {
+                        "type": "steps",
+                        "steps": [
+                            "Go to our Online Booking page.",
+                            "Choose your route, date, and seat.",
+                            "Pay using Mobile Money, bank, or card.",
+                            "Receive your E-ticket instantly via SMS or email."
+                        ]
+                    }
+                ]
+            },
+            {
+                "icon": "phone",
+                "question": "Can I book without internet?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "Yes! Simply dial *XXX# and follow the steps to book via USSD."
+                    },
+                    {
+                        "type": "text",
+                        "content": "You’ll get your ticket instantly after payment."
+                    }
+                ]
+            },
+            {
+                "icon": "credit",
+                "question": "What payment methods are accepted?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "We accept:"
+                    },
+                    {
+                        "type": "list",
+                        "items": [
+                            "MTN Mobile Money",
+                            "Airtel Money",
+                            "Visa / Mastercard",
+                            "Bank transfers"
+                        ]
+                    }
+                ]
+            },
+            {
+                "icon": "car",
+                "question": "Can I rent a car or book inter-city transport?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "Yes. We provide car rentals (daily or long-term) and inter-city car services connecting Kigali with all major cities in Rwanda — including Musanze, Rubavu, Huye, and Rusizi."
+                    }
+                ]
+            },
+            {
+                "icon": "track",
+                "question": "How do I track my vehicle?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "You can track your car or bus in real time using GPS."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Receive accurate arrival times, and share trip details with family for safety."
+                    }
+                ]
+            },
+            {
+                "icon": "cancel",
+                "question": "Can I cancel or change my booking?",
+                "answer": [
+                    {
+                        "type": "text",
+                        "content": "Yes, changes and cancellations are possible depending on your booking type."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Contact our support team with your booking reference, and we’ll assist you."
+                    }
+                ]
+            }
+        ],
+        "contact": {
+            "title": "Contact Us",
+            "description": "Need help right now? Our friendly team is available to assist you every day.",
+            "phone": "+250 XXX XXX XXX",
+            "email": "support@abyticket.rw",
+            "office": "Kigali, Rwanda",
+            "hours": "Monday – Sunday, 7:00 AM – 9:00 PM"
+        },
+        "channels": {
+            "title": "Quick Support Channels",
+            "items": [
+                {
+                    "icon": "chat",
+                    "title": "Live Chat",
+                    "description": "Available on our website"
+                },
+                {
+                    "icon": "email",
+                    "title": "Email Support",
+                    "description": "Replies within 24 hours"
+                },
+                {
+                    "icon": "phone",
+                    "title": "Phone Support",
+                    "description": "Immediate help from our team"
+                },
+                {
+                    "icon": "article",
+                    "title": "Help Articles",
+                    "description": "Step-by-step guides for booking, payments, and tracking"
+                }
+            ]
+        },
+        "feedback": {
+            "title": "Feedback",
+            "description": "Your opinion helps us improve! Send suggestions or report issues anytime.",
+            "cta": "Send Feedback"
+        }
+    },
+    "cookieConsent": {
+        "title": "We value your privacy",
+        "description": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking \"Accept All\", you consent to our use of cookies.",
+        "acceptAll": "Accept All",
+        "rejectAll": "Reject All",
+        "customize": "Customize",
+        "policyLink": "Read our Cookie Policy",
+        "closeLabel": "Close",
+        "settingsLabel": "Cookie settings",
+        "settingsTitle": "Cookie Preferences",
+        "savePreferences": "Save Preferences",
+        "preferences": {
+            "necessary": {
+                "title": "Necessary Cookies",
+                "description": "Essential for the website to function properly. Cannot be disabled."
+            },
+            "analytics": {
+                "title": "Analytics Cookies",
+                "description": "Help us understand how visitors interact with our website.",
+                "toggleLabel": "Toggle analytics cookies"
+            },
+            "marketing": {
+                "title": "Marketing Cookies",
+                "description": "Used to deliver personalized advertisements relevant to you.",
+                "toggleLabel": "Toggle marketing cookies"
+            }
+        },
+        "closeSettingsLabel": "Close settings"
+    }
+}
