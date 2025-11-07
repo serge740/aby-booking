@@ -51,7 +51,7 @@ export default function AbyAboutPage() {
   
 
       {/* Story Section with Tabs */}
-      <div className="px-4 md:px-16 py-10">
+      <div className="px-4 md:px-11 py-10">
         <div className=" mx-auto">
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-2 mb-4">
@@ -143,7 +143,7 @@ export default function AbyAboutPage() {
                               <div className="w-20 h-20 rounded-full overflow-hidden">
                                 <img
                                   src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&h=200&fit=crop"
-                                  alt="Aby Booking app"
+                                  alt="Fresh cart app"
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -236,7 +236,7 @@ export default function AbyAboutPage() {
       </div>
 
             {/* Why Choose Us Section */}
-      <div className="px-4 md:px-16 py-16 bg-gradient-to-b from-white to-orange-50">
+      <div className="px-4 md:px-11 py-16 bg-gradient-to-b from-white to-orange-50">
         <div className=" mx-auto">
           <div className="text-center mb-16">
             <div className="flex items-center justify-center gap-2 mb-4">
@@ -247,7 +247,7 @@ export default function AbyAboutPage() {
               <div className="w-2 h-2 rounded-full bg-orange-500"></div>
             </div>
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-red-600">Aby Booking</span>
+              Why Choose <span className="text-red-600">FRESH CART</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               More than just an app — we’re your daily partner for convenience, trust, and supporting local growth in Rwanda.
@@ -306,7 +306,7 @@ export default function AbyAboutPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Trusted & Verified Providers</h3>
               <p className="text-gray-600">
-                Every business on Aby Booking is verified to ensure quality, trust, and reliability for all our users.
+                Every business on Fresh cart is verified to ensure quality, trust, and reliability for all our users.
               </p>
             </div>
 

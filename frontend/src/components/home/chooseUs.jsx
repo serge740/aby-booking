@@ -82,7 +82,7 @@ export default function AbyWhyChooseUs() {
   ];
 
   return (
-    <div className="w-full py-8 md:py-10 px-4 md:px-16 bg-gradient-to-b from-gray-50 to-white">
+    <div className="w-full py-8 md:py-10 px-4 md:px-11 bg-gradient-to-b from-gray-50 to-white">
       <div className="mx-auto">
 
         {/* Header */}
@@ -90,14 +90,14 @@ export default function AbyWhyChooseUs() {
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="w-2 h-2 rounded-full bg-primary-500"></div>
             <p className="font-semibold text-sm md:text-base tracking-wider uppercase text-primary-600">
-              Why Aby Booking
+              Why FRESH CART
             </p>
             <div className="w-2 h-2 rounded-full bg-primary-500"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-gray-900">
             Why Choose
             <br />
-            <span className="text-primary-600">Aby Booking?</span>
+            <span className="text-primary-600">FRESH CART?</span>
           </h2>
           <p className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed text-gray-600">
             Experience seamless discovery, booking, and payment — all in one

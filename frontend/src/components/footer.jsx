@@ -75,7 +75,7 @@ export default function AbyRestaurantFooter() {
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-xl font-bold">A</span>
               </div>
-              <h2 className="text-3xl font-bold">Aby Booking</h2>
+              <h2 className="text-3xl font-bold">FRESH CART</h2>
             </div>
               
             <p className="text-gray-300 mb-8 leading-relaxed max-w-md">
@@ -181,7 +181,7 @@ export default function AbyRestaurantFooter() {
         <div className="w-full mx-auto px-6 sm:px-8 lg:px-16 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © Copyright {new Date().getFullYear()}. All rights reserved. <span className="text-red-400">Aby Restaurant</span>
+              © Copyright {new Date().getFullYear()}. All rights reserved. <span className="text-red-400">FRESH CART</span>
             </p>
             
             <div className="flex items-center gap-4">

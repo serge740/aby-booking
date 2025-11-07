@@ -1,138 +1,234 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { FiMenu, FiX } from "react-icons/fi";
+import {
+  FiMenu,
+  FiX,
+  FiSearch,
+  FiPhone,
+  FiMail,
+  FiHeart,
+  FiShoppingCart,
+} from "react-icons/fi";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const handleResize = () => {
+    const onResize = () => {
       if (window.innerWidth >= 1024) setMenuOpen(false);
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about-us" },
-    { name: "Partners", path: "/partners" },
-    { name: "Reviews", path: "/reviews" },
-    { name: "Blogs", path: "/blogs" },
+    { name: "About Us", path: "/about-us" },
+    { name: "Our Services", path: "/services" },
+    { name: "Shops", path: "/partners" },
+    // { name: "Reviews", path: "/Reviews" },
+     { name: "News & Updates ", path: "/blogs" },
+    { name: "Our gallery", path: "/gallery" },
     { name: "Contact Us", path: "/contact-us" },
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500  ${
-        scrolled
-          ? "bg-white/80 backdrop-blur-md shadow-md"
-          : "bg-white/10 backdrop-blur-sm"
-      }`}
-    >
-      <nav className="w-full flex justify-between items-center px-6 lg:px-12 py-4 relative">
-        {/* Left: Logo */}
-        <NavLink
-          to="/"
-          className={`text-2xl font-bold tracking-wide transition-colors duration-300 ${
-            scrolled ? "text-black" : "text-white"
-          }`}
-        >
-          Aby Booking
-        </NavLink>
+    <>
+      {/* TOP BAR - Disappears on scroll */}
+      <div
+        className={`bg-gradient-to-br from-red-600 to-orange-500 text-white transition-all duration-500 overflow-hidden px-6 ${
+          scrolled ? "h-0 py-0 opacity-0" : "py-2 h-auto opacity-100"
+        }`}
+      >
+        <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between px-4 gap-3 text-sm">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <a href="mailto:support@freshcart.com" className="flex items-center gap-1 hover:underline">
+              <FiMail className="w-4 h-4" /> support@freshcart.com
+            </a>
+            <a href="tel:+18005551234" className="flex items-center gap-1 hover:underline">
+              <FiPhone className="w-4 h-4" /> +1 800-555-1234
+            </a>
+          </div>
 
-        {/* Center: Nav Links */}
-        <ul className="hidden lg:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
-          {navLinks.map((item, index) => (
-            <li key={index}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) =>
-                  `text-base font-medium transition-colors duration-300 ${
-                    scrolled
-                      ? isActive
-                        ? "text-primary-500"
-                        : "text-black hover:text-primary-500"
-                      : isActive
-                      ? "text-primary-400"
-                      : "text-white hover:text-primary-400"
-                  }`
-                }
-              >
-                {item.name}
+          <div className="font-medium hidden sm:block">
+            Super Value Deals – Save more with coupons
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex gap-3">
+              <a href="#" className="hover:text-gray-200"><FaFacebookF size={14} /></a>
+              <a href="#" className="hover:text-gray-200"><FaTwitter size={14} /></a>
+              <a href="#" className="hover:text-gray-200"><FaInstagram size={14} /></a>
+              <a href="#" className="hover:text-gray-200"><FaLinkedinIn size={14} /></a>
+            </div>
+            <div className="flex gap-2 text-xs">
+              <NavLink to="/signin" className="hover:underline">Sign In</NavLink>
+              <span>|</span>
+              <NavLink to="/signup" className="hover:underline">Sign Up</NavLink>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MAIN HEADER - Sticky, changes on scroll */}
+      <header
+        className={`sticky top-0 z-50 bg-white shadow-md transition-all duration-500 px-6 ${
+          scrolled ? "py-3" : "py-5"
+        }`}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between gap-6">
+            {/* Logo */}
+            <NavLink to="/" className="flex items-center gap-2 flex-shrink-0">
+              <div className="p-2 bg-orange-500 text-white rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <span className={`font-bold text-gray-900 ${scrolled ? "text-lg" : "text-xl"}`}>
+                FreshCart
+              </span>
+            </NavLink>
+
+            {/* CENTER: Nav Links only on scroll (lg+) */}
+            <nav
+              className={`hidden lg:flex flex-1 max-w-2xl mx-4 lg:mx-8 items-center justify-center gap-6 ${
+                scrolled ? "flex" : "hidden"
+              }`}
+            >
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.path}
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors whitespace-nowrap ${
+                      isActive ? "text-orange-500" : "text-gray-700 hover:text-orange-500"
+                    }`
+                  }
+                >
+                  {link.name}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* RIGHT: Wishlist & Cart */}
+            <div className={`flex items-center gap-6 ${scrolled ? "pl-8" : "pl-0"} transition-all duration-300`}>
+              <NavLink to="/wishlist" className="relative group">
+                <FiHeart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition" />
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  3
+                </span>
               </NavLink>
-            </li>
-          ))}
-        </ul>
+              <NavLink to="/cart" className="relative group">
+                <FiShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition" />
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  5
+                </span>
+              </NavLink>
+            </div>
 
-        {/* Right: Reservation + Mobile Menu */}
-        <div className="flex items-center space-x-4">
-          <NavLink
-            to="/contact-us"
-            className={`hidden lg:inline-block px-6 py-2 rounded-full font-medium transition-all duration-300 ${
-              scrolled
-                ? "bg-primary-500 text-white hover:bg-primary-600"
-                : "border border-white text-white hover:bg-white hover:text-black"
-            }`}
-          >
-            Reservation
-          </NavLink>
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden text-gray-700"
+            >
+              {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+            </button>
+          </div>
+        </div>
+      </header>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className={`lg:hidden p-2 rounded-md transition-colors duration-300 ${
-              scrolled ? "text-black" : "text-white"
-            }`}
-          >
-            {menuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
+      {/* BOTTOM NAV: Categories + SEARCH (centered) + Hotline - Hidden on scroll */}
+      <nav
+        className={`bg-gray-50 border-t transition-all duration-500 overflow-hidden px-6 ${
+          scrolled ? "h-0 py-0 opacity-0" : "py-3 opacity-100"
+        }`}
+      >
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-4">
+          {/* All Categories */}
+          <button className="flex items-center gap-2 bg-orange-500 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-orange-600 transition">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            All Categories
           </button>
+
+          {/* SEARCH BAR - Centered between Categories & Hotline */}
+          <div className="flex-1 max-w-xl mx-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search for products..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+              />
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            </div>
+          </div>
+
+          {/* Hotline */}
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <FiPhone className="text-orange-500 w-4 h-4" />
+            <span>Hotline:</span>
+            <a href="tel:18005551234" className="font-medium text-orange-500 hover:underline">
+              1800-555-1234
+            </a>
+          </div>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {menuOpen && (
-        <div className="lg:hidden fixed inset-0 bg-black/70 z-40 backdrop-blur-sm">
-          <div className="fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white/95 backdrop-blur-lg shadow-2xl z-50 p-6 flex flex-col">
+        <div className="fixed inset-0 bg-black/70 z-50 flex flex-col pt-20 lg:hidden">
+          <div className="bg-white w-full h-full overflow-y-auto p-6">
             <button
               onClick={() => setMenuOpen(false)}
-              className="self-end text-black mb-4"
+              className="self-end mb-6 text-gray-700"
             >
-              <FiX size={26} />
+              <FiX size={28} />
             </button>
-            <ul className="flex flex-col space-y-5">
-              {navLinks.map((item, index) => (
-                <li key={index}>
+
+            <ul className="space-y-5 mb-8">
+              {navLinks.map((item) => (
+                <li key={item.name}>
                   <NavLink
                     to={item.path}
                     onClick={() => setMenuOpen(false)}
-                    className="text-black font-medium text-lg hover:text-primary-500 transition-colors"
+                    className="block text-lg font-medium text-gray-800 hover:text-orange-500 transition"
                   >
                     {item.name}
                   </NavLink>
                 </li>
               ))}
             </ul>
-            <NavLink
-              to="/contact-us"
-              onClick={() => setMenuOpen(false)}
-              className="mt-8 block text-center bg-primary-500 text-white py-3 rounded-full font-medium hover:bg-primary-600 transition-all"
-            >
-              Reservation
-            </NavLink>
+
+            <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
+              <p className="flex items-center gap-2">
+                <FiMail className="text-orange-500" /> support@freshcart.com
+              </p>
+              <p className="flex items-center gap-2">
+                <FiPhone className="text-orange-500" /> +1 800-555-1234
+              </p>
+              <div className="flex gap-3 pt-4">
+                <a href="#" className="text-gray-600 hover:text-orange-500"><FaFacebookF /></a>
+                <a href="#" className="text-gray-600 hover:text-orange-500"><FaTwitter /></a>
+                <a href="#" className="text-gray-600 hover:text-orange-500"><FaInstagram /></a>
+                <a href="#" className="text-gray-600 hover:text-orange-500"><FaLinkedinIn /></a>
+              </div>
+            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

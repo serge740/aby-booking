@@ -259,7 +259,7 @@ export default function HomeScreen() {
             </LinearGradient>
           </View>
 
-          {/* What is Aby Booking Section */}
+          {/* What is Fresh cart Section */}
           <View style={styles.whatSection}>
             <View style={styles.whatHeader}>
               <LinearGradient
