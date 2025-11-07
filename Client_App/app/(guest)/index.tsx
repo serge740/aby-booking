@@ -20,9 +20,9 @@ const { width } = Dimensions.get('window');
 const BANNER_HEIGHT = 220;
 
 const COLORS = {
-  primary: '#FF6B35',
-  secondary: '#F7931E',
-  accent: '#E63946',
+  primary: '#FF8C42',
+  secondary: '#FF8C42',
+  accent: '#FF8C42',
   dark: '#1A1A1A',
   gray: '#666',
   lightGray: '#f5f5f5',
@@ -120,7 +120,7 @@ export default function HomeScreen() {
         />
         <View style={styles.categoryContent}>
           <LinearGradient
-            colors={['#FF6B35', '#FF4757']}
+            colors={['#FF8C42', '#FF8C42']}
             style={styles.iconCircle}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -140,7 +140,7 @@ export default function HomeScreen() {
         {/* Fixed Header */}
         <Animated.View >
           <LinearGradient
-            colors={['#FF6B35', '#FF4757']}
+            colors={['#FF8C42', '#FF8C42']}
             style={styles.header}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -167,7 +167,7 @@ export default function HomeScreen() {
         >
           {/* Hero Section */}
           <LinearGradient
-            colors={['#FF6B35', '#FF4757']}
+            colors={['#FF8C42', '#FF8C42']}
             style={styles.hero}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -228,7 +228,7 @@ export default function HomeScreen() {
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <LinearGradient
-              colors={['#FF6B35', '#FF4757']}
+              colors={['#FF8C42', '#FF8C42']}
               style={styles.statCard}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -238,7 +238,7 @@ export default function HomeScreen() {
               <Text style={styles.statLabel}>{stats.businesses.split(' ').slice(1).join(' ')}</Text>
             </LinearGradient>
             <LinearGradient
-              colors={['#FF6B35', '#FF4757']}
+              colors={['#FF8C42', '#FF8C42']}
               style={styles.statCard}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -248,7 +248,7 @@ export default function HomeScreen() {
               <Text style={styles.statLabel}>{stats.customers.split(' ').slice(1).join(' ')}</Text>
             </LinearGradient>
             <LinearGradient
-              colors={['#FF6B35', '#FF4757']}
+              colors={['#FF8C42', '#FF8C42']}
               style={styles.statCard}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -263,7 +263,7 @@ export default function HomeScreen() {
           <View style={styles.whatSection}>
             <View style={styles.whatHeader}>
               <LinearGradient
-                colors={['#FF6B35', '#FF4757']}
+                colors={['#FF8C42', '#FF8C42']}
                 style={styles.sparkle}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -305,7 +305,7 @@ export default function HomeScreen() {
             <View style={styles.stepsContainer}>
               <View style={styles.stepCard}>
                 <LinearGradient
-                  colors={['#FF6B35', '#FF4757']}
+                  colors={['#FF8C42', '#FF8C42']}
                   style={styles.stepNumber}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -318,7 +318,7 @@ export default function HomeScreen() {
               
               <View style={styles.stepCard}>
                 <LinearGradient
-                  colors={['#FF6B35', '#FF4757']}
+                  colors={['#FF8C42', '#FF8C42']}
                   style={styles.stepNumber}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -331,7 +331,7 @@ export default function HomeScreen() {
               
               <View style={styles.stepCard}>
                 <LinearGradient
-                  colors={['#FF6B35', '#FF4757']}
+                  colors={['#FF8C42', '#FF8C42']}
                   style={styles.stepNumber}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -344,7 +344,7 @@ export default function HomeScreen() {
               
               <View style={styles.stepCard}>
                 <LinearGradient
-                  colors={['#FF6B35', '#FF4757']}
+                  colors={['#FF8C42', '#FF8C42']}
                   style={styles.stepNumber}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -360,7 +360,7 @@ export default function HomeScreen() {
           {/* Business CTA Section */}
           <View style={styles.ctaSection}>
             <LinearGradient
-              colors={['#FF4757', '#E63946']}
+              colors={['#FF8C42', '#FF8C42']}
               style={styles.ctaGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}

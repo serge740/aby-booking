@@ -6,9 +6,11 @@ import { HapticTab } from '@/components/haptic-tab';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import info from '@/constants/info';
+import { StatusBar } from 'expo-status-bar';
 
 export default function TabLayout() {
   return (
+    <>
     <Tabs
       screenOptions={{
         headerShown: false,
@@ -86,6 +88,8 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    <StatusBar style="light" backgroundColor={'#FF8C42'}/>
+        </>
   );
 }
 

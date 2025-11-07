@@ -126,7 +126,7 @@ const SettingsProfileScreen: React.FC = () => {
       icon: 'receipt-outline',
       label: t('dashboard.settings.quick_items.orders'),
       count: '12',
-      color: '#FF6B35',
+      color: '#FF8C42',
       onPress: () => router.push('/orders'),
     },
     {
@@ -162,16 +162,16 @@ const SettingsProfileScreen: React.FC = () => {
     {
       title: t('dashboard.settings.account_management'),
       items: [
-        { icon: 'person-outline', label: t('dashboard.settings.edit_profile'), onPress: handleEditProfile, showChevron: true, color: '#FF6B35' },
+        { icon: 'person-outline', label: t('dashboard.settings.edit_profile'), onPress: handleEditProfile, showChevron: true, color: '#FF8C42' },
         { icon: 'lock-closed-outline', label: t('dashboard.settings.change_password'), onPress: () => router.push('/profile/change-password'), showChevron: true, color: '#FF8C42' },
-        { icon: 'shield-checkmark-outline', label: t('dashboard.settings.privacy_security'), onPress: () => router.push('/profile/privacy'), showChevron: true, color: '#FFA94D' },
+        { icon: 'shield-checkmark-outline', label: t('dashboard.settings.privacy_security'), onPress: () => router.push('/profile/privacy'), showChevron: true, color: '#FF8C42' },
         { icon: 'location-outline', label: t('dashboard.settings.saved_addresses'), onPress: () => router.push('/profile/addresses'), showChevron: true, color: '#F59E0B' },
       ],
     },
     {
       title: t('dashboard.settings.preferences'),
       items: [
-        { icon: 'notifications-outline', label: t('dashboard.settings.push_notifications'), showSwitch: true, value: notificationsEnabled, onValueChange: setNotificationsEnabled, color: '#FF6B35' },
+        { icon: 'notifications-outline', label: t('dashboard.settings.push_notifications'), showSwitch: true, value: notificationsEnabled, onValueChange: setNotificationsEnabled, color: '#FF8C42' },
         { icon: 'mail-outline', label: t('dashboard.settings.email_notifications'), showSwitch: true, value: emailNotifications, onValueChange: setEmailNotifications, color: '#FF8C42' },
         {
           icon: 'language-outline',
@@ -179,7 +179,7 @@ const SettingsProfileScreen: React.FC = () => {
           onPress: openLanguageModal,
           showChevron: true,
           rightText: languageNames[currentLanguage],
-          color: '#FFA94D',
+          color: '#FF8C42',
         },
         { icon: 'moon-outline', label: t('dashboard.settings.dark_mode'), showSwitch: true, value: false, onValueChange: () => {}, color: '#6B7280' },
       ],
@@ -187,7 +187,7 @@ const SettingsProfileScreen: React.FC = () => {
     {
       title: t('dashboard.settings.support_info'),
       items: [
-        { icon: 'help-circle-outline', label: t('dashboard.settings.help_center'), onPress: () => router.push('/support/help'), showChevron: true, color: '#FF6B35' },
+        { icon: 'help-circle-outline', label: t('dashboard.settings.help_center'), onPress: () => router.push('/support/help'), showChevron: true, color: '#FF8C42' },
         { icon: 'chatbubble-ellipses-outline', label: t('dashboard.settings.contact_support'), onPress: () => router.push('/support/contact'), showChevron: true, color: '#FF8C42' },
         { icon: 'star-outline', label: t('dashboard.settings.rate_app'), onPress: () => Alert.alert('Rate App', 'Thank you for your support!'), showChevron: true, color: '#F59E0B' },
         { icon: 'document-text-outline', label: t('dashboard.settings.terms_conditions'), onPress: () => router.push('/support/terms'), showChevron: true, color: '#6B7280' },
@@ -219,7 +219,7 @@ const SettingsProfileScreen: React.FC = () => {
             resizeMode="cover"
           >
             <LinearGradient
-              colors={['rgba(0,0,0,0.2)', 'rgba(255,107,53,0.8)']}
+              colors={['rgba(0,0,0,0.2)', 'rgba(255,140,66,0.8)']}
               style={styles.coverGradient}
             >
               <SafeAreaView>
@@ -241,7 +241,7 @@ const SettingsProfileScreen: React.FC = () => {
               {client.profileImage ? (
                 <Image source={{ uri: `${ENV.API_URL}${client.profileImage}` }} style={styles.profileImage} />
               ) : (
-                <LinearGradient colors={['#FF6B35', '#FF4757']} style={styles.profileImagePlaceholder}>
+                <LinearGradient colors={['#FF8C42', '#FF8C42']} style={styles.profileImagePlaceholder}>
                   <Text style={styles.initialsText}>{getInitials(client.name)}</Text>
                 </LinearGradient>
               )}
@@ -269,7 +269,7 @@ const SettingsProfileScreen: React.FC = () => {
             </View>
 
             <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
-              <Ionicons name="create-outline" size={18} color="#FF6B35" />
+              <Ionicons name="create-outline" size={18} color="#FF8C42" />
               <Text style={styles.editProfileText}>{t('dashboard.settings.edit_profile')}</Text>
             </TouchableOpacity>
           </View>
@@ -317,8 +317,8 @@ const SettingsProfileScreen: React.FC = () => {
                           <Switch
                             value={item.value}
                             onValueChange={item.onValueChange}
-                            trackColor={{ false: '#E5E7EB', true: '#FF6B3540' }}
-                            thumbColor={item.value ? '#FF6B35' : '#9CA3AF'}
+                            trackColor={{ false: '#E5E7EB', true: '#FF8C4240' }}
+                            thumbColor={item.value ? '#FF8C42' : '#9CA3AF'}
                           />
                         )}
                         {item.showChevron && <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />}
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   profileImage: { width: 100, height: 100, borderRadius: 50, borderWidth: 4, borderColor: '#FFF' },
   profileImagePlaceholder: { width: 100, height: 100, borderRadius: 50, alignItems: 'center', justifyContent: 'center', borderWidth: 4, borderColor: '#FFF' },
   initialsText: { fontSize: 36, fontWeight: '700', color: '#FFF' },
-  cameraButton: { position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: 18, backgroundColor: '#FF6B35', alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
+  cameraButton: { position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: 18, backgroundColor: '#FF8C42', alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: '#FFF' },
   profileDetails: { alignItems: 'center', marginBottom: 16 },
   profileName: { fontSize: 24, fontWeight: '700', color: '#1F2937', marginBottom: 6 },
   profileEmail: { fontSize: 14, color: '#6B7280', marginBottom: 6 },
@@ -404,8 +404,8 @@ const styles = StyleSheet.create({
   profilePhone: { fontSize: 14, color: '#6B7280' },
   statusBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#F3F4F6', borderRadius: 20 },
   statusText: { fontSize: 13, fontWeight: '600' },
-  editProfileButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 24, paddingVertical: 12, backgroundColor: '#FF6B3510', borderRadius: 25, borderWidth: 1, borderColor: '#FF6B35' },
-  editProfileText: { fontSize: 15, fontWeight: '600', color: '#FF6B35' },
+  editProfileButton: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 24, paddingVertical: 12, backgroundColor: '#FF8C4210', borderRadius: 25, borderWidth: 1, borderColor: '#FF8C42' },
+  editProfileText: { fontSize: 15, fontWeight: '600', color: '#FF8C42' },
   quickActionsSection: { paddingHorizontal: 16, marginBottom: 24 },
   quickActionsTitle: { fontSize: 18, fontWeight: '700', color: '#1F2937', marginBottom: 16 },
   quickActionsGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', width: '100%', gap: 12 },
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: '#F3F4F6', marginLeft: 74 },
   footer: { alignItems: 'center', paddingTop: 32, paddingBottom: 16 },
   footerLogo: { width: 60, height: 60, resizeMode: 'contain', marginBottom: 12 },
-  footerBrand: { fontSize: 18, fontWeight: '700', color: '#FF6B35', marginBottom: 4 },
+  footerBrand: { fontSize: 18, fontWeight: '700', color: '#FF8C42', marginBottom: 4 },
   footerVersion: { fontSize: 12, color: '#9CA3AF', marginBottom: 12 },
   footerText: { fontSize: 13, color: '#6B7280', marginBottom: 6 },
   footerCopyright: { fontSize: 11, color: '#9CA3AF' },
