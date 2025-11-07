@@ -1,35 +1,9 @@
 import React, { useState } from "react";
-import { Utensils, Users, Award, Heart, MapPin, Clock, Leaf, Star, ChefHat, TrendingUp } from "lucide-react";
+import { Utensils, Users, Award, Heart, MapPin, Clock, Leaf, Star, ChefHat, TrendingUp, Smartphone, ArrowRight, Globe, Rocket, TestTube2, Code, Puzzle, Lightbulb } from "lucide-react";
 import MeetPeopleSection from '../../components/home/MeetPeopleSection';
 export default function AbyAboutPage() {
   const [activeTab, setActiveTab] = useState('story');
 
-  const stats = [
-    {
-      icon: <Award className="w-12 h-12 text-red-600" />,
-      number: "12+",
-      label: "Years",
-      subtitle: "Culinary Excellence"
-    },
-    {
-      icon: <Users className="w-12 h-12 text-orange-600" />,
-      number: "30+",
-      label: "Team Members",
-      subtitle: "Expert chefs & staff"
-    },
-    {
-      icon: <Utensils className="w-12 h-12 text-red-600" />,
-      number: "100+",
-      label: "Menu Items",
-      subtitle: "Delicious dishes"
-    },
-    {
-      icon: <Heart className="w-12 h-12 text-orange-600" />,
-      number: "50k+",
-      label: "Happy Customers",
-      subtitle: "Served with love"
-    }
-  ];
 
   const values = [
     {
@@ -74,43 +48,7 @@ export default function AbyAboutPage() {
       </div>
 
       {/* Stats Section */}
-      <div className="relative -mt-20 px-4 md:px-12 pb-16 z-30">
-        <div className=" max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="group relative bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border-2 border-orange-100"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div className="relative text-center">
-                  <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300 flex justify-center">
-                    <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center group-hover:from-orange-200 group-hover:to-red-200 transition-colors">
-                      {stat.icon}
-                    </div>
-                  </div>
-
-                  <div className="text-5xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-2">
-                    {stat.number}
-                  </div>
-
-                  <div className="text-lg font-semibold text-gray-800 mb-1">
-                    {stat.label}
-                  </div>
-
-                  <div className="text-sm text-gray-600">
-                    {stat.subtitle}
-                  </div>
-                </div>
-
-                {/* Decorative corner */}
-                <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-orange-500/10 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+  
 
       {/* Story Section with Tabs */}
       <div className="px-4 md:px-16 py-10">
@@ -175,7 +113,7 @@ export default function AbyAboutPage() {
                       : "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop"
                   }
                   alt="Restaurant story"
-                  className="w-full h-[500px] object-cover"
+                  className="w-full h-[550px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </div>
@@ -196,6 +134,44 @@ export default function AbyAboutPage() {
                   <p className="text-lg text-gray-700 leading-relaxed">
                     Today, we're proud to serve over 50,000 happy customers who trust us for their celebrations, family dinners, and everything in between.
                   </p>
+                  
+                  
+              
+                          {/* Feature Card */}
+                          <div className="flex items-start gap-4 bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow duration-300 border border-gray-100">
+                            <div className="relative flex-shrink-0">
+                              <div className="w-20 h-20 rounded-full overflow-hidden">
+                                <img
+                                  src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&h=200&fit=crop"
+                                  alt="Aby Booking app"
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                              <div className="absolute -top-2 -left-2 bg-primary-600 text-white text-xs font-bold rounded-full w-9 h-9 flex items-center justify-center shadow-lg">
+                                FREE
+                              </div>
+                            </div>
+              
+                            <div>
+                              <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                <Smartphone className="w-5 h-5 text-primary-600" />
+                                Instant Booking & Delivery
+                              </h3>
+                              <p className="text-gray-600 text-sm leading-relaxed">
+                                Book tables, order groceries, or schedule services in seconds — all from your phone.
+                              </p>
+                            </div>
+                          </div>
+         
+
+            {/* CTA */}
+            <div className="pt-4">
+              <button className="group inline-flex items-center gap-2 px-8 py-3 bg-transparent border-2 border-primary-600 text-primary-600 rounded-full hover:bg-primary-600 hover:text-white transition-all duration-300 font-medium text-base">
+                Explore Businesses
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </button>
+            </div>
+
                 </div>
               )}
 
@@ -207,6 +183,8 @@ export default function AbyAboutPage() {
                   <p className="text-lg text-gray-700 leading-relaxed mb-4">
                     Our mission goes beyond serving great food. We're committed to creating positive impact at every level—from the farmers who grow our ingredients to the customers who enjoy them.
                   </p>
+                      <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                    It all started in 2013 with a simple dream</p>
                   <div className="space-y-4">
                     <div className="flex items-start gap-4 p-5 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl border border-orange-100">
                       <ChefHat className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" />
@@ -238,7 +216,7 @@ export default function AbyAboutPage() {
                   <h3 className="text-4xl font-bold text-gray-900 mb-6">
                     What We <span className="text-red-600">Stand For</span>
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {values.map((value, index) => (
                       <div key={index} className="group p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-orange-100 hover:border-orange-300">
                         <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-orange-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform shadow-lg">
@@ -257,13 +235,106 @@ export default function AbyAboutPage() {
 
       </div>
 
+            {/* Why Choose Us Section */}
+      <div className="px-4 md:px-16 py-16 bg-gradient-to-b from-white to-orange-50">
+        <div className=" mx-auto">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+              <p className="text-orange-600 text-base font-semibold uppercase tracking-wider">
+                Why Thousands Trust Us
+              </p>
+              <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
+              Why Choose <span className="text-red-600">Aby Booking</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              More than just an app — we’re your daily partner for convenience, trust, and supporting local growth in Rwanda.
+            </p>
+          </div>
 
-<MeetPeopleSection />
-  
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 1. All-in-One Platform */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <Smartphone className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">All-in-One Platform</h3>
+              <p className="text-gray-600">
+                Discover, book, and order everything — from restaurant meals to salon services and supermarket essentials — all in one easy app.
+              </p>
+            </div>
+
+            {/* 2. Local & Secure Payments */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <div className="text-2xl font-bold">RWF</div>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Local & Secure Payments</h3>
+              <p className="text-gray-600">
+                We’re built for Rwanda! Pay safely through MTN Mobile Money, Airtel Money, or other trusted local options — no stress, no delay.
+              </p>
+            </div>
+
+            {/* 3. Find Services Near You */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <MapPin className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Find Services Near You</h3>
+              <p className="text-gray-600">
+                Use our smart location-based search to explore verified businesses in Kigali and nearby areas. Get what you need faster, closer, and easier.
+              </p>
+            </div>
+
+            {/* 4. Empowering Local Businesses */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Empowering Local Businesses</h3>
+              <p className="text-gray-600">
+                We help Rwandan businesses grow by giving them an online presence, more visibility, and digital tools to manage bookings and customers.
+              </p>
+            </div>
+
+            {/* 5. Trusted & Verified Providers */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <Award className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Trusted & Verified Providers</h3>
+              <p className="text-gray-600">
+                Every business on Aby Booking is verified to ensure quality, trust, and reliability for all our users.
+              </p>
+            </div>
+
+            {/* 6. Fast, Simple, and Reliable */}
+            <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
+              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+                <Clock className="w-7 h-7" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Fast, Simple, and Reliable</h3>
+              <p className="text-gray-600">
+                Book or order in just a few taps — quick, convenient, and always available when you need it.
+              </p>
+            </div>
+
+            {/* 7. Customer-Centered Experience - Full Width */}
+       
+          </div>
+
+          {/* CTA Below */}
+        
+        </div>
+      </div>
+ 
+
 
       {/* CTA Section */}
       <div className="px-4 md:px-12 py-16">
-        <div className="max-w-7xl mx-auto bg-gradient-to-r from-red-600 via-red-500 to-orange-600 rounded-3xl p-12 text-center shadow-2xl relative overflow-hidden">
+        <div className=" mx-auto bg-gradient-to-r from-red-600 via-red-500 to-orange-600 rounded-3xl p-12 text-center shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative z-10">
             <Utensils className="w-16 h-16 text-orange-200 mx-auto mb-6" />

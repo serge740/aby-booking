@@ -190,7 +190,7 @@ const CompanyDetailsPage = () => {
                   Featured Menu Items
                 </h2>
                 <button 
-                onClick={()=>navigate(`/companies/menu/${id}`)}
+                onClick={()=>navigate(`/partners/menu/${id}`)}
                 className="text-red-600 hover:text-red-700 font-medium cursor-pointer flex items-center gap-1">
                   View All <ChevronRight className="w-4 h-4" />
                 </button>
