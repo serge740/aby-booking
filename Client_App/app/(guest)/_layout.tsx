@@ -2,7 +2,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Platform } from 'react-native';
 import { HapticTab } from '@/components/haptic-tab';
-
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import info from '@/constants/info';
@@ -11,121 +10,123 @@ import ThemedView from '@/components/themed/ThemedView';
 
 export default function TabLayout() {
   return (
-    <ThemedView safe style={{flex:1}}>
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarActiveTintColor: styles.tabBarActive.color,
-        tabBarInactiveTintColor: styles.tabBarInactive.color,
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabBarLabel,
-        tabBarBackground: () => (
-          <BlurView
-            intensity={80}
-            tint="light"
-            style={StyleSheet.absoluteFill}
-          />
-        ),
-      }}
-    >
-      {/* Home Tab */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              size={focused ? 28 : 24} 
-              name="home" 
-              color={color} 
+    <>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: info.primary[500],
+          tabBarInactiveTintColor: '#94a3b8',
+          tabBarLabelStyle: styles.tabBarLabel,
+          tabBarStyle: styles.tabBar,           // Absolute + side margins
+          tabBarItemStyle: styles.tabBarItem,
+          tabBarBackground: () => (
+            <BlurView
+              intensity={Platform.OS === 'ios' ? 80 : 100}
+              tint={Platform.OS === 'ios' ? 'light' : 'default'}
+              style={StyleSheet.absoluteFill}
             />
           ),
+          tabBarButton: (props) => <HapticTab {...props} />,
         }}
-      />
+      >
+        {/* Home */}
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                size={focused ? 28 : 24}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-      {/* Bus Agency Tab */}
-      <Tabs.Screen
-        name="company"
-        options={{
-          title: 'Company',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              size={focused ? 28 : 24} 
-              name="bus" 
-              color={color} 
-            />
-          ),
-        }}
-      />
+        {/* Shop */}
+        <Tabs.Screen
+          name="company"
+          options={{
+            title: 'Shop',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'storefront' : 'storefront-outline'}
+                size={focused ? 28 : 24}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-      {/* Support Tab */}
-      <Tabs.Screen
-        name="support"
-        options={{
-          title: 'Support',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              size={focused ? 28 : 24} 
-              name="help-circle" 
-              color={color} 
-            />
-          ),
-        }}
-      />
+        {/* Support – Chat Icon */}
+        <Tabs.Screen
+          name="support"
+          options={{
+            title: 'Support',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'chatbubble' : 'chatbubble-outline'}
+                size={focused ? 28 : 24}
+                color={color}
+              />
+            ),
+          }}
+        />
 
-      {/* Setting Tab */}
-      <Tabs.Screen
-        name="setting"
-        options={{
-          title: 'Setting',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons 
-              size={focused ? 28 : 24} 
-              name="settings" 
-              color={color} 
-            />
-          ),
-        }}
-      />
-    </Tabs>
-    <StatusBar style="light" backgroundColor={'#FF8C42'}/>
-        </ThemedView>
+        {/* Settings */}
+        <Tabs.Screen
+          name="setting"
+          options={{
+            title: 'Settings',
+            tabBarIcon: ({ color, focused }) => (
+              <Ionicons
+                name={focused ? 'settings' : 'settings-outline'}
+                size={focused ? 28 : 24}
+                color={color}
+              />
+            ),
+          }}
+        />
+      </Tabs>
+
+      <StatusBar style="light" backgroundColor={info.primary[500]} />
+    </>
   );
 }
 
+/* ────────────────────── STYLES ────────────────────── */
 const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',
-    bottom: 0,
-    paddingEnd:10,
-    left: 20,
-    right: 20,
+    bottom: 20,                     // Float above bottom
+    left: 32,                       // **Side margin – no touch**
+    right: 32,                      // **Side margin – no touch**
     height: 70,
-    borderRadius: 35,
-    backgroundColor: Platform.OS === 'ios' ? 'rgba(255, 255, 255, 0.85)' : '#ffffff',
+    borderRadius: 35,               // Perfect pill (height/2)
+    backgroundColor:
+      Platform.OS === 'ios' ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.96)',
     borderTopWidth: 0,
-    paddingBottom: 8,
-    paddingTop: 8,
-    elevation: 15,
-    shadowColor: info.primary[500],
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    elevation: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.18,
+    shadowRadius: 28,
+    overflow: 'hidden',
+    borderWidth: 1.2,
+    borderColor: 'rgba(0,0,0,0.1)',
+    
+  },
+  tabBarItem: {
+    paddingTop: 4,
   },
   tabBarLabel: {
-    fontSize: 10,
-    fontWeight: '700',
-    marginTop: 4,
-    letterSpacing: 0.3,
+    fontSize: 10.5,
+    fontWeight: '600',
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
-  },
-  tabBarActive: {
-    color: info.primary[500],
-  },
-  tabBarInactive: {
-    color: '#a0a0a0',
+    marginTop: 2,
   },
 });

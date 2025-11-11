@@ -304,6 +304,32 @@
             "confirm": "Yes"
         }
 
+    },
+    "guest": {
+        "support": {
+            "header": "Support",
+            "subheader": "We’re here to help",
+            "contact_title": "Contact Us",
+            "phone": "+250 788 123 456",
+            "email": "support@grocery.rw",
+            "whatsapp_title": "Chat on WhatsApp",
+            "whatsapp_link": "Start chat now",
+            "faq_title": "Frequently Asked Questions",
+            "faq": [{
+                    "question": "How do I track my order?",
+                    "answer": "Go to 'My Orders' → tap your order → view live tracking."
+                },
+                {
+                    "question": "Can I cancel an order?",
+                    "answer": "Yes, within 5 minutes of placing. Contact support after that."
+                },
+                {
+                    "question": "What payment methods do you accept?",
+                    "answer": "Mobile Money, Credit Card, and Cash on Delivery."
+                }
+            ],
+            "footer": "We’re available 24/7 for your convenience."
+        }
     }
 
 }
