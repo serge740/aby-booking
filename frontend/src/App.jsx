@@ -37,7 +37,8 @@ import MenuItemDashboard from "./pages/dashboard/company/MenuItemDashboard";
 import CompanyDisplay from "./pages/company/CompanyDisplayPage";
 import CompanyDetailsPage from "./pages/company/CompanyDetailsPage";
 import CompanyMenuPage from "./pages/company/CompanyMenuPage";
-import MenuItemView from "./components/dashboard/menu/item/MenuItemView";
+import MenuItemView from "./components/dashboard/menu/MenuItemView";
+import { CreateMenuItemPage, EditMenuItemPage } from "./components/dashboard/menu/UpsetMenuItemPage";
 
 
 // Loading component
@@ -115,7 +116,9 @@ const router = createBrowserRouter([
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
+          {path:'menu-item/create' , element:<CreateMenuItemPage />},
           {path:'menu-item/:id' , element:<MenuItemView />},
+          {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
           
         ]
        },

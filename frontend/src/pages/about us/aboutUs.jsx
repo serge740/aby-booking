@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Utensils, Users, Award, Heart, MapPin, Clock, Leaf, Star, ChefHat, TrendingUp, Smartphone, ArrowRight, Globe, Rocket, TestTube2, Code, Puzzle, Lightbulb } from "lucide-react";
 import MeetPeopleSection from '../../components/home/MeetPeopleSection';
+import Header from "../../components/header";
 export default function AbyAboutPage() {
   const [activeTab, setActiveTab] = useState('story');
 
@@ -31,21 +32,7 @@ export default function AbyAboutPage() {
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Section */}
-      <div className="relative h-96 bg-gradient-to-r from-black via-gray-900 to-black overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=600&fit=crop)'
-          }}
-        ></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-orange-500 text-lg mb-4 font-semibold tracking-wider uppercase">Discover Our Story</p>
-            <h1 className="text-6xl md:text-7xl font-bold text-white mb-4">About Us</h1>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-red-600 mx-auto"></div>
-          </div>
-        </div>
-      </div>
+    <Header  path={'Story'} title={'About Us'} />
 
       {/* Stats Section */}
   

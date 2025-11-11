@@ -1,622 +1,331 @@
+// src/components/DynamicRestaurantMenu.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Search, Grid, List, ShoppingCart, Star, Plus, Minus, X,
-  ChevronLeft, ChevronRight, Heart, ArrowLeft,
-  Share2,
-  MapPin,
-  Utensils,
-  Store,
-  Hotel,
-  Wine,
-  Sparkles,
-  Building2
-} from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import menuItemService from '../../services/menuItemService';
-import { API_URL } from '../../api/api';
 
-const Header = ({ path, title }) => (
-  <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-4 px-6 shadow-lg">
-    <div className="flex items-center gap-2 text-sm mb-1">
-      <span className="opacity-80">{path}</span>
-    </div>
-    <h2 className="text-2xl font-bold">{title}</h2>
-  </div>
-);
+const ITEMS_PER_PAGE = 6;               // <-- change if you want more/less per page
 
-const CompanyMenuPage = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const [company, setCompany] = useState(null);
-  const [categories, setCategories] = useState([]);
+export default function DynamicRestaurantMenu() {
+  const { id: companyId } = useParams();
+  const [activeTab, setActiveTab] = useState('EATING');
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [viewMode, setViewMode] = useState('grid');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [cart, setCart] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [imageIndex, setImageIndex] = useState(0);
-  const [favorites, setFavorites] = useState([]);
-  const [isFavorite, setIsFavorite] = useState(false);
+  // pagination state – one per category
+  const [pageByCategory, setPageByCategory] = useState({});
 
-  // -----------------------------------------------------------------
-  // Fetch menu items by company ID
-  // -----------------------------------------------------------------
   useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        setLoading(true);
-        const data = await menuItemService.getMenuItemsByCompanyId(id);
+    if (companyId) fetchMenuItems();
+  }, [companyId]);
 
-        // API returns an array of menu items with nested company & category
-        if (!Array.isArray(data) || data.length === 0) {
-          setError('No menu items found');
-          return;
+  const fetchMenuItems = async () => {
+    if (!companyId) {
+      setError('No company selected');
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await menuItemService.getMenuItemsByCompanyId(companyId);
+      const items = Array.isArray(response) ? response : response.data || [];
+
+      // ---- normalise ingredients (name only) ----
+      const normalizedItems = items.map(item => {
+        let ingredients = [];
+        if (item.ingredients) {
+          if (typeof item.ingredients === 'string') {
+            try {
+              const parsed = JSON.parse(item.ingredients);
+              ingredients = Array.isArray(parsed)
+                ? parsed.map(i => (typeof i === 'string' ? i : i.name || '')).filter(Boolean)
+                : [];
+            } catch {
+              ingredients = [];
+            }
+          } else if (Array.isArray(item.ingredients)) {
+            ingredients = item.ingredients
+              .map(i => (typeof i === 'string' ? i : i.name || ''))
+              .filter(Boolean);
+          }
         }
+        return { ...item, ingredients };
+      });
 
-        const firstItem = data[0];
-        setCompany(firstItem.company);
-        setMenuItems(data);
-
-        // Extract unique categories
-        const uniqueCats = Array.from(new Map(
-          data
-            .filter(item => item.category)
-            .map(item => [item.category.id, item.category])
-        ).values());
-
-        setCategories(uniqueCats);
-      } catch (err) {
-        setError(err.message || 'Failed to load menu');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) fetchMenu();
-  }, [id]);
-
-  // -----------------------------------------------------------------
-  // Helpers
-  // -----------------------------------------------------------------
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-RW', {
-      style: 'currency',
-      currency: 'RWF',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const filteredItems = menuItems.filter(item => {
-    const matchesCategory = selectedCategory === 'all' || item.categoryId === selectedCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    return matchesCategory && matchesSearch && item.isActive;
-  });
-
-  const getCategoryName = (categoryId) => {
-    return categories.find(cat => cat.id === categoryId)?.name || 'Other';
-  };
-
-  const addToCart = (item) => {
-    setCart(prev => {
-      const existing = prev.find(i => i.id === item.id);
-      if (existing) {
-        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i);
-      }
-      return [...prev, { ...item, quantity: 1 }];
-    });
-  };
-
-  const removeFromCart = (itemId) => {
-    setCart(prev => {
-      const existing = prev.find(i => i.id === itemId);
-      if (existing && existing.quantity > 1) {
-        return prev.map(i => i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i);
-      }
-      return prev.filter(i => i.id !== itemId);
-    });
-  };
-
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const toggleFavorite = (itemId) => {
-    setFavorites(prev =>
-      prev.includes(itemId)
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    );
-  };
-
-  const openItemModal = (item) => {
-    setSelectedItem(item);
-    setImageIndex(0);
-  };
-
-  const nextImage = () => {
-    if (selectedItem?.otherImages?.length > 0) {
-      setImageIndex(prev => (prev + 1) % selectedItem.otherImages.length);
+      setMenuItems(normalizedItems);
+    } catch (err) {
+      setError(err.message || 'Failed to load menu items');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const prevImage = () => {
-    if (selectedItem?.otherImages?.length > 0) {
-      setImageIndex(prev =>
-        prev === 0 ? selectedItem.otherImages.length - 1 : prev - 1
-      );
-    }
+  // ---- filter & group ----
+  const filteredItems = menuItems.filter(
+    item => item.purpose === activeTab && item.isActive !== false
+  );
+
+  const groupedByCategory = filteredItems.reduce((acc, item) => {
+    const cat = item.category?.name || 'Uncategorized';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(item);
+    return acc;
+  }, {});
+
+  const categories = Object.keys(groupedByCategory);
+
+  // ---- pagination helpers ----
+  const goToPage = (cat, page) => {
+    setPageByCategory(prev => ({ ...prev, [cat]: page }));
   };
 
-    const getTypeIcon = type => {
-    const map = {
-      RESTAURANT: Utensils,
-      SUPERMARKET: ShoppingCart,
-      SHOP: Store,
-      HOTEL: Hotel,
-      BAR: Wine,
-      LOUNGE: Sparkles,
-      OTHER: Building2,
-    };
-    return map[type] || Building2;
+  const getCurrentPage = cat => pageByCategory[cat] ?? 1;
+
+  const getPaginatedItems = (items, cat) => {
+    const page = getCurrentPage(cat);
+    const start = (page - 1) * ITEMS_PER_PAGE;
+    const end = start + ITEMS_PER_PAGE;
+    return items.slice(start, end);
   };
 
-  const getTypeColor = type => {
-    const map = {
-      RESTAURANT: 'bg-orange-100 text-orange-700',
-      SUPERMARKET: 'bg-red-100 text-red-700',
-      SHOP: 'bg-orange-100 text-orange-800',
-      HOTEL: 'bg-red-100 text-red-800',
-      BAR: 'bg-orange-200 text-orange-900',
-      LOUNGE: 'bg-red-200 text-red-900',
-      OTHER: 'bg-gray-100 text-gray-700',
-    };
-    return map[type] || 'bg-gray-100 text-gray-700';
-  };
+  const getTotalPages = items => Math.ceil(items.length / ITEMS_PER_PAGE);
 
-
-  // -----------------------------------------------------------------
-  // Loading / Error
-  // -----------------------------------------------------------------
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
-        <div className="text-xl text-slate-600">Loading menu…</div>
-      </div>
-    );
-  }
-
-  if (error || !company) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
-        <div className="text-red-600">{error || 'Menu not available'}</div>
-      </div>
-    );
-  }
-
-   const TypeIcon = getTypeIcon(company.type);
-  // -----------------------------------------------------------------
-  // Main Render
-  // -----------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      <div className="relative h-96 bg-slate-900">
-            <img
-              src={`${API_URL}${company.logo}`}
-              alt={company.name}
-              className="w-full h-full object-cover opacity-80"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
-    
-            {/* Back Button */}
-            <button
-              onClick={() => navigate(-1)}
-              className="absolute top-6 left-6 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition"
-            >
-              <ArrowLeft className="w-5 h-5 text-red-600" />
-            </button>
-    
-            {/* Action Buttons */}
-            <div className="absolute top-6 right-6 flex gap-3">
-              <button className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition">
-                <Share2 className="w-5 h-5 text-orange-600" />
+    <div id="our-menu" className="w-full min-h-screen flex justify-center bg-black">
+      <div className="relative bg-black text-white w-full overflow-hidden">
+        {/* Background */}
+        <div
+          className="absolute inset-0 min-h-screen w-full bg-cover bg-center"
+          style={{
+            backgroundImage: `url(https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80)`,
+          }}
+        />
+        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.75)' }} />
+
+        {/* Content */}
+        <div className="relative z-10 px-8 py-16 md:px-16">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="text-sm italic text-orange-400 mb-2 tracking-wider">
+              Our Menu
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-8">
+              Delicious Selections
+            </h1>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setActiveTab('EATING')}
+                className={`px-8 py-3 rounded-full font-semibold text-lg transition-all duration-300 ${
+                  activeTab === 'EATING'
+                    ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg'
+                    : 'bg-white bg-opacity-10 text-orange-600 hover:bg-opacity-20'
+                }`}
+              >
+                Food
               </button>
               <button
-                onClick={() => setIsFavorite(!isFavorite)}
-                className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition"
+                onClick={() => setActiveTab('DRINKING')}
+                className={`px-8 py-3 rounded-full font-semibold text-lg transition-all duration-300 ${
+                  activeTab === 'DRINKING'
+                    ? 'bg-gradient-to-r from-orange-600 to-red-600 text-white shadow-lg'
+                    : 'bg-white bg-opacity-10 text-orange-600 hover:bg-opacity-20'
+                }`}
               >
-                <Heart
-                  className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-slate-900'}`}
-                />
+                Drinks
               </button>
             </div>
-    
-            {/* Company Info Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <div className=" mx-auto">
-                <div className={`inline-flex items-center gap-2 ${getTypeColor(company.type)} px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-md`}>
-                  <TypeIcon className="w-4 h-4" />
-                  {company.type}
+          </div>
+
+          {/* Loading */}
+          {loading && (
+            <div className="text-center py-20">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500" />
+              <p className="mt-4 text-gray-400">Loading menu...</p>
+            </div>
+          )}
+
+          {/* Error */}
+          {error && (
+            <div className="text-center py-20">
+              <p className="text-red-400 text-lg">{error}</p>
+              <button
+                onClick={fetchMenuItems}
+                className="mt-4 px-6 py-2 bg-orange-600 hover:bg-orange-500 rounded-full transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {/* Menu */}
+          {!loading && !error && (
+            <>
+              {categories.length === 0 ? (
+                <div className="text-center py-20">
+                  <p className="text-gray-400 text-lg">
+                    No {activeTab === 'EATING' ? 'food' : 'drink'} items available
+                  </p>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-3">{company.name}</h1>
-                <div className="flex flex-wrap items-center gap-4 text-slate-200">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 fill-orange-400 text-orange-400" />
-                    <span className="font-semibold">{company.rating ?? 'N/A'}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5" />
-                    <span>{company.city}, {company.country}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {categories.map(cat => {
+                    const items = groupedByCategory[cat];
+                    const totalPages = getTotalPages(items);
+                    const currentPage = getCurrentPage(cat);
+                    const paginated = getPaginatedItems(items, cat);
 
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-orange-200 sticky top-0 z-40">
-        <div className="lg:px-16 mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate(-1)}
-                className="lg:hidden p-2 hover:bg-orange-50 rounded-lg"
-              >
-                <ArrowLeft className="w-5 h-5 text-red-600" />
-              </button>
-              <img
-                src={`${API_URL}${company.logo}`}
-                alt={company.name}
-                className="w-12 h-12 rounded-lg object-cover border-2 border-orange-200"
-              />
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                  {company.name}
-                </h1>
-                <p className="text-sm text-slate-600">Menu</p>
-              </div>
-            </div>
-
-            <button className="relative bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md">
-              <ShoppingCart className="w-5 h-5" />
-              <span className="font-medium hidden sm:inline">Cart</span>
-              {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
-                  {cartItemCount}
-                </span>
-              )}
-            </button>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search menu items..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none"
-              />
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition ${viewMode === 'grid' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'}`}
-              >
-                <Grid className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition ${viewMode === 'list' ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'}`}
-              >
-                <List className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Categories */}
-      <div className="bg-white border-b border-orange-200 sticky top-[140px] z-30">
-        <div className="xl:p-16 mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-                selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md'
-                  : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-              }`}
-            >
-              All Items ({menuItems.filter(i => i.isActive).length})
-            </button>
-            {categories.map(category => {
-              const itemCount = menuItems.filter(item => item.categoryId === category.id && item.isActive).length;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-                    selectedCategory === category.id
-                      ? 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-md'
-                      : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-                  }`}
-                >
-                  {category.name} ({itemCount})
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Menu Items */}
-      <div className="xl:p-16 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {filteredItems.length === 0 ? (
-          <div className="text-center py-16">
-            <Search className="w-16 h-16 text-orange-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-700 mb-2">No items found</h3>
-            <p className="text-slate-500">Try adjusting your search or filters</p>
-          </div>
-        ) : (
-          <>
-            <p className="text-slate-600 mb-6">
-              Showing {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
-            </p>
-
-            {viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredItems.map(item => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer border border-orange-100"
-                  >
-                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-orange-100 to-red-100">
-                      <img
-                        src={`${API_URL}${item.mainImage}`}
-                        alt={item.name}
-                        onClick={() => openItemModal(item)}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFavorite(item.id);
-                        }}
-                        className="absolute top-3 right-3 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition"
+                    return (
+                      <div
+                        key={cat}
+                        className="bg-opacity-40 rounded-3xl px-8 md:px-12 py-12 backdrop-blur-sm"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}
                       >
-                        <Heart className={`w-4 h-4 ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-600'}`} />
-                      </button>
-                      {item.otherImages && item.otherImages.length > 1 && (
-                        <div className="absolute bottom-3 right-3 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-                          +{item.otherImages.length - 1} photos
+                        <div className="text-sm italic text-orange-400 mb-2 tracking-wider">
+                          {activeTab === 'EATING' ? 'Delicious Menu' : 'Refreshing Drinks'}
                         </div>
-                      )}
-                    </div>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-12">{cat}</h2>
 
-                    <div className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-slate-900 group-hover:text-red-600 transition line-clamp-1">
-                          {item.name}
-                        </h3>
-                      </div>
+                        {/* Items */}
+                        <div className="space-y-8">
+                          {paginated.map(item => (
+                            <MenuItem key={item.id} item={item} />
+                          ))}
+                        </div>
 
-                      <p className="text-sm text-slate-600 mb-3 line-clamp-2">
-                        {item.description}
-                      </p>
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                          <div className="mt-10 flex items-center justify-between">
+                            <button
+                              onClick={() => goToPage(cat, currentPage - 1)}
+                              disabled={currentPage === 1}
+                              className={`px-4 py-2 rounded-full transition-colors ${
+                                currentPage === 1
+                                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                  : 'bg-orange-600 hover:bg-orange-500 text-white'
+                              }`}
+                            >
+                              Prev
+                            </button>
 
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                          {formatPrice(item.price)}
-                        </span>
-                        <button
-                          onClick={() => addToCart(item)}
-                          className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white p-2 rounded-lg transition shadow-md"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
+                            <div className="flex gap-1">
+                              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                <button
+                                  key={p}
+                                  onClick={() => goToPage(cat, p)}
+                                  className={`w-8 h-8 rounded-full text-sm transition-colors ${
+                                    p === currentPage
+                                      ? 'bg-orange-600 text-white'
+                                      : 'bg-white bg-opacity-10 text-white hover:bg-opacity-20'
+                                  }`}
+                                >
+                                  {p}
+                                </button>
+                              ))}
+                            </div>
 
-                      <div className="mt-2">
-                        <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full">
-                          {getCategoryName(item.categoryId)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {filteredItems.map(item => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all overflow-hidden group cursor-pointer border border-orange-100"
-                  >
-                    <div className="flex gap-4 p-4">
-                      <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-orange-100 to-red-100">
-                        <img
-                          src={`${API_URL}${item.mainImage}`}
-                          alt={item.name}
-                          onClick={() => openItemModal(item)}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
-                        {item.otherImages && item.otherImages.length > 1 && (
-                          <div className="absolute bottom-2 right-2 bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs px-2 py-1 rounded-full shadow-md">
-                            +{item.otherImages.length - 1}
+                            <button
+                              onClick={() => goToPage(cat, currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              className={`px-4 py-2 rounded-full transition-colors ${
+                                currentPage === totalPages
+                                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                                  : 'bg-orange-600 hover:bg-orange-500 text-white'
+                              }`}
+                            >
+                              Next
+                            </button>
                           </div>
                         )}
                       </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-4 mb-2">
-                          <div>
-                            <h3 className="font-semibold text-lg text-slate-900 group-hover:text-red-600 transition">
-                              {item.name}
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-xs text-orange-700 bg-orange-100 px-2 py-1 rounded-full">
-                                {getCategoryName(item.categoryId)}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleFavorite(item.id);
-                            }}
-                            className="p-2 hover:bg-orange-50 rounded-lg transition"
-                          >
-                            <Heart className={`w-5 h-5 ${favorites.includes(item.id) ? 'fill-red-500 text-red-500' : 'text-slate-400'}`} />
-                          </button>
-                        </div>
+/* ------------------------------------------------------------------ */
+/*                           MENU ITEM CARD                           */
+/* ------------------------------------------------------------------ */
+function MenuItem({ item }) {
+  const hasDiscount = item.discount > 0;
+  const finalPrice = hasDiscount
+    ? (item.sellingPrice * (1 - item.discount / 100)).toFixed(2)
+    : item.sellingPrice.toFixed(2);
 
-                        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
-                          {item.description}
-                        </p>
+  return (
+    <div className="border-b border-gray-700 pb-6 hover:border-orange-500/50 transition-colors duration-300">
+      <div className="flex items-start justify-between mb-2">
+        <div className="flex items-center gap-3 flex-wrap">
+          <h3 className="text-xl font-semibold">{item.name}</h3>
 
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                            {formatPrice(item.price)}
-                          </span>
-                          <button
-                            onClick={() => addToCart(item)}
-                            className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-md"
-                          >
-                            <Plus className="w-4 h-4" />
-                            Add to Cart
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+          {/* Drink badges */}
+          {item.purpose === 'DRINKING' && item.drinkState === 'ALCOHOLIC' && (
+            <span className="bg-red-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+              {item.alcoholicType || 'Alcoholic'}
+            </span>
+          )}
+          {item.purpose === 'DRINKING' && item.drinkState === 'NON_ALCOHOLIC' && (
+            <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+              Non-Alcoholic
+            </span>
+          )}
+
+          {/* Discount badge */}
+          {hasDiscount && (
+            <span className="bg-gradient-to-r from-orange-600 to-red-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+              {item.discount}% OFF
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {hasDiscount && (
+            <span className="text-gray-500 line-through text-sm">
+              ${item.sellingPrice.toFixed(2)}
+            </span>
+          )}
+          <span className="text-orange-400 font-semibold text-lg">
+            ${finalPrice}
+          </span>
+        </div>
       </div>
 
-      {/* Item Modal */}
-      {selectedItem && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedItem(null)}>
-          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="relative">
-              <div className="relative h-96 bg-gradient-to-br from-orange-100 to-red-100">
-                <img
-                  src={selectedItem.otherImages?.[imageIndex] ? `${API_URL}${selectedItem.otherImages[imageIndex]}` : `${API_URL}${selectedItem.mainImage}`}
-                  alt={selectedItem.name}
-                  className="w-full h-full object-cover"
-                />
-                {selectedItem.otherImages && selectedItem.otherImages.length > 1 && (
-                  <>
-                    <button onClick={prevImage} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition">
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button onClick={nextImage} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition">
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                      {selectedItem.otherImages.map((_, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => setImageIndex(idx)}
-                          className={`h-2 rounded-full transition ${idx === imageIndex ? 'bg-gradient-to-r from-red-600 to-orange-500 w-6' : 'bg-white/50 w-2'}`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-                <button onClick={() => setSelectedItem(null)} className="absolute top-4 right-4 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">{selectedItem.name}</h2>
-                    <span className="text-xs text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
-                      {getCategoryName(selectedItem.categoryId)}
-                    </span>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 mb-6 leading-relaxed">{selectedItem.description}</p>
-
-                <div className="flex items-center justify-between pt-6 border-t border-orange-200">
-                  <div>
-                    <p className="text-sm text-slate-500 mb-1">Price</p>
-                    <p className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                      {formatPrice(selectedItem.price)}
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => toggleFavorite(selectedItem.id)}
-                      className="p-3 border-2 border-orange-200 hover:border-red-500 rounded-lg transition"
-                    >
-                      <Heart className={`w-5 h-5 ${favorites.includes(selectedItem.id) ? 'fill-red-500 text-red-500' : 'text-slate-400'}`} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        addToCart(selectedItem);
-                        setSelectedItem(null);
-                      }}
-                      className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition font-medium shadow-md"
-                    >
-                      <Plus className="w-5 h-5" />
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {/* Description (supports HTML from Quill) */}
+      {item.description && (
+        <div
+          className="text-sm text-gray-400 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: item.description }}
+        />
       )}
 
-      {/* Floating Cart */}
-      {cartItemCount > 0 && (
-        <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-4 max-w-sm z-40 border-2 border-orange-200">
-          <h3 className="font-bold text-slate-900 mb-3 flex items-center justify-between">
-            Cart Summary
-            <span className="text-sm font-normal text-slate-500">{cartItemCount} items</span>
-          </h3>
-          <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
-            {cart.map(item => (
-              <div key={item.id} className="flex items-center justify-between text-sm">
-                <span className="text-slate-700">{item.name} × {item.quantity}</span>
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-900">{formatPrice(item.price * item.quantity)}</span>
-                  <button
-                    onClick={() => removeFromCart(item.id)}
-                    className="text-red-500 hover:bg-red-50 p-1 rounded transition"
-                  >
-                    <Minus className="w-3 h-3" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="pt-3 border-t border-orange-200">
-            <div className="flex items-center justify-between mb-3">
-              <span className="font-semibold text-slate-700">Total</span>
-              <span className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">{formatPrice(cartTotal)}</span>
-            </div>
-            <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-medium py-3 px-4 rounded-lg transition shadow-md">
-              Proceed to Checkout
-            </button>
-          </div>
+    {/* Ingredients - NAME ONLY (max 5) */}
+      {item.purpose === 'EATING' && item.ingredients?.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1 ">
+          <p className='gray-neutral-200'>ingredients: </p>{'  '}
+          {item.ingredients.slice(0, 5).map((ingredient, idx) => (
+            <span
+              key={idx}
+              className="text-xs  bg-opacity-10 text-neutral-300  py-1 rounded"
+            >
+              {ingredient} ,
+            </span>
+          ))}
+          {item.ingredients.length > 5 && (
+            <span className="text-xs text-gray-500 italic">
+              +{item.ingredients.length - 5} more
+            </span>
+          )}
         </div>
       )}
     </div>
   );
-};
-
-export default CompanyMenuPage;
+}

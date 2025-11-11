@@ -7,20 +7,21 @@ function Gallery() {
   const [selectedImage, setSelectedImage] = useState(null);
 
   // Sample coffee shop images with varying heights for masonry effect
-  const images = [
-    { id: 1, url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80', alt: 'Coffee cups and beans', height: 'h-64' },
-    { id: 2, url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&q=80', alt: 'Espresso machine', height: 'h-80' },
-    { id: 3, url: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=80', alt: 'Coffee shop interior', height: 'h-72' },
-    { id: 4, url: 'https://images.unsplash.com/photo-1559496417-e7f25c8d6ef9?w=800&q=80', alt: 'Latte art', height: 'h-96' },
-    { id: 5, url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80', alt: 'Coffee shop ambiance', height: 'h-64' },
-    { id: 6, url: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=80', alt: 'Brewing coffee', height: 'h-80' },
-    { id: 7, url: 'https://images.unsplash.com/photo-1501492693654-5e1e4b9b7441?w=800&q=80', alt: 'Cappuccino', height: 'h-72' },
-    { id: 8, url: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80', alt: 'Coffee and pastries', height: 'h-64' },
-    { id: 9, url: 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=800&q=80', alt: 'Cozy corner', height: 'h-96' },
-    { id: 10, url: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800&q=80', alt: 'Coffee preparation', height: 'h-80' },
-    { id: 11, url: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&q=80', alt: 'Coffee beans', height: 'h-72' },
-    { id: 12, url: 'https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?w=800&q=80', alt: 'Outdoor seating', height: 'h-64' }
-  ];
+const images = [
+  { id: 1, url: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074', alt: 'Modern restaurant interior', height: 'h-64' },
+  { id: 2, url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&auto=format&fit=crop&q=80', alt: 'Table setup with wine glasses', height: 'h-80' },
+  { id: 3, url: 'https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&auto=format&fit=crop&q=80', alt: 'Fine dining setup', height: 'h-72' },
+  { id: 4, url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80', alt: 'Restaurant with customers dining', height: 'h-96' },
+  { id: 5, url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&auto=format&fit=crop&q=80', alt: 'Outdoor restaurant ambiance', height: 'h-64' },
+  { id: 6, url: 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&auto=format&fit=crop&q=80', alt: 'Chef preparing meal', height: 'h-80' },
+  { id: 7, url: 'https://images.unsplash.com/photo-1543353071-873f17a7a088?w=800&auto=format&fit=crop&q=80', alt: 'Restaurant bar area', height: 'h-72' },
+  { id: 8, url: 'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=800&auto=format&fit=crop&q=80', alt: 'Modern open kitchen', height: 'h-64' },
+  { id: 9, url: 'https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83?w=800&auto=format&fit=crop&q=80', alt: 'Cozy restaurant corner', height: 'h-96' },
+  { id: 10, url: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800&auto=format&fit=crop&q=80', alt: 'Food being served in restaurant', height: 'h-80' },
+  { id: 11, url: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80', alt: 'Busy restaurant evening', height: 'h-72' },
+  { id: 12, url: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&auto=format&fit=crop&q=80', alt: 'Restaurant terrace', height: 'h-64' }
+];
+
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -42,7 +43,7 @@ function Gallery() {
                 alt={image.alt}
                 className="w-full h-auto object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
                 <Camera className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </div>
@@ -53,7 +54,7 @@ function Gallery() {
       {/* Lightbox Modal */}
       {selectedImage && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedImage(null)}
         >
           <button
