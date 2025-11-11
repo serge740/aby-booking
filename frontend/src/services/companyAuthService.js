@@ -31,6 +31,16 @@ class CompanyAuthService {
     }
   }
 
+    async changePassword(data) {
+    try {
+      const response = await api.patch('/company-auth/change-password', data);
+      return response.data;
+    } catch (error) {
+      const msg = error.response?.data?.message || error.message || 'Failed to change password';
+      throw new Error(msg);
+    }
+  }
+
   // ✅ LOGOUT COMPANY (clears cookie)
   async logoutCompany() {
     try {

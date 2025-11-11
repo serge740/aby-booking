@@ -299,6 +299,8 @@ model MenuItem {
   company       Company     @relation(fields: [companyId], references: [id])
   companyId     String
 
+  discount      Int  @default(0)
+
   category      MenuCategory? @relation(fields: [categoryId], references: [id])
   categoryId    String?
 

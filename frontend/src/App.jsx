@@ -37,6 +37,7 @@ import MenuItemDashboard from "./pages/dashboard/company/MenuItemDashboard";
 import CompanyDisplay from "./pages/company/CompanyDisplayPage";
 import CompanyDetailsPage from "./pages/company/CompanyDetailsPage";
 import CompanyMenuPage from "./pages/company/CompanyMenuPage";
+import MenuItemView from "./components/dashboard/menu/item/MenuItemView";
 
 
 // Loading component
@@ -107,13 +108,14 @@ const router = createBrowserRouter([
        { index: true, element: <Navigate to={'/company/dashboard'}></Navigate>},
        { 
         path: 'dashboard', 
-        element: <SuspenseWrapper><DashboardLayout /> </SuspenseWrapper>,
+        element: <SuspenseWrapper><DashboardLayout role={'company'} /> </SuspenseWrapper>,
         children:[
           {index:true , element:<DashboardHome />},
  
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
+          {path:'menu-item/:id' , element:<MenuItemView />},
           
         ]
        },
