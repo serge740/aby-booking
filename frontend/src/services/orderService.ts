@@ -62,6 +62,15 @@ class OrderService {
       throw new Error(msg);
     }
   }
+  async getOrdersByCompany(companyId: string) {
+    try {
+      const response = await api.get(`/orders/company/${companyId}`);
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to fetch client orders';
+      throw new Error(msg);
+    }
+  }
 }
 
 const orderService = new OrderService();

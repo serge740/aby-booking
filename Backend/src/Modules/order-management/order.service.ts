@@ -112,4 +112,11 @@ export class OrderService {
       orderBy: { createdAt: 'desc' },
     });
   }
+  async getOrdersByCompanyId(companyId: string) {
+    return this.prisma.order.findMany({
+      where: { companyId },
+      include: { items: { include: { menuItem: true } }, client: true, company: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

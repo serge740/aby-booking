@@ -49,4 +49,8 @@ export class OrderController {
   async getOrdersByClient(@Param('clientId') clientId: string) {
     return this.orderService.getOrdersByClientId(clientId);
   }
+  @Get('company/:companyId')
+  async getOrdersByCompany(@Param('companyId') companyId: string) {
+    return this.orderService.getOrdersByCompanyId(companyId);
+  }
 }

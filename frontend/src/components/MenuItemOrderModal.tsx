@@ -35,7 +35,6 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
 
   // Load company info for header
   const [companyInfo, setCompanyInfo] = useState({ name: 'Loading...', logo: null });
-
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -46,6 +45,9 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
+
+  // NEW: Order Notes
+  const [notes, setNotes] = useState('');
 
   // ----------------------------------------------------
   // Load company name/logo once
@@ -73,6 +75,7 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
       setClientName('');
       setClientPhone('');
       setClientEmail('');
+      setNotes(''); // Reset notes
     }
   }, [isOpen]);
 
@@ -86,17 +89,17 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
 
   const handleSubmit = async () => {
     if (!canSubmit()) return;
-
     setSubmitting(true);
     setError('');
     setSuccess(false);
 
     try {
       const orderData = {
-        companyId, // Explicitly send companyId
+        companyId,
         clientName: clientName.trim(),
         clientPhone: clientPhone.trim() || undefined,
         clientEmail: clientEmail.trim() || undefined,
+        notes: notes.trim() || undefined, // Send notes (optional)
         items: companyItems.map((item) => ({
           menuItemId: item.menuItemId,
           unitPrice: item.unitPrice,
@@ -208,9 +211,9 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* Step 1: Items */}
+          {/* Step 1: Items + Notes */}
           {step === 1 && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {loading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
@@ -222,39 +225,58 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                   <p className="text-gray-600">No items for this restaurant</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {companyItems.map((item) => (
-                    <div
-                      key={item.menuItemId}
-                      className="border border-gray-200 rounded-lg p-4 flex gap-4 hover:bg-gray-50"
-                    >
-                      {item.image ? (
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 bg-gray-200 border-2 border-dashed rounded-lg flex-shrink-0" />
-                      )}
-                      <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{item.name}</h4>
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-lg font-bold text-orange-600">
-                            {formatRWF(item.unitPrice)}
-                          </span>
-                          <button
-                            onClick={() => handleRemoveItem(item.menuItemId)}
-                            className="text-red-500 hover:text-red-700 text-sm flex items-center gap-1"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Remove
-                          </button>
+                <>
+                  <div className="space-y-3">
+                    {companyItems.map((item) => (
+                      <div
+                        key={item.menuItemId}
+                        className="border border-gray-200 rounded-lg p-4 flex gap-4 hover:bg-gray-50"
+                      >
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-16 h-16 bg-gray-200 border-2 border-dashed rounded-lg flex-shrink-0" />
+                        )}
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">{item.name}</h4>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-lg font-bold text-orange-600">
+                              {formatRWF(item.unitPrice)}
+                            </span>
+                            <button
+                              onClick={() => handleRemoveItem(item.menuItemId)}
+                              className="text-red-500 hover:text-red-700 text-sm flex items-center gap-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+
+                  {/* NEW: Notes Field */}
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Order Notes (Optional)
+                    </label>
+                    <textarea
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="e.g. No onions, extra spicy, deliver to table 5..."
+                      rows={3}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Let the restaurant know any special requests
+                    </p>
+                  </div>
+                </>
               )}
             </div>
           )}
@@ -312,7 +334,7 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                 </div>
               )}
               {success && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex itens-center gap-3">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-green-600" />
                   <p className="text-green-800 font-medium">
                     Order placed successfully!
@@ -339,6 +361,14 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                   )}
                 </div>
               </div>
+
+              {/* Order Notes */}
+              {notes && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-medium text-blue-900 mb-2">Order Notes</h3>
+                  <p className="text-sm text-blue-800 whitespace-pre-wrap">{notes}</p>
+                </div>
+              )}
 
               {/* Order Summary */}
               <div>
@@ -383,7 +413,6 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
           >
             {step === 1 ? 'Cancel' : 'Back'}
           </button>
-
           <button
             onClick={() => {
               if (step === 1 && canProceedToStep2()) setStep(2);
