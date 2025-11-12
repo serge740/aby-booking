@@ -18,6 +18,7 @@ import {
   Hash,
 } from 'lucide-react';
 import orderService from '../../services/orderService';
+import { API_URL } from '../../api/api';
 
 interface OrderItem {
   id: string;
@@ -27,7 +28,7 @@ interface OrderItem {
   menuItem: {
     id: string;
     name: string;
-    image?: string;
+    mainImage?: string;
   };
 }
 
@@ -78,6 +79,8 @@ const getStatusInfo = (status: string) => {
   }
 };
 
+// ... imports remain same
+
 export default function OrderTrackingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -104,13 +107,13 @@ export default function OrderTrackingPage() {
     setError(null);
     try {
       const data = await orderService.getOrdersByOrderNumber(number.trim().toUpperCase());
-      setOrder(data);
-      // Update URL
+      console.log(data);
+      
+      setOrder(data[0]);
       setSearchParams({ order: number.trim().toUpperCase() });
     } catch (err: any) {
       setError(err.message || 'Order not found. Please check your order number.');
       setOrder(null);
-      // Remove invalid order from URL
       setSearchParams({});
     } finally {
       setLoading(false);
@@ -128,8 +131,8 @@ export default function OrderTrackingPage() {
   const status = order ? getStatusInfo(order.status) : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen text-neutral-800 bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header */}
         <div className="text-center mb-10">
@@ -182,11 +185,11 @@ export default function OrderTrackingPage() {
           </div>
         )}
 
-        {/* Order Details */}
+        {/* Only render order details if order exists */}
         {order && (
           <>
             {/* Status Banner */}
-            <div className={`${status?.bg} rounded-xl p-6 border-2 ${status?.color.split(' ')[2]}`}>
+            <div className={`${status?.bg} rounded-xl p-6 border-2 ${status?.color.split(' ')[2] || ''}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-full ${status?.color}`}>
@@ -209,11 +212,11 @@ export default function OrderTrackingPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Progress</h3>
               <div className="flex items-center justify-between">
                 {['PENDING', 'PROCESSING', 'COMPLETED'].map((step, idx) => {
-                  const isActive = order.status === step || 
+                  const isActive = 
+                    order.status === step || 
                     (order.status === 'PROCESSING' && step === 'PENDING') ||
                     (order.status === 'COMPLETED' && ['PENDING', 'PROCESSING'].includes(step));
                   const isCurrent = order.status === step;
-                  const isCancelled = order.status === 'CANCELLED';
 
                   return (
                     <div key={step} className="flex-1 relative">
@@ -258,9 +261,8 @@ export default function OrderTrackingPage() {
               )}
             </div>
 
-            {/* Order Info */}
+            {/* Customer & Summary */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Customer Info */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5" />
@@ -290,7 +292,6 @@ export default function OrderTrackingPage() {
                 </div>
               </div>
 
-              {/* Order Summary */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5" />
@@ -303,7 +304,9 @@ export default function OrderTrackingPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Items:</span>
-                    <span className="font-medium">{order.items.length}</span>
+                    <span className="font-medium">
+                      {order.items?.length || 0}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total:</span>
@@ -331,36 +334,42 @@ export default function OrderTrackingPage() {
               <div className="p-6 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                   <Package className="w-5 h-5" />
-                  Your Items ({order.items.length})
+                  Your Items ({order.items?.length || 0})
                 </h3>
               </div>
               <div className="divide-y divide-gray-200">
-                {order.items.map((item) => (
-                  <div key={item.id} className="p-6 flex gap-4 hover:bg-gray-25">
-                    {item.menuItem.image ? (
-                      <img
-                        src={item.menuItem.image}
-                        alt={item.menuItem.name}
-                        className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Package className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{item.menuItem.name}</h4>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="text-sm text-gray-600">
-                          {item.quantity} × {formatRWF(item.unitPrice)}
-                        </span>
-                        <span className="font-semibold text-orange-600">
-                          {formatRWF(item.totalPrice)}
-                        </span>
+                {order.items && order.items.length > 0 ? (
+                  order.items.map((item) => (
+                    <div key={item.id} className="p-6 flex gap-4 hover:bg-gray-25">
+                      {item.menuItem?.mainImage ? (
+                        <img
+                          src={`${API_URL}${item.menuItem.mainImage}`}
+                          alt={item.menuItem.name}
+                          className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Package className="w-8 h-8 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{item.menuItem?.name || 'Unknown Item'}</h4>
+                        <div className="flex items-center justify-between mt-2">
+                          <span className="text-sm text-gray-600">
+                            {item.quantity} × {formatRWF(item.unitPrice)}
+                          </span>
+                          <span className="font-semibold text-orange-600">
+                            {formatRWF(item.totalPrice)}
+                          </span>
+                        </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="p-6 text-center text-gray-500">
+                    No items found in this order.
                   </div>
-                ))}
+                )}
               </div>
               <div className="p-6 bg-gray-50 border-t border-gray-200">
                 <div className="flex justify-between text-lg font-bold">

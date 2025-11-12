@@ -111,6 +111,7 @@ if(order?.clientEmail){
     return this.prisma.order.update({
       where: { id: orderId },
       data: { status },
+       include: { items: { include: { menuItem: true } }, client: true, company: true },
     });
   }
 
