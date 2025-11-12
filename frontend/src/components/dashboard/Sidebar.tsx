@@ -77,11 +77,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         allowedRoles: ["admin"],
       },
       {
-        id: "bookings",
-        label: "Bookings",
+        id: "orders",
+        label: "Orders",
         icon: ClipboardList,
-        path: `${basePath}/bookings`,
-        allowedRoles: ["company", "admin"],
+        path: `${basePath}/orders`,
+        allowedRoles: ["company"],
       },
       {
         id: "menu-category",

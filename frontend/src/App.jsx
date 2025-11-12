@@ -40,6 +40,7 @@ import CompanyMenuPage from "./pages/company/CompanyMenuPage";
 import MenuItemView from "./components/dashboard/menu/MenuItemView";
 import { CreateMenuItemPage, EditMenuItemPage } from "./components/dashboard/menu/UpsetMenuItemPage";
 import MenuItemDetail from "./pages/company/CompanyMenuItemPage";
+import OrderDashboard from "./pages/dashboard/company/OrderDashboard";
 
 
 // Loading component
@@ -116,6 +117,7 @@ const router = createBrowserRouter([
           {index:true , element:<DashboardHome />},
  
           {path:'profile' , element:<CompanyProfilePage />},
+          {path:'orders' , element:<OrderDashboard />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/create' , element:<CreateMenuItemPage />},
