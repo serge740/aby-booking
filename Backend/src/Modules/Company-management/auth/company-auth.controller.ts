@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   Param,
   UploadedFiles,
+  Patch,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { CompanyAuthService } from './company-auth.service';
@@ -86,5 +87,18 @@ export class CompanyAuthController {
      
     
     return await this.authService.editProfile(id, body);
+  }
+    @Patch('change-password')
+  @UseGuards(CompanyAuthGuard) // make sure only logged-in admins can call this
+  async changePassword(
+    @Req() req:RequestWithCompany,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
+    const companyId = req.company.id as string; // from JWT
+    return this.authService.changePassword(
+      companyId,
+      body.currentPassword,
+      body.newPassword,
+    );
   }
 }

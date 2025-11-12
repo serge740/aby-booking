@@ -81,11 +81,11 @@ const ContactUs = () => {
   return (
     <div className="w-full flex flex-col items-center ">
       {/* Header */}
-      <Header title={"Contact Us"} path={"contact"} />
       <div
         className=" w-full bg-white flex flex-col items-center gap-12 pt-12 "
 
       >
+      <Header title={"Contact Us"} path={"contact"} />
         {/* Company Info Cards */}
         <div className="w-full px-4 lg:px-14 mx-auto -mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

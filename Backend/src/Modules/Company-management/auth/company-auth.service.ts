@@ -56,6 +56,40 @@ export class CompanyAuthService {
 
     return { company, token };
   }
+    // change password
+  async changePassword(
+    companyId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    if (!companyId) throw new BadRequestException('company ID is required');
+    if (!currentPassword || !newPassword) {
+      throw new BadRequestException('Both current and new password are required');
+    }
+    if (newPassword.length < 6) {
+      throw new BadRequestException('New password must be at least 6 characters');
+    }
+
+    // Find company
+    const company =  await this.prisma.company.findUnique({where:{id:companyId}});
+    if (!company) throw new NotFoundException('company not found');
+    if (!company.password) throw new UnauthorizedException('No password set for this account');
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, company.password);
+    if (!isMatch) throw new UnauthorizedException('Current password is incorrect');
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password
+    await this.prisma.company.update({
+      where: { id: companyId },
+      data: { password: hashedPassword },
+    });
+
+    return { message: 'Password updated successfully' };
+  }
 
   async getProfile(companyId: string) {
     return await this.prisma.company.findUnique({

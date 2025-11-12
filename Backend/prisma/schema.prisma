@@ -284,27 +284,56 @@ model MenuCategory {
 }
 
 model MenuItem {
-  id            String   @id @default(cuid())
-  name          String
-  description   String?
-  price         Float
+  id              String            @id @default(cuid())
+  name            String
+  description     String?
+  sellingPrice    Float              // Selling price
+  purchasingPrice Float?             // Purchase price (for profit margin)
+  difference      Float?             // Profit = sellingPrice - purchasingPrice
 
-  mainImage     String?   // Front cover photo
-  otherImages   Json?         @default("[]") // Gallery of supporting images
+  mainImage       String?            // Front cover photo
+  otherImages     Json?              @default("[]") // Gallery images
 
+  purpose         PurposeStatus      @default(EATING)
 
-  isActive      Boolean   @default(true)
+  // 🔹 Drink-specific fields
+  drinkState      DrinkStateStatus?
+  alcoholicType   AlcoholicType?     // Type of alcoholic drink if applicable
 
-  // Relations
-  company       Company     @relation(fields: [companyId], references: [id])
-  companyId     String
+  // 🔹 Food-specific fields
+  ingredients     Json?              // List of ingredients
+  recipe          String?            // Preparation or cooking instructions
 
-  category      MenuCategory? @relation(fields: [categoryId], references: [id])
-  categoryId    String?
+  discount        Int                @default(0)
+  isActive        Boolean            @default(true)
 
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  // 🔹 Relations
+  company         Company            @relation(fields: [companyId], references: [id])
+  companyId       String
+
+  category        MenuCategory?      @relation(fields: [categoryId], references: [id])
+  categoryId      String?
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
 }
+
+enum PurposeStatus {
+  EATING
+  DRINKING
+}
+
+enum DrinkStateStatus {
+  ALCOHOLIC
+  NON_ALCOHOLIC
+}
+
+enum AlcoholicType {
+  LIQUOR
+  WINE
+  BEER
+}
+
 
 
 

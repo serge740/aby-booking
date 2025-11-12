@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { User, Lock, Bell, Link } from 'lucide-react';
 import CompanyProfileSettings from '../../../components/dashboard/profile/company/CompanyProfileSettings';
+import ConnectedApps from '../../../components/dashboard/profile/company/ConnectedApps';
+import NotificationsSettings from '../../../components/dashboard/profile/company/NotificationsSettings';
+import SecuritySettings from '../../../components/dashboard/profile/company/SecuritySettings';
 
 const CompanyProfilePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,9 +17,9 @@ const CompanyProfilePage = () => {
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Sync activeTab with URL params
-  useEffect(() => {
-    setSearchParams({ tab: activeTab });
-  }, [activeTab, setSearchParams]);
+  // useEffect(() => {
+  //   setSearchParams({ tab: activeTab });
+  // }, [activeTab, setSearchParams]);
 
   return (
     <div className="bg-gray-50 overflow-y-auto h-[90vh]">
@@ -96,9 +99,9 @@ const CompanyProfilePage = () => {
               </div>
               <div className="p-4">
                 {activeTab === 'profile' && <CompanyProfileSettings />}
-                {activeTab === 'security' && <div>Security Settings (To be implemented)</div>}
-                {activeTab === 'notifications' && <div>Notifications (To be implemented)</div>}
-                {activeTab === 'connected-apps' && <div>Connected Apps (To be implemented)</div>}
+                {activeTab === 'security' && <SecuritySettings />}
+                {activeTab === 'notifications' && <NotificationsSettings/>}
+                {activeTab === 'connected-apps' && <ConnectedApps />}
               </div>
             </div>
           </div>
