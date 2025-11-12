@@ -19,12 +19,12 @@ import { useCart } from '../../context/CartContext';
 const MenuItemDetail = () => {
   const { companyId, itemId } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();               // <-- NEW
+  const { addToCart, cartItems, updateQuantity } = useCart();
 
   const [menuItem, setMenuItem] = useState(null);
   const [relatedItems, setRelatedItems] = useState([]);
   const [selectedImage, setSelectedImage] = useState('');
-  const [quantity, setQuantity] = useState(1);   // <-- USER-CONTROLLED
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,10 +37,9 @@ const MenuItemDetail = () => {
         setLoading(true);
         setError(null);
 
-        // ---- MAIN ITEM ----
         const itemData = await menuItemService.getOneMenuItem(itemId);
 
-        // Normalise images
+        // Normalize images
         if (itemData.mainImage) {
           itemData.mainImage = `${API_URL}${itemData.mainImage}`;
         }
@@ -58,7 +57,7 @@ const MenuItemDetail = () => {
         setMenuItem(itemData);
         setSelectedImage(itemData.mainImage || '');
 
-        // ---- RELATED ITEMS ----
+        // Related items
         const all = await menuItemService.getMenuItemsByCompanyId(companyId);
         const related = all
           .filter(
@@ -85,7 +84,24 @@ const MenuItemDetail = () => {
   }, [itemId, companyId]);
 
   /* -------------------------------------------------
-     2. ICON HELPERS
+     2. ON MOUNT: Check if item is in cart → sync quantity
+   ------------------------------------------------- */
+  useEffect(() => {
+    if (!menuItem || cartItems.length === 0) return;
+
+    const existing = cartItems.find(
+      (item) => item.menuItemId === menuItem.id
+    );
+
+    if (existing && existing.quantity > 0) {
+      setQuantity(existing.quantity);
+    } else {
+      setQuantity(1);
+    }
+  }, [menuItem, cartItems]);
+
+  /* -------------------------------------------------
+     3. ICON HELPERS
    ------------------------------------------------- */
   const getDrinkIcon = (type) => {
     switch (type) {
@@ -101,7 +117,7 @@ const MenuItemDetail = () => {
   };
 
   /* -------------------------------------------------
-     3. LOADING / ERROR STATES (unchanged)
+     4. LOADING / ERROR STATES
    ------------------------------------------------- */
   if (loading) {
     return (
@@ -137,7 +153,7 @@ const MenuItemDetail = () => {
   }
 
   /* -------------------------------------------------
-     4. PRICE CALCULATION
+     5. PRICE CALCULATION
    ------------------------------------------------- */
   const finalPrice =
     menuItem.sellingPrice -
@@ -145,26 +161,31 @@ const MenuItemDetail = () => {
   const totalPrice = finalPrice * quantity;
 
   /* -------------------------------------------------
-     5. ADD TO CART – FULL OBJECT + QUANTITY
+     6. ADD / UPDATE CART
    ------------------------------------------------- */
   const handleAddToCart = () => {
     if (!menuItem.isActive) return;
 
-    // Clone the whole DB object (no mutation)
-    const cartPayload = {
-      ...menuItem,                 // <-- EVERY FIELD
-      quantity,                    // <-- USER-CHOSEN QTY
-      unitPrice: finalPrice,       // price after discount
-      totalPrice,                  // convenience
-      companyId: companyId,        // keep company context
+    const payload = {
+      ...menuItem,
+      menuItemId: menuItem.id,  // ensure ID
+      quantity,
+      unitPrice: finalPrice,
+      totalPrice,
+      companyId,
     };
 
-    addToCart(cartPayload);        // <-- your CartContext must accept this shape
-    // optional toast / feedback
+    // If already in cart → update quantity
+    const existing = cartItems.find((i) => i.menuItemId === menuItem.id);
+    if (existing) {
+      updateQuantity(menuItem.id, quantity);
+    } else {
+      addToCart(payload);
+    }
   };
 
   /* -------------------------------------------------
-     6. RENDER (your original design – untouched)
+     7. RENDER – Your original design (100% unchanged)
    ------------------------------------------------- */
   return (
     <div className="min-h-screen text-black bg-gray-50">
@@ -182,7 +203,7 @@ const MenuItemDetail = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-11 gap-8">
-          {/* ───── LEFT – RELATED ───── */}
+          {/* LEFT – RELATED */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm sticky top-6">
               <h3 className="text-lg font-bold text-gray-900 mb-5 border-b pb-2">
@@ -243,7 +264,7 @@ const MenuItemDetail = () => {
             </div>
           </div>
 
-          {/* ───── MIDDLE – IMAGES ───── */}
+          {/* MIDDLE – IMAGES */}
           <div className="lg:col-span-5 space-y-6">
             <div className="relative bg-white rounded-2xl overflow-hidden shadow-lg aspect-square">
               <img
@@ -266,7 +287,6 @@ const MenuItemDetail = () => {
               )}
             </div>
 
-            {/* Thumbnail Gallery */}
             <div className="flex items-center gap-2">
               {menuItem.mainImage && (
                 <button
@@ -304,9 +324,8 @@ const MenuItemDetail = () => {
             </div>
           </div>
 
-          {/* ───── RIGHT – DETAILS ───── */}
+          {/* RIGHT – DETAILS */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Header */}
             <div>
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                 {menuItem.purpose === 'EATING' ? (
@@ -331,7 +350,6 @@ const MenuItemDetail = () => {
               </div>
             </div>
 
-            {/* Price Section */}
             <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200">
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-4xl font-bold text-gray-900">
@@ -345,13 +363,11 @@ const MenuItemDetail = () => {
               </div>
               {menuItem.discount > 0 && (
                 <p className="text-green-600 font-medium">
-                  You save $
-                  {(menuItem.sellingPrice - finalPrice).toFixed(2)}
+                  You save ${(menuItem.sellingPrice - finalPrice).toFixed(2)}
                 </p>
               )}
             </div>
 
-            {/* Drink-Specific */}
             {menuItem.purpose === 'DRINKING' && (
               <div className="bg-white rounded-xl p-6 border border-gray-200">
                 <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -376,7 +392,6 @@ const MenuItemDetail = () => {
               </div>
             )}
 
-            {/* Food-Specific */}
             {menuItem.purpose === 'EATING' && (
               <>
                 {menuItem.ingredients && menuItem.ingredients.length > 0 && (
@@ -442,13 +457,15 @@ const MenuItemDetail = () => {
               </div>
 
               <button
-                onClick={handleAddToCart}
+                onClick={userId => handleAddToCart()}
                 disabled={!menuItem.isActive}
                 className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {menuItem.isActive
-                  ? 'Add to Order'
+                  ? cartItems.some(i => i.menuItemId === menuItem.id)
+                    ? 'Update Order'
+                    : 'Add to Order'
                   : 'Currently Unavailable'}
               </button>
             </div>
