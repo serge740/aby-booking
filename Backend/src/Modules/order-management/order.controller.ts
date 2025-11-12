@@ -1,48 +1,52 @@
-import { Controller, Post, Body, Get, Param, Query, ConflictException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { PaymentService } from '../payment-management/payment.service';
+import { OrderStatus } from 'generated/prisma';
 
 @Controller('orders')
 export class OrderController {
-  constructor(
-    private readonly orderService: OrderService,
-    private readonly paymentService: PaymentService,
-  ) {}
+  constructor(private readonly orderService: OrderService) {}
 
-  @Post('checkout')
-  async checkout(@Body() body: any) {
-    // Create order
-    const order = await this.orderService.createOrder(body);
-
-    // Create payment and get Flutterwave link
-      const paymentLink = await this.paymentService.createPayment(order, 'card,mobilemoneyrwanda,ussd,account,qr');
-
-    return { order, paymentLink };
+  // Create a new order
+  @Post()
+  async createOrder(
+    @Body()
+    body: {
+      clientId?: string;
+      companyId: string;
+      clientName: string;
+      clientEmail?: string;
+      clientPhone?: string;
+      items: { menuItemId: string; unitPrice: number; quantity: number }[];
+    },
+  ) {
+    return this.orderService.createOrder(body);
   }
 
+  // Update order status
+  @Patch(':id/status')
+  async updateStatus(@Param('id') id: string, @Body('status') status: OrderStatus) {
+    return this.orderService.updateStatus(id, status);
+  }
+
+  // Get order by ID
   @Get(':id')
-  async getOrder(@Param('id') orderId: string) {
-    return this.orderService.getOrder(orderId);
+  async getOrder(@Param('id') id: string) {
+    return this.orderService.getOrder(id);
   }
 
+  // Get all orders with optional filters
   @Get()
   async getAllOrders(
-    @Query('customerName') customerName?: string,
-    @Query('customerEmail') customerEmail?: string,
-    @Query('customerPhone') customerPhone?: string,
+    @Query('clientName') clientName?: string,
+    @Query('clientEmail') clientEmail?: string,
+    @Query('clientPhone') clientPhone?: string,
   ) {
-    return this.orderService.getAllOrders({ customerName, customerEmail, customerPhone });
+    return this.orderService.getAllOrders({ clientName, clientEmail, clientPhone });
   }
 
-  // ✅ Fetch all orders for a specific user
-@Get('user/:userId')
-async getOrdersByUser(@Param('userId') userId: string) {
-  if (!userId) {
-    throw new ConflictException('User ID is required');
+  // Get all orders for a specific client
+  @Get('client/:clientId')
+  async getOrdersByClient(@Param('clientId') clientId: string) {
+    return this.orderService.getOrdersByClientId(clientId);
   }
-  return this.orderService.getOrdersByUserId(userId);
-}
-
-
-
 }

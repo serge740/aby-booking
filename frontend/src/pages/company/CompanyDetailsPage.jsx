@@ -109,7 +109,7 @@ const CompanyDetailsPage = () => {
       {/* Cover Image */}
       <div className="relative h-96 bg-slate-900">
         <img
-          src={`${API_URL}${company.logo}`}
+          src={`https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=600&fit=crop`}
           alt={company.name}
           className="w-full h-full object-cover opacity-80"
         />
@@ -224,8 +224,11 @@ const CompanyDetailsPage = () => {
                         </span>
                       </div>
                       {item.description && (
-                        <p className="text-slate-600 text-sm mb-3 line-clamp-2">{item.description}</p>
-                      )}
+        <div
+          className="text-sm text-gray-400 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: item.description }}
+        />
+      )}
                       <div className="flex items-center gap-3">
                         {item.category && (
                           <span className="text-xs font-medium text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
