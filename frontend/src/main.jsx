@@ -4,7 +4,7 @@ import './index.css';
 import App from './App.jsx';
 import React from "react";
 import { AdminAuthContextProvider } from './context/AdminAuthContext.jsx';
-import { CartProvider } from './context/CartContext.jsx';
+import { CartProvider } from './context/CartContext.tsx';
 import { CompanyAuthProvider } from './context/CompanyAuthContext.jsx';
 
 createRoot(document.getElementById('root')).render(

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, MapPin, Phone, Mail, Clock, Star, Share2, Heart,
   Utensils, ShoppingCart, Store, Hotel, Wine, Sparkles, Building2,
-  Calendar, ChevronRight
+  Calendar, ChevronRight, Percent
 } from 'lucide-react';
 import companyService from '../../services/companyService';
 import { API_URL } from '../../api/api';
@@ -11,18 +11,16 @@ import { API_URL } from '../../api/api';
 const CompanyDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Fetch company with category and items
   useEffect(() => {
     const fetchCompany = async () => {
       try {
         setLoading(true);
-        const data = await companyService.getCompanyById(id); // should include categories & items
+        const data = await companyService.getCompanyById(id);
         setCompany(data);
       } catch (err) {
         setError(err.message || 'Failed to load company');
@@ -30,7 +28,6 @@ const CompanyDetailsPage = () => {
         setLoading(false);
       }
     };
-
     if (id) fetchCompany();
   }, [id]);
 
@@ -105,16 +102,14 @@ const CompanyDetailsPage = () => {
   // -----------------------------------------------------------------
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-
       {/* Cover Image */}
       <div className="relative h-96 bg-slate-900">
         <img
-          src={`${API_URL}${company.logo}`}
+          src={`https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&h=600&fit=crop`}
           alt={company.name}
           className="w-full h-full object-cover opacity-80"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
-
         {/* Back Button */}
         <button
           onClick={() => navigate(-1)}
@@ -122,7 +117,6 @@ const CompanyDetailsPage = () => {
         >
           <ArrowLeft className="w-5 h-5 text-red-600" />
         </button>
-
         {/* Action Buttons */}
         <div className="absolute top-6 right-6 flex gap-3">
           <button className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition">
@@ -137,10 +131,9 @@ const CompanyDetailsPage = () => {
             />
           </button>
         </div>
-
         {/* Company Info Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-          <div className=" mx-auto">
+          <div className="mx-auto">
             <div className={`inline-flex items-center gap-2 ${getTypeColor(company.type)} px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-md`}>
               <TypeIcon className="w-4 h-4" />
               {company.type}
@@ -161,25 +154,22 @@ const CompanyDetailsPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
-
             {/* About */}
             <div className="bg-white rounded-2xl shadow-sm p-6 border border-orange-100">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
                 About
               </h2>
               <div className="pre-editor">
-
-              {company.description && (
-                <div
-                className="text-slate-800  leading-relaxed ql-editor "
-                dangerouslySetInnerHTML={{ __html: company.description }}
-                />
-              )}
+                {company.description && (
+                  <div
+                    className="text-slate-800 leading-relaxed ql-editor"
+                    dangerouslySetInnerHTML={{ __html: company.description }}
+                  />
+                )}
               </div>
             </div>
 
@@ -189,65 +179,92 @@ const CompanyDetailsPage = () => {
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                   Featured Menu Items
                 </h2>
-                <button 
-                onClick={()=>navigate(`/partners/menu/${id}`)}
-                className="text-red-600 hover:text-red-700 font-medium cursor-pointer flex items-center gap-1">
+                <button
+                  onClick={() => navigate(`/partners/menu/${id}`)}
+                  className="text-red-600 hover:text-red-700 font-medium cursor-pointer flex items-center gap-1"
+                >
                   View All <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="space-y-4">
-                {(company.items || []).map(item => (
-                  <div
-                    key={item.id}
-                    className={`flex gap-4 p-4 rounded-xl transition group cursor-pointer border ${
-                      item.isActive ? 'hover:bg-orange-50 border-orange-100' : 'opacity-60 border-gray-200'
-                    }`}
-                  >
-                    {/* Item Image */}
-                    <div className="w-32 h-32 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-orange-100 to-red-100">
-                      <img
-                        src={item.mainImage ? `${API_URL}${item.mainImage}` : '/placeholder.jpg'}
-                        alt={item.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
+                {(company.items || []).map(item => {
+                  const finalPrice = item.sellingPrice - (item.sellingPrice * (item.discount / 100));
+                  const hasDiscount = item.discount > 0;
 
-                    {/* Item Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4 mb-2">
-                        <h3 className="text-lg font-semibold text-slate-900 group-hover:text-red-600 transition">
-                          {item.name}
-                        </h3>
-                        <span className="text-lg font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent whitespace-nowrap">
-                          {formatPrice(item.price)}
-                        </span>
+                  return (
+                    <div
+                      key={item.id}
+                      className={`flex gap-4 p-4 rounded-xl transition group cursor-pointer border ${
+                        item.isActive ? 'hover:bg-orange-50 border-orange-100' : 'opacity-60 border-gray-200'
+                      }`}
+                    >
+                      {/* Item Image */}
+                      <div className="relative w-32 h-32 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-orange-100 to-red-100">
+                        <img
+                          src={item.mainImage ? `${API_URL}${item.mainImage}` : '/placeholder.jpg'}
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        {hasDiscount && (
+                          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
+                            <Percent className="w-3 h-3" />
+                            {item.discount}%
+                          </div>
+                        )}
                       </div>
-                      {item.description && (
-                        <p className="text-slate-600 text-sm mb-3 line-clamp-2">{item.description}</p>
-                      )}
-                      <div className="flex items-center gap-3">
-                        {item.category && (
-                          <span className="text-xs font-medium text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
-                            {item.category.name}
-                          </span>
+
+                      {/* Item Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4 mb-2">
+                          <h3 className="text-lg font-semibold text-slate-900 group-hover:text-red-600 transition line-clamp-2">
+                            {item.name}
+                          </h3>
+                          <div className="text-right">
+                            <span className="text-lg font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                              {formatPrice(finalPrice)}
+                            </span>
+                            {hasDiscount && (
+                              <p className="text-sm text-gray-500 line-through">
+                                {formatPrice(item.sellingPrice)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {item.description && (
+                          <div
+                            className="text-sm text-gray-400 leading-relaxed line-clamp-2"
+                            dangerouslySetInnerHTML={{ __html: item.description }}
+                          />
                         )}
-                        {item.isActive ? (
-                          <span className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full">
-                            Available
-                          </span>
-                        ) : (
-                          <span className="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                            Unavailable
-                          </span>
-                        )}
+
+                        <div className="flex items-center gap-3 mt-2">
+                          {item.category && (
+                            <span className="text-xs font-medium text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
+                              {item.category.name}
+                            </span>
+                          )}
+                          {item.isActive ? (
+                            <span className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full">
+                              Available
+                            </span>
+                          ) : (
+                            <span className="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                              Unavailable
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
-              <button className="w-full mt-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-medium py-3 px-4 rounded-xl transition shadow-md">
+              <button
+                onClick={() => navigate(`/partners/menu/${id}`)}
+                className="w-full mt-4 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-medium py-3 px-4 rounded-xl transition shadow-md"
+              >
                 View Full Menu ({(company.items || []).length}+ items)
               </button>
             </div>
@@ -288,13 +305,11 @@ const CompanyDetailsPage = () => {
 
           {/* Right Column */}
           <div className="space-y-6">
-
             {/* Contact Card */}
             <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-6 border border-orange-100">
               <h2 className="text-xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-4">
                 Contact Information
               </h2>
-
               <div className="space-y-4">
                 {company.address && (
                   <div className="flex items-start gap-3">
@@ -308,7 +323,6 @@ const CompanyDetailsPage = () => {
                     </div>
                   </div>
                 )}
-
                 {company.phone && (
                   <div className="flex items-start gap-3">
                     <Phone className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
@@ -320,7 +334,6 @@ const CompanyDetailsPage = () => {
                     </div>
                   </div>
                 )}
-
                 {company.email && (
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -332,7 +345,6 @@ const CompanyDetailsPage = () => {
                     </div>
                   </div>
                 )}
-
                 {company.openingHours && (
                   <div className="flex items-start gap-3">
                     <Clock className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
@@ -342,7 +354,6 @@ const CompanyDetailsPage = () => {
                     </div>
                   </div>
                 )}
-
                 {company.createdAt && (
                   <div className="flex items-start gap-3">
                     <Calendar className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -353,7 +364,6 @@ const CompanyDetailsPage = () => {
                   </div>
                 )}
               </div>
-
               <div className="mt-6 space-y-3">
                 <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-medium py-3 px-4 rounded-xl transition shadow-md">
                   Make Reservation

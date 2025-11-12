@@ -39,6 +39,7 @@ import CompanyDetailsPage from "./pages/company/CompanyDetailsPage";
 import CompanyMenuPage from "./pages/company/CompanyMenuPage";
 import MenuItemView from "./components/dashboard/menu/MenuItemView";
 import { CreateMenuItemPage, EditMenuItemPage } from "./components/dashboard/menu/UpsetMenuItemPage";
+import MenuItemDetail from "./pages/company/CompanyMenuItemPage";
 
 
 // Loading component
@@ -77,6 +78,7 @@ const router = createBrowserRouter([
     { path: 'partners', element: <SuspenseWrapper><CompanyDisplay /></SuspenseWrapper> },
     { path: 'partners/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
     { path: 'partners/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
+    { path: 'partners/menu/:companyId/item/:itemId', element: <SuspenseWrapper><MenuItemDetail /></SuspenseWrapper> },
  
   ]
 },

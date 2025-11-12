@@ -1,6 +1,6 @@
 // src/components/DynamicRestaurantMenu.jsx
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import menuItemService from '../../services/menuItemService';
 
 const ITEMS_PER_PAGE = 6;               // <-- change if you want more/less per page
@@ -260,9 +260,12 @@ function MenuItem({ item }) {
   const finalPrice = hasDiscount
     ? (item.sellingPrice * (1 - item.discount / 100)).toFixed(2)
     : item.sellingPrice.toFixed(2);
+    const navigate  = useNavigate()
 
   return (
-    <div className="border-b border-gray-700 pb-6 hover:border-orange-500/50 transition-colors duration-300">
+    <div  
+    onClick={()=> navigate(`/partners/menu/${item.companyId}/item/${item.id}`)}
+    className="border-b border-gray-700 pb-6 hover:border-orange-500/50 transition-colors duration-300 " >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-3 flex-wrap">
           <h3 className="text-xl font-semibold">{item.name}</h3>
