@@ -18,12 +18,14 @@ import { useTranslation } from 'react-i18next';
 /* ────────────────────────────────────────
    COLORS – add `success` (or any other you need)
    ──────────────────────────────────────── */
-import { COLORS as RAW_COLORS } from '../../constants/colors';
+import { Colors as RAW_COLORS } from '../../constants/Colors';
 
 // Extend the imported colours with the missing `success`
 const COLORS = {
   ...RAW_COLORS,
   success: '#10B981', // <-- change to your real success colour
+  white: '#FFFFFF',
+  dark: '#1E1B16',
 };
 
 /* ────────────────────────────────────────
@@ -77,7 +79,7 @@ const businesses = [
 ];
 
 /* ────────────────────────────────────────
-   HEADER (inside file)
+   HEADER
    ──────────────────────────────────────── */
 const HEADER_CONTENT_HEIGHT = 80;
 const STATUS_BAR_HEIGHT = Platform.select({
@@ -141,13 +143,13 @@ export default function Companies() {
       {/* Top badges */}
       <View style={styles.topRow}>
         <View style={styles.ratingBadge}>
-          <Text style={styles.ratingIcon}>Star</Text>
+          <Text style={styles.ratingIcon}>⭐</Text>
           <Text style={styles.ratingText}>{item.rating}</Text>
         </View>
 
         {item.freeDelivery && (
           <View style={styles.freeBadge}>
-            <Text style={styles.freeIcon}>Truck</Text>
+            <Text style={styles.freeIcon}>🚚</Text>
             <Text style={styles.freeText}>Free</Text>
           </View>
         )}
@@ -162,9 +164,7 @@ export default function Companies() {
       </Text>
 
       {/* Price */}
-      <Text style={styles.price}>
-        IDR {item.price.toLocaleString('id-ID')}
-      </Text>
+      <Text style={styles.price}>IDR {item.price.toLocaleString('id-ID')}</Text>
 
       {/* Restaurant + distance */}
       <View style={styles.footer}>
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   freeBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.success, // now typed!
+    backgroundColor: COLORS.success,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,

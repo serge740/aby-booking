@@ -4,13 +4,13 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ImageBackground,
   SafeAreaView,
   Dimensions,
   FlatList,
   Animated,
   ViewToken,
   Modal,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -20,15 +20,14 @@ import i18n from '@/i18n';
 import ThemedView from '@/components/themed/ThemedView';
 
 const { width, height } = Dimensions.get('window');
-
-// Primary brand color
 const PRIMARY_COLOR = '#FF8C42';
+const OUTER_COLOR = '#FFE5B4';
 
 interface Slide {
   id: string;
+  image: any;
   title: string;
   description: string;
-  image: string;
 }
 
 const buildSlides = (t: (key: string) => any): Slide[] => {
@@ -37,16 +36,17 @@ const buildSlides = (t: (key: string) => any): Slide[] => {
     description: string;
   }>;
 
+  const images = [
+    require('../../assets/feature/image3.png'),
+    require('../../assets/feature/image2.png'),
+    require('../../assets/feature/image1.png'),
+  ];
+
   return slides.map((s, i) => ({
     id: `${i + 1}`,
+    image: images[i],
     title: s.title,
     description: s.description,
-    image:
-      i === 0
-        ? 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80'
-        : i === 1
-        ? 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80'
-        : 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80',
   }));
 };
 
@@ -55,8 +55,7 @@ const LANGUAGE_KEY = 'user-language';
 const OnboardingScreen = () => {
   const { t } = useTranslation();
   const slides = buildSlides(t);
-
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<FlatList<Slide> | null>(null);
   const [showLangModal, setShowLangModal] = useState(false);
@@ -64,9 +63,7 @@ const OnboardingScreen = () => {
   useEffect(() => {
     (async () => {
       const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
-      if (!saved) {
-        setShowLangModal(true);
-      }
+      if (!saved) setShowLangModal(true);
     })();
   }, []);
 
@@ -78,9 +75,7 @@ const OnboardingScreen = () => {
 
   const viewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0) {
-        setCurrentIndex(viewableItems[0].index ?? 0);
-      }
+      if (viewableItems.length > 0) setCurrentIndex(viewableItems[0].index ?? 0);
     },
   ).current;
 
@@ -90,68 +85,66 @@ const OnboardingScreen = () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      handleGetStarted();
+      router.push('/(auth)/login');
     }
-  };
-
-  const handleGetStarted = () => {
-    router.push('/(auth)/login');
   };
 
   const handleSkip = () => {
     slidesRef.current?.scrollToIndex({ index: slides.length - 1 });
   };
 
+  const handleBack = () => {
+    if (currentIndex > 0) {
+      slidesRef.current?.scrollToIndex({ index: currentIndex - 1 });
+    }
+  };
+
   const renderItem = ({ item }: { item: Slide }) => (
-    <View style={[styles.slide, { width }]}>
-      <ImageBackground source={{ uri: item.image }} style={styles.backgroundImage} resizeMode="cover">
-        <View style={styles.imageOverlay} />
-      </ImageBackground>
-      
-      <View style={styles.contentCard}>
-        <View style={styles.cardContent}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
-          
-          <View style={styles.paginationWrapper}>
-            <Pagination />
+    <View style={styles.slide}>
+      {/* IMAGE */}
+      <View style={styles.imageContainer}>
+        <View style={styles.outerCircle} />
+        <View style={styles.innerCircle}>
+          <View style={styles.imageWrapper}>
+            <Image source={item.image} style={styles.image} resizeMode="contain" />
           </View>
-          
-          <TouchableOpacity style={styles.button} onPress={scrollTo}>
-            <View style={styles.buttonContent}>
-              {currentIndex === slides.length - 1 ? (
-                <Text style={styles.buttonText}>{t('onboarding.getStarted')}</Text>
-              ) : (
-                <Text style={styles.buttonText}>{t('onboarding.next')}</Text>
-              )}
-              <View style={styles.iconCircle}>
-                <Ionicons name="arrow-forward" size={20} color={PRIMARY_COLOR} />
-              </View>
-            </View>
-          </TouchableOpacity>
         </View>
+      </View>
+
+      {/* TEXT */}
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
       </View>
     </View>
   );
 
   const Pagination = () => (
-    <View style={styles.paginationContainer}>
+    <View style={styles.pagination}>
       {slides.map((_, i) => {
         const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
         const dotWidth = scrollX.interpolate({
           inputRange,
-          outputRange: [8, 24, 8],
+          outputRange: [10, 30, 10],
           extrapolate: 'clamp',
         });
         const opacity = scrollX.interpolate({
           inputRange,
-          outputRange: [0.3, 1, 0.3],
+          outputRange: [0.4, 1, 0.4],
           extrapolate: 'clamp',
         });
+
         return (
           <Animated.View
             key={i.toString()}
-            style={[styles.dot, { width: dotWidth, opacity }]}
+            style={[
+              styles.dot,
+              {
+                width: dotWidth,
+                opacity,
+                backgroundColor: i === currentIndex ? PRIMARY_COLOR : '#D3D3D3',
+              },
+            ]}
           />
         );
       })}
@@ -159,12 +152,11 @@ const OnboardingScreen = () => {
   );
 
   const LanguageModal = () => {
-    const options: Array<{ code: 'rw' | 'en' | 'fr'; name: string; flag: string }> = [
-      { code: 'rw', name: 'Kinyarwanda', flag: '🇷🇼' },
-      { code: 'en', name: 'English', flag: '🇺🇸' },
-      { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    const options = [
+      { code: 'rw', name: 'Kinyarwanda', flag: 'Rwanda' },
+      { code: 'en', name: 'English', flag: 'USA' },
+      { code: 'fr', name: 'Français', flag: 'France' },
     ];
-
     return (
       <Modal transparent visible={showLangModal} animationType="fade">
         <View style={langStyles.overlay}>
@@ -187,25 +179,33 @@ const OnboardingScreen = () => {
   };
 
   return (
-    <ThemedView safe={true} style={styles.container}>
+    <ThemedView safe={false} style={styles.container}>
       <LanguageModal />
 
       {!showLangModal && (
         <>
           <SafeAreaView style={styles.header}>
+            <TouchableOpacity
+              onPress={handleBack}
+              disabled={currentIndex === 0}
+              style={[styles.iconBtn, currentIndex === 0 && styles.disabled]}
+            >
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
+
             {currentIndex < slides.length - 1 && (
-              <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
+              <TouchableOpacity onPress={handleSkip} style={styles.iconBtn}>
                 <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
               </TouchableOpacity>
             )}
           </SafeAreaView>
 
-          <FlatList<Slide>
+          <FlatList
             data={slides}
             renderItem={renderItem}
             horizontal
-            showsHorizontalScrollIndicator={false}
             pagingEnabled
+            showsHorizontalScrollIndicator={false}
             bounces={false}
             keyExtractor={item => item.id}
             onScroll={Animated.event(
@@ -218,175 +218,167 @@ const OnboardingScreen = () => {
             ref={slidesRef}
             style={styles.flatList}
           />
+
+          {/* TIGHTER BOTTOM SECTION */}
+          <View style={styles.bottomContainer}>
+            <Pagination />
+            <TouchableOpacity style={styles.nextBtn} onPress={scrollTo}>
+              {/* ----  NEXT / GET STARTED  ---- */}
+              {currentIndex === slides.length - 1 ? (
+                <>
+                  <Text style={styles.nextBtnText}>Get Started</Text>
+                  <Ionicons name="arrow-forward" size={28} color="#FFF" style={styles.nextBtnIcon} />
+                </>
+              ) : (
+                <>
+                  <Text style={styles.nextBtnText}>Next</Text>
+                  <Ionicons name="arrow-forward" size={28} color="#FFF" style={styles.nextBtnIcon} />
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </ThemedView>
   );
 };
 
+/* ────────────────────────────────────────────────────────────────────────── */
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#FFF' 
-  },
+  container: { flex: 1, backgroundColor: '#F5F5F5' },
+
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.05,
+    paddingTop: height * 0.020,
     position: 'absolute',
     top: 0,
+    left: 0,
     right: 0,
     zIndex: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 24,
-    paddingTop: 10,
   },
-  skipButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 20,
+  iconBtn: { padding: 8 },
+  disabled: { opacity: 0.3 },
+  skipText: { fontSize: 16, paddingRight: 10, fontWeight: '600', color: '#333' },
+
+  flatList: { flex: 1 },
+
+  slide: {
+    width,
+    paddingHorizontal: width * 0.08,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 70,
   },
-  skipText: { 
-    fontSize: 14, 
-    color: '#FFF', 
-    fontWeight: '600' 
+
+  // IMAGE
+  imageContainer: { flex: 0.5, justifyContent: 'center', alignItems: 'center', position: 'relative' },
+  outerCircle: {
+    position: 'absolute',
+    width: width * 0.75,
+    height: width * 0.75,
+    borderRadius: (width * 0.75) / 2,
+    backgroundColor: OUTER_COLOR,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  flatList: { 
-    flex: 1 
-  },
-  slide: { 
-    flex: 1, 
-    height,
+  innerCircle: {
+    width: width * 0.68,
+    height: width * 0.68,
+    borderRadius: (width * 0.68) / 2,
     backgroundColor: PRIMARY_COLOR,
-  
-    
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  backgroundImage: { 
-    width: '100%', 
-    height: height * 0.55,
+  imageWrapper: {
+    width: width * 0.58,
+    height: width * 0.58,
+    backgroundColor: 'transparent',
+    borderRadius: (width * 0.58) / 2,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  imageOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 140, 66, 0.1)',
-  },
-  contentCard: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    marginTop: -40,
-    paddingTop: 40,
-    paddingHorizontal: 30,
-   
-  },
-  cardContent: {
-    flex: 1,
-    justifyContent: 'space-between',
-    paddingBottom: 40,
+  image: { width: '92%', height: '92%' },
+
+  // TEXT
+  textContainer: {
+    flex: 0.35,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingHorizontal: width * 0.06,
+    marginTop: height * 0.015,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#000',
-    marginBottom: 12,
+    fontSize: width * 0.07,
+    fontWeight: '800',
+    color: '#1A1A1A',
     textAlign: 'center',
+    lineHeight: width * 0.09,
+    letterSpacing: -0.5,
   },
   description: {
-    fontSize: 15,
+    marginTop: height * 0.015,
+    fontSize: width * 0.042,
     color: '#666',
-    lineHeight: 22,
     textAlign: 'center',
-    marginBottom: 20,
+    lineHeight: width * 0.06,
   },
-  paginationWrapper: {
-    marginVertical: 20,
+
+  // BOTTOM – TIGHTER
+  bottomContainer: {
+    paddingHorizontal: width * 0.08,
+    paddingBottom: height * 0.04,
+    alignItems: 'center',
   },
-  paginationContainer: {
+  pagination: {
+    flexDirection: 'row',
+    marginBottom: height * 0.025,
+  },
+  dot: { height: 9, borderRadius: 5, marginHorizontal: 6 },
+
+  // ----  NEXT BUTTON WITH TEXT + ICON  ----
+  nextBtn: {
+    backgroundColor: '#2C2C2C',
+    width: '80%',
+    height: 50,
+    borderRadius: 36,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  dot: { 
-    height: 8, 
-    borderRadius: 4, 
-    marginHorizontal: 4,
-    backgroundColor: PRIMARY_COLOR
-  },
-  button: {
-    backgroundColor: PRIMARY_COLOR,
-    borderRadius: 30,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: PRIMARY_COLOR,
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowRadius: 12,
+    elevation: 10,
   },
-  buttonContent: { 
-    flexDirection: 'row', 
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 12,
+  nextBtnText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginRight: 4,
   },
-  buttonText: { 
-    color: '#FFF', 
-    fontSize: 16, 
-    fontWeight: '700' 
-  },
-  iconCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#FFF',
-    alignItems: 'center',
-    justifyContent: 'center',
+  nextBtnIcon: {
+    marginLeft: 2,
   },
 });
 
 const langStyles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 28,
-    width: '85%',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#000',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  flag: {
-    fontSize: 30,
-    marginRight: 16,
-  },
-  label: {
-    fontSize: 18,
-    color: '#000',
-    fontWeight: '600',
-  },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center' },
+  card: { backgroundColor: '#FFF', borderRadius: 24, padding: 32, width: '88%', alignItems: 'center' },
+  title: { fontSize: 22, fontWeight: '700', marginBottom: 28, color: '#000' },
+  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16, width: '100%', borderBottomWidth: 1, borderBottomColor: '#EEE' },
+  flag: { fontSize: 32, marginRight: 16 },
+  label: { fontSize: 18, fontWeight: '600', color: '#000' },
 });
 
 export default OnboardingScreen;

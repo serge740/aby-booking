@@ -15,9 +15,21 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Header } from '../../components/Guest/Header';
 import { BannerCarousel, BannerItem } from '../../components/Guest/BannerCarousel';
 import { FeaturedCategories } from '../../components/Guest/FeaturedCategories';
-import { COLORS } from '../../constants/colors';
+import { Colors as RAW_COLORS } from '../../constants/Colors';
 
-// ── BANNER DATA ─────────────────────────────────────
+/* ────────────────────────────────────────
+   COLORS – extend with white/dark/success
+   ──────────────────────────────────────── */
+const COLORS = {
+  ...RAW_COLORS,
+  white: '#FFFFFF',
+  dark: '#1E1B16',
+  success: '#10B981',
+};
+
+/* ────────────────────────────────────────
+   BANNER DATA
+   ──────────────────────────────────────── */
 const bannerData: BannerItem[] = [
   {
     id: 1,
@@ -39,8 +51,9 @@ const bannerData: BannerItem[] = [
   },
 ];
 
-// ── IMPORT IMAGES ───────────────────────────────────────
-// eslint-disable-next-line import/first
+/* ────────────────────────────────────────
+   IMPORT IMAGES
+   ──────────────────────────────────────── */
 import Image1 from '../../assets/feature/image1.avif';
 import Image2 from '../../assets/feature/image2.avif';
 import Image3 from '../../assets/feature/image3.webp';
@@ -49,7 +62,9 @@ import Image5 from '../../assets/feature/image5.webp';
 import Image6 from '../../assets/feature/image6.webp';
 import Image7 from '../../assets/feature/image8.webp';
 
-// ── CATEGORIES ──────────────────────────────────────────
+/* ────────────────────────────────────────
+   CATEGORIES
+   ──────────────────────────────────────── */
 const categories = [
   { id: 1, title: 'Dairy, Bread ', imageUrl: Image1 },
   { id: 2, title: 'Snack & Munchies', imageUrl: Image2 },
@@ -57,21 +72,24 @@ const categories = [
   { id: 4, title: 'Instant Food', imageUrl: Image4 },
   { id: 5, title: 'Tea, Coffee', imageUrl: Image5 },
   { id: 6, title: 'Atta, Rice & Dal', imageUrl: Image6 },
-  { id: 7, title: ' Vegetables', imageUrl: Image7 },
+  { id: 7, title: 'Vegetables', imageUrl: Image7 },
 ];
 
-// ── PRESS HANDLER ───────────────────────────────────────
+/* ────────────────────────────────────────
+   HANDLER
+   ──────────────────────────────────────── */
 const handleCategoryPress = (item: any) => {
   console.log('Selected category:', item.title);
 };
 
-// ── MASONRY GRID COMPONENT ──────────────────────────────
+/* ────────────────────────────────────────
+   MASONRY GRID COMPONENT
+   ──────────────────────────────────────── */
 const MasonryGrid = () => {
   const { width } = Dimensions.get('window');
-  const columnWidth = (width - 48) / 2; // 16px padding on sides + 16px gap
+  const columnWidth = (width - 48) / 2; // 16px padding + 16px gap
   const gap = 12;
 
-  // Split into two columns with alternating heights
   const leftColumn: typeof categories = [];
   const rightColumn: typeof categories = [];
 
@@ -117,7 +135,9 @@ const MasonryGrid = () => {
   );
 };
 
-// ── MAIN COMPONENT ──────────────────────────────────────
+/* ────────────────────────────────────────
+   MAIN SCREEN
+   ──────────────────────────────────────── */
 export default function HomeScreen() {
   return (
     <SafeAreaProvider>
@@ -147,7 +167,9 @@ export default function HomeScreen() {
   );
 }
 
-/* ────────────────────── STYLES ────────────────────── */
+/* ────────────────────────────────────────
+   STYLES
+   ──────────────────────────────────────── */
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -161,7 +183,7 @@ const styles = StyleSheet.create({
   featuredSection: {
     paddingHorizontal: 4,
     paddingTop: 32,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     marginTop: -22,
@@ -181,23 +203,20 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
 
-  // ── MASONRY STYLES ───────────────────────────────────
+  /* ── MASONRY ─────────────────────────────── */
   masonrySection: {
     paddingHorizontal: 6,
     paddingTop: 8,
     paddingBottom: 32,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
   },
-
   masonryContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   masonryColumn: {
     flex: 1,
   },
-
   masonryItem: {
     backgroundColor: '#f0f0f0',
     borderRadius: 16,
@@ -208,19 +227,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
   },
-
   masonryImage: {
     width: '100%',
     height: '100%',
   },
-
   masonryOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.35)',
     justifyContent: 'flex-end',
     padding: 12,
   },
-
   masonryTitle: {
     color: '#fff',
     fontSize: 14,

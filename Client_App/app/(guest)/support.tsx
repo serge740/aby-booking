@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /* eslint-disable no-dupe-keys */
 import React, { useState } from 'react';
 import {
@@ -22,7 +23,7 @@ if (Platform.OS === 'android') {
 
 // ── IMPORT SAME HEADER AS HOMESCREEN ─────────────────────
 import { Header } from '../../components/Guest/Header';
-import { COLORS } from '../../constants/colors';
+import { Colors } from '../../constants/Colors';
 
 // ── HARD-CODED DATA (no i18n) ─────────────────────────────
 const FAQ_DATA = [
@@ -55,7 +56,7 @@ export default function Support() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
+      <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
       <SafeAreaView style={styles.safeArea} edges={['left', 'right', 'bottom']}>
         {/* SAME HEADER AS HOMESCREEN */}
         <View style={styles.headerContainer}>
@@ -71,7 +72,7 @@ export default function Support() {
             {/* CONTACT CARD */}
             <View style={styles.infoCard}>
               <View style={styles.cardHeader}>
-                <Ionicons name="call-outline" size={22} color={COLORS.primary} />
+                <Ionicons name="call-outline" size={22} color={Colors.primary} />
                 <Text style={styles.cardTitle}>Contact Us</Text>
               </View>
               <Text style={styles.cardText}>+250 788 123 456</Text>
@@ -92,7 +93,7 @@ export default function Support() {
             {/* FAQ ACCORDION */}
             <View style={styles.faqCard}>
               <View style={styles.cardHeader}>
-                <Ionicons name="help-circle-outline" size={24} color={COLORS.primary} />
+                <Ionicons name="help-circle-outline" size={24} color={Colors.primary} />
                 <Text style={styles.cardTitle}>Frequently Asked Questions</Text>
               </View>
 
@@ -157,10 +158,10 @@ const AccordionItem = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: Colors.primary,
   },
   headerContainer: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: Colors.primary,
     paddingBottom: 16,
     borderBottomLeftRadius: 32,
     borderBottomRightRadius: 32,

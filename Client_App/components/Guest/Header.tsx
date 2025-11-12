@@ -1,6 +1,16 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { COLORS } from '../../constants/colors';   // <- keep your color file or inline them
+import { Colors as RAW_COLORS } from '../../constants/Colors'; // import your base palette
+
+/* ────────────────────────────────────────────────
+   EXTEND COLORS LOCALLY (adds white/light if missing)
+   ──────────────────────────────────────────────── */
+const COLORS = {
+  ...RAW_COLORS,
+  white: '#FFFFFF',
+  light: '#F8F9FA',
+};
 
 const HEADER_HEIGHT = 120;
 
@@ -21,6 +31,9 @@ export const Header: React.FC<HeaderProps> = ({
   </View>
 );
 
+/* ────────────────────────────────────────────────
+   STYLES
+   ──────────────────────────────────────────────── */
 const styles = StyleSheet.create({
   fixedHeader: {
     height: HEADER_HEIGHT,
@@ -33,7 +46,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 24,
     fontWeight: '700',
-    color: COLORS.white,
+    color: COLORS.light,
     marginBottom: 4,
   },
   guestMessage: {

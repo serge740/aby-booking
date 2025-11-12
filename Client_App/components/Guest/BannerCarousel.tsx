@@ -9,21 +9,28 @@ import {
   Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS } from '../../constants/colors';
+import { Colors as RAW_COLORS } from '../../constants/Colors'; // ✅ correct import (capital C)
+
+// Extend Colors → COLORS (so you can safely use COLORS.white, etc.)
+const COLORS = {
+  ...RAW_COLORS,
+  white: '#FFFFFF',
+  black: '#000000',
+};
 
 const { width } = Dimensions.get('window');
 const BANNER_HEIGHT = 200;
 
 export interface BannerItem {
   id: number;
-  image: any;               // require('../../assets/...')
+  image: any; // require('../../assets/...')
   title: string;
   description: string;
 }
 
 interface BannerCarouselProps {
   data: BannerItem[];
-  autoPlayInterval?: number;   // ms
+  autoPlayInterval?: number; // ms
 }
 
 export const BannerCarousel: React.FC<BannerCarouselProps> = ({
@@ -80,11 +87,11 @@ export const BannerCarousel: React.FC<BannerCarouselProps> = ({
         ref={flatListRef}
         data={data}
         renderItem={renderItem}
-        keyExtractor={i => i.id.toString()}
+        keyExtractor={(i) => i.id.toString()}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={e => {
+        onMomentumScrollEnd={(e) => {
           const newIndex = Math.round(e.nativeEvent.contentOffset.x / width);
           setActiveSlide(newIndex);
         }}
@@ -145,6 +152,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.4)' },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255,255,255,0.4)',
+  },
   activeDot: { width: 24, backgroundColor: COLORS.white },
 });

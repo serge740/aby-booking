@@ -8,10 +8,11 @@ import {
   StyleSheet,
   Image,
   ImageRequireSource,
+  useColorScheme,
 } from 'react-native';
-import { COLORS } from '../../constants/colors';
+import { Colors, getThemeColors } from '../../constants/Colors';
 
-// ── NEW TYPE (image + title only) ───────────────────────────────
+// ── CATEGORY ITEM TYPE ───────────────────────────────
 export interface CategoryItem {
   id: string | number;
   title: string;
@@ -24,23 +25,27 @@ interface FeaturedCategoriesProps {
   spacing?: number;
 }
 
+// ── MAIN COMPONENT ───────────────────────────────────
 export const FeaturedCategories: React.FC<FeaturedCategoriesProps> = ({
   data,
   onPress,
   spacing = 12,
 }) => {
+  const colorScheme = useColorScheme();
+  const theme = getThemeColors(colorScheme);
+
   const renderItem = ({ item }: { item: CategoryItem }) => (
     <TouchableOpacity
       activeOpacity={0.75}
       style={[styles.item, { marginHorizontal: spacing / 2 }]}
       onPress={() => onPress?.(item)}
     >
-      {/* SQUARE IMAGE CONTAINER */}
-      <View style={styles.iconContainer}>
+      {/* IMAGE CONTAINER */}
+      <View style={[styles.iconContainer, { backgroundColor: theme.uiBackground }]}>
         <Image source={item.imageUrl} style={styles.imageIcon} />
       </View>
 
-      <Text style={styles.label} numberOfLines={2}>
+      <Text style={[styles.label, { color: theme.text }]} numberOfLines={2}>
         {item.title}
       </Text>
     </TouchableOpacity>
@@ -66,15 +71,12 @@ const styles = StyleSheet.create({
   },
   item: {
     alignItems: 'center',
-    width: 120,               // fixed width → predictable spacing
+    width: 120, // fixed width for consistent layout
   },
-
-  // SQUARE CONTAINER (120 × 120)
   iconContainer: {
     width: 120,
     height: 95,
-    borderRadius: 16,         // optional soft corners
-    backgroundColor: '#f9f9f9',
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -84,18 +86,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-
-  // IMAGE FILLS THE SQUARE (centered, no stretch)
   imageIcon: {
     width: '50%',
     height: '50%',
     resizeMode: 'contain',
   },
-
   label: {
     fontSize: 12.5,
     fontWeight: '600',
-    color: COLORS.dark,
     textAlign: 'center',
     paddingHorizontal: 4,
   },
