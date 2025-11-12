@@ -41,6 +41,8 @@ import MenuItemView from "./components/dashboard/menu/MenuItemView";
 import { CreateMenuItemPage, EditMenuItemPage } from "./components/dashboard/menu/UpsetMenuItemPage";
 import MenuItemDetail from "./pages/company/CompanyMenuItemPage";
 import OrderDashboard from "./pages/dashboard/company/OrderDashboard";
+import CompanyOrderDetailView from "./pages/dashboard/company/CompanyOrderDetailView";
+import OrderTrackingPage from "./pages/client/OrderTrackingPage";
 
 
 // Loading component
@@ -80,6 +82,7 @@ const router = createBrowserRouter([
     { path: 'partners/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
     { path: 'partners/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
     { path: 'partners/menu/:companyId/item/:itemId', element: <SuspenseWrapper><MenuItemDetail /></SuspenseWrapper> },
+    { path: 'track-orders', element: <SuspenseWrapper><OrderTrackingPage /></SuspenseWrapper> },
  
   ]
 },
@@ -118,6 +121,7 @@ const router = createBrowserRouter([
  
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'orders' , element:<OrderDashboard />},
+          {path:'orders/:id' , element:<CompanyOrderDetailView />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/create' , element:<CreateMenuItemPage />},

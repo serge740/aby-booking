@@ -167,7 +167,7 @@ const OrderDashboard: React.FC = () => {
   const cancelledOrders = allOrders.filter(o => o.status === "CANCELLED").length;
 
   const handleViewOrder = (order: Order) => {
-    navigate(`/company/dashboard/order-management/${order.id}`);
+    navigate(`/company/dashboard/orders/${order.id}`);
   };
 
   const formatDate = (date: string) => {

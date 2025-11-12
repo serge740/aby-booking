@@ -16,6 +16,7 @@ export class OrderController {
       clientName: string;
       clientEmail?: string;
       clientPhone?: string;
+      notes?: string;
       items: { menuItemId: string; unitPrice: number; quantity: number }[];
     },
   ) {
@@ -48,6 +49,10 @@ export class OrderController {
   @Get('client/:clientId')
   async getOrdersByClient(@Param('clientId') clientId: string) {
     return this.orderService.getOrdersByClientId(clientId);
+  }
+  @Get('order-number/:orderNumber')
+  async getOrdersByOrderNumber(@Param('orderNumber') orderNumber: string) {
+    return this.orderService.getOrdersByOrderNumber(orderNumber);
   }
   @Get('company/:companyId')
   async getOrdersByCompany(@Param('companyId') companyId: string) {

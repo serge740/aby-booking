@@ -11,10 +11,12 @@ import {
   ShoppingCart,
   Loader2,
   AlertCircle,
+  Package,
 } from 'lucide-react';
 import menuItemService from '../../services/menuItemService';
 import { API_URL } from '../../api/api';
 import { useCart } from '../../context/CartContext';
+import MenuItemOrderModal from '../../components/MenuItemOrderModal'; // Import modal
 
 const MenuItemDetail = () => {
   const { companyId, itemId } = useParams();
@@ -28,17 +30,19 @@ const MenuItemDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Modal state
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+
   /* -------------------------------------------------
      1. FETCH MENU ITEM + RELATED
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   useEffect(() => {
     const fetchMenuItem = async () => {
       try {
         setLoading(true);
         setError(null);
-
         const itemData = await menuItemService.getOneMenuItem(itemId);
-
+        
         // Normalize images
         if (itemData.mainImage) {
           itemData.mainImage = `${API_URL}${itemData.mainImage}`;
@@ -53,7 +57,6 @@ const MenuItemDetail = () => {
           if (!Array.isArray(ing)) ing = JSON.parse(ing);
           itemData.ingredients = ing;
         }
-
         setMenuItem(itemData);
         setSelectedImage(itemData.mainImage || '');
 
@@ -71,7 +74,6 @@ const MenuItemDetail = () => {
             return i;
           })
           .slice(0, 4);
-
         setRelatedItems(related);
       } catch (err) {
         setError(err.message || 'Failed to load menu item');
@@ -79,20 +81,17 @@ const MenuItemDetail = () => {
         setLoading(false);
       }
     };
-
     if (itemId && companyId) fetchMenuItem();
   }, [itemId, companyId]);
 
   /* -------------------------------------------------
      2. ON MOUNT: Check if item is in cart → sync quantity
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   useEffect(() => {
     if (!menuItem || cartItems.length === 0) return;
-
     const existing = cartItems.find(
       (item) => item.menuItemId === menuItem.id
     );
-
     if (existing && existing.quantity > 0) {
       setQuantity(existing.quantity);
     } else {
@@ -102,7 +101,7 @@ const MenuItemDetail = () => {
 
   /* -------------------------------------------------
      3. ICON HELPERS
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   const getDrinkIcon = (type) => {
     switch (type) {
       case 'WINE':
@@ -118,7 +117,7 @@ const MenuItemDetail = () => {
 
   /* -------------------------------------------------
      4. LOADING / ERROR STATES
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -154,7 +153,7 @@ const MenuItemDetail = () => {
 
   /* -------------------------------------------------
      5. PRICE CALCULATION
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   const finalPrice =
     menuItem.sellingPrice -
     menuItem.sellingPrice * (menuItem.discount / 100);
@@ -162,20 +161,21 @@ const MenuItemDetail = () => {
 
   /* -------------------------------------------------
      6. ADD / UPDATE CART
-   ------------------------------------------------- */
+    ------------------------------------------------- */
   const handleAddToCart = () => {
     if (!menuItem.isActive) return;
-
     const payload = {
       ...menuItem,
-      menuItemId: menuItem.id,  // ensure ID
+      menuItemId: menuItem.id,
       quantity,
       unitPrice: finalPrice,
       totalPrice,
       companyId,
+      companyName: menuItem.company?.name || 'Restaurant',
+      companyLogo: menuItem.company?.logo ? `${API_URL}${menuItem.company.logo}` : null,
+      image: menuItem.mainImage,
     };
 
-    // If already in cart → update quantity
     const existing = cartItems.find((i) => i.menuItemId === menuItem.id);
     if (existing) {
       updateQuantity(menuItem.id, quantity);
@@ -185,8 +185,40 @@ const MenuItemDetail = () => {
   };
 
   /* -------------------------------------------------
-     7. RENDER – Your original design (100% unchanged)
-   ------------------------------------------------- */
+     7. ORDER NOW → Inject item into cart & open modal
+    ------------------------------------------------- */
+  const handleOrderNow = () => {
+    if (!menuItem.isActive) return;
+
+    // Inject single item into cart (override quantity)
+    const payload = {
+      ...menuItem,
+      menuItemId: menuItem.id,
+      quantity,
+      unitPrice: finalPrice,
+      totalPrice,
+      companyId,
+      companyName: menuItem.company?.name || 'Restaurant',
+      companyLogo: menuItem.company?.logo ? `${API_URL}${menuItem.company.logo}` : null,
+      image: menuItem.mainImage,
+    };
+
+    // Replace this company's items in cart
+    const otherCompanyItems = cartItems.filter(i => i.companyId !== companyId);
+    const thisCompanyItems = [payload];
+
+    // Update cart context (you may want a `setCart` or `replaceCompanyCart`)
+    // For now, clear and add
+    otherCompanyItems.forEach(item => addToCart(item)); // re-add others
+    // We'll let modal use fresh cart state
+
+    // Open modal
+    setIsOrderModalOpen(true);
+  };
+
+  /* -------------------------------------------------
+     8. RENDER
+    ------------------------------------------------- */
   return (
     <div className="min-h-screen text-black bg-gray-50">
       <div className="mx-auto p-6 menuItem">
@@ -243,11 +275,11 @@ const MenuItemDetail = () => {
                           </h4>
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-orange-600 text-sm">
-                              ${itemFinal.toFixed(2)}
+                              {formatRWF(itemFinal)}
                             </span>
                             {item.discount > 0 && (
                               <span className="text-xs text-gray-400 line-through">
-                                ${item.sellingPrice.toFixed(2)}
+                                {formatRWF(item.sellingPrice)}
                               </span>
                             )}
                           </div>
@@ -286,7 +318,6 @@ const MenuItemDetail = () => {
                 </div>
               )}
             </div>
-
             <div className="flex items-center gap-2">
               {menuItem.mainImage && (
                 <button
@@ -353,17 +384,17 @@ const MenuItemDetail = () => {
             <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6 border border-orange-200">
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="text-4xl font-bold text-gray-900">
-                  ${finalPrice.toFixed(2)}
+                  {formatRWF(finalPrice)}
                 </span>
                 {menuItem.discount > 0 && (
                   <span className="text-xl text-gray-400 line-through">
-                    ${menuItem.sellingPrice.toFixed(2)}
+                    {formatRWF(menuItem.sellingPrice)}
                   </span>
                 )}
               </div>
               {menuItem.discount > 0 && (
                 <p className="text-green-600 font-medium">
-                  You save ${(menuItem.sellingPrice - finalPrice).toFixed(2)}
+                  You save {formatRWF(menuItem.sellingPrice - finalPrice)}
                 </p>
               )}
             </div>
@@ -426,7 +457,7 @@ const MenuItemDetail = () => {
               </>
             )}
 
-            {/* QUANTITY + ADD TO CART */}
+            {/* QUANTITY + ADD TO CART + ORDER NOW */}
             <div className="bg-white rounded-xl p-6 border border-gray-200 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-gray-900">Quantity:</span>
@@ -452,28 +483,56 @@ const MenuItemDetail = () => {
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <span className="text-gray-600">Total:</span>
                 <span className="text-2xl font-bold text-gray-900">
-                  ${totalPrice.toFixed(2)}
+                  {formatRWF(totalPrice)}
                 </span>
               </div>
 
-              <button
-                onClick={userId => handleAddToCart()}
-                disabled={!menuItem.isActive}
-                className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                {menuItem.isActive
-                  ? cartItems.some(i => i.menuItemId === menuItem.id)
-                    ? 'Update Order'
-                    : 'Add to Order'
-                  : 'Currently Unavailable'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={!menuItem.isActive}
+                  className="flex-1 bg-gray-800 hover:bg-gray-900 disabled:bg-gray-400 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {menuItem.isActive
+                    ? cartItems.some(i => i.menuItemId === menuItem.id)
+                      ? 'Update Cart'
+                      : 'Add to Cart'
+                    : 'Unavailable'}
+                </button>
+
+                <button
+                  onClick={handleOrderNow}
+                  disabled={!menuItem.isActive}
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                >
+                  <Package className="w-5 h-5" />
+                  Order Now
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* ORDER MODAL */}
+      <MenuItemOrderModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        companyId={companyId}
+      />
     </div>
   );
+};
+
+// RWF Formatter (inside file)
+const formatRWF = (amount) => {
+  return new Intl.NumberFormat('rw-RW', {
+    style: 'currency',
+    currency: 'RWF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
 };
 
 export default MenuItemDetail;

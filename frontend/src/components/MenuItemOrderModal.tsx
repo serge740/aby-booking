@@ -9,6 +9,8 @@ import {
   CheckCircle,
   Trash2,
   Store,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import orderService from '../services/orderService';
@@ -17,7 +19,7 @@ import { API_URL } from '../api/api';
 // ----------------------------------------------------
 // RWF Formatter
 // ----------------------------------------------------
-const formatRWF = (amount) => {
+const formatRWF = (amount: number) => {
   return new Intl.NumberFormat('rw-RW', {
     style: 'currency',
     currency: 'RWF',
@@ -26,12 +28,14 @@ const formatRWF = (amount) => {
   }).format(amount);
 };
 
-const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
-  const { cartItems, removeFromCart, clearCart } = useCart();
+const MenuItemOrderModal = ({ isOpen, onClose, companyId }: { isOpen: boolean; onClose: () => void; companyId: string }) => {
+  const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
 
   // Filter items for THIS company only
   const companyItems = cartItems.filter((item) => item.companyId === companyId);
-  const companyTotal = companyItems.reduce((sum, item) => sum + item.unitPrice, 0);
+
+  // Calculate total: (unitPrice * quantity)
+  const companyTotal = companyItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
   // Load company info for header
   const [companyInfo, setCompanyInfo] = useState({ name: 'Loading...', logo: null });
@@ -45,8 +49,6 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
-
-  // NEW: Order Notes
   const [notes, setNotes] = useState('');
 
   // ----------------------------------------------------
@@ -75,14 +77,36 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
       setClientName('');
       setClientPhone('');
       setClientEmail('');
-      setNotes(''); // Reset notes
+      setNotes('');
     }
   }, [isOpen]);
 
-  const handleRemoveItem = (menuItemId) => {
+  // ----------------------------------------------------
+  // Quantity Controls
+  // ----------------------------------------------------
+  const handleIncrease = (menuItemId: string) => {
+    const item = companyItems.find(i => i.menuItemId === menuItemId);
+    if (item) {
+      updateQuantity(menuItemId, item.quantity + 1);
+    }
+  };
+
+  const handleDecrease = (menuItemId: string) => {
+    const item = companyItems.find(i => i.menuItemId === menuItemId);
+    if (item && item.quantity > 1) {
+      updateQuantity(menuItemId, item.quantity - 1);
+    } else {
+      removeFromCart(menuItemId); // Remove if quantity becomes 0
+    }
+  };
+
+  const handleRemoveItem = (menuItemId: string) => {
     removeFromCart(menuItemId);
   };
 
+  // ----------------------------------------------------
+  // Navigation & Validation
+  // ----------------------------------------------------
   const canProceedToStep2 = () => companyItems.length > 0;
   const canProceedToStep3 = () => clientName.trim() !== '';
   const canSubmit = () => companyItems.length > 0 && clientName.trim() !== '';
@@ -99,11 +123,11 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
         clientName: clientName.trim(),
         clientPhone: clientPhone.trim() || undefined,
         clientEmail: clientEmail.trim() || undefined,
-        notes: notes.trim() || undefined, // Send notes (optional)
+        notes: notes.trim() || undefined,
         items: companyItems.map((item) => ({
           menuItemId: item.menuItemId,
           unitPrice: item.unitPrice,
-          quantity: 1,
+          quantity: item.quantity, // Use actual quantity
         })),
       };
 
@@ -113,7 +137,7 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
         clearCart(); // Or keep other company items
         onClose();
       }, 2000);
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || 'Failed to place order. Please try again.');
     } finally {
       setSubmitting(false);
@@ -226,7 +250,7 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                 </div>
               ) : (
                 <>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {companyItems.map((item) => (
                       <div
                         key={item.menuItemId}
@@ -244,23 +268,51 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900">{item.name}</h4>
                           <div className="flex items-center justify-between mt-2">
-                            <span className="text-lg font-bold text-orange-600">
-                              {formatRWF(item.unitPrice)}
-                            </span>
-                            <button
-                              onClick={() => handleRemoveItem(item.menuItemId)}
-                              className="text-red-500 hover:text-red-700 text-sm flex items-center gap-1"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                              Remove
-                            </button>
+                            <div className="flex items-center gap-3">
+                              {/* Quantity Controls */}
+                              <div className="flex items-center gap-1 border border-gray-300 rounded-lg">
+                                <button
+                                  onClick={() => handleDecrease(item.menuItemId)}
+                                  className="p-1.5 hover:bg-gray-100 transition"
+                                  disabled={item.quantity <= 1}
+                                >
+                                  <Minus className="w-4 h-4" />
+                                </button>
+                                <span className="px-3 py-1 font-medium text-sm min-w-8 text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => handleIncrease(item.menuItemId)}
+                                  className="p-1.5 hover:bg-gray-100 transition"
+                                >
+                                  <Plus className="w-4 h-4" />
+                                </button>
+                              </div>
+
+                              <span className="text-sm text-gray-600">
+                                × {formatRWF(item.unitPrice)} ea
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <span className="font-bold text-orange-600">
+                                {formatRWF(item.unitPrice * item.quantity)}
+                              </span>
+                              <button
+                                onClick={() => handleRemoveItem(item.menuItemId)}
+                                className="text-red-500 hover:text-red-700 text-sm flex items-center gap-1"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Remove
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* NEW: Notes Field */}
+                  {/* Order Notes */}
                   <div className="mt-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Order Notes (Optional)
@@ -328,7 +380,7 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
           {step === 3 && (
             <div className="space-y-6">
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap- verification">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                   <p className="text-red-800">{error}</p>
                 </div>
@@ -379,9 +431,14 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }) => {
                       key={item.menuItemId}
                       className="flex justify-between items-center py-2 border-b"
                     >
-                      <span className="text-gray-700">{item.name}</span>
+                      <div>
+                        <span className="text-gray-700">{item.name}</span>
+                        <span className="text-xs text-gray-500 ml-2">
+                          ({item.quantity} × {formatRWF(item.unitPrice)})
+                        </span>
+                      </div>
                       <span className="font-medium text-orange-600">
-                        {formatRWF(item.unitPrice)}
+                        {formatRWF(item.unitPrice * item.quantity)}
                       </span>
                     </div>
                   ))}
