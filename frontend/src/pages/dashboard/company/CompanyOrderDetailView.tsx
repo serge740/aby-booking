@@ -125,7 +125,7 @@ export default function CompanyOrderDetailView() {
       const updated = await orderService.updateStatus(order.id, newStatus);
       console.log(updated);
       
-    //   setOrder(updated);
+      setOrder(updated);
       showToast('success', `Order marked as ${newStatus}!`);
     } catch (err: any) {
       showToast('error', err.message || 'Failed to update status');
