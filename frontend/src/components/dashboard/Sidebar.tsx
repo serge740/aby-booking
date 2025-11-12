@@ -13,6 +13,9 @@ import {
   ChevronDown,
   File,
   MapPin,
+  MenuSquare,
+  Layers,
+  Box,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 
@@ -86,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       {
         id: "menu-category",
         label: "Menu",
-        icon: ClipboardList,
+        icon: MenuSquare,
      
         allowedRoles: ["company",],
 
@@ -94,14 +97,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
           {
             id: "menu-category",
             label: "Menu Category",
-            icon: ClipboardList,
+            icon: Layers,
             path: `${basePath}/menu-category`,
             allowedRoles: ["company",],
           },
           {
             id: "menu-item",
             label: "Menu Item",
-            icon: ClipboardList,
+            icon: Box,
             path: `${basePath}/menu-item`,
             allowedRoles: ["company",],
           },
