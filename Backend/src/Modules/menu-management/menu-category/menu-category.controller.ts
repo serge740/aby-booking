@@ -31,10 +31,20 @@ export class MenuCategoryController {
     return this.service.create(req.company!.id, body.name,body.image);
   }
 
+  @Get('all')
+
+  findAll() {
+    return this.service.findAll();
+  }
   @Get()
   @UseGuards(CompanyAuthGuard)
-  findAll(@Req() req: RequestWithCompany) {
-    return this.service.findAll(req.company!.id);
+  findAllAsCompany(@Req() req: RequestWithCompany) {
+    return this.service.findByCompanyId(req.company!.id);
+  }
+  @Get('/company/:id')
+  
+  findAllByCompany(@Param('id') id:string) {
+    return this.service.findByCompanyId(id);
   }
 
   @Put(':id')

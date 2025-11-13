@@ -19,7 +19,13 @@ export class MenuCategoryService {
     });
   }
 
-  async findAll(companyId: string) {
+  async findAll() {
+    return await this.prisma.menuCategory.findMany({
+     
+      include: { items: true ,company:true }
+    });
+  }
+  async findByCompanyId(companyId: string) {
     return await this.prisma.menuCategory.findMany({
       where: { companyId },
       include: { items: true ,company:true }
