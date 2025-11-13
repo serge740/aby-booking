@@ -250,8 +250,8 @@ const CreateOrderPage = () => {
   // Render
   // -----------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br  from-orange-50 to-amber-100 p-4 md:p-16">
+      <div className=" mx-auto">
 
         {/* ── Header ── */}
         <div className="bg-white rounded-t-2xl shadow-lg p-6 border-b-4 border-orange-500">
@@ -380,7 +380,7 @@ const CreateOrderPage = () => {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600">{line.menuItem.description}</p>
+                        <div className="text-sm text-gray-600" dangerouslySetInnerHTML={{__html:line.menuItem.description}}></div>
 
                         <div className="flex items-center gap-4 mt-2 text-sm">
                           <span className="text-gray-600">
@@ -502,8 +502,8 @@ const CreateOrderPage = () => {
 
       {/* ── MENU MODAL ── */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-8 flex flex-col max-h-[85vh]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-6xl w-full my-8 flex flex-col max-h-[85vh]">
             {/* Header */}
             <div className="bg-orange-600 text-white p-4 md:p-6 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-xl md:text-2xl font-bold">Select Menu Item</h2>
@@ -580,7 +580,7 @@ const CreateOrderPage = () => {
                           )}
                         </div>
 
-                        <p className="text-sm text-gray-600 mb-3">{item.description}</p>
+                        <div className="text-sm text-gray-600 mb-3" dangerouslySetInnerHTML={{__html:item.description || ''}}></div>
 
                         <div className="flex items-center justify-between">
                           <div>
