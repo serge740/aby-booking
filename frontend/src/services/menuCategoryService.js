@@ -40,6 +40,19 @@ class MenuCategoryService {
       throw new Error(msg);
     }
   }
+  // ✅ Get all categories
+  async getCategoriesByCompany(id) {
+    try {
+      const response = await api.get('/menu-category/company/'+id);
+      return response.data;
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        'Failed to fetch categories';
+      throw new Error(msg);
+    }
+  }
 
   // ✅ Update a category with optional new image
   async updateCategory(id, name, imageFile = null) {

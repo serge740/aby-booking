@@ -10,11 +10,12 @@ import {
   FiShoppingCart,
 } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const {cartItems:cart} = useCart()
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -132,7 +133,7 @@ function NavBar() {
               <NavLink to="/cart" className="relative group">
                 <FiShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition" />
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  5
+                  {cart?.length > 0 ? cart.length : 0}
                 </span>
               </NavLink>
             </div>

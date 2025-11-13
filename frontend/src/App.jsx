@@ -43,6 +43,7 @@ import MenuItemDetail from "./pages/company/CompanyMenuItemPage";
 import OrderDashboard from "./pages/dashboard/company/OrderDashboard";
 import CompanyOrderDetailView from "./pages/dashboard/company/CompanyOrderDetailView";
 import OrderTrackingPage from "./pages/client/OrderTrackingPage";
+import CreateOrderPage from "./components/dashboard/order/CreateOrderPage";
 
 
 // Loading component
@@ -122,6 +123,7 @@ const router = createBrowserRouter([
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'orders' , element:<OrderDashboard />},
           {path:'orders/:id' , element:<CompanyOrderDetailView />},
+          {path:'orders/create/:id' , element:<CreateOrderPage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/create' , element:<CreateMenuItemPage />},

@@ -18,6 +18,7 @@ import {
   Percent,
   Clock,
   Check,
+  Plus,
 } from "lucide-react";
 import jsPDF from 'jspdf';
 import orderService from "../../../services/orderService";
@@ -122,6 +123,10 @@ const OrderDashboard: React.FC = () => {
     setOperationStatus({ type, message });
     setTimeout(() => setOperationStatus(null), duration);
   };
+
+  const  handleCreateOrder = ()=>{
+    navigate('/company/dashboard/orders/create/'+company?.id)
+  }
 
   const handleFilterAndSort = () => {
     let filtered = [...allOrders];
@@ -529,6 +534,11 @@ const OrderDashboard: React.FC = () => {
               <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
               <span>Refresh</span>
             </button>
+            <button  onClick={handleCreateOrder}
+                            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium shadow-md">
+                            <Plus className="w-4 h-4" />
+                            <span className="text-sm">Add Item</span>
+                          </button>
           </div>
         </div>
       </div>
