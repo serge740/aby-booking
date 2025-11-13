@@ -17,6 +17,7 @@ import { CompanyModule } from './Modules/Company-management/company.module';
 import { MenuItemModule } from './Modules/menu-management/menu-item/menu-item.module';
 import { MenuCategoryModule } from './Modules/menu-management/menu-category/menu-category.module';
 import { ClientModule } from './Modules/client/client.module';
+import { EmployeeModule } from './Modules/employee/employee.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ClientModule } from './Modules/client/client.module';
     MenuItemModule,
     MenuCategoryModule,
     ClientModule,
+    EmployeeModule
   ],
   controllers: [],
 })

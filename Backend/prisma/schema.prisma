@@ -30,6 +30,7 @@ model Admin {
   isLocked  Boolean    @default(false)
   role      AdminRole  @default(ADMIN) // Default role is ADMIN
   createdAt DateTime   @default(now())
+  
   updatedAt DateTime   @updatedAt
 }
 
@@ -164,6 +165,7 @@ model Company {
  
   orders       Order[]
   items     MenuItem[] // One category can have many items
+  employee  Employee[]
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -187,6 +189,62 @@ model MenuCategory {
   company   Company    @relation(fields: [companyId], references: [id],onDelete: Cascade)
   items     MenuItem[] // One category can have many items
 }
+
+
+model Employee {
+  id                      String         @id @unique @default(uuid())
+  first_name              String
+  last_name               String
+  gender                  String
+  date_of_birth           DateTime
+  phone                   String
+  email                   String         @unique
+  password                String?
+  address                 String
+  national_id             String         @unique
+  profile_picture         String?
+  bank_account_number     String?
+  bank_name               String?
+  cv                      String?
+  application_letter      String?
+  position                String
+
+  marital_status          MaritalStatus? @default(SINGLE)
+  date_hired              DateTime
+  status                  EmployeeStatus @default(ACTIVE)
+  experience              Json?
+  emergency_contact_name  String?
+  emergency_contact_phone String?
+
+    company         Company?            @relation(fields: [companyId], references: [id])
+  companyId       String?
+  // security
+  google_id    String?  @unique
+  isLocked   Boolean? @default(false)
+  is2FA   Boolean? @default(false)
+ 
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+}
+
+// Define the enum first
+enum EmployeeStatus {
+  ACTIVE
+  TERMINATED
+  RESIGNED
+  PROBATION
+}
+
+// Enum for marital status
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+
 
 model MenuItem {
   id              String            @id @default(cuid())

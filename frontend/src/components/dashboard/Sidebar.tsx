@@ -4,29 +4,25 @@ import {
   User,
   X,
   Building,
-  ShoppingBag,
-  PackageSearch,
   ClipboardList,
-  History,
-  Users,
-  Settings,
-  ChevronDown,
-  File,
-  MapPin,
   MenuSquare,
   Layers,
   Box,
+  FileText,
+  Calendar,
+  DollarSign,
+  ChevronDown,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-
 import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
+import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
 import logo from '../../assets/tran.png';
 
 interface SidebarProps {
   isOpen?: boolean;
   onToggle: () => void;
-  role: "admin" | "company"; // Explicit
+  role: "admin" | "company" | "employee"; // Now includes employee
 }
 
 interface NavItem {
@@ -42,6 +38,7 @@ interface DropdownGroup {
   label: string;
   icon: React.ElementType;
   items: NavItem[];
+  allowedRoles?: string[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
@@ -52,10 +49,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   // Auth contexts
   const adminAuth = useAdminAuth();
   const companyAuth = useCompanyAuth();
+  const employeeAuth = useEmployeeAuth(); // NEW
 
   // Select correct auth and user
-  const auth = role === "admin" ? adminAuth : companyAuth;
-  const user = role === "admin" ? adminAuth.user : companyAuth.company;
+  const auth = role === "admin" ? adminAuth : role === "company" ? companyAuth : employeeAuth;
+  const user = role === "admin" ? adminAuth.user : role === "company" ? companyAuth.company : employeeAuth.user;
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown((prev) => (prev === id ? null : id));
@@ -65,54 +63,33 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   const getNavlinks = (role: string): (NavItem | DropdownGroup)[] => {
     const basePath = `/${role}/dashboard`;
 
-    return [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: TrendingUp,
-        path: basePath,
-      },
-      {
-        id: "company-management",
-        label: "Company Management",
-        icon: Building,
-        path: `${basePath}/company`,
-        allowedRoles: ["admin"],
-      },
-      {
-        id: "orders",
-        label: "Orders",
-        icon: ClipboardList,
-        path: `${basePath}/orders`,
-        allowedRoles: ["company"],
-      },
+    const adminLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
+      { id: "company-management", label: "Company Management", icon: Building, path: `${basePath}/company`, allowedRoles: ["admin"] },
+    ];
+
+    const companyLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
+      { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
+      { id: "employee", label: "Employee Management", icon: ClipboardList, path: `${basePath}/employee`, allowedRoles: ["company"] },
       {
         id: "menu-category",
         label: "Menu",
         icon: MenuSquare,
-     
-        allowedRoles: ["company",],
-
+        allowedRoles: ["company"],
         items: [
-          {
-            id: "menu-category",
-            label: "Menu Category",
-            icon: Layers,
-            path: `${basePath}/menu-category`,
-            allowedRoles: ["company",],
-          },
-          {
-            id: "menu-item",
-            label: "Menu Item",
-            icon: Box,
-            path: `${basePath}/menu-item`,
-            allowedRoles: ["company",],
-          },
-        ]
+          { id: "menu-category", label: "Menu Category", icon: Layers, path: `${basePath}/menu-category`, allowedRoles: ["company"] },
+          { id: "menu-item", label: "Menu Item", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
+        ],
       },
+    ];
 
+    const employeeLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
 
     ];
+
+    return role === "admin" ? adminLinks : role === "company" ? companyLinks : employeeLinks;
   };
 
   // Filter items by role
@@ -120,6 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     return items
       .map((item) => {
         if ("items" in item) {
+          if (item.allowedRoles && !item.allowedRoles.includes(role)) return null;
           const filteredItems = item.items.filter(
             (subItem) => !subItem.allowedRoles || subItem.allowedRoles.includes(role)
           );
@@ -151,7 +129,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   }, [location.pathname, navlinks]);
 
   const getProfileRoute = () => `/${role}/dashboard/profile`;
-
   const handleNavigateProfile = () => {
     navigate(getProfileRoute(), { replace: true });
   };
@@ -160,12 +137,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   const displayName =
     role === "admin"
       ? user?.names || "Admin"
-      : user?.name || "Company";
+      : role === "company"
+      ? user?.name || "Company"
+      : `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Employee";
 
   const displayEmail =
     role === "admin"
       ? user?.email || "admin@abybooking.com"
-      : user?.email || "company@abybooking.com";
+      : role === "company"
+      ? user?.email || "company@abybooking.com"
+      : user?.email || "employee@abybooking.com";
 
   const portalTitle = "FRESH CART";
 
@@ -176,16 +157,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
 
   const renderMenuItem = (item: NavItem) => {
     const Icon = item.icon;
-
     return (
       <NavLink
         key={item.id}
         to={item.path}
         end
         className={({ isActive }) =>
-          `w-full flex items-center space-x-2 px-2 py-2 rounded-lg transition-all duration-200 group border-l-4 ${isActive
-            ? "bg-primary-500/10 text-primary-700 border-primary-500"
-            : "text-gray-700 hover:bg-gray-50 border-transparent"
+          `w-full flex items-center space-x-2 px-2 py-2 rounded-lg transition-all duration-200 group border-l-4 ${
+            isActive
+              ? "bg-primary-500/10 text-primary-700 border-primary-500"
+              : "text-gray-700 hover:bg-gray-50 border-transparent"
           }`
         }
         onClick={() => window.innerWidth < 1024 && onToggle()}
@@ -206,15 +187,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     const Icon = dropdown.icon;
     const isOpen = openDropdown === dropdown.id;
     const hasActiveChild = isDropdownActive(dropdown);
-
     return (
       <div key={dropdown.id} className="w-full">
         <button
           onClick={() => toggleDropdown(dropdown.id)}
-          className={`w-full flex items-center justify-between px-2 py-2 rounded-lg transition-all duration-200 ${hasActiveChild
-            ? "bg-primary-500/10 text-primary-700 border-l-4 border-primary-500"
-            : "text-gray-700 hover:bg-gray-50 border-l-4 border-transparent"
-            }`}
+          className={`w-full flex items-center justify-between px-2 py-2 rounded-lg transition-all duration-200 ${
+            hasActiveChild
+              ? "bg-primary-500/10 text-primary-700 border-l-4 border-primary-500"
+              : "text-gray-700 hover:bg-gray-50 border-l-4 border-transparent"
+          }`}
         >
           <div className="flex items-center space-x-2">
             <div className={`p-1 rounded-md ${hasActiveChild ? "bg-primary-500 text-white" : "bg-gray-100 text-gray-600"}`}>
@@ -223,13 +204,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
             <span className="text-sm font-medium">{dropdown.label}</span>
           </div>
           <ChevronDown
-            className={`w-4 h-4 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"
-              } ${hasActiveChild ? "text-primary-600" : "text-gray-400"}`}
+            className={`w-4 h-4 transition-transform duration-300 ${
+              isOpen ? "rotate-180" : "rotate-0"
+            } ${hasActiveChild ? "text-primary-600" : "text-gray-400"}`}
           />
         </button>
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
-            }`}
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-96 opacity-100 mt-1" : "max-h-0 opacity-0"
+          }`}
         >
           <div className="ml-4 space-y-0.5 border-l-2 border-primary-100 pl-3 py-0.5">
             {dropdown.items.map((item) => {
@@ -239,9 +222,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
                   key={item.id}
                   to={item.path}
                   className={({ isActive }) =>
-                    `w-full flex items-center space-x-2 px-2 py-1.5 rounded-md transition-all duration-200 group relative ${isActive
-                      ? "bg-primary-500 text-white shadow-sm"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    `w-full flex items-center space-x-2 px-2 py-1.5 rounded-md transition-all duration-200 group relative ${
+                      isActive
+                        ? "bg-primary-500 text-white shadow-sm"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`
                   }
                   onClick={() => window.innerWidth < 1024 && onToggle()}
@@ -276,8 +260,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
 
       {/* Sidebar */}
       <div
-        className={`fixed left-0 top-0 min-h-screen bg-white flex flex-col border-r border-primary-200 shadow-lg transform transition-transform duration-300 z-50 lg:relative lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } w-72`}
+        className={`fixed left-0 top-0 min-h-screen bg-white flex flex-col border-r border-primary-200 shadow-lg transform transition-transform duration-300 z-50 lg:relative lg:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } w-72`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-primary-200">

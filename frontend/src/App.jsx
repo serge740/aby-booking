@@ -44,6 +44,12 @@ import OrderDashboard from "./pages/dashboard/company/OrderDashboard";
 import CompanyOrderDetailView from "./pages/dashboard/company/CompanyOrderDetailView";
 import OrderTrackingPage from "./pages/client/OrderTrackingPage";
 import CreateOrderPage from "./components/dashboard/order/CreateOrderPage";
+import EmployeeDashboard from "./pages/dashboard/company/EmployeeDashboard";
+import EmployeeFomPage from "./components/dashboard/employee/EmployeeFomPage";
+import EmployeeDetailsPage from "./components/dashboard/employee/EmployeeDetailsPage";
+import EmployeeLoginPage from "./pages/auth/employee/Login";
+import ProtectPrivateEmployeeRoute from "./layouts/protectors/ProtectPrivateEmployeeRoute";
+import EmployeeProfilePage from "./pages/dashboard/employee/EmployeeProfile";
 
 
 // Loading component
@@ -121,6 +127,11 @@ const router = createBrowserRouter([
           {index:true , element:<DashboardHome />},
  
           {path:'profile' , element:<CompanyProfilePage />},
+          {path:'employee' , element:<EmployeeDashboard />},
+          {path:'employee/create' , element:<EmployeeFomPage />},
+          {path:'employee/edit/:id' , element:<EmployeeFomPage />},
+          {path:'employee/:id' , element:<EmployeeDetailsPage />},
+          {path:'orders/:id' , element:<CompanyOrderDetailView />},
           {path:'orders' , element:<OrderDashboard />},
           {path:'orders/:id' , element:<CompanyOrderDetailView />},
           {path:'orders/create/:companyId' , element:<CreateOrderPage />},
@@ -136,10 +147,37 @@ const router = createBrowserRouter([
     ]
   },
   {
+    path:'/employee',
+    element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'emplyoee'}} /></ProtectPrivateEmployeeRoute>,
+    children:[
+       { index: true, element: <Navigate to={'/company/dashboard'}></Navigate>},
+       { 
+        path: 'dashboard', 
+        element: <SuspenseWrapper><DashboardLayout role={'employee'} /> </SuspenseWrapper>,
+        children:[
+          {index:true , element:<DashboardHome />},
+ 
+          {path:'profile' , element:<EmployeeProfilePage />},
+      
+          
+        ]
+       },
+
+    ]
+  },
+  {
     path: '/auth/admin/login',
     element: (
       <SuspenseWrapper>
         <AdminLogin />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: '/auth/admin/unlock',
+    element: (
+      <SuspenseWrapper>
+        <UnlockScreen />
       </SuspenseWrapper>
     ),
   },
@@ -152,10 +190,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/auth/admin/unlock',
+    path: '/auth/employee/login',
     element: (
       <SuspenseWrapper>
-        <UnlockScreen />
+        <EmployeeLoginPage />
       </SuspenseWrapper>
     ),
   },

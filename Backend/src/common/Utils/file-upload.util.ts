@@ -9,8 +9,20 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
     destination: (req, file, cb) => {
       let subFolder: string | undefined;
 
-      if (file.fieldname === 'profileImage') {
+      if (file.fieldname === 'profileImage' || file.fieldname === 'profileImg') {
         subFolder = 'profile';
+      }
+
+       else if(file.fieldname ===  'cv'){
+        subFolder = 'cv_files'
+      
+      }
+      else if(file.fieldname ===  'cvFile'){
+        subFolder = 'cv_files'
+      
+      }
+      else if(file.fieldname ===  'applicationLetter'){
+        subFolder = 'application_letters'
       }
  
       else if (file.fieldname === 'logo') {
@@ -99,6 +111,14 @@ export const CategoryFileFields = [
 export const CompanyFileFields = [
   { name: 'companyLogo', maxCount: 1 },
 ]
+
+export const EmployeeFileFields = [
+  { name: 'profileImg', maxCount:1 },
+  { name: 'applicationLetter', maxCount:1 },
+  { name: 'cv', maxCount:1 },
+]
+
+export const EmployeeUploadConfig = createUnifiedUploadConfig()
 
 export const testimonialUploadConfig = createUnifiedUploadConfig()
 export const partnerUploadConfig = createUnifiedUploadConfig()
