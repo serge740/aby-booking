@@ -50,6 +50,7 @@ import EmployeeDetailsPage from "./components/dashboard/employee/EmployeeDetails
 import EmployeeLoginPage from "./pages/auth/employee/Login";
 import ProtectPrivateEmployeeRoute from "./layouts/protectors/ProtectPrivateEmployeeRoute";
 import EmployeeProfilePage from "./pages/dashboard/employee/EmployeeProfile";
+import LeaveRequestDashboard from "./pages/dashboard/LeaveRequestManagement";
 
 
 // Loading component
@@ -90,6 +91,7 @@ const router = createBrowserRouter([
     { path: 'partners/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
     { path: 'partners/menu/:companyId/item/:itemId', element: <SuspenseWrapper><MenuItemDetail /></SuspenseWrapper> },
     { path: 'track-orders', element: <SuspenseWrapper><OrderTrackingPage /></SuspenseWrapper> },
+
  
   ]
 },
@@ -109,6 +111,7 @@ const router = createBrowserRouter([
           {path:'company/edit/:id' , element:<CompanyFormPage />},
           {path:'company/:id' , element:<CompanyViewPage />},
           {path:'profile' , element:<AdminProfilePage />},
+          
           
         ]
        },
@@ -140,6 +143,7 @@ const router = createBrowserRouter([
           {path:'menu-item/create' , element:<CreateMenuItemPage />},
           {path:'menu-item/:id' , element:<MenuItemView />},
           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
+          {path:'leave-request' , element:<LeaveRequestDashboard />},
           
         ]
        },
@@ -148,9 +152,9 @@ const router = createBrowserRouter([
   },
   {
     path:'/employee',
-    element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'emplyoee'}} /></ProtectPrivateEmployeeRoute>,
+    element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'employee'}} /></ProtectPrivateEmployeeRoute>,
     children:[
-       { index: true, element: <Navigate to={'/company/dashboard'}></Navigate>},
+       { index: true, element: <Navigate to={'/employee/dashboard'}></Navigate>},
        { 
         path: 'dashboard', 
         element: <SuspenseWrapper><DashboardLayout role={'employee'} /> </SuspenseWrapper>,
@@ -158,6 +162,7 @@ const router = createBrowserRouter([
           {index:true , element:<DashboardHome />},
  
           {path:'profile' , element:<EmployeeProfilePage />},
+           {path:'leave-request' , element:<LeaveRequestDashboard />},
       
           
         ]

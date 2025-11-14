@@ -24,6 +24,7 @@ interface Experience {
   start_date: string;
   end_date?: string;
 }
+
 interface EmployeeFormData {
   first_name: string;
   last_name: string;
@@ -43,9 +44,29 @@ interface EmployeeFormData {
   emergency_contact_phone: string;
   experience: Experience[];
 }
-interface FileState { profileImg: File | null; applicationLetter: File | null; cv: File | null; }
-interface PreviewFileState { profileImg: string | null; applicationLetter: string | null; cv: string | null; }
-interface RemovedFileState { profileImg: boolean; applicationLetter: boolean; cv: boolean; }
+
+// Updated FileState to include identityCardImage
+interface FileState {
+  profileImg: File | null;
+  applicationLetter: File | null;
+  cv: File | null;
+  identityCardImage: File | null; // NEW
+}
+
+interface PreviewFileState {
+  profileImg: string | null;
+  applicationLetter: string | null;
+  cv: string | null;
+  identityCardImage: string | null; // NEW
+}
+
+interface RemovedFileState {
+  profileImg: boolean;
+  applicationLetter: boolean;
+  cv: boolean;
+  identityCardImage: boolean; // NEW
+}
+
 interface Errors { [key: string]: string | null; }
 
 const steps = [
@@ -56,7 +77,7 @@ const steps = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/*                         RE-USABLE UI COMPONENTS                           */
+/*                         RE-USABLE UI COMPONENTS                            */
 /* -------------------------------------------------------------------------- */
 const InputField = memo(({ label, icon: Icon, required, error, ...props }: any) => (
   <div className="space-y-1.5">
@@ -136,7 +157,6 @@ const FileUpload = memo(
         <label className="block text-sm font-medium text-gray-700">
           {label} {showRequired && <span className="text-red-500">*</span>}
         </label>
-
         {hasFile ? (
           <div className="border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-blue-50 to-white">
             <div className="flex items-center justify-between">
@@ -179,7 +199,6 @@ const FileUpload = memo(
                 </button>
               </div>
             </div>
-
             {fileType === 'profileImg' && previewFiles[fileType] && (
               <img
                 src={previewFiles[fileType]!}
@@ -206,7 +225,6 @@ const FileUpload = memo(
             </label>
           </div>
         )}
-
         {errors[fileType] && (
           <p className="flex items-center text-xs text-red-600">
             <AlertCircle className="w-3 h-3 mr-1" />
@@ -249,7 +267,6 @@ const PersonalInfoStep = memo(
           <InputField label="Date of Birth" icon={Calendar} type="date" required value={formData.date_of_birth} onChange={e => onChange('date_of_birth', e.target.value)} error={errors.date_of_birth} />
         </div>
       </div>
-
       {/* Contact Information */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -268,7 +285,7 @@ const PersonalInfoStep = memo(
             value={formData.address}
             onChange={e => onChange('address', e.target.value)}
             rows={3}
-      placeholder="Enter full address"
+            placeholder="Enter full address"
             className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
               errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
             }`}
@@ -281,7 +298,6 @@ const PersonalInfoStep = memo(
           )}
         </div>
       </div>
-
       {/* Employment Details */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -302,7 +318,6 @@ const PersonalInfoStep = memo(
           </SelectField>
         </div>
       </div>
-
       {/* Banking & Emergency */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
@@ -343,10 +358,23 @@ const DocumentsStep = memo(
         <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
         <p className="text-sm text-gray-600 mt-1">Please upload the required documents</p>
       </div>
-
       <FileUpload label="Profile Picture" fileType="profileImg" accept="image/*" files={files} previewFiles={previewFiles} existingFiles={existingFiles} removedFiles={removedFiles} errors={errors} onFileChange={onFileChange} onRemove={onRemove} />
       <FileUpload label="Application Letter" fileType="applicationLetter" accept=".pdf,.doc,.docx" required files={files} previewFiles={previewFiles} existingFiles={existingFiles} removedFiles={removedFiles} errors={errors} onFileChange={onFileChange} onRemove={onRemove} />
       <FileUpload label="CV/Resume" fileType="cv" accept=".pdf,.doc,.docx" files={files} previewFiles={previewFiles} existingFiles={existingFiles} removedFiles={removedFiles} errors={errors} onFileChange={onFileChange} onRemove={onRemove} />
+      {/* NEW: Identity Card Upload */}
+      <FileUpload
+        label="Identity Card"
+        fileType="identityCardImage"
+        accept=".pdf,.jpg,.jpeg,.png"
+        required
+        files={files}
+        previewFiles={previewFiles}
+        existingFiles={existingFiles}
+        removedFiles={removedFiles}
+        errors={errors}
+        onFileChange={onFileChange}
+        onRemove={onRemove}
+      />
     </div>
   )
 );
@@ -377,7 +405,6 @@ const ExperienceStep = memo(
           <Plus className="h-4 w-4" /> <span>Add Experience</span>
         </button>
       </div>
-
       {experience.length === 0 ? (
         <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-xl">
           <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
@@ -401,7 +428,6 @@ const ExperienceStep = memo(
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
-
               <div className="space-y-4">
                 <input
                   placeholder="Company Name *"
@@ -417,7 +443,6 @@ const ExperienceStep = memo(
                     {errors[`exp_${i}_company`]}
                   </p>
                 )}
-
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">Start Date *</label>
@@ -436,7 +461,6 @@ const ExperienceStep = memo(
                       </p>
                     )}
                   </div>
-
                   <div>
                     <label className="block text-xs font-medium text-gray-600 mb-1">End Date (Optional)</label>
                     <input
@@ -447,7 +471,6 @@ const ExperienceStep = memo(
                     />
                   </div>
                 </div>
-
                 <textarea
                   placeholder="Job Description *"
                   value={exp.description}
@@ -499,7 +522,6 @@ const ReviewStep = memo(
           <h3 className="text-xl font-semibold text-gray-900">Review Your Information</h3>
           <p className="text-sm text-gray-600 mt-2">Please review all details before submitting</p>
         </div>
-
         <div className="space-y-6">
           {/* Personal */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
@@ -515,7 +537,6 @@ const ReviewStep = memo(
               <div className="flex justify-between"><span className="text-gray-600">National ID:</span><span className="font-medium text-gray-900">{formData.national_id}</span></div>
             </div>
           </div>
-
           {/* Employment */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
@@ -530,16 +551,19 @@ const ReviewStep = memo(
               <div className="flex justify-between"><span className="text-gray-600">Marital Status:</span><span className="font-medium text-gray-900">{formData.marital_status}</span></div>
             </div>
           </div>
-
           {/* Documents */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
               <FileText className="w-5 h-5 mr-2 text-blue-600" /> Documents
             </h4>
             <div className="space-y-2 text-sm">
-              {(['profileImg', 'applicationLetter', 'cv'] as const).map(type => (
+              {(['profileImg', 'applicationLetter', 'cv', 'identityCardImage'] as const).map(type => (
                 <div key={type} className="flex items-center justify-between py-2">
-                  <span className="text-gray-600">{type === 'profileImg' ? 'Profile Picture' : type === 'applicationLetter' ? 'Application Letter' : 'CV/Resume'}:</span>
+                  <span className="text-gray-600">
+                    {type === 'profileImg' ? 'Profile Picture' :
+                     type === 'applicationLetter' ? 'Application Letter' :
+                     type === 'cv' ? 'CV/Resume' : 'Identity Card'}
+                  </span>
                   <span className={`font-medium ${hasFile(type) ? 'text-green-600' : 'text-gray-400'}`}>
                     {hasFile(type) ? 'Uploaded' : '— Not uploaded'}
                   </span>
@@ -547,7 +571,6 @@ const ReviewStep = memo(
               ))}
             </div>
           </div>
-
           {/* Experience */}
           {formData.experience.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-xl p-6">
@@ -566,7 +589,6 @@ const ReviewStep = memo(
             </div>
           )}
         </div>
-
         {errors.general && (
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
             <AlertCircle className="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
@@ -585,27 +607,22 @@ const EmployeeFormPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const [previewFiles, setPreviewFiles] = useState<PreviewFileState>({ profileImg: null, applicationLetter: null, cv: null });
-  const [existingFiles, setExistingFiles] = useState<PreviewFileState>({ profileImg: null, applicationLetter: null, cv: null });
-  const [removedFiles, setRemovedFiles] = useState<RemovedFileState>({ profileImg: false, applicationLetter: false, cv: false });
-
+  const [previewFiles, setPreviewFiles] = useState<PreviewFileState>({ profileImg: null, applicationLetter: null, cv: null, identityCardImage: null });
+  const [existingFiles, setExistingFiles] = useState<PreviewFileState>({ profileImg: null, applicationLetter: null, cv: null, identityCardImage: null });
+  const [removedFiles, setRemovedFiles] = useState<RemovedFileState>({ profileImg: false, applicationLetter: false, cv: false, identityCardImage: false });
   const [formData, setFormData] = useState<EmployeeFormData>({
     first_name: '', last_name: '', gender: '' as Gender, date_of_birth: '', phone: '', email: '',
     address: '', national_id: '', position: '', marital_status: 'SINGLE', date_hired: '',
     status: 'ACTIVE', bank_account_number: '', bank_name: '', emergency_contact_name: '',
     emergency_contact_phone: '', experience: [],
   });
-
-  const [files, setFiles] = useState<FileState>({ profileImg: null, applicationLetter: null, cv: null });
-
+  const [files, setFiles] = useState<FileState>({ profileImg: null, applicationLetter: null, cv: null, identityCardImage: null });
   const navigate = useNavigate();
   const { id: employeeId } = useParams<{ id?: string }>();
 
   const getUrlImage = (url?: string) => (url && !url.includes('http') ? `${API_URL}${url}` : url);
 
-  // --------------------------------------------------------------------- //
   // Load employee on edit
-  // --------------------------------------------------------------------- //
   useEffect(() => {
     if (employeeId) loadEmployeeData();
   }, [employeeId]);
@@ -642,6 +659,7 @@ const EmployeeFormPage: React.FC = () => {
         profileImg: getUrlImage(employee.profile_picture),
         applicationLetter: getUrlImage(employee.application_letter),
         cv: getUrlImage(employee.cv),
+        identityCardImage: getUrlImage(employee.identity_card), // Adjust field name if needed
       };
       setExistingFiles(urls);
       setPreviewFiles(urls);
@@ -652,9 +670,7 @@ const EmployeeFormPage: React.FC = () => {
     }
   };
 
-  // --------------------------------------------------------------------- //
   // Handlers
-  // --------------------------------------------------------------------- //
   const handleInputChange = (field: keyof EmployeeFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }));
@@ -688,12 +704,14 @@ const EmployeeFormPage: React.FC = () => {
       experience: [...prev.experience, { company_name: '', description: '', start_date: '', end_date: '' }],
     }));
   };
+
   const updateExperience = (idx: number, field: keyof Experience, value: string) => {
     setFormData(prev => ({
       ...prev,
       experience: prev.experience.map((exp, i) => (i === idx ? { ...exp, [field]: value } : exp)),
     }));
   };
+
   const removeExperience = (idx: number) => {
     setFormData(prev => ({
       ...prev,
@@ -701,12 +719,9 @@ const EmployeeFormPage: React.FC = () => {
     }));
   };
 
-  // --------------------------------------------------------------------- //
   // Validation per step
-  // --------------------------------------------------------------------- //
   const validateStep = (step: number): boolean => {
     const newErrors: Errors = {};
-
     switch (step) {
       case 0:
         if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
@@ -720,12 +735,13 @@ const EmployeeFormPage: React.FC = () => {
         if (!formData.position.trim()) newErrors.position = 'Position is required';
         if (!formData.date_hired) newErrors.date_hired = 'Hire date is required';
         break;
-
       case 1:
         const hasApp = files.applicationLetter || (existingFiles.applicationLetter && !removedFiles.applicationLetter);
         if (!hasApp) newErrors.applicationLetter = 'Application letter is required';
-        break;
 
+        const hasId = files.identityCardImage || (existingFiles.identityCardImage && !removedFiles.identityCardImage);
+        if (!hasId) newErrors.identityCardImage = 'Identity Card is required'; // Required
+        break;
       case 2:
         formData.experience.forEach((exp, i) => {
           if (!exp.company_name.trim()) newErrors[`exp_${i}_company`] = 'Company name required';
@@ -734,7 +750,6 @@ const EmployeeFormPage: React.FC = () => {
         });
         break;
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -742,15 +757,14 @@ const EmployeeFormPage: React.FC = () => {
   const nextStep = () => { if (validateStep(currentStep)) setCurrentStep(prev => Math.min(prev + 1, steps.length - 1)); };
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
-  // --------------------------------------------------------------------- //
   // Submit
-  // --------------------------------------------------------------------- //
   const createFormData = (): FormData => {
     const data = new FormData();
     Object.entries(formData).forEach(([k, v]) => data.append(k, k === 'experience' ? JSON.stringify(v) : v));
     if (files.profileImg) data.append('profileImg', files.profileImg);
     if (files.applicationLetter) data.append('applicationLetter', files.applicationLetter);
     if (files.cv) data.append('cv', files.cv);
+    if (files.identityCardImage) data.append('identityCardImage', files.identityCardImage); // NEW
     const removed = Object.entries(removedFiles).filter(([_, v]) => v).map(([k]) => k);
     if (removed.length) data.append('removedFiles', JSON.stringify(removed));
     return data;
@@ -763,7 +777,7 @@ const EmployeeFormPage: React.FC = () => {
       const form = createFormData();
       const action = employeeId ? 'updated' : 'created';
       await (employeeId ? employeeService.updateEmployee(employeeId, form) : employeeService.createEmployee(form));
-      Swal.fire('Success!', `Employee ${action} successfully!`, 'success').then(() => navigate('/company/dashboard/employees'));
+      Swal.fire('Success!', `Employee ${action} successfully!`, 'success').then(() => navigate('/company/dashboard/employee'));
     } catch (err: any) {
       Swal.fire('Error', err.message || 'Operation failed', 'error');
     } finally {
@@ -771,9 +785,7 @@ const EmployeeFormPage: React.FC = () => {
     }
   };
 
-  // --------------------------------------------------------------------- //
   // Render
-  // --------------------------------------------------------------------- //
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -826,22 +838,19 @@ const EmployeeFormPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
+      <div className="mx-auto ">
+        {/* Header & Progress */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
             <h1 className="text-2xl font-bold text-white">{employeeId ? 'Update Employee' : 'Create New Employee'}</h1>
             <p className="text-blue-100 text-sm mt-1">Fill in the employee information step by step</p>
           </div>
-
-          {/* Progress */}
           <div className="px-8 py-6 bg-gray-50">
             <div className="flex items-center justify-between">
               {steps.map((step, i) => {
                 const Icon = step.icon;
                 const isActive = i === currentStep;
                 const isCompleted = i < currentStep;
-
                 return (
                   <React.Fragment key={i}>
                     <div className="flex flex-col items-center flex-1">
@@ -862,7 +871,6 @@ const EmployeeFormPage: React.FC = () => {
                         <p className="text-xs text-gray-500 mt-0.5">{step.description}</p>
                       </div>
                     </div>
-
                     {i < steps.length - 1 && (
                       <div className={`flex-1 h-1 mx-4 mb-8 rounded-full transition-all duration-300 ${i < currentStep ? 'bg-green-500' : 'bg-gray-200'}`} />
                     )}
@@ -881,7 +889,6 @@ const EmployeeFormPage: React.FC = () => {
           <button onClick={() => navigate(-1)} className="px-5 py-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors font-medium">
             Cancel
           </button>
-
           <div className="flex space-x-3">
             {currentStep > 0 && (
               <button onClick={prevStep} className="flex items-center space-x-2 px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">

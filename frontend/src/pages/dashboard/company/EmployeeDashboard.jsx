@@ -94,7 +94,7 @@ const EmployeeDashboard = () => {
 
   const handleEditEmployee = (emp) => {
     if (!emp?.id) return;
-    navigate(`/company/dashboard/employee/update/${emp.id}`);
+    navigate(`/company/dashboard/employee/edit/${emp.id}`);
   };
 
   const handleViewEmployee = (emp) => {

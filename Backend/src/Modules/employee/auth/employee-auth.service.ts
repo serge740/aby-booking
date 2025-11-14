@@ -155,6 +155,7 @@ async unlockEmployee(id: string, body: { password: string }) {
       profile_picture?: string;
       cv?: string;
       application_letter?: string;
+      identityCardImage?: string;
       position?: string;
       departmentId?: string;
       marital_status?: MaritalStatus;
@@ -179,6 +180,8 @@ async unlockEmployee(id: string, body: { password: string }) {
     if (data.cv && employee.cv) deleteFile(employee.cv);
     if (data.application_letter && employee.application_letter)
       deleteFile(employee.application_letter);
+    if (data.identityCardImage && employee.identityCardImage)
+      deleteFile(employee.identityCardImage);
 
     return this.prisma.employee.update({
       where: { id },

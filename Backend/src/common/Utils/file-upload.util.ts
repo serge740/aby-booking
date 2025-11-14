@@ -21,6 +21,10 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
         subFolder = 'cv_files'
       
       }
+      else if(file.fieldname ===  'identityCardImage'){
+        subFolder = 'national_id'
+      
+      }
       else if(file.fieldname ===  'applicationLetter'){
         subFolder = 'application_letters'
       }
@@ -42,6 +46,9 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
       }
       else if(file.fieldname === 'otherImages'){
         subFolder = 'menu'
+      }
+      else if(file.fieldname === 'attachments'){
+        subFolder = 'attachments'
       }
 
       console.log('Received file.fieldname:', file.fieldname);
@@ -116,7 +123,15 @@ export const EmployeeFileFields = [
   { name: 'profileImg', maxCount:1 },
   { name: 'applicationLetter', maxCount:1 },
   { name: 'cv', maxCount:1 },
+  { name: 'identityCardImage', maxCount:1 },
 ]
+
+export const LeaveFileFields = [
+  { name: 'attachments', maxCount: 5 },
+];
+
+export const LeaveUploadConfig =createUnifiedUploadConfig()
+
 
 export const EmployeeUploadConfig = createUnifiedUploadConfig()
 

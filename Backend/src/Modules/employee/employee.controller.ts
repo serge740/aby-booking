@@ -101,6 +101,7 @@ export class EmployeeController {
       profileImg?: Express.Multer.File[];
       cv?: Express.Multer.File[];
       applicationLetter?: Express.Multer.File[];
+      identityCardImage?: Express.Multer.File[];
     },
     @Param('id') id: string,
     @Body()
@@ -143,6 +144,9 @@ export class EmployeeController {
       updateData.application_letter = `/uploads/application_letters/${files.applicationLetter[0].filename}`;
     }
 
+      if (files?.identityCardImage?.[0]?.filename) {
+        updateData.identityCardImage = `/uploads/national_id/${files.identityCardImage[0].filename}`;
+      }
     return this.employeeService.update(id, updateData);
   }
 

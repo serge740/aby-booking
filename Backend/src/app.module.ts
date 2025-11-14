@@ -18,6 +18,8 @@ import { MenuItemModule } from './Modules/menu-management/menu-item/menu-item.mo
 import { MenuCategoryModule } from './Modules/menu-management/menu-category/menu-category.module';
 import { ClientModule } from './Modules/client/client.module';
 import { EmployeeModule } from './Modules/employee/employee.module';
+import { LeaveModule } from './Modules/leave-request/leave.module';
+
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { EmployeeModule } from './Modules/employee/employee.module';
     ConfigModule.forRoot({
       isGlobal: true, // so you don't have to import ConfigModule in every module
     }),
+     
     EmailModule,
     CommonModule,
     AdminModule,
@@ -39,7 +42,8 @@ import { EmployeeModule } from './Modules/employee/employee.module';
     MenuItemModule,
     MenuCategoryModule,
     ClientModule,
-    EmployeeModule
+    EmployeeModule,
+    LeaveModule
   ],
   controllers: [],
 })

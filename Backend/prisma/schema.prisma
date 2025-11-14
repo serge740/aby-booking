@@ -166,6 +166,7 @@ model Company {
   orders       Order[]
   items     MenuItem[] // One category can have many items
   employee  Employee[]
+  leave  Leave[]
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -207,6 +208,8 @@ model Employee {
   bank_name               String?
   cv                      String?
   application_letter      String?
+  identityCardImage      String?
+
   position                String
 
   marital_status          MaritalStatus? @default(SINGLE)
@@ -222,6 +225,7 @@ model Employee {
   google_id    String?  @unique
   isLocked   Boolean? @default(false)
   is2FA   Boolean? @default(false)
+  leave  Leave[]
  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -242,6 +246,72 @@ enum MaritalStatus {
   MARRIED
   DIVORCED
   WIDOWED
+}
+
+enum LeaveType {
+  VACATION
+  SICK
+  PERSONAL
+  MATERNITY
+  PATERNITY
+  UNPAID
+  COMPASSIONATE
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model Leave {
+  id                 String       @id @default(cuid())
+  employee               Employee         @relation(fields: [employeeId], references: [id])
+  employeeId             String
+
+  company         Company         @relation(fields: [companyId], references: [id])
+  companyId       String
+
+  type               LeaveType
+  status             LeaveStatus  @default(PENDING)
+  startDate          DateTime
+  endDate            DateTime
+
+  // Request info
+  reasonForRequest   String?
+  attachments        Json?        // JSON array [ { filename, url, mimeType } ]
+
+  // Decision info
+  approvedAt         DateTime?
+  rejectedAt         DateTime?
+  reasonForRejection String?
+
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([companyId])
+  @@index([employeeId])
+  @@index([status])
+  @@index([startDate, endDate])
+}
+
+
+model CompanyNotification {
+  id          String   @id @default(cuid())
+  recipients  Json     // [{id: string, type: "COMPANY" | "EMPLOYEE", read: false}]
+  senderId    String?
+  senderType  SenderType?
+  title       String
+  message     String
+  link        String?
+  createdAt   DateTime @default(now())
+}
+
+
+enum SenderType {
+  COMPANY
+  EMPLOYEE
 }
 
 

@@ -12,6 +12,9 @@ import {
   Calendar,
   DollarSign,
   ChevronDown,
+  ExternalLink,
+  Outdent,
+  DoorOpen,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
@@ -72,6 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
       { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
       { id: "employee", label: "Employee Management", icon: ClipboardList, path: `${basePath}/employee`, allowedRoles: ["company"] },
+      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
       {
         id: "menu-category",
         label: "Menu",
@@ -86,6 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
 
     const employeeLinks: (NavItem | DropdownGroup)[] = [
       { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
+      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
 
     ];
 
