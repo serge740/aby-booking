@@ -167,6 +167,8 @@ model Company {
   items     MenuItem[] // One category can have many items
   employee  Employee[]
   leave  Leave[]
+  employeeRiskReports  EmployeeRiskReport[]
+  presalary  PreSalary[]
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -226,6 +228,8 @@ model Employee {
   isLocked   Boolean? @default(false)
   is2FA   Boolean? @default(false)
   leave  Leave[]
+   presalary  PreSalary[]
+   employeeRiskReports  EmployeeRiskReport[]
  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -313,6 +317,80 @@ enum SenderType {
   COMPANY
   EMPLOYEE
 }
+
+model PreSalary {
+  id          String      @id @default(cuid())
+  employee    Employee    @relation(fields: [employeeId], references: [id])
+  employeeId  String
+  company     Company     @relation(fields: [companyId], references: [id])
+  companyId   String
+
+  amount      Float       // Salary amount
+  currency    String      @default("RWF") // optional, default currency
+  periodStart DateTime    // Salary period start
+  periodEnd   DateTime    // Salary period end
+
+  status      PreSalaryStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  approvedAt  DateTime?        // Optional timestamp when approved
+  rejectedAt  DateTime?        // Optional timestamp when rejected
+  reason      String?          // Optional reason for rejection or note
+  reasonForRejection String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([employeeId])
+  @@index([companyId])
+  @@index([status])
+}
+
+enum PreSalaryStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+
+model EmployeeRiskReport {
+  id           String      @id @default(cuid())
+  employee     Employee    @relation(fields: [employeeId], references: [id])
+  employeeId   String
+  company      Company     @relation(fields: [companyId], references: [id])
+  companyId    String
+
+  title        String      // Short title of the risk report
+  description  String      // Detailed description of the risk
+  severity     RiskSeverity @default(MEDIUM) // LOW, MEDIUM, HIGH, CRITICAL
+  status       RiskStatus   @default(PENDING) // PENDING, RESOLVED, REJECTED
+
+  attachments  Json?        // Optional: any files attached (array of { filename, url, mimeType })
+  reportedAt   DateTime     @default(now())
+  resolvedAt   DateTime?    // Optional: when the risk was resolved
+  reason       String?      // Optional: reason for rejection or notes
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([employeeId])
+  @@index([companyId])
+  @@index([status])
+  @@index([severity])
+}
+
+enum RiskSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RiskStatus {
+  PENDING
+  RESOLVED
+  REJECTED
+}
+
 
 
 

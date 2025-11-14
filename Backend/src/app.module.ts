@@ -19,6 +19,10 @@ import { MenuCategoryModule } from './Modules/menu-management/menu-category/menu
 import { ClientModule } from './Modules/client/client.module';
 import { EmployeeModule } from './Modules/employee/employee.module';
 import { LeaveModule } from './Modules/leave-request/leave.module';
+import { PreSalaryModule } from './Modules/pre-salary/pre-salary.module';
+import { RiskReportModule } from './Modules/risk-report/risk-report.module';
+import { SocketModule } from './Global/socket/socket.module';
+import { CompanyNotificationModule } from './Modules/company-notification/company-notification.module';
 
 
 @Module({
@@ -43,7 +47,11 @@ import { LeaveModule } from './Modules/leave-request/leave.module';
     MenuCategoryModule,
     ClientModule,
     EmployeeModule,
-    LeaveModule
+    LeaveModule,
+    PreSalaryModule,
+    RiskReportModule,
+    SocketModule,
+    CompanyNotificationModule
   ],
   controllers: [],
 })

@@ -51,6 +51,9 @@ import EmployeeLoginPage from "./pages/auth/employee/Login";
 import ProtectPrivateEmployeeRoute from "./layouts/protectors/ProtectPrivateEmployeeRoute";
 import EmployeeProfilePage from "./pages/dashboard/employee/EmployeeProfile";
 import LeaveRequestDashboard from "./pages/dashboard/LeaveRequestManagement";
+import PreSalaryDashboard from "./pages/dashboard/PreSalaryDashboard";
+import RiskReportDashboard from "./pages/dashboard/RiskReportDashboard";
+import NotificationsPage from "./pages/dashboard/NotificationPage";
 
 
 // Loading component
@@ -144,6 +147,9 @@ const router = createBrowserRouter([
           {path:'menu-item/:id' , element:<MenuItemView />},
           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
           {path:'leave-request' , element:<LeaveRequestDashboard />},
+          {path:'pre-salary' , element:<PreSalaryDashboard />},
+           {path:'risk-report' , element:<RiskReportDashboard />},
+           {path:'notifications' , element:<NotificationsPage />},
           
         ]
        },
@@ -163,6 +169,9 @@ const router = createBrowserRouter([
  
           {path:'profile' , element:<EmployeeProfilePage />},
            {path:'leave-request' , element:<LeaveRequestDashboard />},
+           {path:'pre-salary' , element:<PreSalaryDashboard />},
+           {path:'risk-report' , element:<RiskReportDashboard />},
+           {path:'notifications' , element:<NotificationsPage />},
       
           
         ]

@@ -1,112 +1,56 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
-import { LeaveStatus, LeaveType, Prisma } from 'generated/prisma';
+import { Prisma, LeaveStatus, LeaveType } from 'generated/prisma';
+import { CompanyNotificationService } from '../company-notification/company-notification.service';
 
 @Injectable()
 export class LeaveService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: CompanyNotificationService, // inject notification service
+  ) {}
 
-  // ───────────────────────────────────────────────
-  // CREATE LEAVE REQUEST (Company or Employee)
-  // ───────────────────────────────────────────────
+  // ───────────────────────────────
+  // CREATE LEAVE REQUEST
+  // ───────────────────────────────
   async createLeaveRequest(data: {
     employeeId: string;
     companyId: string;
-    type: LeaveType;
+    type: string;
     startDate: Date;
     endDate: Date;
     reasonForRequest?: string;
     attachments?: any[];
   }) {
-    if (data.endDate < data.startDate) {
-      throw new BadRequestException('End date cannot be before start date');
-    }
+    if (data.endDate < data.startDate) throw new BadRequestException('End date cannot be before start');
+console.log(data);
 
-    const employee = await this.prisma.employee.findFirst({
-      where: { id: data.employeeId, companyId: data.companyId },
-    });
-
-    if (!employee)
-      throw new NotFoundException('Employee not found in this company');
-
-    const overlapping = await this.prisma.leave.findFirst({
-      where: {
-        employeeId: data.employeeId,
-        status: LeaveStatus.APPROVED,
-        AND: [
-          { startDate: { lte: data.endDate } },
-          { endDate: { gte: data.startDate } },
-        ],
-      },
-    });
-
-    if (overlapping) {
-      throw new ConflictException('Employee already has approved leave in this period');
-    }
-
-    return this.prisma.leave.create({
+    const leave = await this.prisma.leave.create({
       data: {
-        ...data,
+        employeeId: data.employeeId,
+        companyId: data.companyId,
+        type: data.type as any,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        reasonForRequest: data.reasonForRequest,
         attachments: data.attachments || [],
+        status: LeaveStatus.PENDING,
       },
     });
-  }
 
-  // ───────────────────────────────────────────────
-  // GET ALL LEAVES (Company)
-  // ───────────────────────────────────────────────
-  async findAll(companyId: string) {
-    return this.prisma.leave.findMany({
-      where: { companyId },
-      include: { employee: true },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
-  // ───────────────────────────────────────────────
-  // GET ALL LEAVES (Employee)
-  // ───────────────────────────────────────────────
-  async findAllByEmployee(employeeId: string) {
-    return this.prisma.leave.findMany({
-      where: { employeeId },
-      include: { employee: true },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
-  // ───────────────────────────────────────────────
-  // GET SINGLE LEAVE (Company)
-  // ───────────────────────────────────────────────
-  async findOne(id: string, companyId: string) {
-    const leave = await this.prisma.leave.findFirst({
-      where: { id, companyId },
-      include: { employee: true },
+    // 🔥 Send notification to company about new leave request
+    await this.notificationService.createNotification({
+      title: `New leave request from employee`,
+      message: `Employee has requested leave from ${data.startDate.toDateString()} to ${data.endDate.toDateString()}`,
+      recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
+      senderId: data.employeeId,
+      senderType: 'EMPLOYEE',
+      link:`/company/dashboard/leave-request/${leave.id}`
     });
 
-    if (!leave) throw new NotFoundException('Leave request not found');
     return leave;
   }
-
-  // ───────────────────────────────────────────────
-  // GET SINGLE LEAVE (Employee)
-  // ───────────────────────────────────────────────
-  async findOneByEmployee(id: string, employeeId: string) {
-    const leave = await this.prisma.leave.findFirst({
-      where: { id, employeeId },
-      include: { employee: true },
-    });
-
-    if (!leave) throw new NotFoundException('Leave request not found');
-    return leave;
-  }
-
-  // ───────────────────────────────────────────────
+   // ───────────────────────────────────────────────
   // UPDATE LEAVE REQUEST (Only pending)
   // ───────────────────────────────────────────────
   async updateLeave(
@@ -123,6 +67,8 @@ export class LeaveService {
     const leave = await this.findOne(id, ownerId).catch(() =>
       this.findOneByEmployee(id, ownerId),
     );
+
+    if(!leave) throw new BadRequestException('Cant find the leave');
 
     if (leave.status !== LeaveStatus.PENDING) {
       throw new ForbiddenException('Only pending leave can be updated');
@@ -141,61 +87,87 @@ export class LeaveService {
     });
   }
 
-  // ───────────────────────────────────────────────
-  // APPROVE LEAVE (Company only)
-  // ───────────────────────────────────────────────
-  async approveLeave(id: string, companyId: string) {
-    const leave = await this.findOne(id, companyId);
+  // ───────────────────────────────
+  // APPROVE LEAVE
+  // ───────────────────────────────
+  async approveLeave(leaveId: string, companyId: string) {
+    const leave = await this.prisma.leave.findFirst({ where: { id: leaveId, companyId } });
+    if (!leave) throw new NotFoundException('Leave not found');
+    if (leave.status !== LeaveStatus.PENDING) throw new ForbiddenException('Only pending leaves can be approved');
 
-    if (leave.status !== LeaveStatus.PENDING) {
-      throw new BadRequestException('Only pending leave can be approved');
-    }
-
-    return this.prisma.leave.update({
-      where: { id },
-      data: {
-        status: LeaveStatus.APPROVED,
-        approvedAt: new Date(),
-        rejectedAt: null,
-        reasonForRejection: null,
-      },
+    const updated = await this.prisma.leave.update({
+      where: { id: leaveId },
+      data: { status: LeaveStatus.APPROVED, approvedAt: new Date() },
     });
+
+    // 🔥 Notify employee about approval
+    await this.notificationService.createNotification({
+      title: `Your leave has been approved`,
+      message: `Your leave from ${leave.startDate.toDateString()} to ${leave.endDate.toDateString()} has been approved.`,
+      recipients: [{ id: leave.employeeId, type: 'EMPLOYEE', read: false }],
+      senderId: companyId,
+      senderType: 'COMPANY',
+       link:`/employee/dashboard/leave-request/${leave.id}`
+    });
+
+    return updated;
   }
 
-  // ───────────────────────────────────────────────
-  // REJECT LEAVE (Company only)
-  // ───────────────────────────────────────────────
-  async rejectLeave(id: string, companyId: string, reasonForRejection: string) {
-    const leave = await this.findOne(id, companyId);
 
-    if (!reasonForRejection) {
-      throw new BadRequestException('Rejection reason is required');
-    }
 
-    if (leave.status !== LeaveStatus.PENDING) {
-      throw new BadRequestException('Only pending leave can be rejected');
-    }
+  // ───────────────────────────────
+  // REJECT LEAVE
+  // ───────────────────────────────
+  async rejectLeave(leaveId: string, companyId: string, reason: string) {
+    const leave = await this.prisma.leave.findFirst({ where: { id: leaveId, companyId } });
+    if (!leave) throw new NotFoundException('Leave not found');
+    if (!reason) throw new BadRequestException('Rejection reason required');
+    if (leave.status !== LeaveStatus.PENDING) throw new ForbiddenException('Only pending leaves can be rejected');
 
-    return this.prisma.leave.update({
-      where: { id },
-      data: {
-        status: LeaveStatus.REJECTED,
-        rejectedAt: new Date(),
-        reasonForRejection,
-      },
+    const updated = await this.prisma.leave.update({
+      where: { id: leaveId },
+      data: { status: LeaveStatus.REJECTED, rejectedAt: new Date(), reasonForRejection: reason },
     });
+
+    // 🔥 Notify employee about rejection
+    await this.notificationService.createNotification({
+      title: `Your leave has been rejected`,
+      message: `Your leave from ${leave.startDate.toDateString()} to ${leave.endDate.toDateString()} has been rejected. Reason: ${reason}`,
+      recipients: [{ id: leave.employeeId, type: 'EMPLOYEE', read: false }],
+      senderId: companyId,
+      senderType: 'COMPANY',
+       link:`/employee/dashboard/leave-request/${leave.id}`
+    });
+
+    return updated;
   }
 
-  // ───────────────────────────────────────────────
-  // DELETE LEAVE (Company or Employee)
-  // ───────────────────────────────────────────────
-  async deleteLeave(id: string, ownerId: string) {
-    const leave =
-      (await this.findOne(id, ownerId).catch(() => this.findOneByEmployee(id, ownerId))) ||
-      null;
+  // ───────────────────────────────
+  // DELETE LEAVE
+  // ───────────────────────────────
+  async deleteLeave(leaveId: string, ownerId: string) {
+    const leave = await this.prisma.leave.findFirst({ where: { id: leaveId } });
+    if (!leave) throw new NotFoundException('Leave not found');
 
-    if (!leave) throw new NotFoundException('Leave request not found');
+    return this.prisma.leave.delete({ where: { id: leaveId } });
+  }
 
-    return this.prisma.leave.delete({ where: { id } });
+  // ───────────────────────────────
+  // FIND LEAVES
+  // ───────────────────────────────
+  async findAll(companyId: string) {
+    return this.prisma.leave.findMany({ where: { companyId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  async findAllByEmployee(employeeId: string) {
+    return this.prisma.leave.findMany({ where: { employeeId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  async findOne(id: string, companyId: string) {
+    return this.prisma.leave.findFirst({ where: { id, companyId } });
+  }
+
+  async findOneByEmployee(id: string, employeeId: string) {
+    return this.prisma.leave.findFirst({ where: { id, employeeId } });
   }
 }

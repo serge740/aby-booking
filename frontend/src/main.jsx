@@ -7,21 +7,25 @@ import { AdminAuthContextProvider } from './context/AdminAuthContext.jsx';
 import { CartProvider } from './context/CartContext.tsx';
 import { CompanyAuthProvider } from './context/CompanyAuthContext.jsx';
 import { EmployeeAuthProvider } from './context/EmployeeAuthContext.tsx';
+import { NotificationProvider } from './context/NotificationContext.tsx';
+import { SocketProvider } from './context/SocketContext.tsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AdminAuthContextProvider>
+    <SocketProvider serverUrl={`${import.meta.env.VITE_API_URL}`}>
 
-    <CompanyAuthProvider>
-      <EmployeeAuthProvider>
+      <AdminAuthContextProvider>
+        <CompanyAuthProvider>
+          <EmployeeAuthProvider>
+            <NotificationProvider>
+              <CartProvider>
+                <App />
+              </CartProvider>
+            </NotificationProvider>
+          </EmployeeAuthProvider>
+        </CompanyAuthProvider>
+      </AdminAuthContextProvider>
 
-      <CartProvider>
-
-      <App />
-      </CartProvider>
-      </EmployeeAuthProvider>
-    </CompanyAuthProvider>
-    </AdminAuthContextProvider>
-    
+    </SocketProvider>
   </StrictMode>
 );

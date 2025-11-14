@@ -1,42 +1,17 @@
-// src/pages/LeaveRequestDashboard.tsx
+// src/pages/RiskReportDashboard.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Plus, Edit, Trash2, Search, ChevronDown, Eye, ChevronLeft, ChevronRight,
+  Plus, Edit, Trash2, Search, Eye, ChevronLeft, ChevronRight,
   AlertTriangle, CheckCircle, XCircle, X, RefreshCw,
-  Grid3X3, List, Upload, Image as ImageIcon, Calendar, Clock, User,
-  Check, AlertOctagon
+  Grid3X3, List, Upload, Image as ImageIcon, FileText, Clock,
+  Check, AlertOctagon, User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import leaveService from '../../services/leaveService';
+import riskReportService, { RiskReport, RiskReportAttachment } from '../../services/riskReportService';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { format } from 'date-fns';
 import { API_URL } from '../../api/api';
-
-// ──────────────────────────────────────────────────────────────
-// ── TYPES & INTERFACES ───────────────────────────────────────
-// ──────────────────────────────────────────────────────────────
-
-interface Employee {
-  id: string;
-  first_name?: string;
-  last_name?: string;
-  name?: string;
-  profile_picture?: string;
-}
-
-interface LeaveRequest {
-  id: string;
-  type: 'VACATION' | 'SICK' | 'PERSONAL' | 'MATERNITY' | 'PATERNITY' | 'UNPAID' | 'COMPASSIONATE';
-  startDate: string;
-  endDate: string;
-  reasonForRequest?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED';
-  employeeId: string;
-  employee?: Employee;
-  createdAt: string;
-  updatedAt: string;
-}
 
 interface OutletContext {
   role: 'employee' | 'company';
@@ -48,50 +23,51 @@ interface OperationStatus {
 }
 
 interface FormData {
-  type: LeaveRequest['type'] | '';
-  startDate: string;
-  endDate: string;
-  reasonForRequest: string;
+  title: string;
+  description: string;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   attachments: File[];
   attachmentPreviews: string[];
 }
 
-// ──────────────────────────────────────────────────────────────
-// ── COMPONENT ─────────────────────────────────────────────────
-// ──────────────────────────────────────────────────────────────
+const SEVERITY_LABELS: Record<FormData['severity'], string> = {
+  LOW: 'Low Risk',
+  MEDIUM: 'Medium Risk',
+  HIGH: 'High Risk',
+  CRITICAL: 'Critical Risk',
+};
 
-const LeaveRequestDashboard: React.FC = () => {
-  // ── AUTH & ROLE ──
+const RiskReportDashboard: React.FC = () => {
+  /* ── AUTH & ROLE ── */
   const { user } = useEmployeeAuth();
   const { role } = useOutletContext<OutletContext>();
   const employeeId = user?.id;
   const isCompany = role === 'company';
   const isEmployee = role === 'employee';
 
-  // ── STATE ──
-  const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
-  const [allLeaves, setAllLeaves] = useState<LeaveRequest[]>([]);
+  /* ── STATE ── */
+  const [reports, setReports] = useState<RiskReport[]>([]);
+  const [allReports, setAllReports] = useState<RiskReport[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [sortBy, setSortBy] = useState<keyof LeaveRequest>('createdAt');
+  const [sortBy, setSortBy] = useState<keyof RiskReport>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(5);
-  const [deleteConfirm, setDeleteConfirm] = useState<LeaveRequest | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<RiskReport | null>(null);
   const [operationStatus, setOperationStatus] = useState<OperationStatus | null>(null);
   const [operationLoading, setOperationLoading] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'table' | 'grid' | 'list'>('table');
   const [showFormModal, setShowFormModal] = useState<boolean>(false);
-  const [editLeave, setEditLeave] = useState<LeaveRequest | null>(null);
-  const [approveConfirm, setApproveConfirm] = useState<LeaveRequest | null>(null);
-  const [rejectConfirm, setRejectConfirm] = useState<LeaveRequest | null>(null);
+  const [editReport, setEditReport] = useState<RiskReport | null>(null);
+  const [resolveConfirm, setResolveConfirm] = useState<RiskReport | null>(null);
+  const [rejectConfirm, setRejectConfirm] = useState<RiskReport | null>(null);
   const [rejectReason, setRejectReason] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
-    type: '',
-    startDate: '',
-    endDate: '',
-    reasonForRequest: '',
+    title: '',
+    description: '',
+    severity: 'MEDIUM',
     attachments: [],
     attachmentPreviews: [],
   });
@@ -99,96 +75,84 @@ const LeaveRequestDashboard: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  // ── HELPERS ──
-  const formatLeaveType = (type: LeaveRequest['type']): string => {
-    const map: Record<LeaveRequest['type'], string> = {
-      VACATION: 'Vacation Leave',
-      SICK: 'Sick Leave',
-      PERSONAL: 'Personal Leave',
-      MATERNITY: 'Maternity Leave',
-      PATERNITY: 'Paternity Leave',
-      UNPAID: 'Unpaid Leave',
-      COMPASSIONATE: 'Compassionate Leave',
-    };
-    return map[type] || type;
+  /* ── HELPERS ── */
+  const canEditReport = (r: RiskReport): boolean => {
+    return isCompany || (isEmployee && r.employeeId === employeeId && r.status === 'PENDING');
+  };
+  const canDeleteReport = (r: RiskReport): boolean => {
+    return isCompany || (isEmployee && r.employeeId === employeeId && r.status === 'PENDING');
+  };
+  const canResolveReject = (r: RiskReport): boolean => {
+    return isCompany && r.status === 'PENDING';
   };
 
-  const canEditLeave = (leave: LeaveRequest): boolean => {
-    return isCompany || (isEmployee && leave.employeeId === employeeId && leave.status === 'PENDING');
+  const formatDate = (d: string) => format(new Date(d), 'dd MMM yyyy');
+
+  const showOperationStatus = (type: 'success' | 'error', message: string, duration = 3000) => {
+    setOperationStatus({ type, message });
+    setTimeout(() => setOperationStatus(null), duration);
   };
 
-  const canDeleteLeave = (leave: LeaveRequest): boolean => {
-    return isCompany || (isEmployee && leave.employeeId === employeeId && leave.status === 'PENDING');
-  };
-
-  const canApproveReject = (leave: LeaveRequest): boolean => {
-    return isCompany && leave.status === 'PENDING';
-  };
-
-  // ── LOAD DATA ──
+  /* ── LOAD DATA ── */
   useEffect(() => {
     if (employeeId || isCompany) loadData();
   }, [employeeId, isCompany]);
 
   useEffect(() => {
     handleFilterAndSort();
-  }, [searchTerm, sortBy, sortOrder, allLeaves]);
+  }, [searchTerm, sortBy, sortOrder, allReports]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const data = await leaveService.getAllLeaves();
+      const data = await riskReportService.getAllRiskReports();
       let filtered = data;
-
       if (isEmployee && employeeId) {
-        filtered = data.filter((l: LeaveRequest) => l.employeeId === employeeId);
+        filtered = data.filter(r => r.employeeId === employeeId);
       }
-
-      setAllLeaves(Array.isArray(filtered) ? filtered : []);
+      setAllReports(Array.isArray(filtered) ? filtered : []);
       setError(null);
     } catch (err: any) {
-      setError(err.message || 'Failed to load leave requests');
-      setAllLeaves([]);
+      setError(err.message || 'Failed to load risk reports');
+      setAllReports([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // ── TOAST ──
-  const showOperationStatus = (type: 'success' | 'error', message: string, duration = 3000) => {
-    setOperationStatus({ type, message });
-    setTimeout(() => setOperationStatus(null), duration);
-  };
-
-  // ── FILTER / SORT ──
+  /* ── FILTER / SORT ── */
   const handleFilterAndSort = () => {
-    let filtered = [...allLeaves];
+    let filtered = [...allReports];
 
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter((l) =>
-        formatLeaveType(l.type).toLowerCase().includes(term) ||
-        l.employee?.name?.toLowerCase().includes(term)
+      filtered = filtered.filter(r =>
+        r.title.toLowerCase().includes(term) ||
+        r.description.toLowerCase().includes(term) ||
+        r.employee?.name?.toLowerCase().includes(term) ||
+        r.severity.toLowerCase().includes(term)
       );
     }
 
     filtered.sort((a, b) => {
-      const aVal = (a[sortBy] ?? '').toString().toLowerCase();
-      const bVal = (b[sortBy] ?? '').toString().toLowerCase();
-      return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      const aVal = a[sortBy] ?? '';
+      const bVal = b[sortBy] ?? '';
+      const aStr = aVal.toString().toLowerCase();
+      const bStr = bVal.toString().toLowerCase();
+      return sortOrder === 'asc' ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
     });
 
-    setLeaves(filtered);
+    setReports(filtered);
     setCurrentPage(1);
   };
 
-  // ── FILE HANDLING ──
+  /* ── FILE HANDLING ── */
   const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const newFiles: File[] = [];
     const newPreviews: string[] = [];
 
-    files.forEach((f) => {
+    files.forEach(f => {
       if (!f.type.startsWith('image/') && f.type !== 'application/pdf') {
         showOperationStatus('error', 'Only images and PDFs are allowed');
         return;
@@ -201,7 +165,7 @@ const LeaveRequestDashboard: React.FC = () => {
       newPreviews.push(URL.createObjectURL(f));
     });
 
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       attachments: [...prev.attachments, ...newFiles],
       attachmentPreviews: [...prev.attachmentPreviews, ...newPreviews],
@@ -209,36 +173,38 @@ const LeaveRequestDashboard: React.FC = () => {
   };
 
   const removeAttachment = (index: number) => {
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       attachments: prev.attachments.filter((_, i) => i !== index),
       attachmentPreviews: prev.attachmentPreviews.filter((_, i) => i !== index),
     }));
   };
 
-  // ── CREATE / UPDATE ──
-  const handleCreateOrUpdateLeave = async () => {
-    if (!formData.type || !formData.startDate || !formData.endDate) {
-      showOperationStatus('error', 'All required fields must be filled');
+  /* ── CREATE / UPDATE ── */
+  const handleCreateOrUpdateReport = async () => {
+    if (!formData.title.trim() || !formData.description.trim()) {
+      showOperationStatus('error', 'Title and description are required');
       return;
     }
 
     const fd = new FormData();
-    fd.append('type', formData.type);
-    fd.append('startDate', formData.startDate);
-    fd.append('endDate', formData.endDate);
-    if (user?.companyId) fd.append('companyId', user.companyId);
-    if (formData.reasonForRequest) fd.append('reasonForRequest', formData.reasonForRequest);
-    formData.attachments.forEach((file) => fd.append('attachments[]', file));
+    fd.append('title', formData.title);
+    fd.append('description', formData.description);
+    fd.append('severity', formData.severity);
+   if(user?.companyId) fd.append('companyId', user?.companyId);
+    formData.attachments.forEach(file => fd.append('attachments', file));
+    if (editReport?.attachments) {
+      editReport.attachments.forEach(att => fd.append('existingAttachments', att.url));
+    }
 
     try {
       setOperationLoading(true);
-      if (editLeave) {
-        await leaveService.updateLeave(editLeave.id, fd);
-        showOperationStatus('success', 'Leave request updated');
+      if (editReport) {
+        await riskReportService.updateRiskReport(editReport.id, fd);
+        showOperationStatus('success', 'Risk report updated');
       } else {
-        await leaveService.createLeave(fd);
-        showOperationStatus('success', 'Leave request created');
+        await riskReportService.createRiskReport(fd);
+        showOperationStatus('success', 'Risk report created');
       }
       resetForm();
       await loadData();
@@ -251,40 +217,38 @@ const LeaveRequestDashboard: React.FC = () => {
 
   const resetForm = () => {
     setFormData({
-      type: '',
-      startDate: '',
-      endDate: '',
-      reasonForRequest: '',
+      title: '',
+      description: '',
+      severity: 'MEDIUM',
       attachments: [],
       attachmentPreviews: [],
     });
-    setEditLeave(null);
+    setEditReport(null);
     setShowFormModal(false);
   };
 
-  // ── EDIT / DELETE / APPROVE / REJECT ──
-  const handleEditLeave = (leave: LeaveRequest) => {
-    if (!canEditLeave(leave)) return;
-    setEditLeave(leave);
+  /* ── EDIT / DELETE / RESOLVE / REJECT ── */
+  const handleEditReport = (r: RiskReport) => {
+    if (!canEditReport(r)) return;
+    setEditReport(r);
     setFormData({
-      type: leave.type,
-      startDate: leave.startDate.split('T')[0],
-      endDate: leave.endDate.split('T')[0],
-      reasonForRequest: leave.reasonForRequest || '',
+      title: r.title,
+      description: r.description,
+      severity: r.severity as FormData['severity'],
       attachments: [],
       attachmentPreviews: [],
     });
     setShowFormModal(true);
   };
 
-  const handleDeleteLeave = async (leave: LeaveRequest) => {
-    if (!canDeleteLeave(leave)) return;
+  const handleDeleteReport = async (r: RiskReport) => {
+    if (!canDeleteReport(r)) return;
     try {
       setOperationLoading(true);
-      await leaveService.deleteLeave(leave.id);
+      await riskReportService.deleteRiskReport(r.id);
       setDeleteConfirm(null);
       await loadData();
-      showOperationStatus('success', `${formatLeaveType(leave.type)} deleted`);
+      showOperationStatus('success', 'Risk report deleted');
     } catch (err: any) {
       showOperationStatus('error', err.message || 'Failed to delete');
     } finally {
@@ -292,14 +256,14 @@ const LeaveRequestDashboard: React.FC = () => {
     }
   };
 
-  const handleApproveLeave = async (leave: LeaveRequest) => {
-    if (!canApproveReject(leave)) return;
+  const handleResolveReport = async (r: RiskReport) => {
+    if (!canResolveReject(r)) return;
     try {
       setOperationLoading(true);
-      await leaveService.approveLeave(leave.id);
-      setApproveConfirm(null);
+      await riskReportService.resolveRiskReport(r.id);
+      setResolveConfirm(null);
       await loadData();
-      showOperationStatus('success', 'Leave approved');
+      showOperationStatus('success', 'Risk report resolved');
     } catch (err: any) {
       showOperationStatus('error', err.message);
     } finally {
@@ -307,19 +271,19 @@ const LeaveRequestDashboard: React.FC = () => {
     }
   };
 
-  const handleRejectLeave = async () => {
+  const handleRejectReport = async () => {
     if (!rejectReason.trim()) {
       showOperationStatus('error', 'Rejection reason required');
       return;
     }
-    if (!rejectConfirm || !canApproveReject(rejectConfirm)) return;
+    if (!rejectConfirm) return;
     try {
       setOperationLoading(true);
-      await leaveService.rejectLeave(rejectConfirm.id, rejectReason);
+      await riskReportService.rejectRiskReport(rejectConfirm.id, rejectReason);
       setRejectConfirm(null);
       setRejectReason('');
       await loadData();
-      showOperationStatus('success', 'Leave rejected');
+      showOperationStatus('success', 'Risk report rejected');
     } catch (err: any) {
       showOperationStatus('error', err.message);
     } finally {
@@ -327,30 +291,44 @@ const LeaveRequestDashboard: React.FC = () => {
     }
   };
 
-  const handleViewLeave = (leave: LeaveRequest) => {
-    if (!leave?.id) return;
-    navigate(`/admin/leave/${leave.id}`);
+  const handleViewReport = (r: RiskReport) => {
+    if (!r?.id) return;
+    navigate(`/admin/risk-report/${r.id}`);
   };
 
-  // ── PAGINATION ──
-  const totalLeaves = allLeaves.length;
-  const totalPages = Math.ceil(leaves.length / itemsPerPage);
+  /* ── PAGINATION ── */
+  const totalReports = allReports.length;
+  const totalPages = Math.ceil(reports.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentLeaves = leaves.slice(startIndex, endIndex);
+  const currentReports = reports.slice(startIndex, endIndex);
 
-  // ── RENDER HELPERS ──
-  const renderStatusBadge = (status: LeaveRequest['status']) => {
-    const cfg: Record<LeaveRequest['status'], { bg: string; txt: string; icon: any }> = {
+  /* ── RENDER HELPERS ── */
+  const renderStatusBadge = (status: string) => {
+    const cfg = {
       PENDING: { bg: 'bg-yellow-100', txt: 'text-yellow-800', icon: Clock },
-      APPROVED: { bg: 'bg-green-100', txt: 'text-green-800', icon: CheckCircle },
+      RESOLVED: { bg: 'bg-green-100', txt: 'text-green-800', icon: CheckCircle },
       REJECTED: { bg: 'bg-red-100', txt: 'text-red-800', icon: XCircle },
-    };
-    const { bg, txt, icon: Icon } = cfg[status];
+    }[status] || cfg.PENDING;
+    const Icon = cfg.icon;
     return (
-      <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-xs font-medium ${bg} ${txt}`}>
+      <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.txt}`}>
         <Icon className="w-3 h-3" />
         <span>{status}</span>
+      </span>
+    );
+  };
+
+  const renderSeverityBadge = (severity: string) => {
+    const cfg = {
+      LOW: { bg: 'bg-green-100', txt: 'text-green-800' },
+      MEDIUM: { bg: 'bg-yellow-100', txt: 'text-yellow-800' },
+      HIGH: { bg: 'bg-orange-100', txt: 'text-orange-800' },
+      CRITICAL: { bg: 'bg-red-100', txt: 'text-red-800' },
+    }[severity] || cfg.MEDIUM;
+    return (
+      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${cfg.bg} ${cfg.txt}`}>
+        {SEVERITY_LABELS[severity as keyof typeof SEVERITY_LABELS]}
       </span>
     );
   };
@@ -366,53 +344,49 @@ const LeaveRequestDashboard: React.FC = () => {
     return <img src={`${API_URL}${url}`} alt="" className={`${size} rounded-full object-cover border border-gray-200`} />;
   };
 
-  // ── ACTION BUTTONS ──
-  const renderActions = (leave: LeaveRequest) => (
+  const renderActions = (r: RiskReport) => (
     <div className="flex items-center space-x-2">
       <motion.button
         whileHover={{ scale: 1.1 }}
-        onClick={() => handleViewLeave(leave)}
+        onClick={() => handleViewReport(r)}
         className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
         title="View"
       >
         <Eye className="w-4 h-4" />
       </motion.button>
-
-      {canEditLeave(leave) && (
+      {canEditReport(r) && (
         <motion.button
           whileHover={{ scale: 1.1 }}
-          onClick={() => handleEditLeave(leave)}
+          onClick={() => handleEditReport(r)}
           className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
           title="Edit"
         >
           <Edit className="w-4 h-4" />
         </motion.button>
       )}
-
-      {canDeleteLeave(leave) && (
+      {canDeleteReport(r) && (
         <motion.button
           whileHover={{ scale: 1.1 }}
-          onClick={() => setDeleteConfirm(leave)}
+          onClick={() => setDeleteConfirm(r)}
           className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors"
           title="Delete"
         >
           <Trash2 className="w-4 h-4" />
         </motion.button>
       )}
-
-      {canApproveReject(leave) && (
+      {canResolveReject(r) && (
         <>
           <motion.button
             whileHover={{ scale: 1.1 }}
-            onClick={() => setApproveConfirm(leave)}
+            onClick={() => setResolveConfirm(r)}
             className="text-gray-500 hover:text-green-600 p-2 rounded-full hover:bg-green-50 transition-colors"
-            title="Approve"
+            title="Resolve"
           >
             <Check className="w-4 h-4" />
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.1 }}
-            onClick={() => setRejectConfirm(leave)}
+            onClick={() => setRejectConfirm(r)}
             className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors"
             title="Reject"
           >
@@ -423,7 +397,7 @@ const LeaveRequestDashboard: React.FC = () => {
     </div>
   );
 
-  // ── VIEWS ──
+  /* ── VIEWS ── */
   const renderTableView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100">
       <div className="overflow-x-auto">
@@ -431,27 +405,16 @@ const LeaveRequestDashboard: React.FC = () => {
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Employee</th>
-              <th
-                className="text-left py-3 px-4 text-gray-600 font-semibold cursor-pointer hover:bg-gray-100"
-                onClick={() => {
-                  setSortBy('type');
-                  setSortOrder(sortBy === 'type' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc');
-                }}
-              >
-                <div className="flex items-center space-x-1">
-                  <span>Type</span>
-                  <ChevronDown className={`w-4 h-4 ${sortBy === 'type' ? 'text-blue-600' : 'text-gray-400'}`} />
-                </div>
-              </th>
-              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden md:table-cell">Dates</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Title</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden md:table-cell">Severity</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Status</th>
               <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {currentLeaves.map((leave) => (
+            {currentReports.map((r) => (
               <motion.tr
-                key={leave.id}
+                key={r.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -459,18 +422,14 @@ const LeaveRequestDashboard: React.FC = () => {
               >
                 <td className="py-3 px-4">
                   <div className="flex items-center space-x-2">
-                    {renderAvatar(leave.employee?.profile_picture)}
-                    <span className="font-medium text-gray-900">
-                      {leave.employee?.first_name || ''} {leave.employee?.last_name || ''}
-                    </span>
+                    {renderAvatar(r.employee?.profile_picture)}
+ <span className="font-medium text-gray-900">{r.employee?.first_name || (r.employee?.last_name ? '' : '—')} {r.employee?.last_name ||  (r.employee?.first_name ? '' : '—')  } </span>
                   </div>
                 </td>
-                <td className="py-3 px-4 font-medium text-gray-900">{formatLeaveType(leave.type)}</td>
-                <td className="py-3 px-4 text-gray-600 hidden md:table-cell">
-                  {format(new Date(leave.startDate), 'dd MMM yyyy')} – {format(new Date(leave.endDate), 'dd MMM yyyy')}
-                </td>
-                <td className="py-3 px-4">{renderStatusBadge(leave.status)}</td>
-                <td className="py-3 px-4 text-right">{renderActions(leave)}</td>
+                <td className="py-3 px-4 font-medium text-gray-900 truncate max-w-xs">{r.title}</td>
+                <td className="py-3 px-4 hidden md:table-cell">{renderSeverityBadge(r.severity)}</td>
+                <td className="py-3 px-4">{renderStatusBadge(r.status)}</td>
+                <td className="py-3 px-4 text-right">{renderActions(r)}</td>
               </motion.tr>
             ))}
           </tbody>
@@ -481,27 +440,25 @@ const LeaveRequestDashboard: React.FC = () => {
 
   const renderGridView = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {currentLeaves.map((leave) => (
+      {currentReports.map((r) => (
         <motion.div
-          key={leave.id}
+          key={r.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="bg-white rounded-lg shadow border border-gray-100 p-4 hover:shadow-md transition-shadow"
         >
           <div className="flex flex-col items-center space-y-3 mb-3">
-            {renderAvatar(leave.employee?.profile_picture, 'w-16 h-16')}
+            {renderAvatar(r.employee?.profile_picture, 'w-16 h-16')}
             <div className="text-center w-full">
-              <div className="font-semibold text-gray-900 text-sm truncate">{formatLeaveType(leave.type)}</div>
-              <div className="text-gray-500 text-xs">
-                {format(new Date(leave.startDate), 'dd MMM')} – {format(new Date(leave.endDate), 'dd MMM')}
-              </div>
+              <div className="font-semibold text-gray-900 text-sm truncate">{r.title}</div>
+              <div className="text-gray-500 text-xs">{formatDate(r.createdAt)}</div>
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <div>{renderActions(leave)}</div>
+            <div>{renderActions(r)}</div>
           </div>
-          <div className="mt-2">{renderStatusBadge(leave.status)}</div>
+          <div className="mt-2">{renderStatusBadge(r.status)}</div>
         </motion.div>
       ))}
     </div>
@@ -509,9 +466,9 @@ const LeaveRequestDashboard: React.FC = () => {
 
   const renderListView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100 divide-y divide-gray-100">
-      {currentLeaves.map((leave) => (
+      {currentReports.map((r) => (
         <motion.div
-          key={leave.id}
+          key={r.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -519,19 +476,19 @@ const LeaveRequestDashboard: React.FC = () => {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
-              {renderAvatar(leave.employee?.profile_picture)}
+              {renderAvatar(r.employee?.profile_picture)}
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm truncate">{formatLeaveType(leave.type)}</div>
+                <div className="font-semibold text-gray-900 text-sm truncate">{r.title}</div>
                 <div className="text-gray-500 text-xs truncate">
-                  {leave.employee?.name} • {format(new Date(leave.startDate), 'dd MMM')} – {format(new Date(leave.endDate), 'dd MMM')}
+                  {r.employee?.name} • {formatDate(r.createdAt)}
                 </div>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600 flex-1 max-w-md px-4">
-              <span className="truncate">{renderStatusBadge(leave.status)}</span>
+              <span className="truncate">{renderStatusBadge(r.status)}</span>
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
-              {renderActions(leave)}
+              {renderActions(r)}
             </div>
           </div>
         </motion.div>
@@ -540,7 +497,7 @@ const LeaveRequestDashboard: React.FC = () => {
   );
 
   const renderPagination = () => {
-    const pages: number[] = [];
+    const pages = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -552,7 +509,7 @@ const LeaveRequestDashboard: React.FC = () => {
     return (
       <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-100 rounded-b-lg shadow">
         <div className="text-sm text-gray-600">
-          Showing {startIndex + 1}-{Math.min(endIndex, leaves.length)} of {leaves.length}
+          Showing {startIndex + 1}-{Math.min(endIndex, reports.length)} of {reports.length}
         </div>
         <div className="flex items-center space-x-2">
           <motion.button
@@ -590,7 +547,7 @@ const LeaveRequestDashboard: React.FC = () => {
     );
   };
 
-  // ── MAIN RETURN ──
+  /* ── MAIN RETURN ── */
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
       {/* Header */}
@@ -599,8 +556,8 @@ const LeaveRequestDashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div>
-                <h1 className="text-xl font-semibold text-gray-900">Leave Request Management</h1>
-                <p className="text-sm text-gray-500">Create, view and manage employee leave requests</p>
+                <h1 className="text-xl font-semibold text-gray-900">Risk Report Management</h1>
+                <p className="text-sm text-gray-500">Create, view and manage workplace risk reports</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
@@ -618,12 +575,11 @@ const LeaveRequestDashboard: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   onClick={() => {
-                    setEditLeave(null);
+                    setEditReport(null);
                     setFormData({
-                      type: '',
-                      startDate: '',
-                      endDate: '',
-                      reasonForRequest: '',
+                      title: '',
+                      description: '',
+                      severity: 'MEDIUM',
                       attachments: [],
                       attachmentPreviews: [],
                     });
@@ -633,7 +589,7 @@ const LeaveRequestDashboard: React.FC = () => {
                   className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
                 >
                   <Plus className="w-4 h-4" />
-                  <span className="text-sm">Add Request</span>
+                  <span className="text-sm">Add Report</span>
                 </motion.button>
               )}
             </div>
@@ -647,11 +603,11 @@ const LeaveRequestDashboard: React.FC = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
             <div className="flex items-center space-x-3">
               <div className="p-3 bg-blue-50 rounded-full flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-blue-600" />
+                <FileText className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Total Requests</p>
-                <p className="text-xl font-semibold text-gray-900">{totalLeaves}</p>
+                <p className="text-sm text-gray-600">Total Reports</p>
+                <p className="text-xl font-semibold text-gray-900">{totalReports}</p>
               </div>
             </div>
           </motion.div>
@@ -661,9 +617,9 @@ const LeaveRequestDashboard: React.FC = () => {
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Approved</p>
+                <p className="text-sm text-gray-600">Resolved</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {allLeaves.filter((l) => l.status === 'APPROVED').length}
+                  {allReports.filter((r) => r.status === 'RESOLVED').length}
                 </p>
               </div>
             </div>
@@ -676,7 +632,7 @@ const LeaveRequestDashboard: React.FC = () => {
               <div>
                 <p className="text-sm text-gray-600">Pending</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {allLeaves.filter((l) => l.status === 'PENDING').length}
+                  {allReports.filter((r) => r.status === 'PENDING').length}
                 </p>
               </div>
             </div>
@@ -691,7 +647,7 @@ const LeaveRequestDashboard: React.FC = () => {
                 <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search requests..."
+                  placeholder="Search reports..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -702,16 +658,16 @@ const LeaveRequestDashboard: React.FC = () => {
               <select
                 value={`${sortBy}-${sortOrder}`}
                 onChange={(e) => {
-                  const [field, order] = e.target.value.split('-') as [keyof LeaveRequest, 'asc' | 'desc'];
-                  setSortBy(field);
-                  setSortOrder(order);
+                  const [field, order] = e.target.value.split('-');
+                  setSortBy(field as keyof RiskReport);
+                  setSortOrder(order as 'asc' | 'desc');
                 }}
                 className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="createdAt-desc">Newest First</option>
                 <option value="createdAt-asc">Oldest First</option>
-                <option value="type-asc">Type (A-Z)</option>
-                <option value="type-desc">Type (Z-A)</option>
+                <option value="severity-asc">Severity (Low-High)</option>
+                <option value="severity-desc">Severity (High-Low)</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
                 <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="Table View">
@@ -738,16 +694,16 @@ const LeaveRequestDashboard: React.FC = () => {
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center text-gray-600">
             <div className="inline-flex items-center space-x-2">
               <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-sm">Loading leave requests...</span>
+              <span className="text-sm">Loading risk reports...</span>
             </div>
           </div>
-        ) : leaves.length === 0 ? (
+        ) : reports.length === 0 ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
             <p className="text-lg font-semibold text-gray-900">
-              {searchTerm ? 'No Requests Found' : 'No Leave Requests Available'}
+              {searchTerm ? 'No Reports Found' : 'No Risk Reports Available'}
             </p>
             <p className="text-sm text-gray-500 mt-1">
-              {searchTerm ? 'Try adjusting your search criteria.' : 'Add a new request to get started.'}
+              {searchTerm ? 'Try adjusting your search criteria.' : 'Add a new report to get started.'}
             </p>
           </div>
         ) : (
@@ -799,20 +755,20 @@ const LeaveRequestDashboard: React.FC = () => {
                   <AlertTriangle className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Delete Request</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Delete Report</h3>
                   <p className="text-sm text-gray-500">This action cannot be undone</p>
                 </div>
               </div>
               <div className="mb-4">
                 <p className="text-sm text-gray-700">
-                  Are you sure you want to delete <span className="font-semibold">{formatLeaveType(deleteConfirm.type)}</span>?
+                  Are you sure you want to delete <span className="font-semibold">{deleteConfirm.title}</span>?
                 </p>
               </div>
               <div className="flex items-center justify-end space-x-3">
                 <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteLeave(deleteConfirm)} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteReport(deleteConfirm)} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">
                   Delete
                 </motion.button>
               </div>
@@ -821,9 +777,9 @@ const LeaveRequestDashboard: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* APPROVE CONFIRM */}
+      {/* RESOLVE CONFIRM */}
       <AnimatePresence>
-        {approveConfirm && (
+        {resolveConfirm && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
               <div className="flex items-center space-x-3 mb-4">
@@ -831,22 +787,21 @@ const LeaveRequestDashboard: React.FC = () => {
                   <CheckCircle className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Approve Leave</h3>
-                  <p className="text-sm text-gray-500">Confirm approval of this request</p>
+                  <h3 className="text-lg font-semibold text-gray-900">Resolve Report</h3>
+                  <p className="text-sm text-gray-500">Mark this report as resolved</p>
                 </div>
               </div>
               <div className="mb-4">
                 <p className="text-sm text-gray-700">
-                  Approve <span className="font-semibold">{formatLeaveType(approveConfirm.type)}</span> for{' '}
-                  <span className="font-semibold">{approveConfirm.employee?.name}</span>?
+                  Resolve <span className="font-semibold">{resolveConfirm.title}</span>?
                 </p>
               </div>
               <div className="flex items-center justify-end space-x-3">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setApproveConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setResolveConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleApproveLeave(approveConfirm)} className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700">
-                  Approve
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleResolveReport(resolveConfirm)} className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700">
+                  Resolve
                 </motion.button>
               </div>
             </div>
@@ -864,7 +819,7 @@ const LeaveRequestDashboard: React.FC = () => {
                   <XCircle className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Reject Leave</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Reject Report</h3>
                   <p className="text-sm text-gray-500">Provide a reason for rejection</p>
                 </div>
               </div>
@@ -881,7 +836,7 @@ const LeaveRequestDashboard: React.FC = () => {
                 <motion.button whileHover={{ scale: 1.05 }} onClick={() => { setRejectConfirm(null); setRejectReason(''); }} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={handleRejectLeave} disabled={!rejectReason.trim()} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={handleRejectReport} disabled={!rejectReason.trim()} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50">
                   Reject
                 </motion.button>
               </div>
@@ -897,62 +852,48 @@ const LeaveRequestDashboard: React.FC = () => {
             <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl overflow-y-auto max-h-screen">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <AlertTriangle className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
-                    {editLeave ? 'Edit Leave Request' : 'Create Leave Request'}
+                    {editReport ? 'Edit Risk Report' : 'Create Risk Report'}
                   </h3>
                   <p className="text-sm text-gray-500">Fill in the details below</p>
                 </div>
               </div>
               <div className="space-y-4 mb-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Leave Type *</label>
-                  <select
-                    value={formData.type}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as LeaveRequest['type'] | '' }))}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Select type</option>
-                    <option value="VACATION">Vacation Leave</option>
-                    <option value="SICK">Sick Leave</option>
-                    <option value="PERSONAL">Personal Leave</option>
-                    <option value="MATERNITY">Maternity Leave</option>
-                    <option value="PATERNITY">Paternity Leave</option>
-                    <option value="UNPAID">Unpaid Leave</option>
-                    <option value="COMPASSIONATE">Compassionate Leave</option>
-                  </select>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-                    <input
-                      type="date"
-                      value={formData.startDate}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
-                    <input
-                      type="date"
-                      value={formData.endDate}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                    placeholder="Brief title of the risk"
+                  />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Reason (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
                   <textarea
-                    value={formData.reasonForRequest}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, reasonForRequest: e.target.value }))}
-                    placeholder="Explain your leave request..."
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    rows={3}
+                    placeholder="Describe the risk in detail..."
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Severity *</label>
+                  <select
+                    value={formData.severity}
+                    onChange={(e) => setFormData(prev => ({ ...prev, severity: e.target.value as FormData['severity'] }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="LOW">Low Risk</option>
+                    <option value="MEDIUM">Medium Risk</option>
+                    <option value="HIGH">High Risk</option>
+                    <option value="CRITICAL">Critical Risk</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Attachments (Images/PDF)</label>
@@ -964,10 +905,10 @@ const LeaveRequestDashboard: React.FC = () => {
                       multiple
                       onChange={handleAttachmentChange}
                       className="hidden"
-                      id="leave-attachments"
+                      id="risk-attachments"
                     />
                     <label
-                      htmlFor="leave-attachments"
+                      htmlFor="risk-attachments"
                       className="cursor-pointer inline-flex items-center space-x-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
                     >
                       <Upload className="w-4 h-4" />
@@ -1004,8 +945,8 @@ const LeaveRequestDashboard: React.FC = () => {
                 <motion.button whileHover={{ scale: 1.05 }} onClick={resetForm} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateLeave} disabled={operationLoading} className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
-                  {editLeave ? 'Update' : 'Submit'}
+                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateReport} disabled={operationLoading} className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
+                  {editReport ? 'Update' : 'Submit'}
                 </motion.button>
               </div>
             </div>
@@ -1016,4 +957,4 @@ const LeaveRequestDashboard: React.FC = () => {
   );
 };
 
-export default LeaveRequestDashboard;
+export default RiskReportDashboard;

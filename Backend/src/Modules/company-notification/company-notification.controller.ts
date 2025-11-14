@@ -29,6 +29,7 @@ export class CompanyNotificationController {
       link?: string;
     }
   ) {
+
     return this.notificationService.createNotification({
       ...body,
       senderId: req.company?.id || req.employee?.id,
@@ -43,6 +44,9 @@ export class CompanyNotificationController {
   async getNotifications(@Req() req: RequestWithCompanyEmployee) {
     const id = req.company?.id || req.employee?.id;
     const type = req.company ? 'COMPANY' : 'EMPLOYEE';
+
+    console.log(`${type} : `,id);
+    
 
     return this.notificationService.getNotificationsForRecipient(id, type);
   }

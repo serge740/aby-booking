@@ -15,6 +15,7 @@ import {
   ExternalLink,
   Outdent,
   DoorOpen,
+  File,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
@@ -76,6 +77,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
       { id: "employee", label: "Employee Management", icon: ClipboardList, path: `${basePath}/employee`, allowedRoles: ["company"] },
       { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
+      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
+      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
       {
         id: "menu-category",
         label: "Menu",
@@ -84,6 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         items: [
           { id: "menu-category", label: "Menu Category", icon: Layers, path: `${basePath}/menu-category`, allowedRoles: ["company"] },
           { id: "menu-item", label: "Menu Item", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
+
         ],
       },
     ];
@@ -91,6 +95,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     const employeeLinks: (NavItem | DropdownGroup)[] = [
       { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
       { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
+      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
+      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
 
     ];
 

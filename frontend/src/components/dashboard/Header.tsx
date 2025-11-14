@@ -7,11 +7,13 @@ import {
   ChevronDown,
 } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
 import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
 import { API_URL } from "../../api/api";
+import NotificationBell from "./notification/NotificationBell";
+
 
 interface HeaderProps {
   onToggle: () => void;
@@ -31,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
   const logout = role === "admin" ? adminLogout : role === "company" ? companyLogout : employeeLogout;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Logout handler
@@ -124,7 +127,15 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
           {/* Right: Icons + Profile */}
           <div className="flex md:items-center space-x-4">
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              {
+              (role == 'company' || role == 'employee') ?
+              <NotificationBell />
+
+              : 
+
               <Bell className="w-5 h-5" />
+              
+            }
             </button>
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
               <Settings className="w-5 h-5" />
