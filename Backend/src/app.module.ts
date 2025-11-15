@@ -23,6 +23,7 @@ import { PreSalaryModule } from './Modules/pre-salary/pre-salary.module';
 import { RiskReportModule } from './Modules/risk-report/risk-report.module';
 import { SocketModule } from './Global/socket/socket.module';
 import { CompanyNotificationModule } from './Modules/company-notification/company-notification.module';
+import { PushNotificationsModule } from './Modules/push-notification/push-notification.module';
 
 
 @Module({
@@ -51,7 +52,8 @@ import { CompanyNotificationModule } from './Modules/company-notification/compan
     PreSalaryModule,
     RiskReportModule,
     SocketModule,
-    CompanyNotificationModule
+    CompanyNotificationModule,
+    PushNotificationsModule,
   ],
   controllers: [],
 })

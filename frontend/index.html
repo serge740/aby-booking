@@ -1,35 +1,373 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Viewport and basic meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Fresh Cart — reserve restaurants, bars, lounges, hotels, and food spots with ease." />
+    <meta name="keywords" content="Fresh Cart, restaurant, bar, lounge, hotel, food, drink, booking" />
+    
+    <!-- PWA Theme colors -->
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="msapplication-TileColor" content="#0ea5e9" />
+    <meta name="msapplication-navbutton-color" content="#0ea5e9" />
+    
+    <!-- iOS PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Fresh Cart" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <title>Jambokawa</title>
-
-    <meta name="description" content="Welcome to Jambokawa, your trusted partner for modern web development, digital innovation, and technology solutions." />
-    <meta name="keywords" content="Jambokawa, web development, React, JavaScript, modern frameworks, technology solutions, digital innovation" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Jambokawa - Digital Solutions & Web Development" />
-    <meta property="og:description" content="Explore Jambokawa's innovative projects and services. We specialize in creating dynamic, scalable web applications." />
-    <meta property="og:image" content="https://jambokawa.com/jambokawa_logo.png" />
-    <meta property="og:url" content="https://jambokawa.com" />
+    
+    <!-- iOS icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- iOS Splash Screens -->
+    <!-- iPhone -->
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-640-1136.png" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-750-1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1242-2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1125-2436.png" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-828-1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1242-2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1284-2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1170-2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    
+    <!-- iPad -->
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1536-2048.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1620-2160.png" media="(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1668-2224.png" media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-1668-2388.png" media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-splash-2048-2732.png" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    
+    <!-- Standard favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0ea5e9" />
+    
+    <!-- Windows tiles -->
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
+    <meta name="msapplication-square70x70logo" content="/mstile-70x70.png" />
+    <meta name="msapplication-square150x150logo" content="/mstile-150x150.png" />
+    <meta name="msapplication-wide310x150logo" content="/mstile-310x150.png" />
+    <meta name="msapplication-square310x310logo" content="/mstile-310x310.png" />
+    
+    <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
-
-    <!-- Twitter -->
-    <meta name="twitter:title" content="Jambokawa" />
-    <meta name="twitter:description" content="Discover Jambokawa — where technology meets creativity. We build cutting-edge web solutions that drive success." />
-    <meta name="twitter:image" content="https://jambokawa.com/jambokawa_logo.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- Favicon -->
-    <link rel="icon" href="https://jambokawa.com/jambokawa_logo.png" />
+    <meta property="og:url" content="https://your-domain.com/" />
+    <meta property="og:title" content="Fresh Cart" />
+    <meta property="og:description" content="Fresh Cart — reserve restaurants, bars, lounges, hotels, and food spots with ease." />
+    <meta property="og:image" content="/pwa-512x512.png" />
+    
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://your-domain.com/" />
+    <meta property="twitter:title" content="Fresh Cart" />
+    <meta property="twitter:description" content="Fresh Cart — reserve restaurants, bars, lounges, hotels, and food spots with ease." />
+    <meta property="twitter:image" content="/pwa-512x512.png" />
+    
+    <!-- Preconnect to improve performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <title>Fresh Cart</title>
 </head>
 
 <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- PWA installation & detection script unchanged, only messages updated to 'Fresh Cart' -->
+ <script>
+        // Enhanced PWA Detection and Installation
+        let deferredPrompt;
+        let installButton = null;
+
+        // Check if already running as PWA
+        const isPWAInstalled = () => {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   document.referrer.includes('android-app://');
+        };
+
+        // Check if iOS device
+        const isIOSDevice = () => {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        };
+
+        // Check if device supports installation
+        const canInstall = () => {
+            return 'serviceWorker' in navigator && 
+                   ('BeforeInstallPromptEvent' in window || isIOSDevice());
+        };
+
+        // Handle beforeinstallprompt for Android/Desktop
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt available');
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show custom install UI
+            window.dispatchEvent(new CustomEvent('pwa-installable', {
+                detail: { platform: 'android-desktop' }
+            }));
+        });
+
+        // Handle successful installation
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installed successfully');
+            deferredPrompt = null;
+            window.dispatchEvent(new CustomEvent('pwa-installed'));
+        });
+
+        // Function to trigger install
+        window.installPWA = async () => {
+            if (!deferredPrompt) {
+                console.log('PWA install prompt not available');
+                return false;
+            }
+
+            try {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('User accepted PWA installation');
+                    window.dispatchEvent(new CustomEvent('pwa-install-accepted'));
+                } else {
+                    console.log('User dismissed PWA installation');
+                    window.dispatchEvent(new CustomEvent('pwa-install-dismissed'));
+                }
+                
+                deferredPrompt = null;
+                return outcome === 'accepted';
+            } catch (error) {
+                console.error('Error installing PWA:', error);
+                return false;
+            }
+        };
+
+        // iOS Installation Instructions
+        window.showIOSInstallInstructions = () => {
+            const instructions = {
+                title: 'Install ABY Inventory',
+                steps: [
+                    'Tap the Share button',
+                    'Scroll down and tap "Add to Home Screen"',
+                    'Tap "Add" to install the app'
+                ]
+            };
+            
+            window.dispatchEvent(new CustomEvent('pwa-ios-instructions', {
+                detail: instructions
+            }));
+        };
+
+        // Check installation status on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const installed = isPWAInstalled();
+            const canInstallApp = canInstall();
+            const isIOS = isIOSDevice();
+            
+            console.log('PWA Status:', {
+                installed,
+                canInstallApp,
+                isIOS,
+                standalone: window.navigator.standalone
+            });
+
+            // Dispatch status event for React components
+            window.dispatchEvent(new CustomEvent('pwa-status', {
+                detail: {
+                    installed,
+                    canInstall: canInstallApp,
+                    isIOS,
+                    platform: isIOS ? 'ios' : 'other'
+                }
+            }));
+
+            // Auto-show install prompt for iOS if not installed
+            if (isIOS && !installed && !sessionStorage.getItem('ios-install-dismissed')) {
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('pwa-show-ios-prompt'));
+                }, 3000); // Show after 3 seconds
+            }
+        });
+
+        // Handle visibility change (useful for PWA lifecycle)
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                window.dispatchEvent(new CustomEvent('pwa-focus'));
+            } else {
+                window.dispatchEvent(new CustomEvent('pwa-blur'));
+            }
+        });
+
+        // Handle orientation changes for responsive PWA
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('pwa-orientation-change', {
+                    detail: { orientation: screen.orientation?.angle || 0 }
+                }));
+            }, 100);
+        });
+
+        // Network status detection
+        const updateOnlineStatus = () => {
+            window.dispatchEvent(new CustomEvent('pwa-network-status', {
+                detail: { online: navigator.onLine }
+            }));
+        };
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+
+        // Service Worker Registration (handled by Vite PWA plugin)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then((registration) => {
+                console.log('Service Worker registered:', registration);
+                
+                // Listen for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.dispatchEvent(new CustomEvent('pwa-update-available'));
+                        }
+                    });
+                });
+            });
+
+            // Handle service worker messages
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data && event.data.type) {
+                    window.dispatchEvent(new CustomEvent('pwa-sw-message', {
+                        detail: event.data
+                    }));
+                }
+            });
+        }
+
+        // Utility functions available globally
+        window.PWAUtils = {
+            isPWAInstalled,
+            isIOSDevice,
+            canInstall,
+            installPWA,
+            showIOSInstallInstructions,
+            
+            // Additional utility functions
+            getInstallPromptType: () => {
+                if (deferredPrompt) return 'native';
+                if (isIOSDevice() && !isPWAInstalled()) return 'ios';
+                return null;
+            },
+            
+            dismissIOSPrompt: () => {
+                sessionStorage.setItem('ios-install-dismissed', 'true');
+                window.dispatchEvent(new CustomEvent('pwa-ios-prompt-dismissed'));
+            },
+            
+            refreshApp: () => {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                }
+            },
+            
+            shareContent: async (data) => {
+                if (navigator.share) {
+                    try {
+                        await navigator.share(data);
+                        return true;
+                    } catch (error) {
+                        console.log('Share cancelled or failed:', error);
+                        return false;
+                    }
+                }
+                return false;
+            }
+        };
+
+        // Debug information (remove in production)
+        if (process.env.NODE_ENV === 'development') {
+            window.PWADebug = {
+                userAgent: navigator.userAgent,
+                standalone: window.navigator.standalone,
+                displayMode: window.matchMedia('(display-mode: standalone)').matches ? 'standalone' : 'browser',
+                canInstall: canInstall(),
+                isIOS: isIOSDevice(),
+                isPWAInstalled: isPWAInstalled(),
+                hasServiceWorker: 'serviceWorker' in navigator,
+                hasNotifications: 'Notification' in window,
+                hasShare: 'share' in navigator
+            };
+            
+            console.log('PWA Debug Info:', window.PWADebug);
+        }
+
+        // Performance optimization: Preload critical resources
+        const preloadResources = () => {
+            // Preload critical app chunks (no separate CSS needed with Tailwind)
+            const criticalResources = [
+                '/assets/app.js',
+                '/assets/vendor.js'
+            ];
+
+            criticalResources.forEach(resource => {
+                const link = document.createElement('link');
+                link.rel = 'modulepreload';
+                link.href = resource;
+                document.head.appendChild(link);
+            });
+        };
+
+        // Initialize preloading after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', preloadResources);
+        } else {
+            preloadResources();
+        }
+    </script>
+
+    <!-- Fallback for JavaScript disabled -->
+    <noscript>
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0ea5e9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            z-index: 9999;
+        ">
+            <div>
+                <h1>JavaScript Required</h1>
+                <p>Fresh Cart requires JavaScript to function properly.</p>
+                <p>Please enable JavaScript in your browser and refresh the page.</p>
+            </div>
+        </div>
+    </noscript>
 </body>
 
 </html>

@@ -10,6 +10,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import preSalaryService, { PreSalary } from '../../services/preSalaryService';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { format } from 'date-fns';
+import { useSocketEvent } from '../../context/SocketContext';
 
 interface OutletContext {
   role: 'employee' | 'company';
@@ -65,11 +66,68 @@ const PreSalaryDashboard: React.FC = () => {
 
   const navigate = useNavigate();
 
+
+// ── REAL-TIME STATE UPDATE (inside the component) ──
+useSocketEvent(
+  'preSalaryCreated',
+  (newPre: PreSalary) => {
+    setAllPreSalaries(prev => [...prev, newPre]);
+    setPreSalaries(prev => [...prev, newPre]);   // will be filtered/sorted on next render
+  },
+  []
+);
+
+useSocketEvent(
+  'preSalaryUpdated',
+  (updated: PreSalary) => {
+    const replace = (prev: PreSalary[]) =>
+      prev.map(p => (p.id === updated.id ? updated : p));
+
+    setAllPreSalaries(replace);
+    setPreSalaries(replace);
+  },
+  []
+);
+
+useSocketEvent(
+  'preSalaryApproved',
+  (approved: PreSalary) => {
+    const replace = (prev: PreSalary[]) =>
+      prev.map(p => (p.id === approved.id ? approved : p));
+
+    setAllPreSalaries(replace);
+    setPreSalaries(replace);
+  },
+  []
+);
+
+useSocketEvent(
+  'preSalaryRejected',
+  (rejected: PreSalary) => {
+    const replace = (prev: PreSalary[]) =>
+      prev.map(p => (p.id === rejected.id ? rejected : p));
+
+    setAllPreSalaries(replace);
+    setPreSalaries(replace);
+  },
+  []
+);
+
+useSocketEvent(
+  'preSalaryDeleted',
+  ({ id }: { id: string }) => {
+    const remove = (prev: PreSalary[]) => prev.filter(p => p.id !== id);
+    setAllPreSalaries(remove);
+    setPreSalaries(remove);
+  },
+  []
+);
+
   /* ── HELPERS ── */
   const formatCurrency = (amount: number, currency: string): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency || 'USD',
+      currency: currency || 'RWF',
     }).format(amount);
   };
 
@@ -183,7 +241,7 @@ const PreSalaryDashboard: React.FC = () => {
   const resetForm = (): void => {
     setFormData({
       amount: '',
-      currency: 'USD',
+      currency: 'RWF',
       periodStart: '',
       periodEnd: '',
       reason: '',
@@ -258,7 +316,7 @@ const PreSalaryDashboard: React.FC = () => {
 
   const handleViewPreSalary = (item: PreSalary): void => {
     if (!item?.id) return;
-    navigate(`/admin/pre-salary/${item.id}`);
+    navigate(`/${role}/dashboard/pre-salary/${item.id}`);
   };
 
   /* ── PAGINATION ── */
@@ -550,7 +608,7 @@ const PreSalaryDashboard: React.FC = () => {
                     setEditPreSalary(null);
                     setFormData({
                       amount: '',
-                      currency: 'USD',
+                      currency: 'RWF',
                       periodStart: '',
                       periodEnd: '',
                       reason: '',

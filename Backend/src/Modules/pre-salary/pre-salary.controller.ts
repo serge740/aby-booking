@@ -14,18 +14,22 @@ import {
 } from '@nestjs/common';
 import { PreSalaryService } from './pre-salary.service';
 import { DualAuthGuard, RequestWithCompanyEmployee } from 'src/Guards/dual-auth.guard';
+import { PreSalaryGateway } from './pre-salary.gateway';
 
 @Controller('pre-salary')
 @UseGuards(DualAuthGuard)
 export class PreSalaryController {
-  constructor(private readonly preSalaryService: PreSalaryService) {}
+  constructor(
+    private readonly preSalaryService: PreSalaryService,
+    private readonly preSalaryGateway: PreSalaryGateway,
+  ) {}
 
   @Post()
   async createPreSalary(@Req() req: RequestWithCompanyEmployee, @Body() body: any) {
     const employeeId = req.employee?.id || body.employeeId;
     const companyId = req.company?.id || body.companyId;
 
-    return this.preSalaryService.createPreSalary({
+    const presalary = await this.preSalaryService.createPreSalary({
       employeeId,
       companyId,
       amount: body.amount,
@@ -34,6 +38,11 @@ export class PreSalaryController {
       periodEnd: new Date(body.periodEnd),
       reason: body.reason,
     });
+
+    // 🔥 Emit event
+    this.preSalaryGateway.notifyPreSalaryCreated(presalary);
+
+    return presalary;
   }
 
   @Get()
@@ -51,33 +60,59 @@ export class PreSalaryController {
   }
 
   @Put(':id')
-  updatePreSalary(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee, @Body() body: any) {
+  async updatePreSalary(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee, @Body() body: any) {
     const ownerId = req.company?.id || req.employee?.id;
-    return this.preSalaryService.updatePreSalary(id, ownerId, {
+
+    const updated = await this.preSalaryService.updatePreSalary(id, ownerId, {
       amount: body.amount,
       currency: body.currency,
       periodStart: body.periodStart ? new Date(body.periodStart) : undefined,
       periodEnd: body.periodEnd ? new Date(body.periodEnd) : undefined,
       reason: body.reason,
     });
+
+    // 🔥 Emit event
+    this.preSalaryGateway.notifyPreSalaryUpdated(updated);
+
+    return updated;
   }
 
   @Put(':id/approve')
-  approve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  async approve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     if (!req.company) throw new UnauthorizedException('Only companies can approve');
-    return this.preSalaryService.approvePreSalary(id, req.company.id);
+
+    const approved = await this.preSalaryService.approvePreSalary(id, req.company.id);
+
+    // 🔥 Emit event
+    this.preSalaryGateway.notifyPreSalaryApproved(approved);
+
+    return approved;
   }
 
   @Put(':id/reject')
-  reject(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee, @Body('reason') reason: string) {
+  async reject(
+    @Param('id') id: string,
+    @Req() req: RequestWithCompanyEmployee,
+    @Body('reason') reason: string,
+  ) {
     if (!req.company) throw new UnauthorizedException('Only companies can reject');
-    return this.preSalaryService.rejectPreSalary(id, req.company.id, reason);
+
+    const rejected = await this.preSalaryService.rejectPreSalary(id, req.company.id, reason);
+
+    // 🔥 Emit event
+    this.preSalaryGateway.notifyPreSalaryRejected(rejected);
+
+    return rejected;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     const ownerId = req.company?.id || req.employee?.id;
-    return this.preSalaryService.deletePreSalary(id, ownerId);
+
+    await this.preSalaryService.deletePreSalary(id, ownerId);
+
+    // 🔥 Emit event
+    this.preSalaryGateway.notifyPreSalaryDeleted(id);
   }
 }

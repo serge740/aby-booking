@@ -5,6 +5,8 @@ import { LeaveController } from './leave.controller';
 import { CompanyAuthGuard } from 'src/Guards/company-auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { CompanyNotificationService } from '../company-notification/company-notification.service';
+import { LeaveGateway } from './leave.gateway';
+import { PushNotificationsService } from '../push-notification/push-notification.service';
 
 @Module({
   controllers: [LeaveController],
@@ -12,6 +14,6 @@ import { CompanyNotificationService } from '../company-notification/company-noti
         secret: process.env.JWT_SECRET || 'yourSecretKey',
         signOptions: { expiresIn: '1d' },
       }),],
-  providers: [LeaveService, PrismaService,CompanyAuthGuard,CompanyNotificationService],
+  providers: [LeaveService, PrismaService,CompanyAuthGuard,LeaveGateway,CompanyNotificationService,PushNotificationsService],
 })
 export class LeaveModule {}

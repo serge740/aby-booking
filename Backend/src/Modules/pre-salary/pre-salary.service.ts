@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { Prisma, PreSalaryStatus } from 'generated/prisma';
+import { CompanyNotificationService } from '../company-notification/company-notification.service';
 
 @Injectable()
 export class PreSalaryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: CompanyNotificationService, // ✅ NOTIFICATION SERVICE
+  ) {}
 
   // ───────────────────────────────
   // CREATE PRE-SALARY REQUEST
@@ -31,11 +35,25 @@ export class PreSalaryService {
       where: { id: data.employeeId, companyId: data.companyId },
     });
 
-    if (!employee) throw new NotFoundException('Employee not found in this company');
+    if (!employee)
+      throw new NotFoundException('Employee not found in this company');
 
-    return this.prisma.preSalary.create({
+    const record = await this.prisma.preSalary.create({
       data,
+      include: { employee: true,company:true },
     });
+
+    // 🔥 Notify company about new pre-salary request
+    await this.notificationService.createNotification({
+      title: `New Pre-Salary Request`,
+      message: `Employee ${record.employee.first_name || ''} ${record.employee.last_name || ''} has requested a pre-salary of ${data.amount} ${data.currency || ''}.`,
+      recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
+      senderId: data.employeeId,
+      senderType: 'EMPLOYEE',
+      link: `/company/dashboard/pre-salary/${record.id}`,
+    });
+
+    return record;
   }
 
   // ───────────────────────────────
@@ -44,7 +62,7 @@ export class PreSalaryService {
   async findAll(companyId: string) {
     return this.prisma.preSalary.findMany({
       where: { companyId },
-      include: { employee: true },
+      include: { employee: true,company:true },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -111,7 +129,7 @@ export class PreSalaryService {
   }
 
   // ───────────────────────────────
-  // APPROVE PRE-SALARY (Company only)
+  // APPROVE PRE-SALARY
   // ───────────────────────────────
   async approvePreSalary(id: string, companyId: string) {
     const record = await this.findOne(id, companyId);
@@ -120,7 +138,7 @@ export class PreSalaryService {
       throw new BadRequestException('Only pending pre-salary can be approved');
     }
 
-    return this.prisma.preSalary.update({
+    const updated = await this.prisma.preSalary.update({
       where: { id },
       data: {
         status: PreSalaryStatus.APPROVED,
@@ -128,28 +146,54 @@ export class PreSalaryService {
         rejectedAt: null,
         reasonForRejection: null,
       },
+      include: { employee: true },
     });
+
+    // 🔥 Notify employee
+    await this.notificationService.createNotification({
+      title: `Your Pre-Salary Request Approved`,
+      message: `Your request for ${record.amount} ${record.currency || ''} has been approved.`,
+      recipients: [{ id: record.employeeId, type: 'EMPLOYEE', read: false }],
+      senderId: companyId,
+      senderType: 'COMPANY',
+      link: `/employee/dashboard/pre-salary/${record.id}`,
+    });
+
+    return updated;
   }
 
   // ───────────────────────────────
-  // REJECT PRE-SALARY (Company only)
+  // REJECT PRE-SALARY
   // ───────────────────────────────
   async rejectPreSalary(id: string, companyId: string, reason: string) {
     const record = await this.findOne(id, companyId);
 
     if (!reason) throw new BadRequestException('Reason is required');
     if (record.status !== PreSalaryStatus.PENDING) {
-      throw new BadRequestException('Only pending pre-salary can be rejected');
+      throw new ForbiddenException('Only pending pre-salary can be rejected');
     }
 
-    return this.prisma.preSalary.update({
+    const updated = await this.prisma.preSalary.update({
       where: { id },
       data: {
         status: PreSalaryStatus.REJECTED,
         rejectedAt: new Date(),
         reasonForRejection: reason,
       },
+      include: { employee: true },
     });
+
+    // 🔥 Notify employee
+    await this.notificationService.createNotification({
+      title: `Your Pre-Salary Request Rejected`,
+      message: `Your request for ${record.amount} ${record.currency || ''} has been rejected. Reason: ${reason}`,
+      recipients: [{ id: record.employeeId, type: 'EMPLOYEE', read: false }],
+      senderId: companyId,
+      senderType: 'COMPANY',
+      link: `/employee/dashboard/pre-salary/${record.id}`,
+    });
+
+    return updated;
   }
 
   // ───────────────────────────────

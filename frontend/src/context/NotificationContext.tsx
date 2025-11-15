@@ -13,6 +13,11 @@ interface NotificationContextValue {
   error: string | null;
   recipientId: string | null;
   recipientType: 'COMPANY' | 'EMPLOYEE' | null;
+  page: number;
+  limit: number;
+  search: string;
+  totalPages: number;
+  totalNotifications: number;
   setRecipient: (recipientId: string, recipientType: 'COMPANY' | 'EMPLOYEE') => void;
   fetchNotifications: () => Promise<void>;
   markAsRead: (notificationId: string) => Promise<void>;
@@ -20,6 +25,8 @@ interface NotificationContextValue {
   clearError: () => void;
   getUnreadNotifications: () => Notification[];
   getReadNotifications: () => Notification[];
+  updatePagination: (newPage?: number, newLimit?: number) => void;
+  updateSearch: (searchTerm: string) => void;
 }
 
 interface CreateNotificationInput {
@@ -52,6 +59,15 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [recipientId, setRecipientId] = useState<string | null>(null);
   const [recipientType, setRecipientType] = useState<'COMPANY' | 'EMPLOYEE' | null>(null);
+  
+  // ────────────────────────────────
+  // PAGINATION & SEARCH STATE
+  // ────────────────────────────────
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [search, setSearch] = useState<string>('');
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalNotifications, setTotalNotifications] = useState<number>(0);
 
   // ────────────────────────────────
   // SET RECIPIENT (Called after login/auth)
@@ -60,6 +76,29 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const setRecipient = useCallback((id: string, type: 'COMPANY' | 'EMPLOYEE'): void => {
     setRecipientId(id);
     setRecipientType(type);
+  }, []);
+
+  // ────────────────────────────────
+  // UPDATE PAGINATION
+  // ────────────────────────────────
+
+  const updatePagination = useCallback((newPage?: number, newLimit?: number): void => {
+    if (newPage !== undefined) {
+      setPage(newPage);
+    }
+    if (newLimit !== undefined) {
+      setLimit(newLimit);
+      setPage(1); // Reset to first page when limit changes
+    }
+  }, []);
+
+  // ────────────────────────────────
+  // UPDATE SEARCH
+  // ────────────────────────────────
+
+  const updateSearch = useCallback((searchTerm: string): void => {
+    setSearch(searchTerm);
+    setPage(1); // Reset to first page when search changes
   }, []);
 
   // ────────────────────────────────
@@ -90,23 +129,29 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     setError(null);
     
     try {
-      const data = await companyNotificationService.getNotifications();
+      const { notifications: data, meta } = await companyNotificationService.getNotifications(page, limit, search);
       
       // Filter notifications for current recipient
-      const filtered = data.filter((notif) =>
+      const filtered = data.filter((notif:any) =>
         notif.recipients.some(
-          (r) => r.id === recipientId && r.type === recipientType
+          (r:any) => r.id === recipientId && r.type === recipientType
         )
       );
       
       setNotifications(filtered);
+      
+      // Update pagination metadata
+      if (meta) {
+        setTotalPages(meta.totalPages || 0);
+        setTotalNotifications(meta.total || 0);
+      }
     } catch (err: any) {
       console.error('Failed to fetch notifications:', err);
       setError(err.message || 'Failed to fetch notifications');
     } finally {
       setIsLoading(false);
     }
-  }, [recipientId, recipientType]);
+  }, [recipientId, recipientType, page, limit, search]);
 
   // ────────────────────────────────
   // MARK AS READ
@@ -277,6 +322,11 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     error,
     recipientId,
     recipientType,
+    page,
+    limit,
+    search,
+    totalPages,
+    totalNotifications,
     setRecipient,
     fetchNotifications,
     markAsRead,
@@ -284,6 +334,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     clearError,
     getUnreadNotifications,
     getReadNotifications,
+    updatePagination,
+    updateSearch,
   };
 
   return (
@@ -414,7 +466,7 @@ export const NotificationBell: React.FC = () => {
 };
 
 // ────────────────────────────────────────────────────────
-// EXAMPLE USAGE
+// EXAMPLE USAGE WITH PAGINATION & SEARCH
 // ────────────────────────────────────────────────────────
 
 /*
@@ -453,7 +505,17 @@ function AuthenticatedApp() {
 }
 
 function MainContent() {
-  const { createNotification, getUnreadNotifications } = useNotifications();
+  const { 
+    createNotification, 
+    getUnreadNotifications,
+    page,
+    limit,
+    totalPages,
+    totalNotifications,
+    updatePagination,
+    updateSearch,
+    search
+  } = useNotifications();
 
   const sendTestNotification = async () => {
     await createNotification({
@@ -466,10 +528,54 @@ function MainContent() {
     });
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateSearch(e.target.value);
+  };
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      updatePagination(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      updatePagination(page - 1);
+    }
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    updatePagination(undefined, newLimit);
+  };
+
   return (
     <div>
       <button onClick={sendTestNotification}>Send Test Notification</button>
       <p>Unread: {getUnreadNotifications().length}</p>
+      
+      <input 
+        type="text" 
+        value={search} 
+        onChange={handleSearchChange} 
+        placeholder="Search notifications..."
+      />
+      
+      <div>
+        <button onClick={handlePrevPage} disabled={page === 1}>Previous</button>
+        <span>Page {page} of {totalPages}</span>
+        <button onClick={handleNextPage} disabled={page === totalPages}>Next</button>
+      </div>
+      
+      <div>
+        <label>Items per page:</label>
+        <select value={limit} onChange={(e) => handleLimitChange(Number(e.target.value))}>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
+      </div>
+      
+      <p>Total: {totalNotifications} notifications</p>
     </div>
   );
 }

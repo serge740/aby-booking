@@ -29,7 +29,7 @@ class CompanyNotificationService {
     link?: string;
   }): Promise<Notification> {
     try {
-      const response = await api.post('/notifications', data);
+      const response = await api.post('/company-notifications', data);
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to create notification');
@@ -39,21 +39,32 @@ class CompanyNotificationService {
   // ───────────────────────────────
   // GET ALL NOTIFICATIONS
   // ───────────────────────────────
-  async getNotifications(): Promise<Notification[]> {
-    try {
-      const response = await api.get('/notifications');
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch notifications');
-    }
+  async getNotifications(page: number = 1, limit: number = 10, search: string = '') {
+  try {
+    const response = await api.get('/company-notifications', {
+      params: { page, limit, search }
+    });
+
+    // Response includes { data, meta }
+    return {
+      notifications: response.data.data,
+      meta: response.data.meta,
+    };
+
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch notifications'
+    );
   }
+}
+
 
   // ───────────────────────────────
   // MARK AS READ
   // ───────────────────────────────
   async markAsRead(notificationId: string): Promise<Notification> {
     try {
-      const response = await api.put(`/notifications/${notificationId}/read`);
+      const response = await api.put(`/company-notifications/${notificationId}/read`);
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to mark notification as read');

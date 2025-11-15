@@ -12,6 +12,7 @@ import leaveService from '../../services/leaveService';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { format } from 'date-fns';
 import { API_URL } from '../../api/api';
+import { useSocketEvent } from '../../context/SocketContext';
 
 // ──────────────────────────────────────────────────────────────
 // ── TYPES & INTERFACES ───────────────────────────────────────
@@ -124,6 +125,61 @@ const LeaveRequestDashboard: React.FC = () => {
   const canApproveReject = (leave: LeaveRequest): boolean => {
     return isCompany && leave.status === 'PENDING';
   };
+
+  useSocketEvent(
+  'leaveCreated',
+  (newLeave: LeaveRequest) => {
+    setAllLeaves(prev => [...prev, newLeave]);
+    setLeaves(prev => [...prev, newLeave]);   // will be filtered/sorted automatically on next render
+  },
+  []
+);
+
+useSocketEvent(
+  'leaveUpdated',
+  (updatedLeave: LeaveRequest) => {
+    const updateOne = (prev: LeaveRequest[]) =>
+      prev.map(l => (l.id === updatedLeave.id ? updatedLeave : l));
+
+    setAllLeaves(updateOne);
+    setLeaves(updateOne);
+  },
+  []
+);
+
+useSocketEvent(
+  'leaveApproved',
+  (approvedLeave: LeaveRequest) => {
+    const updateOne = (prev: LeaveRequest[]) =>
+      prev.map(l => (l.id === approvedLeave.id ? approvedLeave : l));
+
+    setAllLeaves(updateOne);
+    setLeaves(updateOne);
+  },
+  []
+);
+
+useSocketEvent(
+  'leaveRejected',
+  (rejectedLeave: LeaveRequest) => {
+    const updateOne = (prev: LeaveRequest[]) =>
+      prev.map(l => (l.id === rejectedLeave.id ? rejectedLeave : l));
+
+    setAllLeaves(updateOne);
+    setLeaves(updateOne);
+  },
+  []
+);
+
+useSocketEvent(
+  'leaveDeleted',
+  ({ id }: { id: string }) => {
+    const removeOne = (prev: LeaveRequest[]) => prev.filter(l => l.id !== id);
+    setAllLeaves(removeOne);
+    setLeaves(removeOne);
+  },
+  []
+);
 
   // ── LOAD DATA ──
   useEffect(() => {
@@ -329,7 +385,7 @@ const LeaveRequestDashboard: React.FC = () => {
 
   const handleViewLeave = (leave: LeaveRequest) => {
     if (!leave?.id) return;
-    navigate(`/admin/leave/${leave.id}`);
+    navigate(`/${role}/dashboard/leave-request/${leave.id}`);
   };
 
   // ── PAGINATION ──
@@ -460,9 +516,12 @@ const LeaveRequestDashboard: React.FC = () => {
                 <td className="py-3 px-4">
                   <div className="flex items-center space-x-2">
                     {renderAvatar(leave.employee?.profile_picture)}
-                    <span className="font-medium text-gray-900">
-                      {leave.employee?.first_name || ''} {leave.employee?.last_name || ''}
-                    </span>
+                   <span className="font-medium text-gray-900">
+  {leave.employee?.first_name || leave.employee?.last_name
+    ? `${leave.employee?.first_name || ''} ${leave.employee?.last_name || ''}`.trim()
+    : '—'}
+</span>
+
                   </div>
                 </td>
                 <td className="py-3 px-4 font-medium text-gray-900">{formatLeaveType(leave.type)}</td>

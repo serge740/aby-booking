@@ -12,11 +12,11 @@ import {
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
-import {
-  FileFieldsInterceptor,
-} from '@nestjs/platform-express';
 
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { RiskReportService } from './risk-report.service';
+import { RiskReportGateway } from './risk-report.gateway';
+
 import {
   DualAuthGuard,
   RequestWithCompanyEmployee,
@@ -30,11 +30,12 @@ import {
 @Controller('risk-report')
 @UseGuards(DualAuthGuard)
 export class RiskReportController {
-  constructor(private readonly riskReportService: RiskReportService) {}
+  constructor(
+    private readonly riskReportService: RiskReportService,
+    private readonly riskReportGateway: RiskReportGateway,
+  ) {}
 
-  // ──────────────────────────────────────
-  // CREATE RISK REPORT + FILE UPLOAD
-  // ──────────────────────────────────────
+  // CREATE
   @Post()
   @UseInterceptors(FileFieldsInterceptor(LeaveFileFields, LeaveUploadConfig))
   async create(
@@ -53,7 +54,7 @@ export class RiskReportController {
         mimeType: file.mimetype,
       })) || [];
 
-    return this.riskReportService.createRiskReport({
+    const report = await this.riskReportService.createRiskReport({
       employeeId,
       companyId,
       title: body.title,
@@ -61,11 +62,14 @@ export class RiskReportController {
       severity: body.severity,
       attachments,
     });
+
+    // 🔥 Emit event
+    this.riskReportGateway.notifyRiskReportCreated(report);
+
+    return report;
   }
 
-  // ──────────────────────────────────────
   // GET ALL
-  // ──────────────────────────────────────
   @Get()
   findAll(@Req() req: RequestWithCompanyEmployee) {
     return req.company
@@ -73,9 +77,7 @@ export class RiskReportController {
       : this.riskReportService.findAllByEmployee(req.employee.id);
   }
 
-  // ──────────────────────────────────────
   // GET ONE
-  // ──────────────────────────────────────
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     return req.company
@@ -83,12 +85,10 @@ export class RiskReportController {
       : this.riskReportService.findOneByEmployee(id, req.employee.id);
   }
 
-  // ──────────────────────────────────────
-  // UPDATE + FILE UPLOAD
-  // ──────────────────────────────────────
+  // UPDATE
   @Put(':id')
   @UseInterceptors(FileFieldsInterceptor(LeaveFileFields, LeaveUploadConfig))
-  update(
+  async update(
     @Param('id') id: string,
     @UploadedFiles()
     files: { attachments?: Express.Multer.File[] },
@@ -104,30 +104,36 @@ export class RiskReportController {
         mimeType: file.mimetype,
       })) || undefined;
 
-    return this.riskReportService.updateRiskReport(id, ownerId, {
+    const updated = await this.riskReportService.updateRiskReport(id, ownerId, {
       title: body.title,
       description: body.description,
       severity: body.severity,
       attachments,
     });
+
+    // 🔥 Emit event
+    this.riskReportGateway.notifyRiskReportUpdated(updated);
+
+    return updated;
   }
 
-  // ──────────────────────────────────────
   // RESOLVE
-  // ──────────────────────────────────────
   @Put(':id/resolve')
-  resolve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  async resolve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     if (!req.company)
       throw new UnauthorizedException('Only companies can resolve reports');
 
-    return this.riskReportService.resolveReport(id, req.company.id);
+    const resolved = await this.riskReportService.resolveReport(id, req.company.id);
+
+    // 🔥 Emit event
+    this.riskReportGateway.notifyRiskReportResolved(resolved);
+
+    return resolved;
   }
 
-  // ──────────────────────────────────────
   // REJECT
-  // ──────────────────────────────────────
   @Put(':id/reject')
-  reject(
+  async reject(
     @Param('id') id: string,
     @Req() req: RequestWithCompanyEmployee,
     @Body('reason') reason: string,
@@ -135,15 +141,22 @@ export class RiskReportController {
     if (!req.company)
       throw new UnauthorizedException('Only companies can reject reports');
 
-    return this.riskReportService.rejectReport(id, req.company.id, reason);
+    const rejected = await this.riskReportService.rejectReport(id, req.company.id, reason);
+
+    // 🔥 Emit event
+    this.riskReportGateway.notifyRiskReportRejected(rejected);
+
+    return rejected;
   }
 
-  // ──────────────────────────────────────
   // DELETE
-  // ──────────────────────────────────────
   @Delete(':id')
-  delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     const ownerId = req.company?.id || req.employee?.id;
-    return this.riskReportService.deleteReport(id, ownerId);
+
+    await this.riskReportService.deleteReport(id, ownerId);
+
+    // 🔥 Emit event
+    this.riskReportGateway.notifyRiskReportDeleted(id);
   }
 }

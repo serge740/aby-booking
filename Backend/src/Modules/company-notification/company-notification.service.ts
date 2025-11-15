@@ -57,17 +57,53 @@ export class CompanyNotificationService {
   // ────────────────────────────────
   // GET NOTIFICATIONS FOR A SPECIFIC RECIPIENT
   // ────────────────────────────────
-  async getNotificationsForRecipient(recipientId: string, recipientType: 'COMPANY' | 'EMPLOYEE') {
-    const notifications = await this.prisma.companyNotification.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
+async getNotificationsForRecipient(
+  recipientId: string,
+  recipientType: 'COMPANY' | 'EMPLOYEE',
+  page: number = 1,
+  limit: number = 10,
+  searchQuery?: string,
+) {
+  const skip = (page - 1) * limit;
 
-    return notifications.filter((notif) =>
-      (notif.recipients as Recipient[]).some(
-        (r) => r.id === recipientId && r.type === recipientType,
-      ),
+  let notifications = await this.prisma.companyNotification.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  // Filter by recipient
+  notifications = notifications.filter((notif) =>
+    (notif.recipients as Recipient[]).some(
+      (r) => r.id === recipientId && r.type === recipientType,
+    ),
+  );
+
+  // Apply search filter
+  if (searchQuery && searchQuery.trim() !== '') {
+    const query = searchQuery.toLowerCase();
+    notifications = notifications.filter(
+      (notif) =>
+        notif.title.toLowerCase().includes(query) ||
+        notif.message.toLowerCase().includes(query),
     );
   }
+
+  // Total count before pagination
+  const total = notifications.length;
+
+  // Paginate
+  const paginated = notifications.slice(skip, skip + limit);
+
+  return {
+    data: paginated,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+}
+
 
   // ────────────────────────────────
   // MARK AS READ

@@ -3,6 +3,8 @@ import { PrismaService } from 'src/Prisma/prisma.service';
 import { PreSalaryService } from './pre-salary.service';
 import { PreSalaryController } from './pre-salary.controller';
 import { JwtModule } from '@nestjs/jwt';
+import { PreSalaryGateway } from './pre-salary.gateway';
+import { CompanyNotificationService } from '../company-notification/company-notification.service';
 
 @Module({
   controllers: [PreSalaryController],
@@ -10,6 +12,6 @@ import { JwtModule } from '@nestjs/jwt';
           secret: process.env.JWT_SECRET || 'yourSecretKey',
           signOptions: { expiresIn: '1d' },
         }),],
-  providers: [PreSalaryService, PrismaService],
+  providers: [PreSalaryService, PrismaService,PreSalaryGateway,CompanyNotificationService],
 })
 export class PreSalaryModule {}

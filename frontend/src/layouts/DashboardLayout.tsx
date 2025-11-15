@@ -30,30 +30,30 @@ const DashboardLayout = () => {
     setIsOpen(!isOpen)
   }
 
-  // useEffect(() => {
-  //        if (user?.id && isConnected && !isEmployeeRegistered.current && role == 'employee') {
-  //          console.log('online EMPLOYEE :', user.id);
-  //          emit('registerUser', { id: user.id , type:'EMPLOYEE'  });
-  //          isEmployeeRegistered.current = true;
-  //        }
-  //       else if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
-  //          console.log('online COMPANY :', company.id);
-  //          emit('registerUser', { id: company.id , type:'COMPANY'  });
-  //          isCompanyRegistered.current = true;
-  //        }
-  //      }, [user?.id, isConnected, emit,socket]);
+  useEffect(() => {
+         if (user?.id && isConnected && !isEmployeeRegistered.current && role == 'employee') {
+           console.log('online EMPLOYEE :', user.id);
+           emit('registerUser', { id: user.id , type:'EMPLOYEE'  });
+           isEmployeeRegistered.current = true;
+         }
+        else if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
+           console.log('online COMPANY :', company.id);
+           emit('registerUser', { id: company.id , type:'COMPANY'  });
+           isCompanyRegistered.current = true;
+         }
+       }, [user?.id, isConnected, emit,socket]);
 
 
-  // useEffect(() => {
-  //   switch (role) {
-  //     case 'employee':
-  //       setRecipient(user!.id, 'EMPLOYEE');
-  //       break
-  //     case 'company':
-  //       setRecipient(company!.id, 'COMPANY');
-  //       break
-  //   }
-  // }, [socket]);
+  useEffect(() => {
+    switch (role) {
+      case 'employee':
+        setRecipient(user!.id, 'EMPLOYEE');
+        break
+      case 'company':
+        setRecipient(company!.id, 'COMPANY');
+        break
+    }
+  }, [socket]);
 
 
   return (

@@ -12,6 +12,7 @@ import riskReportService, { RiskReport, RiskReportAttachment } from '../../servi
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { format } from 'date-fns';
 import { API_URL } from '../../api/api';
+import { useSocketEvent } from '../../context/SocketContext';
 
 interface OutletContext {
   role: 'employee' | 'company';
@@ -75,6 +76,54 @@ const RiskReportDashboard: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
+  // ── REAL-TIME STATE UPDATE (inside the component) ──
+useSocketEvent(
+  'riskReportCreated',
+  (newReport: RiskReport) => {
+    setAllReports(prev => [...prev, newReport]);
+    setReports(prev => [...prev, newReport]); // will be filtered/sorted automatically on next render
+  },
+  []
+);
+useSocketEvent(
+  'riskReportUpdated',
+  (updatedReport: RiskReport) => {
+    const updateOne = (prev: RiskReport[]) =>
+      prev.map(r => (r.id === updatedReport.id ? updatedReport : r));
+    setAllReports(updateOne);
+    setReports(updateOne);
+  },
+  []
+);
+useSocketEvent(
+  'riskReportResolved',
+  (resolvedReport: RiskReport) => {
+    const updateOne = (prev: RiskReport[]) =>
+      prev.map(r => (r.id === resolvedReport.id ? resolvedReport : r));
+    setAllReports(updateOne);
+    setReports(updateOne);
+  },
+  []
+);
+useSocketEvent(
+  'riskReportRejected',
+  (rejectedReport: RiskReport) => {
+    const updateOne = (prev: RiskReport[]) =>
+      prev.map(r => (r.id === rejectedReport.id ? rejectedReport : r));
+    setAllReports(updateOne);
+    setReports(updateOne);
+  },
+  []
+);
+useSocketEvent(
+  'riskReportDeleted',
+  ({ id }: { id: string }) => {
+    const removeOne = (prev: RiskReport[]) => prev.filter(r => r.id !== id);
+    setAllReports(removeOne);
+    setReports(removeOne);
+  },
+  []
+);
   /* ── HELPERS ── */
   const canEditReport = (r: RiskReport): boolean => {
     return isCompany || (isEmployee && r.employeeId === employeeId && r.status === 'PENDING');
@@ -423,7 +472,12 @@ const RiskReportDashboard: React.FC = () => {
                 <td className="py-3 px-4">
                   <div className="flex items-center space-x-2">
                     {renderAvatar(r.employee?.profile_picture)}
- <span className="font-medium text-gray-900">{r.employee?.first_name || (r.employee?.last_name ? '' : '—')} {r.employee?.last_name ||  (r.employee?.first_name ? '' : '—')  } </span>
+<span className="font-medium text-gray-900">
+  {r.employee?.first_name || r.employee?.last_name
+    ? `${r.employee?.first_name || ''} ${r.employee?.last_name || ''}`.trim()
+    : '—'}
+</span>
+
                   </div>
                 </td>
                 <td className="py-3 px-4 font-medium text-gray-900 truncate max-w-xs">{r.title}</td>

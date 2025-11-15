@@ -12,12 +12,14 @@ import {
   Clock,
   User,
   Building2,
-  Loader2
+  Loader2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import type { Notification } from '../../services/companyNotificationService';
 import { useCompanyAuth } from '../../context/CompanyAuthContext';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { Roles } from '../../layouts/DashboardLayout';
 import { useSocket } from '../../context/SocketContext';
 
@@ -25,7 +27,9 @@ type FilterType = 'all' | 'unread' | 'read';
 
 const NotificationsPage: React.FC = () => {
    
-    const {role} =  useOutletContext<Roles>()
+  const {role} =  useOutletContext<Roles>()
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const {
     notifications,
     unreadCount,
@@ -34,22 +38,85 @@ const NotificationsPage: React.FC = () => {
     markAsRead,
     fetchNotifications,
     clearError,
-    
+    recipientId,
+    recipientType,
+    page,
+    limit,
+    search,
+    totalPages,
+    totalNotifications,
+    updatePagination,
+    updateSearch
   } = useNotifications();
-
-
-
- 
 
   const [filter, setFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Get current user info from your auth context or props
-  const currentRecipientId = 'user-id'; // Replace with actual user ID
-  const currentRecipientType: 'COMPANY' | 'EMPLOYEE' = 'EMPLOYEE'; // Replace with actual type
+  // Initialize state from URL params on mount
+  useEffect(() => {
+    const urlPage = searchParams.get('page');
+    const urlLimit = searchParams.get('limit');
+    const urlSearch = searchParams.get('search');
+    const urlFilter = searchParams.get('filter');
 
-  // Filter and search notifications
+    if (urlPage) {
+      const pageNum = parseInt(urlPage);
+      if (!isNaN(pageNum) && pageNum !== page) {
+        updatePagination(pageNum);
+      }
+    }
+
+    if (urlLimit) {
+      const limitNum = parseInt(urlLimit);
+      if (!isNaN(limitNum) && limitNum !== limit) {
+        updatePagination(undefined, limitNum);
+      }
+    }
+
+    if (urlSearch) {
+      setSearchQuery(urlSearch);
+      updateSearch(urlSearch);
+    }
+
+    if (urlFilter && ['all', 'unread', 'read'].includes(urlFilter)) {
+      setFilter(urlFilter as FilterType);
+    }
+  }, []); // Run only on mount
+
+  // Update URL params when state changes
+  useEffect(() => {
+    const params: Record<string, string> = {};
+
+    if (page > 1) {
+      params.page = page.toString();
+    }
+
+    if (limit !== 10) {
+      params.limit = limit.toString();
+    }
+
+    if (searchQuery) {
+      params.search = searchQuery;
+    }
+
+    if (filter !== 'all') {
+      params.filter = filter;
+    }
+
+    setSearchParams(params, { replace: true });
+  }, [page, limit, searchQuery, filter, setSearchParams]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateSearch(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, updateSearch]);
+
+  // Filter notifications based on read/unread status
   const filteredNotifications = useMemo(() => {
     let filtered = [...notifications];
 
@@ -57,34 +124,24 @@ const NotificationsPage: React.FC = () => {
     if (filter === 'unread') {
       filtered = filtered.filter((notif) =>
         notif.recipients.some(
-          (r) => r.id === currentRecipientId && r.type === currentRecipientType && !r.read
+          (r) => r.id === recipientId && r.type === recipientType && !r.read
         )
       );
     } else if (filter === 'read') {
       filtered = filtered.filter((notif) =>
         notif.recipients.some(
-          (r) => r.id === currentRecipientId && r.type === currentRecipientType && r.read
+          (r) => r.id === recipientId && r.type === recipientType && r.read
         )
       );
     }
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (notif) =>
-          notif.title.toLowerCase().includes(query) ||
-          notif.message.toLowerCase().includes(query)
-      );
-    }
-
     return filtered;
-  }, [notifications, filter, searchQuery, currentRecipientId, currentRecipientType]);
+  }, [notifications, filter, recipientId, recipientType]);
 
   // Check if notification is read for current user
   const isNotificationRead = (notif: Notification): boolean => {
     const recipient = notif.recipients.find(
-      (r) => r.id === currentRecipientId && r.type === currentRecipientType
+      (r) => r.id === recipientId && r.type === recipientType
     );
     return recipient?.read || false;
   };
@@ -128,6 +185,63 @@ const NotificationsPage: React.FC = () => {
     }
   };
 
+  // Pagination handlers
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      updatePagination(page + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      updatePagination(page - 1);
+    }
+  };
+
+  const handleLimitChange = (newLimit: number) => {
+    updatePagination(undefined, newLimit);
+  };
+
+  const handlePageClick = (pageNum: number) => {
+    updatePagination(pageNum);
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = (): (number | string)[] => {
+    const pages: (number | string)[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (page <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (page >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        pages.push(page - 1);
+        pages.push(page);
+        pages.push(page + 1);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
+
   // Format date
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -151,6 +265,11 @@ const NotificationsPage: React.FC = () => {
     }
     return <User className="w-4 h-4 text-gray-600" />;
   };
+
+  // Count unread notifications in filtered list
+  const filteredUnreadCount = useMemo(() => {
+    return filteredNotifications.filter((notif) => !isNotificationRead(notif)).length;
+  }, [filteredNotifications, recipientId, recipientType]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -236,6 +355,27 @@ const NotificationsPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Results Info and Limit Selector */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+            <div className="text-sm text-gray-600">
+              Showing {filteredNotifications.length > 0 ? ((page - 1) * limit + 1) : 0} to{' '}
+              {Math.min(page * limit, totalNotifications)} of {totalNotifications} notifications
+            </div>
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-600">Show:</label>
+              <select
+                value={limit}
+                onChange={(e) => handleLimitChange(Number(e.target.value))}
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+          </div>
+
           {/* Bulk Actions */}
           {filteredNotifications.length > 0 && (
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
@@ -253,7 +393,7 @@ const NotificationsPage: React.FC = () => {
                 </label>
               </div>
 
-              {unreadCount > 0 && (
+              {filteredUnreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
                   className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
@@ -335,7 +475,7 @@ const NotificationsPage: React.FC = () => {
                           {notif.message}
                         </p>
 
-                        {/* Actions */}
+                        {/* Actions - Only show for unread notifications */}
                         <div className="flex items-center space-x-3">
                           {!isRead && (
                             <button
@@ -350,6 +490,7 @@ const NotificationsPage: React.FC = () => {
                             <a
                               href={notif.link}
                               onClick={() => !isRead && handleMarkAsRead(notif.id)}
+                              target='_blank'
                               className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
@@ -365,6 +506,55 @@ const NotificationsPage: React.FC = () => {
             })
           )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mt-6">
+            <div className="flex items-center justify-between">
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevPage}
+                disabled={page === 1}
+                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>Previous</span>
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center space-x-2">
+                {getPageNumbers().map((pageNum, index) => (
+                  <React.Fragment key={index}>
+                    {pageNum === '...' ? (
+                      <span className="px-3 py-2 text-gray-500">...</span>
+                    ) : (
+                      <button
+                        onClick={() => handlePageClick(pageNum as number)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                          page === pageNum
+                            ? 'bg-blue-600 text-white'
+                            : 'text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextPage}
+                disabled={page === totalPages}
+                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

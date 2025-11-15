@@ -7,11 +7,12 @@ import {
   Put,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CompanyNotificationService, Recipient } from './company-notification.service';
 import { DualAuthGuard, RequestWithCompanyEmployee } from 'src/Guards/dual-auth.guard';
 
-@Controller('notifications')
+@Controller('company-notifications')
 @UseGuards(DualAuthGuard)
 export class CompanyNotificationController {
   constructor(private readonly notificationService: CompanyNotificationService) {}
@@ -40,16 +41,24 @@ export class CompanyNotificationController {
   // ────────────────────────────────
   // GET NOTIFICATIONS FOR LOGGED IN USER
   // ────────────────────────────────
-  @Get()
-  async getNotifications(@Req() req: RequestWithCompanyEmployee) {
-    const id = req.company?.id || req.employee?.id;
-    const type = req.company ? 'COMPANY' : 'EMPLOYEE';
+@Get()
+async getNotifications(
+  @Req() req: RequestWithCompanyEmployee,
+  @Query('page') page: string,
+  @Query('limit') limit: string,
+  @Query('search') search: string,
+) {
+  const id = req.company?.id || req.employee?.id;
+  const type = req.company ? 'COMPANY' : 'EMPLOYEE';
 
-    console.log(`${type} : `,id);
-    
-
-    return this.notificationService.getNotificationsForRecipient(id, type);
-  }
+  return this.notificationService.getNotificationsForRecipient(
+    id,
+    type,
+    Number(page) || 1,
+    Number(limit) || 10,
+    search || '',
+  );
+}
 
   // ────────────────────────────────
   // MARK AS READ

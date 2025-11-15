@@ -54,6 +54,8 @@ import LeaveRequestDashboard from "./pages/dashboard/LeaveRequestManagement";
 import PreSalaryDashboard from "./pages/dashboard/PreSalaryDashboard";
 import RiskReportDashboard from "./pages/dashboard/RiskReportDashboard";
 import NotificationsPage from "./pages/dashboard/NotificationPage";
+import LeaveViewDetails from "./components/dashboard/leave/LeaveViewDetails";
+import PreSalaryViewDetails from "./components/dashboard/pre-salary/PreSalaryViewDetails";
 
 
 // Loading component
@@ -147,7 +149,9 @@ const router = createBrowserRouter([
           {path:'menu-item/:id' , element:<MenuItemView />},
           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
           {path:'leave-request' , element:<LeaveRequestDashboard />},
+          {path:'leave-request/:id' , element:<LeaveViewDetails />},
           {path:'pre-salary' , element:<PreSalaryDashboard />},
+          {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
            {path:'risk-report' , element:<RiskReportDashboard />},
            {path:'notifications' , element:<NotificationsPage />},
           
@@ -169,10 +173,12 @@ const router = createBrowserRouter([
  
           {path:'profile' , element:<EmployeeProfilePage />},
            {path:'leave-request' , element:<LeaveRequestDashboard />},
+           {path:'leave-request/:id' , element:<LeaveViewDetails />},
            {path:'pre-salary' , element:<PreSalaryDashboard />},
+           {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
            {path:'risk-report' , element:<RiskReportDashboard />},
            {path:'notifications' , element:<NotificationsPage />},
-      
+
           
         ]
        },
