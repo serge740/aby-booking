@@ -57,6 +57,7 @@ import NotificationsPage from "./pages/dashboard/NotificationPage";
 import LeaveViewDetails from "./components/dashboard/leave/LeaveViewDetails";
 import PreSalaryViewDetails from "./components/dashboard/pre-salary/PreSalaryViewDetails";
 import RiskReportViewDetails from "./components/dashboard/risk-report/RiskReportViewDetails";
+import EmployeeCreateOrderPage from "./components/dashboard/order/EmployeeCreateOrderPage";
 
 
 // Loading component
@@ -181,6 +182,7 @@ const router = createBrowserRouter([
            {path:'risk-report' , element:<RiskReportDashboard />},
            {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
+           {path:'place-order/:companyId' , element:<EmployeeCreateOrderPage />},
 
           
         ]

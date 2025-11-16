@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar, User, AlertTriangle, Clock, FileText,
-  CheckCircle, XCircle, Download, ArrowLeft, X, Shield, Building
+  CheckCircle, XCircle, Download, ArrowLeft, X, Shield, Building,
+  Mail,
+  Phone,
+  MapPin,
+  Briefcase
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
@@ -158,7 +162,7 @@ const RiskReportViewDetails: React.FC = () => {
   // ── MAIN UI ──
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <button onClick={() => navigate(-1)} className="flex items-center text-gray-600 hover:text-gray-900 mb-4">
@@ -172,26 +176,36 @@ const RiskReportViewDetails: React.FC = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center">
-                <User className="w-5 h-5 mr-2 text-blue-600" /> Reported By
+                <User className="w-5 h-5 mr-2 text-blue-600" /> Employee Information
               </h2>
+
               <div className="flex flex-col items-center mb-6">
                 <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mb-3">
-                  {report.employee?.name?.split(' ').map(n => n[0]).join('') || 'U'}
+                  {report.employee.first_name[0]}{report.employee.last_name[0]}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{report.employee?.name || 'Unknown'}</h3>
-                <p className="text-sm text-gray-500">{report.employee?.email || '—'}</p>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {report.employee.first_name} {report.employee.last_name}
+                </h3>
+                <p className="text-sm text-gray-500">{report.employee.position}</p>
+                <span className={`mt-2 px-3 py-1 rounded-full text-xs font-medium ${report.employee.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                  {report.employee.status}
+                </span>
               </div>
+
               <div className="space-y-3 text-sm">
-                <div className="flex items-center">
-                  <Building className="w-4 h-4 mr-3 text-gray-400" />
-                  <div>
-                    <p className="text-gray-500">Company ID</p>
-                    <p className="text-gray-900 font-medium">{report.companyId}</p>
-                  </div>
+                <div className="flex items-start"><Mail className="w-4 h-4 mr-3 mt-0.5 text-gray-400" /><div><p className="text-gray-500">Email</p><p className="text-gray-900 font-medium">{report.employee.email}</p></div></div>
+                <div className="flex items-start"><Phone className="w-4 h-4 mr-3 mt-0.5 text-gray-400" /><div><p className="text-gray-500">Phone</p><p className="text-gray-900 font-medium">{report.employee.phone}</p></div></div>
+                <div className="flex items-start"><MapPin className="w-4 h-4 mr-3 mt-0.5 text-gray-400" /><div><p className="text-gray-500">Address</p><p className="text-gray-900 font-medium">{report.employee.address}</p></div></div>
+                <div className="flex items-start"><Briefcase className="w-4 h-4 mr-3 mt-0.5 text-gray-400" /><div><p className="text-gray-500">Date Hired</p><p className="text-gray-900 font-medium">{fmtDate(report.employee.date_hired)}</p></div></div>
+                <div className="flex items-start"><User className="w-4 h-4 mr-3 mt-0.5 text-gray-400" /><div><p className="text-gray-500">Marital Status</p><p className="text-gray-900 font-medium">{report.employee.marital_status}</p></div></div>
+                <div className="pt-3 border-t mt-4">
+                  <p className="text-gray-500 font-medium mb-2">Emergency Contact</p>
+                  <div className="pl-2"><p className="text-gray-900 font-medium">{report.employee.emergency_contact_name}</p><p className="text-gray-600 text-xs">{report.employee.emergency_contact_phone}</p></div>
                 </div>
               </div>
             </div>
           </div>
+
 
           {/* ── REPORT DETAILS ── */}
           <div className="lg:col-span-2 space-y-6">

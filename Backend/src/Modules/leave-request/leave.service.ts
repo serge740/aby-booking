@@ -54,13 +54,6 @@ export class LeaveService {
             link: `/company/dashboard/leave-request/${leave.id}`
         });
 
-        // Send push notification to the company's devices
-await this.pushNotificationsService.sendToUser(data.companyId, 'COMPANY', {
-  title: `New leave request from employee`,
-  message: `Employee ${leave.employee.first_name || ''} ${leave.employee.last_name || ''} has requested leave from ${data.startDate.toDateString()} to ${data.endDate.toDateString()}`,
-  link: `/company/dashboard/leave-request/${leave.id}`,
-});
-
 
         return leave;
     }

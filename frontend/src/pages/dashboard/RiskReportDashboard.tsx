@@ -342,7 +342,7 @@ useSocketEvent(
 
   const handleViewReport = (r: RiskReport) => {
     if (!r?.id) return;
-    navigate(`/admin/risk-report/${r.id}`);
+    navigate(`/${role}/dashboard/risk-report/${r.id}`);
   };
 
   /* ── PAGINATION ── */

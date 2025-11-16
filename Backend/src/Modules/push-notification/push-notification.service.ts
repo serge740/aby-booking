@@ -23,11 +23,6 @@ export class PushNotificationsService {
       where: { endpoint: subscription.endpoint },
     });
 
-
-    const findAll = await this.prisma.pushSubscription.findMany();
-    console.log(`\n all subscriptions  ***********: `,findAll);
-
-    console.log(`\n already EXIST  ***********: `,existing,subscription.endpoint);
     
 
     if (existing) {

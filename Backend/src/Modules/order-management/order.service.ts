@@ -3,12 +3,14 @@ import { PrismaService } from 'src/Prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderStatus } from 'generated/prisma'; // optional import if using enums from Prisma
 import { EmailService } from 'src/Global/email/email.service';
+import { CompanyNotificationService } from '../company-notification/company-notification.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private prisma: PrismaService,
     private email: EmailService,
+     private readonly notificationService:  CompanyNotificationService,
   ) { }
 
   // Create a new order
@@ -23,7 +25,7 @@ export class OrderService {
   }) {
     console.log(data)
     // Validate client info
-    const partner = await  this.prisma.company.findUnique({where:{id:data.companyId}})
+    const partner = await this.prisma.company.findUnique({ where: { id: data.companyId } })
     if (!data.clientName) {
       throw new BadRequestException('Client name is required.');
     }
@@ -49,12 +51,12 @@ export class OrderService {
 
     // Generate order number
     const orderNumber = uuidv4().slice(0, 8).toUpperCase();
- 
+
     const orderData: any = {
       orderNumber,
       clientName: data.clientName,
       companyId: data.companyId,
-    
+
       totalAmount,
     };
 
@@ -62,8 +64,8 @@ export class OrderService {
     if (data.clientId) orderData.clientId = data.clientId;
     if (data.clientEmail) orderData.clientEmail = data.clientEmail;
     if (data.clientPhone) orderData.clientPhone = data.clientPhone;
-    if (data.notes) orderData.notes =  data.notes;
-    
+    if (data.notes) orderData.notes = data.notes;
+
     // Nested items
     orderData.items = {
       create: data.items.map((item) => ({
@@ -80,28 +82,41 @@ export class OrderService {
       include: { items: true },
     });
 
-    // Email part here
-if(order?.clientEmail){
-
-  await this.email.sendEmail(
-    order?.clientEmail,
-    `Your order from ${partner.name} — Fresh Cart`,
-  'Order-Confirmation', // HBS template name
-  {
-    clientName: order.clientName,
-    company_name: 'Fresh Cart',
-    partner_name: partner.name,
-    orderNumber: order.orderNumber,
-    totalAmount: order.totalAmount.toFixed(2),
-    orderDate: new Date().toLocaleDateString(),
-    notes: order.notes || '',
-    orderUrl: `${process.env.FRONTEND_URL}/track-orders?order=${order.orderNumber}`,
-    year: new Date().getFullYear(),
-  },
-);
-}
-
     
+
+      
+      await this.notificationService.createNotification({
+        title: `New order created`,
+        message: `New order ${order.orderNumber} has been created by ${data.clientName}.`,
+        recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
+        senderId: data.companyId,
+        senderType: 'COMPANY',
+        link: `/company/dashboard/orders/${order.id}`
+      });
+    
+
+    // Email part here
+    if (order?.clientEmail) {
+
+      await this.email.sendEmail(
+        order?.clientEmail,
+        `Your order from ${partner.name} — Fresh Cart`,
+        'Order-Confirmation', // HBS template name
+        {
+          clientName: order.clientName,
+          company_name: 'Fresh Cart',
+          partner_name: partner.name,
+          orderNumber: order.orderNumber,
+          totalAmount: order.totalAmount.toFixed(2),
+          orderDate: new Date().toLocaleDateString(),
+          notes: order.notes || '',
+          orderUrl: `${process.env.FRONTEND_URL}/track-orders?order=${order.orderNumber}`,
+          year: new Date().getFullYear(),
+        },
+      );
+    }
+
+
 
     return order;
   }
@@ -111,7 +126,7 @@ if(order?.clientEmail){
     return this.prisma.order.update({
       where: { id: orderId },
       data: { status },
-       include: { items: { include: { menuItem: true } }, client: true, company: true },
+      include: { items: { include: { menuItem: true } }, client: true, company: true },
     });
   }
 
