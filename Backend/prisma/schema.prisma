@@ -32,6 +32,7 @@ model Admin {
   createdAt DateTime   @default(now())
   
   updatedAt DateTime   @updatedAt
+   @@map("Admin") 
 }
 
 
@@ -45,6 +46,7 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+    @@map("Subscriber") 
 }
 
 model Blog {
@@ -56,6 +58,7 @@ model Blog {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   replies     BlogReply[] // relation
+   @@map("Blog")
 }
 
 model BlogReply {
@@ -66,6 +69,7 @@ model BlogReply {
   blogId    String
   blog      Blog     @relation(fields: [blogId], references: [id])
   createdAt DateTime @default(now())
+   @@map("BlogReply")
 }
 
 model ContactMessage {
@@ -76,6 +80,7 @@ model ContactMessage {
   phone     String?
   message   String
   createdAt DateTime @default(now())
+  @@map("ContactMessage")
 }
 
 
@@ -87,6 +92,7 @@ model Testmonial{
   message   String  @db.Text
   rate     Int @default(0)
   createdAt DateTime @default(now())
+  @@map("Testmonial")
 }
 
 
@@ -114,6 +120,7 @@ model Order {
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+   @@map("Order")
 }
 
 model OrderItem {
@@ -131,6 +138,9 @@ model OrderItem {
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
+
+ @@map("OrderItem")
+
 }
 
 // 🔹 Enums
@@ -172,6 +182,7 @@ model Company {
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+   @@map("Company")
 }
 
 enum CompanyType {
@@ -191,6 +202,7 @@ model MenuCategory {
   companyId String
   company   Company    @relation(fields: [companyId], references: [id],onDelete: Cascade)
   items     MenuItem[] // One category can have many items
+   @@map("MenuCategory")
 }
 
 
@@ -233,6 +245,7 @@ model Employee {
  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+   @@map("Employee")
 
 }
 
@@ -296,8 +309,10 @@ model Leave {
 
   @@index([companyId])
   @@index([employeeId])
+  
   @@index([status])
   @@index([startDate, endDate])
+  @@map("Leave")
 }
 
 
@@ -310,6 +325,7 @@ model CompanyNotification {
   message     String
   link        String?
   createdAt   DateTime @default(now())
+   @@map("CompanyNotification")
 }
 
 
@@ -339,6 +355,7 @@ model PreSalary {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
+ @@map("PreSalary")
   @@index([employeeId])
   @@index([companyId])
   @@index([status])
@@ -355,13 +372,14 @@ model PushSubscription {
   id        String   @id @default(cuid())   // unique record ID
   userId    String                          // employee or company ID
   type      UserType                        // user type: EMPLOYEE, COMPANY, ADMIN
-  endpoint  String   @unique                // unique per device/browser
+  endpoint  Json   @unique                // unique per device/browser
   p256dh    String                          // encryption key
   auth      String                          // encryption key
   createdAt DateTime @default(now())        // record created time
   label     String?                         // optional human-readable description
 
   @@index([userId, type])                   // index to find all devices for a user quickly
+   @@map("PushSubscription")
 }
 
 enum UserType {
@@ -392,6 +410,7 @@ model EmployeeRiskReport {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
+   @@map("EmployeeRiskReport")
   @@index([employeeId])
   @@index([companyId])
   @@index([status])
@@ -449,6 +468,7 @@ model MenuItem {
 
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
+    @@map("MenuItem")
 }
 
 enum PurposeStatus {
@@ -486,7 +506,7 @@ model Client {
   // Relations
 
    orders       Order[]   // A user can place multiple orders
-  
+   @@map("Client")
   @@index([email])
   @@index([name])
 }

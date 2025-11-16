@@ -132,14 +132,6 @@ await this.pushNotificationsService.sendToUser(data.companyId, 'COMPANY', {
             link: `/employee/dashboard/leave-request/${leave.id}`
         });
 
-        // Notify employee about approval
-await this.pushNotificationsService.sendToUser(leave.employeeId, 'EMPLOYEE', {
-  title: `Your leave has been approved`,
-  message: `Your leave from ${leave.startDate.toDateString()} to ${leave.endDate.toDateString()} has been approved.`,
-  link: `/employee/dashboard/leave-request/${leave.id}`,
-});
-
-
         return updated;
     }
 
@@ -172,14 +164,6 @@ await this.pushNotificationsService.sendToUser(leave.employeeId, 'EMPLOYEE', {
             senderType: 'COMPANY',
             link: `/employee/dashboard/leave-request/${leave.id}`
         });
-
-        // Notify employee about rejection
-await this.pushNotificationsService.sendToUser(leave.employeeId, 'EMPLOYEE', {
-  title: `Your leave has been rejected`,
-  message: `Your leave from ${leave.startDate.toDateString()} to ${leave.endDate.toDateString()} has been rejected. Reason: ${reason}`,
-  link: `/employee/dashboard/leave-request/${leave.id}`,
-});
-
 
         return updated;
     }

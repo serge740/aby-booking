@@ -301,7 +301,7 @@ export const CompanyAuthProvider = ({ children }) => {
       }
 
       // Check if company wants auto-subscribe
-      const autoSubscribeEnabled = localStorage.getItem('autoSubscribePushCompany') === 'true';
+      const autoSubscribeEnabled = true;
       
       if (autoSubscribeEnabled) {
         try {

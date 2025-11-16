@@ -4,6 +4,7 @@ import { CompanyNotificationController } from './company-notification.controller
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { DualAuthGuard } from 'src/Guards/dual-auth.guard';
+import { PushNotificationsService } from '../push-notification/push-notification.service';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { DualAuthGuard } from 'src/Guards/dual-auth.guard';
     }),
   ],
   controllers: [CompanyNotificationController],
-  providers: [CompanyNotificationService, PrismaService, DualAuthGuard],
-  exports: [CompanyNotificationService],
+  providers: [CompanyNotificationService, PrismaService, DualAuthGuard,PushNotificationsService],
+  exports: [CompanyNotificationService,PushNotificationsService],
 })
 export class CompanyNotificationModule {}

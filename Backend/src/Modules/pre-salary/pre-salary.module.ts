@@ -5,6 +5,7 @@ import { PreSalaryController } from './pre-salary.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PreSalaryGateway } from './pre-salary.gateway';
 import { CompanyNotificationService } from '../company-notification/company-notification.service';
+import { PushNotificationsService } from '../push-notification/push-notification.service';
 
 @Module({
   controllers: [PreSalaryController],
@@ -12,6 +13,6 @@ import { CompanyNotificationService } from '../company-notification/company-noti
           secret: process.env.JWT_SECRET || 'yourSecretKey',
           signOptions: { expiresIn: '1d' },
         }),],
-  providers: [PreSalaryService, PrismaService,PreSalaryGateway,CompanyNotificationService],
+  providers: [PreSalaryService, PrismaService,PreSalaryGateway,CompanyNotificationService,PushNotificationsService],
 })
 export class PreSalaryModule {}

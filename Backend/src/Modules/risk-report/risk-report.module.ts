@@ -5,6 +5,7 @@ import { PrismaService } from 'src/Prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { RiskReportGateway } from './risk-report.gateway';
 import { CompanyNotificationService } from '../company-notification/company-notification.service';
+import { PushNotificationsService } from '../push-notification/push-notification.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { CompanyNotificationService } from '../company-notification/company-noti
     }),
   ],
   controllers: [RiskReportController],
-  providers: [RiskReportService, PrismaService,RiskReportGateway,CompanyNotificationService ],
+  providers: [RiskReportService, PrismaService,RiskReportGateway,CompanyNotificationService,PushNotificationsService ],
   exports: [RiskReportService],
 })
 export class RiskReportModule {}

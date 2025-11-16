@@ -402,7 +402,8 @@ export const EmployeeAuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // Check if user wants auto-subscribe
-      const autoSubscribeEnabled = localStorage.getItem('autoSubscribePushEmployee') === 'true';
+      // const autoSubscribeEnabled = localStorage.getItem('autoSubscribePushEmployee') === 'true';
+      const autoSubscribeEnabled = true;
       
       if (autoSubscribeEnabled) {
         try {

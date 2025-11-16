@@ -16,6 +16,8 @@ async subscribe(
   @Body('subscription') subscription: any,
   @Body('label') label?: string,  // optional label
 ) {
+    console.log('SHOYS DKDC :',userId, type, subscription, label);
+    
   return this.notificationsService.subscribe(userId, type, subscription, label);
 }
 

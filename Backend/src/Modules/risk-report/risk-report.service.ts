@@ -54,7 +54,7 @@ export class RiskReportService {
       recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
       senderId: data.employeeId,
       senderType: 'EMPLOYEE',
-      link: `/company/dashboard/risk-reports/${report.id}`,
+      link: `/company/dashboard/risk-report/${report.id}`,
     });
 
     return report;
@@ -158,7 +158,7 @@ export class RiskReportService {
       recipients: [{ id: updated.employeeId, type: 'EMPLOYEE', read: false }],
       senderId: companyId,
       senderType: 'COMPANY',
-      link: `/employee/dashboard/risk-reports/${updated.id}`,
+      link: `/employee/dashboard/risk-report/${updated.id}`,
     });
 
     return updated;
@@ -192,7 +192,7 @@ export class RiskReportService {
       recipients: [{ id: updated.employeeId, type: 'EMPLOYEE', read: false }],
       senderId: companyId,
       senderType: 'COMPANY',
-      link: `/employee/dashboard/risk-reports/${updated.id}`,
+      link: `/employee/dashboard/risk-report/${updated.id}`,
     });
 
     return updated;

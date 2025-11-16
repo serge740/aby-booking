@@ -56,6 +56,7 @@ import RiskReportDashboard from "./pages/dashboard/RiskReportDashboard";
 import NotificationsPage from "./pages/dashboard/NotificationPage";
 import LeaveViewDetails from "./components/dashboard/leave/LeaveViewDetails";
 import PreSalaryViewDetails from "./components/dashboard/pre-salary/PreSalaryViewDetails";
+import RiskReportViewDetails from "./components/dashboard/risk-report/RiskReportViewDetails";
 
 
 // Loading component
@@ -152,7 +153,8 @@ const router = createBrowserRouter([
           {path:'leave-request/:id' , element:<LeaveViewDetails />},
           {path:'pre-salary' , element:<PreSalaryDashboard />},
           {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
-           {path:'risk-report' , element:<RiskReportDashboard />},
+          {path:'risk-report' , element:<RiskReportDashboard />},
+          {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
           
         ]
@@ -177,6 +179,7 @@ const router = createBrowserRouter([
            {path:'pre-salary' , element:<PreSalaryDashboard />},
            {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
            {path:'risk-report' , element:<RiskReportDashboard />},
+           {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
 
           

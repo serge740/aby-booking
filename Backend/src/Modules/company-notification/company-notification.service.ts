@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { GlobalSocketGateway } from 'src/Global/socket/socket.gateway';
+import { PushNotificationsService } from '../push-notification/push-notification.service';
 
 export type Recipient = {
   id: string;
@@ -13,46 +14,75 @@ export class CompanyNotificationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly socket: GlobalSocketGateway, // <<–– INJECT SOCKET
+       private readonly pushNotificationsService: PushNotificationsService,
   ) {}
 
   // ────────────────────────────────
   // CREATE NOTIFICATION
   // ────────────────────────────────
-  async createNotification(data: {
-    recipients: Recipient[];
-    senderId?: string;
-    senderType?: 'COMPANY' | 'EMPLOYEE';
-    title: string;
-    message: string;
-    link?: string;
-  }) {
-    if (!data.recipients || !data.recipients.length) {
-      throw new BadRequestException('At least one recipient is required');
-    }
-
-    const notification = await this.prisma.companyNotification.create({
-      data: {
-        recipients: data.recipients as any,
-        senderId: data.senderId,
-        senderType: data.senderType,
-        title: data.title,
-        message: data.message,
-        link: data.link,
-      },
-    });
-
-    // 🔥 EMIT REAL-TIME NOTIFICATION TO RECIPIENTS
-    this.socket.emitToRecipients(
-      data.recipients,
-      'new-notification',
-      notification,
-    );
-
-    console.log('new message ');
-    
-
-    return notification;
+async createNotification(data: {
+  recipients: Recipient[];
+  senderId?: string;
+  senderType?: 'COMPANY' | 'EMPLOYEE';
+  title: string;
+  message: string;
+  link?: string;
+}) {
+  if (!data.recipients || !data.recipients.length) {
+    throw new BadRequestException('At least one recipient is required');
   }
+
+  // 1️⃣ SAVE NOTIFICATION
+  const notification = await this.prisma.companyNotification.create({
+    data: {
+      recipients: data.recipients as any,
+      senderId: data.senderId,
+      senderType: data.senderType,
+      title: data.title,
+      message: data.message,
+      link: data.link,
+    },
+  });
+
+  // 2️⃣ SEND PUSH NOTIFICATIONS TO ALL RECIPIENTS (async/await only)
+  const pushPromises = data.recipients.map(async (recipient) => {
+    try {
+      await this.pushNotificationsService.sendToUser(
+        recipient.id,
+        recipient.type,
+        {
+          title: data.title,
+          message: data.message,
+          url: data.link,
+          tag: notification.id,
+          data:{
+             url: data.link,
+             notificationId: notification.id
+          }
+        },
+      );
+    } catch (error) {
+      console.error(
+        `❌ Failed to send push to recipient ${recipient.id}:`,
+        error,
+      );
+    }
+  });
+
+  await Promise.all(pushPromises);
+
+  // 3️⃣ SOCKET EMIT
+  this.socket.emitToRecipients(
+    data.recipients,
+    'new-notification',
+    notification,
+  );
+
+  console.log('new message');
+
+  return notification;
+}
+
 
   // ────────────────────────────────
   // GET NOTIFICATIONS FOR A SPECIFIC RECIPIENT

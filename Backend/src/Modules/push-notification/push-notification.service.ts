@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import * as webpush from 'web-push';
 import { UserType } from 'generated/prisma';
+import { InputJsonValue } from 'generated/prisma/runtime/library';
 
 @Injectable()
 export class PushNotificationsService {
@@ -16,63 +17,81 @@ export class PushNotificationsService {
   // ───────────────────────────────
   // SUBSCRIBE USER (Employee/Company)
   // ───────────────────────────────
- async subscribe(userId: string, type: UserType, subscription: any, label?: string) {
-  return this.prisma.pushSubscription.upsert({
-    where: { endpoint: subscription.endpoint },
-    update: {
-      p256dh: subscription.keys.p256dh,
-      auth: subscription.keys.auth,
-      userId,
-      type,
-      label, // update label if provided
-    },
-    create: {
-      userId,
-      type,
-      endpoint: subscription.endpoint,
-      p256dh: subscription.keys.p256dh,
-      auth: subscription.keys.auth,
-      label,
-    },
-  });
-}
+  async subscribe(userId: string, type: UserType, subscription: any, label?: string) {
+    // First, check if subscription already exists
+    const existing = await this.prisma.pushSubscription.findUnique({
+      where: { endpoint: subscription.endpoint },
+    });
 
+
+    const findAll = await this.prisma.pushSubscription.findMany();
+    console.log(`\n all subscriptions  ***********: `,findAll);
+
+    console.log(`\n already EXIST  ***********: `,existing,subscription.endpoint);
+    
+
+    if (existing) {
+      // Update existing subscription
+      return await this.prisma.pushSubscription.update({
+        where: { endpoint: subscription.endpoint },
+        data: {
+          p256dh: subscription.p256dh,
+          auth: subscription.auth,
+          userId,
+          type,
+          label,
+        },
+      });
+    }
+
+    // Create new subscription
+    return await this.prisma.pushSubscription.create({
+      data: {
+        userId,
+        type,
+        endpoint: subscription.endpoint,
+        p256dh: subscription.p256dh,
+        auth: subscription.auth,
+        label,
+      },
+    });
+  }
 
   // ───────────────────────────────
   // UNSUBSCRIBE USER (remove one device)
   // ───────────────────────────────
- async unsubscribeDevice(userId: string, type: UserType, endpoint: string) {
-  const sub = await this.prisma.pushSubscription.findUnique({
-    where: { endpoint },
-  });
+  async unsubscribeDevice(userId: string, type: UserType, endpoint: string) {
+    const sub = await this.prisma.pushSubscription.findUnique({
+      where: { endpoint },
+    });
 
-  if (!sub || sub.userId !== userId || sub.type !== type) {
-    throw new NotFoundException('Subscription not found for this device');
+    if (!sub || sub.userId !== userId || sub.type !== type) {
+      throw new NotFoundException('Subscription not found for this device');
+    }
+
+    await this.prisma.pushSubscription.delete({
+      where: { endpoint },
+    });
+
+    return {
+      success: true,
+      message: 'Device unsubscribed successfully',
+    };
   }
 
-  await this.prisma.pushSubscription.delete({
-    where: { endpoint },
-  });
+  // ───────────────────────────────
+  // UNSUBSCRIBE ALL DEVICES FOR USER
+  // ───────────────────────────────
+  async unsubscribeAllDevices(userId: string, type: UserType) {
+    const deleted = await this.prisma.pushSubscription.deleteMany({
+      where: { userId, type },
+    });
 
-  return {
-    success: true,
-    message: 'Device unsubscribed successfully',
-  };
-}
-
-// ───────────────────────────────
-// UNSUBSCRIBE ALL DEVICES FOR USER
-// ───────────────────────────────
-async unsubscribeAllDevices(userId: string, type: UserType) {
-  const deleted = await this.prisma.pushSubscription.deleteMany({
-    where: { userId, type },
-  });
-
-  return {
-    success: true,
-    message: `Unsubscribed ${deleted.count} devices for the user`,
-  };
-}
+    return {
+      success: true,
+      message: `Unsubscribed ${deleted.count} devices for the user`,
+    };
+  }
 
   // ───────────────────────────────
   // SEND TO A SINGLE USER (all devices)
@@ -83,29 +102,39 @@ async unsubscribeAllDevices(userId: string, type: UserType) {
     });
 
     if (!subscriptions.length) {
-      throw new NotFoundException('User has no subscriptions');
+      return { success: false, message: 'No subscriptions found for user' };
     }
 
-    const promises = subscriptions.map(async (sub) => {
-      try {
-        await webpush.sendNotification(
-          {
-            endpoint: sub.endpoint,
-            keys: { p256dh: sub.p256dh, auth: sub.auth },
-          },
-          JSON.stringify(payload),
-        );
-      } catch (error: any) {
-        console.error(`Failed to send to ${sub.endpoint}:`, error.message);
-        if (error.statusCode === 410) {
-          // remove expired subscription
-          await this.unsubscribeDevice(sub.userId,sub.type,sub.endpoint);
+    const results = await Promise.allSettled(
+      subscriptions.map(async (sub) => {
+        try {
+          await webpush.sendNotification(
+            {
+              endpoint: sub.endpoint,
+              keys: { p256dh: sub.p256dh, auth: sub.auth },
+            },
+            JSON.stringify(payload),
+          );
+          return { success: true, endpoint: sub.endpoint };
+        } catch (error: any) {
+          console.error(`Failed to send to ${sub.endpoint}:`, error);
+          if (error.statusCode === 410) {
+            // Remove expired subscription
+            try {
+              await this.prisma.pushSubscription.delete({
+                where: { endpoint: sub.endpoint as InputJsonValue },
+              });
+            } catch (deleteError) {
+              console.error(`Failed to delete expired subscription:`, deleteError);
+            }
+          }
+          throw error;
         }
-      }
-    });
+      })
+    );
 
-    await Promise.all(promises);
-    return { success: true, sent: subscriptions.length };
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    return { success: true, sent: successful, total: subscriptions.length };
   }
 
   // ───────────────────────────────
@@ -116,23 +145,35 @@ async unsubscribeAllDevices(userId: string, type: UserType) {
       where: { type },
     });
 
-    const promises = subscriptions.map(async (sub) => {
-      try {
-        await webpush.sendNotification(
-          {
-            endpoint: sub.endpoint,
-            keys: { p256dh: sub.p256dh, auth: sub.auth },
-          },
-          JSON.stringify(payload),
-        );
-      } catch (error: any) {
-        console.error(`Failed to send to ${sub.endpoint}:`, error.message);
-        if (error.statusCode === 410)   await this.unsubscribeDevice(sub.userId,sub.type,sub.endpoint);;
-      }
-    });
+    const results = await Promise.allSettled(
+      subscriptions.map(async (sub) => {
+        try {
+          await webpush.sendNotification(
+            {
+              endpoint: sub.endpoint,
+              keys: { p256dh: sub.p256dh, auth: sub.auth },
+            },
+            JSON.stringify(payload),
+          );
+          return { success: true, endpoint: sub.endpoint };
+        } catch (error: any) {
+          console.error(`Failed to send to ${sub.endpoint}:`, error.message);
+          if (error.statusCode === 410) {
+            try {
+              await this.prisma.pushSubscription.delete({
+                where: { endpoint: sub.endpoint as InputJsonValue },
+              });
+            } catch (deleteError) {
+              console.error(`Failed to delete expired subscription:`, deleteError);
+            }
+          }
+          throw error;
+        }
+      })
+    );
 
-    await Promise.all(promises);
-    return { success: true, sent: subscriptions.length };
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    return { success: true, sent: successful, total: subscriptions.length };
   }
 
   // ───────────────────────────────
