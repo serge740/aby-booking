@@ -100,7 +100,7 @@ self.addEventListener('push', (event: PushEvent) => {
     body: data.body || 'You have a new message',
     icon: data.icon || '/pwa-192x192.png',
     badge: data.badge || '/pwa-72x72.png',
-    data: data.data || { url: data.url },
+    data: data.data || { url: data.url , notificationId: data.notificationId },
     tag: data.tag || 'abytech-notification',
     requireInteraction: data.requireInteraction || false,
     vibrate: data.vibrate || [200, 100, 200],
@@ -140,7 +140,12 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 
    console.warn('📦 [Service Worker] Passed in Data :', event.notification.data);
 
-  const urlToOpen = event.notification.data?.url || '/';
+   const urlNotify=  event.notification.data?.notificationId ? 
+   `${event.notification.data?.url}?notificationId=${event.notification.data?.notificationId}`  :
+    event.notification.data?.url;
+
+ 
+  const urlToOpen = urlNotify  || '/';
   const action = event.action;
 
   console.log('🔗 [Service Worker] Opening URL:', urlToOpen, 'Action:', action);

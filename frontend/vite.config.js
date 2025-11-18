@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -21,73 +22,31 @@ export default defineConfig({
                 'mstile-144x144.png'
             ],
             manifest: {
-                name: 'Abytech Hub',
-                short_name: 'Abytech',
-                description: 'Abytech Hub — your all-in-one platform for innovation, collaboration, and technology solutions.',
-                theme_color: '#0ea5e9',
+                name: 'Aby Booking',
+                short_name: 'AbyBooking',
+                description: 'Aby Booking — reserve restaurants, bars, lounges, hotels, and food spots with ease.',
+                theme_color: '#ea580c',
                 background_color: '#f0f9ff',
                 display: 'standalone',
                 orientation: 'portrait-primary',
                 start_url: '/',
                 scope: '/',
-                categories: ['technology', 'productivity', 'tools'],
+                categories: ['food', 'drink', 'hospitality', 'booking'],
                 prefer_related_applications: false,
                 lang: 'en',
                 dir: 'ltr',
                 icons: [
-                    {
-                        src: '/pwa-72x72.png',
-                        sizes: '72x72',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-96x96.png',
-                        sizes: '96x96',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-128x128.png',
-                        sizes: '128x128',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-144x144.png',
-                        sizes: '144x144',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-152x152.png',
-                        sizes: '152x152',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-192x192.png',
-                        sizes: '192x192',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-384x384.png',
-                        sizes: '384x384',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/pwa-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png'
-                    },
-                    {
-                        src: '/maskable-icon-192x192.png',
-                        sizes: '192x192',
-                        type: 'image/png',
-                        purpose: 'maskable'
-                    },
-                    {
-                        src: '/maskable-icon-512x512.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                        purpose: 'maskable'
-                    },
-                    {
+                    { src: '/pwa-72x72.png', sizes: '72x72', type: 'image/png' },
+                    { src: '/pwa-96x96.png', sizes: '96x96', type: 'image/png' },
+                    { src: '/pwa-128x128.png', sizes: '128x128', type: 'image/png' },
+                    { src: '/pwa-144x144.png', sizes: '144x144', type: 'image/png' },
+                    { src: '/pwa-152x152.png', sizes: '152x152', type: 'image/png' },
+                    { src: '/pwa-192x192.png', sizes: '192x192', type: 'image/png' },
+                    { src: '/pwa-384x384.png', sizes: '384x384', type: 'image/png' },
+                    { src: '/pwa-512x512.png', sizes: '512x512', type: 'image/png' },
+                    { src: '/maskable-icon-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+                    { src: '/maskable-icon-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+                        {
                         src: '/pwa-192x192.png',
                         sizes: '192x192',
                         type: 'image/png',
@@ -99,22 +58,11 @@ export default defineConfig({
                         type: 'image/png',
                         purpose: 'any'
                     }
+                
                 ],
                 screenshots: [
-                    {
-                        src: '/screenshots/desktop.png',
-                        sizes: '1280x720',
-                        type: 'image/png',
-                        form_factor: 'wide',
-                        label: 'Desktop view of Abytech Hub'
-                    },
-                    {
-                        src: '/screenshots/mobile.png',
-                        sizes: '375x812',
-                        type: 'image/png',
-                        form_factor: 'narrow',
-                        label: 'Mobile view of Abytech Hub'
-                    }
+                    { src: '/screenshots/desktop.png', sizes: '1280x720', type: 'image/png', form_factor: 'wide', label: 'Desktop view of Aby Booking' },
+                    { src: '/screenshots/mobile.png', sizes: '375x812', type: 'image/png', form_factor: 'narrow', label: 'Mobile view of Aby Booking' }
                 ]
             },
             injectManifest: {

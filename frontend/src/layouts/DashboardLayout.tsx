@@ -4,7 +4,7 @@ import Header from '../components/dashboard/Header';
 
 import Sidebar from '../components/dashboard/Sidebar';
 
-import { Outlet, useOutletContext } from 'react-router-dom';
+import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useCompanyAuth } from '../context/CompanyAuthContext';
 import { useEmployeeAuth } from '../context/EmployeeAuthContext';
 import { useSocket } from '../context/SocketContext';
@@ -18,30 +18,32 @@ export interface Roles {
 const DashboardLayout = () => {
 
   const [isOpen, setIsOpen] = useState(false)
+  const [searchParams,setSearchParams] = useSearchParams()
   const { role } = useOutletContext<Roles>()
   const { company } = useCompanyAuth() as any
   const { user } = useEmployeeAuth()
-  const { setRecipient } = useNotifications()
-  const { socket,isConnected,emit } = useSocket()
-   const isEmployeeRegistered = useRef(false);
-   const isCompanyRegistered = useRef(false);
+  const { setRecipient,markAsRead } = useNotifications()
+  const { socket, isConnected, emit } = useSocket()
+  const isEmployeeRegistered = useRef(false);
+  const isCompanyRegistered = useRef(false);
 
   const onToggle = () => {
     setIsOpen(!isOpen)
   }
 
+
   useEffect(() => {
-         if (user?.id && isConnected && !isEmployeeRegistered.current && role == 'employee') {
-           console.log('online EMPLOYEE :', user.id);
-           emit('registerUser', { id: user.id , type:'EMPLOYEE'  });
-           isEmployeeRegistered.current = true;
-         }
-        else if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
-           console.log('online COMPANY :', company.id);
-           emit('registerUser', { id: company.id , type:'COMPANY'  });
-           isCompanyRegistered.current = true;
-         }
-       }, [user?.id, isConnected, emit,socket]);
+    if (user?.id && isConnected && !isEmployeeRegistered.current && role == 'employee') {
+      console.log('online EMPLOYEE :', user.id);
+      emit('registerUser', { id: user.id, type: 'EMPLOYEE' });
+      isEmployeeRegistered.current = true;
+    }
+    else if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
+      console.log('online COMPANY :', company.id);
+      emit('registerUser', { id: company.id, type: 'COMPANY' });
+      isCompanyRegistered.current = true;
+    }
+  }, [user?.id, isConnected, emit, socket]);
 
 
   useEffect(() => {

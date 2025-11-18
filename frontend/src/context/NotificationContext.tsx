@@ -166,6 +166,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     try {
       const updated = await companyNotificationService.markAsRead(notificationId);
       
+      console.warn('SHit sdfbf ;:',updated);
+      
       // Update local state optimistically
       setNotifications((prev) =>
         prev.map((notif) => {

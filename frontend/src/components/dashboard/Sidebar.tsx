@@ -22,6 +22,7 @@ import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
 import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
 import logo from '../../assets/tran.png';
+import PWAInstallButton from "./PWAInstallButton";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -309,20 +310,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         </div>
 
         {/* Footer: Profile */}
-        <div
-          className="p-2 border-t border-primary-200 cursor-pointer"
-          onClick={handleNavigateProfile}
-        >
-          <div className="flex items-center space-x-2 p-1.5 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-            <div className="w-7 h-7 bg-primary-100 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-primary-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-normal text-gray-900 truncate">{displayName}</p>
-              <p className="text-xs text-gray-500 truncate">{displayEmail}</p>
-            </div>
-          </div>
-        </div>
+        <PWAInstallButton />
       </div>
     </>
   );
