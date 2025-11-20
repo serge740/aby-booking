@@ -41,6 +41,7 @@ model Admin {
 
 
 
+
 model Subscriber {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -179,6 +180,7 @@ model Company {
   leave  Leave[]
   employeeRiskReports  EmployeeRiskReport[]
   presalary  PreSalary[]
+  stock  Stock[]
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -241,6 +243,7 @@ model Employee {
   is2FA   Boolean? @default(false)
   leave  Leave[]
    presalary  PreSalary[]
+   stock  Stock[]
    employeeRiskReports  EmployeeRiskReport[]
  
   createdAt DateTime   @default(now())
@@ -280,6 +283,24 @@ enum LeaveStatus {
   APPROVED
   REJECTED
   CANCELLED
+}
+
+model Stock {
+  id          String   @id @default(cuid())
+  companyId   String
+  employeeId  String?
+  name        String
+  sku         String   @unique
+  quantity    Float     @default(0)
+  unit        String
+  price       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company  @relation(fields: [companyId], references: [id])
+  employee    Employee? @relation(fields: [employeeId], references: [id])
+  @@map("Stock")
 }
 
 model Leave {
