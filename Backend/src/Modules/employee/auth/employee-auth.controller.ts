@@ -49,7 +49,7 @@ export class EmployeeAuthController {
       res.cookie('AccessEmployeeToken', loginResult.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // only secure in production
-        sameSite: 'lax',
+        sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/', // ensure path matches when clearing
       });
@@ -86,7 +86,7 @@ export class EmployeeAuthController {
     res.clearCookie('AccessEmployeeToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/', // <-- very important
     });
     return res.json({ message: 'Logged out successfully' });
