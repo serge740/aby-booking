@@ -245,7 +245,7 @@ CREATE TABLE `PushSubscription` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `type` ENUM('EMPLOYEE', 'COMPANY', 'ADMIN') NOT NULL,
-    `endpoint` JSON NOT NULL,
+    `endpoint` TEXT NOT NULL,
     `p256dh` VARCHAR(191) NOT NULL,
     `auth` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),

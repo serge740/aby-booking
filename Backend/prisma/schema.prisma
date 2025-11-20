@@ -372,13 +372,14 @@ model PushSubscription {
   id        String   @id @default(cuid())   // unique record ID
   userId    String                          // employee or company ID
   type      UserType                        // user type: EMPLOYEE, COMPANY, ADMIN
-  endpoint  Json              // unique per device/browser
+    endpoint  String   @db.Text
   p256dh    String                          // encryption key
   auth      String                          // encryption key
   createdAt DateTime @default(now())        // record created time
   label     String?                         // optional human-readable description
 
-  @@index([userId, type])                   // index to find all devices for a user quickly
+  @@index([userId, type])     
+   @@unique([endpoint(length: 255)])               // index to find all devices for a user quickly
    @@map("PushSubscription")
 }
 
