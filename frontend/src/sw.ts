@@ -99,7 +99,7 @@ self.addEventListener('push', (event: PushEvent) => {
   const options: NotificationOptions = {
     body: data.body || 'You have a new message',
     icon: data.icon || '/pwa-192x192.png',
-    badge: data.badge || '/pwa-72x72.png',
+    badge: data.icon ||  data.badge || '/pwa-72x72.png',
     data: data.data || { url: data.url , notificationId: data.notificationId },
     tag: data.tag || 'abytech-notification',
     requireInteraction: data.requireInteraction || false,

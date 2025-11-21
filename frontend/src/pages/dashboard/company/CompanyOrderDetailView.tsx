@@ -19,6 +19,7 @@ import {
   X,
   Check,
   RefreshCw,
+  Receipt,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import orderService from '../../../services/orderService';
@@ -35,6 +36,8 @@ interface OrderItem {
     sellingPrice: number;
     discount?: number;
     image?: string;
+    description?: string;
+    purpose: 'EATING' | 'DRINKING';
   };
 }
 
@@ -82,6 +85,8 @@ export default function CompanyOrderDetailView() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [operationStatus, setOperationStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+  const [showFoodReceipt, setShowFoodReceipt] = useState(false);
+  const [showDrinkReceipt, setShowDrinkReceipt] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !company)) {
@@ -119,12 +124,9 @@ export default function CompanyOrderDetailView() {
 
   const updateOrderStatus = async (newStatus: 'PROCESSING' | 'CANCELLED' | 'COMPLETED') => {
     if (!order || updatingStatus) return;
-
     setUpdatingStatus(true);
     try {
       const updated = await orderService.updateStatus(order.id, newStatus);
-      console.log(updated);
-      
       setOrder(updated);
       showToast('success', `Order marked as ${newStatus}!`);
     } catch (err: any) {
@@ -153,7 +155,6 @@ export default function CompanyOrderDetailView() {
     if (!order) return;
     setGeneratingPDF(true);
     showToast('info', 'Generating receipt...');
-
     try {
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -175,7 +176,6 @@ export default function CompanyOrderDetailView() {
       pdf.setFontSize(20);
       pdf.setFont('helvetica', 'bold');
       pdf.text('ORDER RECEIPT', pageWidth / 2, 15, { align: 'center' });
-
       yPos = 35;
       pdf.setTextColor(0, 0, 0);
 
@@ -213,7 +213,6 @@ export default function CompanyOrderDetailView() {
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Order Items', margin, yPos); yPos += 8;
-
       pdf.setFillColor(240, 240, 240);
       pdf.rect(margin, yPos - 5, pageWidth - 2 * margin, 8, 'F');
       pdf.setFontSize(9);
@@ -222,8 +221,8 @@ export default function CompanyOrderDetailView() {
       pdf.text('Qty', pageWidth - margin - 55, yPos);
       pdf.text('Price', pageWidth - margin - 30, yPos);
       yPos += 8;
-
       pdf.setFont('helvetica', 'normal');
+
       order.items.forEach((item, i) => {
         if (yPos > 270) { pdf.addPage(); yPos = margin; }
         const name = item.menuItem.name;
@@ -266,6 +265,107 @@ export default function CompanyOrderDetailView() {
     }
   };
 
+  // Receipt Modal Component
+  const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
+  isOpen: boolean;
+  onClose: () => void;
+  items: OrderItem[];
+  type: 'food' | 'drinks';
+  total: number;
+}) => {
+  if (!isOpen || !selectedOrder) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto receipt-print-container">
+
+        {/* Header with Close button (hidden on print) */}
+        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between print:hidden">
+          <div className="flex items-center gap-2">
+            <Receipt className="w-5 h-5 text-gray-700" />
+            <h2 className="text-xl font-bold text-gray-800">
+              {type === 'food' ? 'Food' : 'Drinks'} Receipt
+            </h2>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full transition print:hidden">
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Receipt Content – this is what gets printed */}
+        <div className="p-6 pt-8">
+          <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
+            <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
+            <p className="text-sm text-gray-600">Official Receipt</p>
+            <div className="mt-3 text-sm">
+              <p><span className="font-semibold">Order #:</span> {selectedOrder.orderNumber}</p>
+              <p><span className="font-semibold">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString('en-GB')}</p>
+              <p><span className="font-semibold">Time:</span> {new Date(selectedOrder.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            </div>
+          </div>
+
+          <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
+            <p className="font-semibold text-sm mb-2">Customer</p>
+            <p className="text-sm">{selectedOrder.clientName}</p>
+            {selectedOrder.clientPhone && <p className="text-sm text-gray-600">{selectedOrder.clientPhone}</p>}
+          </div>
+
+          <table className="w-full text-sm mb-6">
+            <thead>
+              <tr className="border-b border-gray-400">
+                <th className="text-left py-2 font-semibold">Item</th>
+                <th className="text-center py-2 font-semibold">Qty</th>
+                <th className="text-right py-2 font-semibold">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id} className="border-b border-gray-200">
+                  <td className="py-2">
+                    <p className="font-medium">{item.menuItem.name}</p>
+                    {item.menuItem.description && (
+                      <div className="text-xs text-gray-500" dangerouslySetInnerHTML={{__html: item.menuItem.description}}></div>
+                    )}
+                  </td>
+                  <td className="text-center py-2">{item.quantity}</td>
+                  <td className="text-right py-2 font-medium">{formatRWF(item.totalPrice)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="border-t-2 border-double border-gray-800 pt-4 text-right">
+            <div className="text-xl font-bold">
+              {type === 'food' ? 'FOOD' : 'DRINKS'} TOTAL: {formatRWF(total)}
+            </div>
+          </div>
+
+          <div className="text-center mt-8 text-xs text-gray-600">
+            <p>*** Thank you for your order! ***</p>
+            <p>Come again!</p>
+          </div>
+        </div>
+
+        {/* Action Buttons – hidden when printing */}
+        <div className="border-t px-6 py-4 bg-gray-50 flex gap-3 print:hidden">
+          <button
+            onClick={() => window.print()}
+            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition shadow-md"
+          >
+            Print Receipt
+          </button>
+          <button
+            onClick={onClose}
+            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-medium transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
@@ -289,271 +389,306 @@ export default function CompanyOrderDetailView() {
 
   const status = getStatusInfo(order.status);
 
+  // Separate items by type
+  const foodItems = order.items.filter(item => item.menuItem.purpose === 'EATING');
+  const drinkItems = order.items.filter(item => item.menuItem.purpose === 'DRINKING');
+
+  // Calculate totals
+  const foodTotal = foodItems.reduce((sum, item) => sum + item.totalPrice, 0);
+  const drinkTotal = drinkItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6 text-sm">
-      <div className=" mx-auto space-y-6">
-        {/* Status Banner */}
-        <div className={`${status.bg} rounded-lg p-6 border-2 ${status.color.split(' ')[2]}`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-full ${status.color}`}>
+    <>
+      <div className="min-h-screen bg-gray-50 p-6 text-sm">
+        <div className="max-w-7xl mx-auto space-y-6">
+
+          {/* Status Banner */}
+          <div className={`${status.bg} rounded-lg p-6 border-2 ${status.color.split(' ')[2]}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-full ${status.color}`}>
+                  {status.icon}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{status.message}</h1>
+                  <p className="text-gray-600 mt-1">Placed on {formatDate(order.createdAt)}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={generatingPDF}
+                  className="p-2 bg-white rounded-lg hover:bg-gray-50 border border-gray-200 disabled:opacity-50"
+                  title="Download Full Receipt"
+                >
+                  {generatingPDF ? (
+                    <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <Download className="w-5 h-5 text-gray-700" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Receipt Buttons */}
+
+           {order.status !== 'PENDING' && (
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">View Receipts by Category</h3>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowFoodReceipt(true)}
+                disabled={foodItems.length === 0}
+                className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
+                  foodItems.length === 0
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
+                }`}
+              >
+                <Receipt className="w-5 h-5" />
+                Food Receipt ({foodItems.length} items)
+              </button>
+              <button
+                onClick={() => setShowDrinkReceipt(true)}
+                disabled={drinkItems.length === 0}
+                className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
+                  drinkItems.length === 0
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                }`}
+              >
+                <Receipt className="w-5 h-5" />
+                Drinks Receipt ({drinkItems.length} items)
+              </button>
+            </div>
+          </div>
+
+              )}
+
+          {/* Action Buttons */}
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Order Status</h3>
+            <div className="flex flex-wrap gap-3">
+              {order.status === 'PENDING' && (
+                <>
+                  <button
+                    onClick={() => updateOrderStatus('PROCESSING')}
+                    disabled={updatingStatus}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  >
+                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
+                    <span>Approve & Start Processing</span>
+                  </button>
+                  <button
+                    onClick={() => updateOrderStatus('CANCELLED')}
+                    disabled={updatingStatus}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                  >
+                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
+                    <span>Cancel Order</span>
+                  </button>
+                </>
+              )}
+              {order.status === 'PROCESSING' && (
+                <button
+                  onClick={() => updateOrderStatus('COMPLETED')}
+                  disabled={updatingStatus}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                >
+                  {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                  <span>Mark as Completed</span>
+                </button>
+              )}
+              {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
+                <div className="flex items-center text-gray-500 text-sm">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  <span>No further actions available</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Order Header */}
+          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Order #{order.orderNumber}</h1>
+                <p className="text-gray-500">ID: {order.id}</p>
+              </div>
+              <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${status.color}`}>
                 {status.icon}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{status.message}</h1>
-                <p className="text-gray-600 mt-1">Placed on {formatDate(order.createdAt)}</p>
+                <span className="font-semibold">{order.status}</span>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleDownloadPDF}
-                disabled={generatingPDF}
-                className="p-2 bg-white rounded-lg hover:bg-gray-50 border border-gray-200 disabled:opacity-50"
-                title="Download Receipt"
-              >
-                {generatingPDF ? (
-                  <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <Download className="w-5 h-5 text-gray-700" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Order Status</h3>
-          <div className="flex flex-wrap gap-3">
-            {order.status === 'PENDING' && (
-              <>
-                <button
-                  onClick={() => updateOrderStatus('PROCESSING')}
-                  disabled={updatingStatus}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                >
-                  {updatingStatus ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <PlayCircle className="w-4 h-4" />
-                  )}
-                  <span>Approve & Start Processing</span>
-                </button>
-
-                <button
-                  onClick={() => updateOrderStatus('CANCELLED')}
-                  disabled={updatingStatus}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                >
-                  {updatingStatus ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <X className="w-4 h-4" />
-                  )}
-                  <span>Cancel Order</span>
-                </button>
-              </>
-            )}
-
-            {order.status === 'PROCESSING' && (
-              <button
-                onClick={() => updateOrderStatus('COMPLETED')}
-                disabled={updatingStatus}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
-              >
-                {updatingStatus ? (
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Check className="w-4 h-4" />
-                )}
-                <span>Mark as Completed</span>
-              </button>
-            )}
-
-            {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
-              <div className="flex items-center text-gray-500 text-sm">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                <span>No further actions available</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Order Date</p>
+                  <p className="font-medium">{formatDate(order.createdAt)}</p>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-
-        {/* Order Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Order #{order.orderNumber}</h1>
-              <p className="text-gray-500">ID: {order.id}</p>
-            </div>
-            <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${status.color}`}>
-              {status.icon}
-              <span className="font-semibold">{order.status}</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Order Date</p>
-                <p className="font-medium">{formatDate(order.createdAt)}</p>
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Last Updated</p>
+                  <p className="font-medium">{formatDate(order.updatedAt)}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Last Updated</p>
-                <p className="font-medium">{formatDate(order.updatedAt)}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <ShoppingCart className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Total Amount</p>
-                <p className="font-medium text-lg">{formatRWF(order.totalAmount)}</p>
+              <div className="flex items-center gap-3">
+                <ShoppingCart className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Total Amount</p>
+                  <p className="font-medium text-lg">{formatRWF(order.totalAmount)}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Client Info */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <User className="w-5 h-5" />
-            Customer Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3">
-              <User className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Name</p>
-                <p className="font-medium">{order.clientName}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Phone</p>
-                <p className="font-medium">{order.clientPhone || '—'}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-xs text-gray-500">Email</p>
-                <p className="font-medium">{order.clientEmail || '—'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Notes */}
-        {order.notes && (
+          {/* Client Info */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Customer Notes
+              <User className="w-5 h-5" />
+              Customer Information
             </h2>
-            <p className="text-gray-700 italic">"{order.notes}"</p>
-          </div>
-        )}
-
-        {/* Order Items */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Package className="w-5 h-5" />
-              Order Items ({order.items.length})
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {order.items.map((item) => {
-                  const discount = item.menuItem.discount || 0;
-                  const original = item.menuItem.sellingPrice;
-                  const discounted = item.unitPrice;
-                  const subtotal = item.totalPrice;
-
-                  return (
-                    <tr key={item.id} className="hover:bg-gray-25">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          {item.menuItem.image ? (
-                            <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 rounded-lg object-cover" />
-                          ) : (
-                            <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                              <Package className="w-6 h-6 text-gray-400" />
-                            </div>
-                          )}
-                          <div>
-                            <p className="font-medium text-gray-900">{item.menuItem.name}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right font-medium">{item.quantity}</td>
-                      <td className="px-6 py-4 text-right">
-                        {discount > 0 ? (
-                          <div>
-                            <p className="text-sm font-medium text-orange-600">{formatRWF(discounted)}</p>
-                            <p className="text-xs text-gray-500 line-through">{formatRWF(original)}</p>
-                          </div>
-                        ) : (
-                          <p className="font-medium">{formatRWF(discounted)}</p>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        {discount > 0 ? (
-                          <div className="flex items-center justify-end gap-1">
-                            <Percent className="w-3 h-3 text-orange-600" />
-                            <span className="text-sm font-medium text-orange-600">{discount}%</span>
-                          </div>
-                        ) : (
-                          <span className="text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-right font-semibold text-gray-900">
-                        {formatRWF(subtotal)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <tfoot className="bg-gray-50 font-bold">
-                <tr>
-                  <td colSpan={4} className="px-6 py-4 text-right text-gray-900">TOTAL</td>
-                  <td className="px-6 py-4 text-right text-lg text-gray-900">
-                    {formatRWF(order.totalAmount)}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-
-        {/* Toast */}
-        {operationStatus && (
-          <div className="fixed top-4 right-4 z-50">
-            <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-sm ${
-              operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
-              operationStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
-              'bg-blue-50 border border-blue-200 text-blue-800'
-            }`}>
-              <AlertCircle className="w-4 h-4" />
-              <span className="font-medium">{operationStatus.message}</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Name</p>
+                  <p className="font-medium">{order.clientName}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Phone</p>
+                  <p className="font-medium">{order.clientPhone || '—'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-gray-400" />
+                <div>
+                  <p className="text-xs text-gray-500">Email</p>
+                  <p className="font-medium">{order.clientEmail || '—'}</p>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Notes */}
+          {order.notes && (
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Customer Notes
+              </h2>
+              <p className="text-gray-700 italic">"{order.notes}"</p>
+            </div>
+          )}
+
+          {/* Order Items Table */}
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <Package className="w-5 h-5" />
+                Order Items ({order.items.length})
+              </h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {order.items.map((item) => {
+                    const discount = item.menuItem.discount || 0;
+                    const original = item.menuItem.sellingPrice;
+                    const discounted = item.unitPrice;
+                    const subtotal = item.totalPrice;
+
+                    return (
+                      <tr key={item.id} className="hover:bg-gray-25">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            {item.menuItem.image ? (
+                              <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 rounded-lg object-cover" />
+                            ) : (
+                              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <Package className="w-6 h-6 text-gray-400" />
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium text-gray-900">{item.menuItem.name}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right font-medium">{item.quantity}</td>
+                        <td className="px-6 py-4 text-right">
+                          {discount > 0 ? (
+                            <div>
+                              <p className="text-sm font-medium text-orange-600">{formatRWF(discounted)}</p>
+                              <p className="text-xs text-gray-500 line-through">{formatRWF(original)}</p>
+                            </div>
+                          ) : (
+                            <p className="font-medium">{formatRWF(discounted)}</p>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          {discount > 0 ? (
+                            <div className="flex items-center justify-end gap-1">
+                              <Percent className="w-3 h-3 text-orange-600" />
+                              <span className="text-sm font-medium text-orange-600">{discount}%</span>
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-right font-semibold text-gray-900">
+                          {formatRWF(subtotal)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="bg-gray-50 font-bold">
+                  <tr>
+                    <td colSpan={4} className="px-6 py-4 text-right text-gray-900">TOTAL</td>
+                    <td className="px-6 py-4 text-right text-lg text-gray-900">
+                      {formatRWF(order.totalAmount)}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          {/* Toast */}
+          {operationStatus && (
+            <div className="fixed top-4 right-4 z-50">
+              <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-sm ${
+                operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
+                operationStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
+                'bg-blue-50 border border-blue-200 text-blue-800'
+              }`}>
+                <AlertCircle className="w-4 h-4" />
+                <span className="font-medium">{operationStatus.message}</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Modals */}
+      <ReceiptModal isOpen={showFoodReceipt} onClose={() => setShowFoodReceipt(false)} items={foodItems} type="food" total={foodTotal} />
+      <ReceiptModal isOpen={showDrinkReceipt} onClose={() => setShowDrinkReceipt(false)} items={drinkItems} type="drinks" total={drinkTotal} />
+    </>
   );
 }

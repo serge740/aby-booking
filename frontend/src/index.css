@@ -40,6 +40,35 @@
   --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
   --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
 }
+
+/* Hide everything except the receipt content when printing */
+@media print {
+  /* Hide modal buttons & close icon */
+  .print\\:hidden,
+  .print\\:hidden * {
+    display: none !important;
+  }
+
+  /* Force white background & remove shadows/scrollbars */
+  body, .bg-white {
+    background: white !important;
+  }
+
+  /* Make sure the receipt takes full width */
+  .receipt-print-container {
+    max-width: 80mm !important;   /* Standard thermal printer width */
+    margin: 0 auto !important;
+    padding: 10mm !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Optional: make it look like a real receipt (80mm) */
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+}
 html{
   scroll-behavior: smooth;
 }

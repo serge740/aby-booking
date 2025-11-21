@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import employeeAuthService from '../services/employeeAuthService';
 import pushNotificationService, { UserTypeEnum } from '../services/pushNotificationService';
+import { getClientDescription } from '../stores/detectDevice';
 
 export enum EmployeeStatus {
   ACTIVE = 'ACTIVE',
@@ -404,10 +405,11 @@ export const EmployeeAuthProvider = ({ children }: { children: ReactNode }) => {
       // Check if user wants auto-subscribe
       // const autoSubscribeEnabled = localStorage.getItem('autoSubscribePushEmployee') === 'true';
       const autoSubscribeEnabled = true;
+      const client  =  getClientDescription()
       
       if (autoSubscribeEnabled) {
         try {
-          await subscribeToNotifications('Auto-subscribed device');
+          await subscribeToNotifications(client.description||'Auto-subscribed device');
         } catch (error) {
           console.warn('Auto-subscribe failed:', error);
         }

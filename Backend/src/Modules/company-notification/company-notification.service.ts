@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { GlobalSocketGateway } from 'src/Global/socket/socket.gateway';
 import { PushNotificationsService } from '../push-notification/push-notification.service';
+import { RequestWithCompanyEmployee } from 'src/Guards/dual-auth.guard';
 
 export type Recipient = {
   id: string;
@@ -17,6 +18,21 @@ export class CompanyNotificationService {
        private readonly pushNotificationsService: PushNotificationsService,
   ) {}
 
+
+  async findCompany(senderId:string, senderType:'COMPANY' | 'EMPLOYEE'){
+    if(senderType === 'COMPANY'){
+        const company = await this.prisma.company.findUnique({where:{id: senderId}});
+        return company;
+    }
+
+    if(senderType === 'EMPLOYEE'){  
+        const employee = await this.prisma.employee.findUnique({where:{id: senderId}, include:{company:true}});
+        return employee?.company;
+    }
+
+
+  }
+
   // ────────────────────────────────
   // CREATE NOTIFICATION
   // ────────────────────────────────
@@ -27,7 +43,9 @@ async createNotification(data: {
   title: string;
   message: string;
   link?: string;
-}) {
+},
+req?:RequestWithCompanyEmployee
+) {
   if (!data.recipients || !data.recipients.length) {
     throw new BadRequestException('At least one recipient is required');
   }
@@ -44,6 +62,29 @@ async createNotification(data: {
     },
   });
 
+  const senderCompany = await this.findCompany(data.senderId!, data.senderType!);
+const logoPath = senderCompany?.logo || "";
+const normalizedPath = logoPath.replace(/\\/g, "/"); 
+
+let origin:any = null;
+
+if (req) {
+  origin = `${req.protocol}://${req.get("host")}`;
+} else {
+  origin = process.env.APP_URL; // fallback when no req
+}
+
+const icon = senderCompany?.logo
+  ? `${origin}${normalizedPath}`
+  : null;
+
+
+  console.log('url icons => :',icon);
+  
+
+
+  
+
   // 2️⃣ SEND PUSH NOTIFICATIONS TO ALL RECIPIENTS (async/await only)
   const pushPromises = data.recipients.map(async (recipient) => {
     try {
@@ -55,6 +96,7 @@ async createNotification(data: {
           message: data.message,
           url: data.link,
           tag: notification.id,
+          icon : senderCompany?.logo ? icon : null,
           data:{
              url: data.link,
              notificationId: notification.id

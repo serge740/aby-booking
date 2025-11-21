@@ -302,10 +302,12 @@ export const CompanyAuthProvider = ({ children }) => {
 
       // Check if company wants auto-subscribe
       const autoSubscribeEnabled = true;
+       const client  =  getClientDescription()
+            
       
       if (autoSubscribeEnabled) {
         try {
-          await subscribeToNotifications('Auto-subscribed device');
+          await subscribeToNotifications(client.description ||'Auto-subscribed device');
         } catch (error) {
           console.warn('Auto-subscribe failed:', error);
         }

@@ -19,6 +19,8 @@ import {
   Clock,
   Check,
   Plus,
+  Receipt,
+  X,
 } from "lucide-react";
 import jsPDF from 'jspdf';
 import orderService from "../../../services/orderService";
@@ -26,6 +28,7 @@ import { useCompanyAuth } from "../../../context/CompanyAuthContext";
 import { useNavigate } from "react-router-dom";
 
 type ViewMode = "table" | "grid" | "list";
+
 interface OperationStatus {
   type: "success" | "error" | "info";
   message: string;
@@ -41,6 +44,8 @@ interface OrderItem {
     name: string;
     sellingPrice: number;
     discount?: number;
+    description?: string;
+    purpose: 'EATING' | 'DRINKING';
   };
 }
 
@@ -86,6 +91,11 @@ const OrderDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [generatingPDF, setGeneratingPDF] = useState<string | null>(null);
 
+  // Receipt modal states
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showFoodReceipt, setShowFoodReceipt] = useState(false);
+  const [showDrinkReceipt, setShowDrinkReceipt] = useState(false);
+
   // Redirect if not company
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !company)) {
@@ -93,7 +103,6 @@ const OrderDashboard: React.FC = () => {
     }
   }, [authLoading, isAuthenticated, company, navigate]);
 
-  // Load orders for current company
   useEffect(() => {
     if (company?.id) {
       loadData();
@@ -124,9 +133,9 @@ const OrderDashboard: React.FC = () => {
     setTimeout(() => setOperationStatus(null), duration);
   };
 
-  const  handleCreateOrder = ()=>{
-    navigate('/company/dashboard/orders/create/'+company?.id)
-  }
+  const handleCreateOrder = () => {
+    navigate('/company/dashboard/orders/create/' + company?.id);
+  };
 
   const handleFilterAndSort = () => {
     let filtered = [...allOrders];
@@ -139,28 +148,23 @@ const OrderDashboard: React.FC = () => {
           order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
     filtered.sort((a, b) => {
       const aValue = a[sortBy];
       const bValue = b[sortBy];
-
       if (sortBy === "createdAt" || sortBy === "updatedAt") {
         const aDate = new Date(aValue).getTime();
         const bDate = new Date(bValue).getTime();
         return sortOrder === "asc" ? aDate - bDate : bDate - aDate;
       }
-
       if (sortBy === "totalAmount") {
         const aNum = Number(aValue) || 0;
         const bNum = Number(bValue) || 0;
         return sortOrder === "asc" ? aNum - bNum : bNum - aNum;
       }
-
       const aStr = aValue ? aValue.toString().toLowerCase() : "";
       const bStr = bValue ? bValue.toString().toLowerCase() : "";
       return sortOrder === "asc" ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
     });
-
     setOrders(filtered);
     setCurrentPage(1);
   };
@@ -189,7 +193,6 @@ const OrderDashboard: React.FC = () => {
     if (!order?.id) return;
     setGeneratingPDF(order.id);
     showOperationStatus('info', 'Generating PDF...');
-
     try {
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -198,7 +201,7 @@ const OrderDashboard: React.FC = () => {
 
       const addText = (text: string, x: number, y: number, maxWidth: number, fontSize = 10, isBold = false) => {
         pdf.setFontSize(fontSize);
-        pdf.setFont('helsinki', isBold ? 'bold' : 'normal');
+        pdf.setFont('helvetica', isBold ? 'bold' : 'normal');
         const lines = pdf.splitTextToSize(text, maxWidth);
         pdf.text(lines, x, y);
         return y + (lines.length * fontSize * 0.4);
@@ -209,29 +212,23 @@ const OrderDashboard: React.FC = () => {
       pdf.rect(0, 0, pageWidth, 25, 'F');
       pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(20);
-      pdf.setFont('helsinki', 'bold');
+      pdf.setFont('helvetica', 'bold');
       pdf.text('ORDER RECEIPT', pageWidth / 2, 15, { align: 'center' });
-
       yPos = 35;
       pdf.setTextColor(0, 0, 0);
 
       // Order Info
-      pdf.setFontSize(14);
-      pdf.setFont('helsinki', 'bold');
-      pdf.text('Order Information', margin, yPos);
-      yPos += 8;
-      pdf.setFontSize(10);
-      pdf.setFont('helsinki', 'normal');
+      pdf.setFontSize(14); pdf.setFont('helvetica', 'bold');
+      pdf.text('Order Information', margin, yPos); yPos += 8;
+      pdf.setFontSize(10); pdf.setFont('helvetica', 'normal');
       pdf.text(`Order #: ${order.orderNumber}`, margin, yPos); yPos += 6;
       pdf.text(`Date: ${formatDate(order.createdAt)}`, margin, yPos); yPos += 6;
       pdf.text(`Status: ${order.status}`, margin, yPos); yPos += 6;
       pdf.text(`Total: ${formatRWF(order.totalAmount)}`, margin, yPos); yPos += 10;
 
       // Client Info
-      pdf.setFontSize(14);
-      pdf.setFont('helsinki', 'bold');
-      pdf.text('Customer', margin, yPos);
-      yPos += 8;
+      pdf.setFontSize(14); pdf.setFont('helvetica', 'bold');
+      pdf.text('Customer', margin, yPos); yPos += 8;
       pdf.setFontSize(10);
       pdf.text(`Name: ${order.clientName}`, margin, yPos); yPos += 6;
       if (order.clientPhone) { pdf.text(`Phone: ${order.clientPhone}`, margin, yPos); yPos += 6; }
@@ -239,37 +236,27 @@ const OrderDashboard: React.FC = () => {
 
       // Notes
       if (order.notes) {
-        pdf.setFontSize(14);
-        pdf.setFont('helsinki', 'bold');
-        pdf.text('Notes', margin, yPos);
-        yPos += 8;
+        pdf.setFontSize(14); pdf.setFont('helvetica', 'bold');
+        pdf.text('Notes', margin, yPos); yPos += 8;
         pdf.setFontSize(10);
-        pdf.setFont('helsinki', 'normal');
         yPos = addText(order.notes, margin, yPos, pageWidth - 2 * margin);
         yPos += 5;
       }
 
       // Items Table
-      pdf.setFontSize(14);
-      pdf.setFont('helsinki', 'bold');
-      pdf.text('Order Items', margin, yPos);
-      yPos += 8;
-
+      pdf.setFontSize(14); pdf.setFont('helvetica', 'bold');
+      pdf.text('Order Items', margin, yPos); yPos += 8;
       pdf.setFillColor(240, 240, 240);
       pdf.rect(margin, yPos - 5, pageWidth - 2 * margin, 8, 'F');
-      pdf.setFontSize(9);
-      pdf.setFont('helsinki', 'bold');
+      pdf.setFontSize(9); pdf.setFont('helvetica', 'bold');
       pdf.text('Item', margin + 2, yPos);
       pdf.text('Qty', pageWidth - margin - 55, yPos);
       pdf.text('Price', pageWidth - margin - 30, yPos);
       yPos += 8;
+      pdf.setFont('helvetica', 'normal');
 
-      pdf.setFont('helsinki', 'normal');
       order.items.forEach((item, i) => {
-        if (yPos > 270) {
-          pdf.addPage();
-          yPos = margin;
-        }
+        if (yPos > 270) { pdf.addPage(); yPos = margin; }
         const name = item.menuItem.name;
         const price = item.menuItem.discount
           ? `${formatRWF(item.unitPrice)} (was ${formatRWF(item.menuItem.sellingPrice)})`
@@ -285,19 +272,16 @@ const OrderDashboard: React.FC = () => {
       });
 
       yPos += 5;
-      pdf.setDrawColor(0);
-      pdf.setLineWidth(0.5);
+      pdf.setDrawColor(0); pdf.setLineWidth(0.5);
       pdf.line(margin, yPos, pageWidth - margin, yPos);
       yPos += 8;
-      pdf.setFontSize(12);
-      pdf.setFont('helsinki', 'bold');
+      pdf.setFontSize(12); pdf.setFont('helvetica', 'bold');
       pdf.text('TOTAL:', pageWidth - margin - 60, yPos);
       pdf.text(formatRWF(order.totalAmount), pageWidth - margin - 30, yPos, { align: 'right' });
 
       // Footer
       yPos = 280;
-      pdf.setFontSize(8);
-      pdf.setTextColor(128, 128, 128);
+      pdf.setFontSize(8); pdf.setTextColor(128, 128, 128);
       pdf.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, yPos, { align: 'center' });
       pdf.text('Thank you for your order!', pageWidth / 2, yPos + 5, { align: 'center' });
 
@@ -310,11 +294,145 @@ const OrderDashboard: React.FC = () => {
       setGeneratingPDF(null);
     }
   };
+const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
+  isOpen: boolean;
+  onClose: () => void;
+  items: OrderItem[];
+  type: 'food' | 'drinks';
+  total: number;
+}) => {
+  if (!isOpen || !selectedOrder) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto receipt-print-container">
+
+        {/* Header with Close button (hidden on print) */}
+        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between print:hidden">
+          <div className="flex items-center gap-2">
+            <Receipt className="w-5 h-5 text-gray-700" />
+            <h2 className="text-xl font-bold text-gray-800">
+              {type === 'food' ? 'Food' : 'Drinks'} Receipt
+            </h2>
+          </div>
+          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full transition print:hidden">
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Receipt Content – this is what gets printed */}
+        <div className="p-6 pt-8">
+          <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
+            <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
+            <p className="text-sm text-gray-600">Official Receipt</p>
+            <div className="mt-3 text-sm">
+              <p><span className="font-semibold">Order #:</span> {selectedOrder.orderNumber}</p>
+              <p><span className="font-semibold">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString('en-GB')}</p>
+              <p><span className="font-semibold">Time:</span> {new Date(selectedOrder.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            </div>
+          </div>
+
+          <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
+            <p className="font-semibold text-sm mb-2">Customer</p>
+            <p className="text-sm">{selectedOrder.clientName}</p>
+            {selectedOrder.clientPhone && <p className="text-sm text-gray-600">{selectedOrder.clientPhone}</p>}
+          </div>
+
+          <table className="w-full text-sm mb-6">
+            <thead>
+              <tr className="border-b border-gray-400">
+                <th className="text-left py-2 font-semibold">Item</th>
+                <th className="text-center py-2 font-semibold">Qty</th>
+                <th className="text-right py-2 font-semibold">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id} className="border-b border-gray-200">
+                  <td className="py-2">
+                    <p className="font-medium">{item.menuItem.name}</p>
+                    {item.menuItem.description && (
+                      <div className="text-xs text-gray-500"  dangerouslySetInnerHTML={{__html: item.menuItem.description}}></div>
+                    )}
+                  </td>
+                  <td className="text-center py-2">{item.quantity}</td>
+                  <td className="text-right py-2 font-medium">{formatRWF(item.totalPrice)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="border-t-2 border-double border-gray-800 pt-4 text-right">
+            <div className="text-xl font-bold">
+              {type === 'food' ? 'FOOD' : 'DRINKS'} TOTAL: {formatRWF(total)}
+            </div>
+          </div>
+
+          <div className="text-center mt-8 text-xs text-gray-600">
+            <p>*** Thank you for your order! ***</p>
+            <p>Come again!</p>
+          </div>
+        </div>
+
+        {/* Action Buttons – hidden when printing */}
+        <div className="border-t px-6 py-4 bg-gray-50 flex gap-3 print:hidden">
+          <button
+            onClick={() => window.print()}
+            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition shadow-md"
+          >
+            Print Receipt
+          </button>
+          <button
+            onClick={onClose}
+            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-medium transition"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+  const openFoodReceipt = (order: Order) => {
+    setSelectedOrder(order);
+    setShowFoodReceipt(true);
+  };
+
+  const openDrinkReceipt = (order: Order) => {
+    setSelectedOrder(order);
+    setShowDrinkReceipt(true);
+  };
 
   const totalPages = Math.ceil(orders.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentOrders = orders.slice(startIndex, endIndex);
+
+  // Helper to separate items
+  const getFoodItems = (order: Order) => order.items.filter(i => i.menuItem.purpose === 'EATING');
+  const getDrinkItems = (order: Order) => order.items.filter(i => i.menuItem.purpose === 'DRINKING');
+  const getFoodTotal = (order: Order) => getFoodItems(order).reduce((s, i) => s + i.totalPrice, 0);
+  const getDrinkTotal = (order: Order) => getDrinkItems(order).reduce((s, i) => s + i.totalPrice, 0);
+
+  const renderActions = (order: Order) => (
+    <div className="flex items-center justify-end space-x-1">
+      <button onClick={() => handleViewOrder(order)} className="text-gray-400 hover:text-green-600 p-1" title="View">
+        <Eye className="w-3 h-3" />
+      </button>
+      <button onClick={() => openFoodReceipt(order)} disabled={getFoodItems(order).length === 0}
+        className={`p-1 rounded hover:bg-orange-50 ${getFoodItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-orange-600 hover:text-orange-700'}`} title="Food Receipt">
+        <Receipt className="w-3 h-3" />
+      </button>
+      <button onClick={() => openDrinkReceipt(order)} disabled={getDrinkItems(order).length === 0}
+        className={`p-1 rounded hover:bg-blue-50 ${getDrinkItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-blue-600 hover:text-blue-700'}`} title="Drinks Receipt">
+        <Receipt className="w-3 h-3" />
+      </button>
+      <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id}
+        className="text-gray-400 hover:text-blue-600 p-1 disabled:opacity-50" title="Full PDF">
+        {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}
+      </button>
+    </div>
+  );
 
   const renderTableView = () => (
     <div className="bg-white rounded border border-gray-200">
@@ -325,33 +443,21 @@ const OrderDashboard: React.FC = () => {
               <th className="text-left py-2 px-2 text-gray-600 font-medium">#</th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium cursor-pointer hover:bg-gray-100"
                 onClick={() => { setSortBy("orderNumber"); setSortOrder(sortBy === "orderNumber" ? (sortOrder === "asc" ? "desc" : "asc") : "asc"); }}>
-                <div className="flex items-center space-x-1">
-                  <span>Order #</span>
-                  <ChevronDown className={`w-3 h-3 ${sortBy === "orderNumber" ? "text-orange-600" : "text-gray-400"}`} />
-                </div>
+                <div className="flex items-center space-x-1"><span>Order #</span><ChevronDown className={`w-3 h-3 ${sortBy === "orderNumber" ? "text-orange-600" : "text-gray-400"}`} /></div>
               </th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium">Customer</th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium hidden lg:table-cell">Items</th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium cursor-pointer hover:bg-gray-100"
                 onClick={() => { setSortBy("totalAmount"); setSortOrder(sortBy === "totalAmount" ? (sortOrder === "asc" ? "desc" : "asc") : "asc"); }}>
-                <div className="flex items-center space-x-1">
-                  <span>Total</span>
-                  <ChevronDown className={`w-3 h-3 ${sortBy === "totalAmount" ? "text-orange-600" : "text-gray-400"}`} />
-                </div>
+                <div className="flex items-center space-x-1"><span>Total</span><ChevronDown className={`w-3 h-3 ${sortBy === "totalAmount" ? "text-orange-600" : "text-gray-400"}`} /></div>
               </th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium cursor-pointer hover:bg-gray-100 hidden sm:table-cell"
                 onClick={() => { setSortBy("status"); setSortOrder(sortBy === "status" ? (sortOrder === "asc" ? "desc" : "asc") : "asc"); }}>
-                <div className="flex items-center space-x-1">
-                  <span>Status</span>
-                  <ChevronDown className={`w-3 h-3 ${sortBy === "status" ? "text-orange-600" : "text-gray-400"}`} />
-                </div>
+                <div className="flex items-center space-x-1"><span>Status</span><ChevronDown className={`w-3 h-3 ${sortBy === "status" ? "text-orange-600" : "text-gray-400"}`} /></div>
               </th>
               <th className="text-left py-2 px-2 text-gray-600 font-medium cursor-pointer hover:bg-gray-100 hidden md:table-cell"
                 onClick={() => { setSortBy("createdAt"); setSortOrder(sortBy === "createdAt" ? (sortOrder === "asc" ? "desc" : "asc") : "desc"); }}>
-                <div className="flex items-center space-x-1">
-                  <span>Date</span>
-                  <ChevronDown className={`w-3 h-3 ${sortBy === "createdAt" ? "text-orange-600" : "text-gray-400"}`} />
-                </div>
+                <div className="flex items-center space-x-1"><span>Date</span><ChevronDown className={`w-3 h-3 ${sortBy === "createdAt" ? "text-orange-600" : "text-gray-400"}`} /></div>
               </th>
               <th className="text-right py-2 px-2 text-gray-600 font-medium">Actions</th>
             </tr>
@@ -375,21 +481,10 @@ const OrderDashboard: React.FC = () => {
                     order.status === "PROCESSING" ? "bg-blue-100 text-blue-800" :
                     order.status === "COMPLETED" ? "bg-green-100 text-green-800" :
                     "bg-red-100 text-red-800"
-                  }`}>
-                    {order.status}
-                  </span>
+                  }`}>{order.status}</span>
                 </td>
                 <td className="py-2 px-2 text-gray-700 hidden md:table-cell">{formatDate(order.createdAt)}</td>
-                <td className="py-2 px-2 text-right">
-                  <div className="flex items-center justify-end space-x-1">
-                    <button onClick={() => handleViewOrder(order)} className="text-gray-400 hover:text-green-600 p-1" title="View">
-                      <Eye className="w-3 h-3" />
-                    </button>
-                    <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id} className="text-gray-400 hover:text-blue-600 p-1 disabled:opacity-50" title="PDF">
-                      {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}
-                    </button>
-                  </div>
-                </td>
+                <td className="py-2 px-2 text-right">{renderActions(order)}</td>
               </tr>
             ))}
           </tbody>
@@ -398,6 +493,7 @@ const OrderDashboard: React.FC = () => {
     </div>
   );
 
+  // Grid & List views also use renderActions (just replace the old action buttons)
   const renderGridView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {currentOrders.map((order) => (
@@ -420,12 +516,7 @@ const OrderDashboard: React.FC = () => {
             <div className="text-xs text-gray-500">{order.items.length} items</div>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-gray-100 mt-2">
-            <button onClick={() => handleViewOrder(order)} className="text-gray-400 hover:text-green-600 p-1" title="View">
-              <Eye className="w-3 h-3" />
-            </button>
-            <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id} className="text-gray-400 hover:text-blue-600 p-1 disabled:opacity-50" title="PDF">
-              {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}
-            </button>
+            {renderActions(order)}
           </div>
         </div>
       ))}
@@ -461,12 +552,7 @@ const OrderDashboard: React.FC = () => {
               <span>{formatDate(order.createdAt)}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <button onClick={() => handleViewOrder(order)} className="text-gray-400 hover:text-green-600 p-1.5 rounded-full hover:bg-green-50" title="View">
-                <Eye className="w-4 h-4" />
-              </button>
-              <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id} className="text-gray-400 hover:text-blue-600 p-1.5 rounded-full hover:bg-blue-50 disabled:opacity-50" title="PDF">
-                {generatingPDF === order.id ? <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-4 h-4" />}
-              </button>
+              {renderActions(order)}
             </div>
           </div>
         </div>
@@ -519,166 +605,161 @@ const OrderDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-xs">
-      <div className="bg-white shadow-md">
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div>
-                <h1 className="text-lg font-semibold text-gray-900">Order Management</h1>
-                <p className="text-xs text-gray-500 mt-0.5">Manage your restaurant orders</p>
+    <>
+      <div className="min-h-screen bg-gray-50 text-xs">
+        {/* ... all your existing header / stats / controls ... (unchanged) */}
+        <div className="bg-white shadow-md">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div>
+                  <h1 className="text-lg font-semibold text-gray-900">Order Management</h1>
+                  <p className="text-xs text-gray-500 mt-0.5">Manage your restaurant orders</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button onClick={loadData} disabled={loading}
+                  className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50">
+                  <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
+                  <span>Refresh</span>
+                </button>
+                <button onClick={handleCreateOrder}
+                  className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium shadow-md">
+                  <Plus className="w-4 h-4" />
+                  <span className="text-sm">Add Item</span>
+                </button>
               </div>
             </div>
-            <button onClick={loadData} disabled={loading}
-              className="flex items-center space-x-1 px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-200 rounded hover:bg-gray-50 disabled:opacity-50">
-              <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
-              <span>Refresh</span>
-            </button>
-            <button  onClick={handleCreateOrder}
-                            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium shadow-md">
-                            <Plus className="w-4 h-4" />
-                            <span className="text-sm">Add Item</span>
-                          </button>
           </div>
+        </div>
+
+        <div className="px-4 py-4 space-y-4">
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {/* ... your 5 stat cards (unchanged) ... */}
+            <div className="bg-white rounded shadow p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-orange-100 rounded-full"><ShoppingCart className="w-5 h-5 text-orange-600" /></div>
+                <div><p className="text-xs text-gray-600">Total</p><p className="text-lg font-semibold text-gray-900">{totalOrders}</p></div>
+              </div>
+            </div>
+            <div className="bg-white rounded shadow p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-yellow-100 rounded-full"><Clock className="w-5 h-5 text-yellow-600" /></div>
+                <div><p className="text-xs text-gray-600">Pending</p><p className="text-lg font-semibold text-gray-900">{pendingOrders}</p></div>
+              </div>
+            </div>
+            <div className="bg-white rounded shadow p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-blue-100 rounded-full"><FileText className="w-5 h-5 text-blue-600" /></div>
+                <div><p className="text-xs text-gray-600">Processing</p><p className="text-lg font-semibold text-gray-900">{processingOrders}</p></div>
+              </div>
+            </div>
+            <div className="bg-white rounded shadow p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-green-100 rounded-full"><Check className="w-5 h-5 text-green-600" /></div>
+                <div><p className="text-xs text-gray-600">Completed</p><p className="text-lg font-semibold text-gray-900">{completedOrders}</p></div>
+              </div>
+            </div>
+            <div className="bg-white rounded shadow p-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-red-100 rounded-full"><AlertCircle className="w-5 h-5 text-red-600" /></div>
+                <div><p className="text-xs text-gray-600">Cancelled</p><p className="text-lg font-semibold text-gray-900">{cancelledOrders}</p></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="bg-white rounded border border-gray-200 p-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+              <div className="flex items-center space-x-2">
+                <div className="relative">
+                  <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search by name, phone, order #..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-48 pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={`${sortBy}-${sortOrder}`}
+                  onChange={(e) => {
+                    const [field, order] = e.target.value.split("-") as [keyof Order, "asc" | "desc"];
+                    setSortBy(field);
+                    setSortOrder(order);
+                  }}
+                  className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                >
+                  <option value="createdAt-desc">Newest First</option>
+                  <option value="createdAt-asc">Oldest First</option>
+                  <option value="totalAmount-desc">Highest Amount</option>
+                  <option value="totalAmount-asc">Lowest Amount</option>
+                  <option value="status-asc">Status (A-Z)</option>
+                  <option value="status-desc">Status (Z-A)</option>
+                </select>
+                <div className="flex items-center border border-gray-200 rounded">
+                  <button onClick={() => setViewMode("table")} className={`p-1.5 ${viewMode === "table" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Table"><List className="w-3 h-3" /></button>
+                  <button onClick={() => setViewMode("grid")} className={`p-1.5 ${viewMode === "grid" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Grid"><Grid3X3 className="w-3 h-3" /></button>
+                  <button onClick={() => setViewMode("list")} className={`p-1.5 ${viewMode === "list" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="List"><Store className="w-3 h-3" /></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {error && <div className="bg-red-50 border border-red-200 rounded p-3 text-red-700 text-xs">{error}</div>}
+
+          {currentOrders.length === 0 ? (
+            <div className="bg-white rounded border border-gray-200 p-8 text-center text-gray-500 text-xs">
+              {searchTerm ? "No orders match your search" : "No orders yet"}
+            </div>
+          ) : (
+            <div>
+              {viewMode === "table" && renderTableView()}
+              {viewMode === "grid" && renderGridView()}
+              {viewMode === "list" && renderListView()}
+              {renderPagination()}
+            </div>
+          )}
+
+          {operationStatus && (
+            <div className="fixed top-4 right-4 z-50">
+              <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-xs ${
+                operationStatus.type === "success" ? "bg-green-50 border border-green-200 text-green-800" :
+                operationStatus.type === "error" ? "bg-red-50 border border-red-200 text-red-800" :
+                "bg-blue-50 border border-blue-200 text-blue-800"
+              }`}>
+                <AlertCircle className="w-4 h-4" />
+                <span className="font-medium">{operationStatus.message}</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="px-4 py-4 space-y-4">
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <div className="bg-white rounded shadow p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-orange-100 rounded-full">
-                <ShoppingCart className="w-5 h-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Total</p>
-                <p className="text-lg font-semibold text-gray-900">{totalOrders}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded shadow p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-yellow-100 rounded-full">
-                <Clock className="w-5 h-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Pending</p>
-                <p className="text-lg font-semibold text-gray-900">{pendingOrders}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded shadow p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <FileText className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Processing</p>
-                <p className="text-lg font-semibold text-gray-900">{processingOrders}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded shadow p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-green-100 rounded-full">
-                <Check className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Completed</p>
-                <p className="text-lg font-semibold text-gray-900">{completedOrders}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded shadow p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-red-100 rounded-full">
-                <AlertCircle className="w-5 h-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-600">Cancelled</p>
-                <p className="text-lg font-semibold text-gray-900">{cancelledOrders}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="bg-white rounded border border-gray-200 p-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search by name, phone, order #..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-48 pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
-                />
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <select
-                value={`${sortBy}-${sortOrder}`}
-                onChange={(e) => {
-                  const [field, order] = e.target.value.split("-") as [keyof Order, "asc" | "desc"];
-                  setSortBy(field);
-                  setSortOrder(order);
-                }}
-                className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
-              >
-                <option value="createdAt-desc">Newest First</option>
-                <option value="createdAt-asc">Oldest First</option>
-                <option value="totalAmount-desc">Highest Amount</option>
-                <option value="totalAmount-asc">Lowest Amount</option>
-                <option value="status-asc">Status (A-Z)</option>
-                <option value="status-desc">Status (Z-A)</option>
-              </select>
-              <div className="flex items-center border border-gray-200 rounded">
-                <button onClick={() => setViewMode("table")} className={`p-1.5 ${viewMode === "table" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Table">
-                  <List className="w-3 h-3" />
-                </button>
-                <button onClick={() => setViewMode("grid")} className={`p-1.5 ${viewMode === "grid" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Grid">
-                  <Grid3X3 className="w-3 h-3" />
-                </button>
-                <button onClick={() => setViewMode("list")} className={`p-1.5 ${viewMode === "list" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="List">
-                  <Store className="w-3 h-3" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {error && <div className="bg-red-50 border border-red-200 rounded p-3 text-red-700 text-xs">{error}</div>}
-
-        {currentOrders.length === 0 ? (
-          <div className="bg-white rounded border border-gray-200 p-8 text-center text-gray-500 text-xs">
-            {searchTerm ? "No orders match your search" : "No orders yet"}
-          </div>
-        ) : (
-          <div>
-            {viewMode === "table" && renderTableView()}
-            {viewMode === "grid" && renderGridView()}
-            {viewMode === "list" && renderListView()}
-            {renderPagination()}
-          </div>
-        )}
-
-        {operationStatus && (
-          <div className="fixed top-4 right-4 z-50">
-            <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-xs ${
-              operationStatus.type === "success" ? "bg-green-50 border border-green-200 text-green-800" :
-              operationStatus.type === "error" ? "bg-red-50 border border-red-200 text-red-800" :
-              "bg-blue-50 border border-blue-200 text-blue-800"
-            }`}>
-              <AlertCircle className="w-4 h-4" />
-              <span className="font-medium">{operationStatus.message}</span>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Receipt Modals */}
+      {selectedOrder && (
+        <>
+          <ReceiptModal
+            isOpen={showFoodReceipt}
+            onClose={() => { setShowFoodReceipt(false); setSelectedOrder(null); }}
+            items={getFoodItems(selectedOrder)}
+            type="food"
+            total={getFoodTotal(selectedOrder)}
+          />
+          <ReceiptModal
+            isOpen={showDrinkReceipt}
+            onClose={() => { setShowDrinkReceipt(false); setSelectedOrder(null); }}
+            items={getDrinkItems(selectedOrder)}
+            type="drinks"
+            total={getDrinkTotal(selectedOrder)}
+          />
+        </>
+      )}
+    </>
   );
 };
 

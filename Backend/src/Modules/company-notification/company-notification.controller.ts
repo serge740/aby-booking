@@ -29,13 +29,14 @@ export class CompanyNotificationController {
       message: string;
       link?: string;
     }
+    
   ) {
 
     return this.notificationService.createNotification({
       ...body,
       senderId: req.company?.id || req.employee?.id,
       senderType: req.company ? 'COMPANY' : 'EMPLOYEE',
-    });
+    },req);
   }
 
   // ────────────────────────────────
