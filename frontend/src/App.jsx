@@ -159,6 +159,7 @@ const router = createBrowserRouter([
           {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
            {path:'stock' , element:<StockManagementDashboard />},
+         
           
         ]
        },

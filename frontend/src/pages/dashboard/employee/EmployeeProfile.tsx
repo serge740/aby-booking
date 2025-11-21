@@ -2,11 +2,14 @@ import React, { useState, useEffect, memo } from 'react';
 import {
   User, Mail, Phone, MapPin, Lock, Camera, Save, X, Edit2,
   CheckCircle, AlertCircle, Eye, EyeOff, Building2, Calendar,
-  Shield, FileText, Download, Trash2, Loader2
+  Shield, FileText, Download, Trash2, Loader2,
+  Bell,
+  MessageCircleCode
 } from 'lucide-react';
 import { useEmployeeAuth } from '../../../context/EmployeeAuthContext';
 import { API_URL } from '../../../api/api';
 import Swal from 'sweetalert2';
+import PushNotificationPage from '../PushNotificationPage';
 
 /* -------------------------------------------------------------------------- */
 /*                     REUSABLE INPUT COMPONENTS (unchanged)                 */
@@ -179,7 +182,7 @@ const EmployeeProfilePage: React.FC = () => {
   const { user, updateEmployee, changePassword, isLoading: authLoading, refreshProfile } = useEmployeeAuth();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'personal' | 'security' | 'documents'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'security' | 'documents' | 'notifications'>('personal');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState({ current: false, new: false, confirm: false });
   const [errors, setErrors] = useState<Errors>({});
@@ -369,9 +372,10 @@ const EmployeeProfilePage: React.FC = () => {
   /*                                   UI                                   */
   /* ---------------------------------------------------------------------- */
   const tabs = [
-    { id: 'personal', label: 'Personal Info', icon: User },
+    { id: 'personal', label: 'Personal', icon: User },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'documents', label: 'Documents', icon: FileText },
+    { id: 'notifications', label: 'Notifications', icon: MessageCircleCode },
   ];
 
   if (authLoading) {
@@ -395,7 +399,7 @@ const EmployeeProfilePage: React.FC = () => {
         {/* Header & Tabs */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
           <div className="bg-gradient-to-r from-orange-600 to-orange-700 px-8 py-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
                 <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
                 <p className="text-orange-100 text-sm mt-1">Manage your account and documents</p>
@@ -428,7 +432,7 @@ const EmployeeProfilePage: React.FC = () => {
           </div>
 
           <div className="border-b border-gray-200 bg-gray-50">
-            <div className="flex space-x-8 px-8">
+            <div className="flex space-x-8 px-8 overflow-x-auto ">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -572,6 +576,17 @@ const EmployeeProfilePage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {
+            activeTab === 'notifications' && (
+              <div className="space-y-6">
+                <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
+                  <Bell className="w-5 h-5 mr-2 text-orange-600" /> Push Notifications
+                </h3>
+             <PushNotificationPage />
+              </div>
+            )
+          }
 
           {/* DOCUMENTS TAB */}
           {activeTab === 'documents' && (

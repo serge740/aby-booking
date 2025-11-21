@@ -6,6 +6,7 @@ import CompanyProfileSettings from '../../../components/dashboard/profile/compan
 import ConnectedApps from '../../../components/dashboard/profile/company/ConnectedApps';
 import NotificationsSettings from '../../../components/dashboard/profile/company/NotificationsSettings';
 import SecuritySettings from '../../../components/dashboard/profile/company/SecuritySettings';
+import PushNotificationPage from '../PushNotificationPage';
 
 const CompanyProfilePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,7 +101,7 @@ const CompanyProfilePage = () => {
               <div className="p-4">
                 {activeTab === 'profile' && <CompanyProfileSettings />}
                 {activeTab === 'security' && <SecuritySettings />}
-                {activeTab === 'notifications' && <NotificationsSettings/>}
+                {activeTab === 'notifications' &&  <PushNotificationPage />}
                 {activeTab === 'connected-apps' && <ConnectedApps />}
               </div>
             </div>
