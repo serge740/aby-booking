@@ -8,18 +8,18 @@ import * as handlebars from 'handlebars';
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  private transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST!,
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USERNAME!,
-      pass: process.env.SMTP_PASSWORD!,
-    },
-    tls: {
-      rejectUnauthorized: false,  // Important for security: do not disable in production!
-    },
-  });
+private transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST!,
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: false, // Use STARTTLS instead of SSL/TLS
+  auth: {
+    user: process.env.SMTP_USERNAME!,
+    pass: process.env.SMTP_PASSWORD!,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
   /**
    * Sends an email with the given subject, recipient, and dynamic template data.
