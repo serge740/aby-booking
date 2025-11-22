@@ -24,14 +24,6 @@ export class OrdersGateway {
   // Join Rooms (company, client)
   // -------------------------------
 
-  @SubscribeMessage('join_company')
-  handleJoinCompany(
-    @MessageBody() data: { companyId: string },
-    @ConnectedSocket() client: Socket,
-  ) {
-    client.join(`company_${data.companyId}`);
-    return { joined: true };
-  }
 
   @SubscribeMessage('join_client')
   handleJoinClient(

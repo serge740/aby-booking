@@ -101,14 +101,14 @@ export class LeaveService {
     // ───────────────────────────────
     // APPROVE LEAVE
     // ───────────────────────────────
-    async approveLeave(leaveId: string, companyId: string) {
+    async approveLeave(leaveId: string, companyId: string,reason:string) {
         const leave = await this.prisma.leave.findFirst({ where: { id: leaveId, companyId } });
         if (!leave) throw new NotFoundException('Leave not found');
         if (leave.status !== LeaveStatus.PENDING) throw new ForbiddenException('Only pending leaves can be approved');
 
         const updated = await this.prisma.leave.update({
             where: { id: leaveId },
-            data: { status: LeaveStatus.APPROVED, approvedAt: new Date() },
+            data: { status: LeaveStatus.APPROVED, approvedAt: new Date() , reasonForApproval:reason},
             include: {
                 company: true,
                 employee: true,

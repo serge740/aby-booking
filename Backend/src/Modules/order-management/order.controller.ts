@@ -30,6 +30,7 @@ export class OrderController {
       clientName: string;
       clientEmail?: string;
       clientPhone?: string;
+      employeeId?: string;
       notes?: string;
       items: { menuItemId: string; unitPrice: number; quantity: number }[];
     },

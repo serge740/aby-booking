@@ -3,48 +3,59 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
+  cors: { origin: '*' },
 })
 export class PreSalaryGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: any) {
-    console.log('PreSalary WS Client connected:', client.id);
+  handleConnection(client: Socket) {
+    console.log('PreSalary Client connected:', client.id);
   }
 
-  handleDisconnect(client: any) {
-    console.log('PreSalary WS Client disconnected:', client.id);
+  handleDisconnect(client: Socket) {
+    console.log('PreSalary Client disconnected:', client.id);
   }
 
-  // 🔥 Emit presalary creation
-  notifyPreSalaryCreated(data: any) {
-    this.server.emit('preSalaryCreated', data);
+  // ✅ Client requests joining a company room
+  @SubscribeMessage('joinCompanyRoom')
+  joinCompanyRoom(
+    @MessageBody() data: { companyId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const room = `company_${data.companyId}`;
+    client.join(room);
+    console.log(`Client ${client.id} joined room ${room}`);
   }
 
-  // 🔥 Emit presalary update
-  notifyPreSalaryUpdated(data: any) {
-    this.server.emit('preSalaryUpdated', data);
+  // -----------------------------------
+  //   EMIT TO ONE COMPANY ONLY
+  // -----------------------------------
+
+  notifyPreSalaryCreated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('preSalaryCreated', data);
   }
 
-  // 🔥 Emit approval
-  notifyPreSalaryApproved(data: any) {
-    this.server.emit('preSalaryApproved', data);
+  notifyPreSalaryUpdated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('preSalaryUpdated', data);
   }
 
-  // 🔥 Emit rejection
-  notifyPreSalaryRejected(data: any) {
-    this.server.emit('preSalaryRejected', data);
+  notifyPreSalaryApproved(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('preSalaryApproved', data);
   }
 
-  // 🔥 Emit deletion
-  notifyPreSalaryDeleted(id: string) {
-    this.server.emit('preSalaryDeleted', { id });
+  notifyPreSalaryRejected(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('preSalaryRejected', data);
+  }
+
+  notifyPreSalaryDeleted(companyId: string, id: string) {
+    this.server.to(`company_${companyId}`).emit('preSalaryDeleted', { id });
   }
 }

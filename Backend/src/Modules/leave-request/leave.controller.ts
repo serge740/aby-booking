@@ -32,8 +32,7 @@ export class LeaveController {
 @Post()
 @UseInterceptors(FileFieldsInterceptor(LeaveFileFields, LeaveUploadConfig))
 async createLeave(
-  @UploadedFiles()
-  files: { attachments?: Express.Multer.File[] },
+  @UploadedFiles() files: { attachments?: Express.Multer.File[] },
   @Req() req: RequestWithCompanyEmployee,
   @Body() body: any,
 ) {
@@ -56,8 +55,7 @@ async createLeave(
     attachments,
   });
 
-  // 🔥 Notify all clients
-  this.leaveGateway.notifyLeaveCreated(leave);
+  this.leaveGateway.notifyLeaveCreated(companyId, leave);
 
   return leave;
 }
@@ -84,7 +82,7 @@ async createLeave(
   }
 
   // UPDATE LEAVE REQUEST WITH FILES
- @Put(':id')
+@Put(':id')
 @UseInterceptors(FileFieldsInterceptor(LeaveFileFields, LeaveUploadConfig))
 async updateLeave(
   @UploadedFiles() files: { attachments?: Express.Multer.File[] },
@@ -112,24 +110,28 @@ async updateLeave(
     },
   );
 
-  // 🔥 Notify update
-  this.leaveGateway.notifyLeaveUpdated(updated);
+  this.leaveGateway.notifyLeaveUpdated(updated.companyId, updated);
 
   return updated;
 }
 
+
   // APPROVE (only company)
 @Put(':id/approve')
-async approve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+async approve(
+  @Body('reason') reason: string,
+  @Param('id') id: string,
+  @Req() req: RequestWithCompanyEmployee
+) {
   if (!req.company) throw new UnauthorizedException('Only companies can approve leave');
 
-  const approved = await this.leaveService.approveLeave(id, req.company.id);
+  const approved = await this.leaveService.approveLeave(id, req.company.id, reason);
 
-  // 🔥 Notify approval
-  this.leaveGateway.notifyLeaveApproved(approved);
+  this.leaveGateway.notifyLeaveApproved(approved.companyId, approved);
 
   return approved;
 }
+
 
 
   // REJECT (only company)
@@ -143,11 +145,11 @@ async reject(
 
   const rejected = await this.leaveService.rejectLeave(id, req.company.id, reason);
 
-  // 🔥 Notify rejection
-  this.leaveGateway.notifyLeaveRejected(rejected);
+  this.leaveGateway.notifyLeaveRejected(rejected.companyId, rejected);
 
   return rejected;
 }
+
 
 
   // DELETE (company or employee)
@@ -157,12 +159,10 @@ async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
   const companyId = req.company?.id;
   const employeeId = req.employee?.id;
 
-  await this.leaveService.deleteLeave(id, companyId || employeeId);
+  const leave = await this.leaveService.deleteLeave(id, companyId || employeeId);
 
-  // 🔥 Notify deletion
-  this.leaveGateway.notifyLeaveDeleted(id);
-
-  return;
+  this.leaveGateway.notifyLeaveDeleted(leave.companyId, id);
+  return leave;
 }
 
 }

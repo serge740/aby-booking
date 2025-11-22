@@ -24,26 +24,25 @@ export class PreSalaryController {
     private readonly preSalaryGateway: PreSalaryGateway,
   ) {}
 
-  @Post()
-  async createPreSalary(@Req() req: RequestWithCompanyEmployee, @Body() body: any) {
-    const employeeId = req.employee?.id || body.employeeId;
-    const companyId = req.company?.id || body.companyId;
+ @Post()
+async createPreSalary(@Req() req: RequestWithCompanyEmployee, @Body() body: any) {
+  const employeeId = req.employee?.id || body.employeeId;
+  const companyId = req.company?.id || body.companyId;
 
-    const presalary = await this.preSalaryService.createPreSalary({
-      employeeId,
-      companyId,
-      amount: body.amount,
-      currency: body.currency,
-      periodStart: new Date(body.periodStart),
-      periodEnd: new Date(body.periodEnd),
-      reason: body.reason,
-    });
+  const presalary = await this.preSalaryService.createPreSalary({
+    employeeId,
+    companyId,
+    amount: body.amount,
+    currency: body.currency,
+    periodStart: new Date(body.periodStart),
+    periodEnd: new Date(body.periodEnd),
+    reason: body.reason,
+  });
 
-    // 🔥 Emit event
-    this.preSalaryGateway.notifyPreSalaryCreated(presalary);
+  this.preSalaryGateway.notifyPreSalaryCreated(companyId, presalary);
 
-    return presalary;
-  }
+  return presalary;
+}
 
   @Get()
   findAll(@Req() req: RequestWithCompanyEmployee) {
@@ -59,60 +58,63 @@ export class PreSalaryController {
       : this.preSalaryService.findOneByEmployee(id, req.employee.id);
   }
 
-  @Put(':id')
-  async updatePreSalary(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee, @Body() body: any) {
-    const ownerId = req.company?.id || req.employee?.id;
+ @Put(':id')
+async updatePreSalary(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee, @Body() body: any) {
+  const ownerId = req.company?.id || req.employee?.id;
 
-    const updated = await this.preSalaryService.updatePreSalary(id, ownerId, {
-      amount: body.amount,
-      currency: body.currency,
-      periodStart: body.periodStart ? new Date(body.periodStart) : undefined,
-      periodEnd: body.periodEnd ? new Date(body.periodEnd) : undefined,
-      reason: body.reason,
-    });
+  const updated = await this.preSalaryService.updatePreSalary(id, ownerId, {
+    amount: body.amount,
+    currency: body.currency,
+    periodStart: body.periodStart ? new Date(body.periodStart) : undefined,
+    periodEnd: body.periodEnd ? new Date(body.periodEnd) : undefined,
+    reason: body.reason,
+  });
 
-    // 🔥 Emit event
-    this.preSalaryGateway.notifyPreSalaryUpdated(updated);
+  this.preSalaryGateway.notifyPreSalaryUpdated(updated.companyId, updated);
 
-    return updated;
-  }
+  return updated;
+}
 
-  @Put(':id/approve')
-  async approve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
-    if (!req.company) throw new UnauthorizedException('Only companies can approve');
 
-    const approved = await this.preSalaryService.approvePreSalary(id, req.company.id);
+@Put(':id/approve')
+async approve(
+  @Body('reason') reason: string,
+  @Param('id') id: string,
+  @Req() req: RequestWithCompanyEmployee
+) {
+  if (!req.company) throw new UnauthorizedException('Only companies can approve');
 
-    // 🔥 Emit event
-    this.preSalaryGateway.notifyPreSalaryApproved(approved);
+  const approved = await this.preSalaryService.approvePreSalary(id, req.company.id, reason);
 
-    return approved;
-  }
+  this.preSalaryGateway.notifyPreSalaryApproved(approved.companyId, approved);
 
-  @Put(':id/reject')
-  async reject(
-    @Param('id') id: string,
-    @Req() req: RequestWithCompanyEmployee,
-    @Body('reason') reason: string,
-  ) {
-    if (!req.company) throw new UnauthorizedException('Only companies can reject');
+  return approved;
+}
 
-    const rejected = await this.preSalaryService.rejectPreSalary(id, req.company.id, reason);
 
-    // 🔥 Emit event
-    this.preSalaryGateway.notifyPreSalaryRejected(rejected);
+@Put(':id/reject')
+async reject(
+  @Param('id') id: string,
+  @Req() req: RequestWithCompanyEmployee,
+  @Body('reason') reason: string
+) {
+  if (!req.company) throw new UnauthorizedException('Only companies can reject');
 
-    return rejected;
-  }
+  const rejected = await this.preSalaryService.rejectPreSalary(id, req.company.id, reason);
 
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
-    const ownerId = req.company?.id || req.employee?.id;
+  this.preSalaryGateway.notifyPreSalaryRejected(rejected.companyId, rejected);
 
-    await this.preSalaryService.deletePreSalary(id, ownerId);
+  return rejected;
+}
 
-    // 🔥 Emit event
-    this.preSalaryGateway.notifyPreSalaryDeleted(id);
-  }
+
+@Delete(':id')
+async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  const ownerId = req.company?.id || req.employee?.id;
+
+  const presalary = await this.preSalaryService.deletePreSalary(id, ownerId);
+
+  this.preSalaryGateway.notifyPreSalaryDeleted(presalary.companyId, id);
+}
+
 }

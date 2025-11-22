@@ -21,6 +21,7 @@ export class OrderService {
     clientEmail?: string;
     clientPhone?: string;
     notes?: string;
+    employeeId?: string;
     items: { menuItemId: string; unitPrice: number; quantity: number }[];
   }) {
     console.log(data)
@@ -56,6 +57,7 @@ export class OrderService {
       orderNumber,
       clientName: data.clientName,
       companyId: data.companyId,
+      
 
       totalAmount,
     };
@@ -65,6 +67,7 @@ export class OrderService {
     if (data.clientEmail) orderData.clientEmail = data.clientEmail;
     if (data.clientPhone) orderData.clientPhone = data.clientPhone;
     if (data.notes) orderData.notes = data.notes;
+    if (data.employeeId) orderData.employeeId = data.employeeId;
 
     // Nested items
     orderData.items = {
@@ -79,7 +82,7 @@ export class OrderService {
 
     const order = await this.prisma.order.create({
       data: orderData,
-      include: { items: true },
+     include: { items: { include: { menuItem: true } }, client: true, company: true },
     });
 
     

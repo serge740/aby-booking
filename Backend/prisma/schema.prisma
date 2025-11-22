@@ -117,6 +117,9 @@ model Order {
   companyId     String
   company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  employeeId     String?
+  employee       Employee?        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
   items         OrderItem[]
 
   createdAt     DateTime       @default(now())
@@ -245,6 +248,8 @@ model Employee {
    presalary  PreSalary[]
    stock  Stock[]
    employeeRiskReports  EmployeeRiskReport[]
+
+   orders Order[]
  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -322,6 +327,7 @@ model Leave {
 
   // Decision info
   approvedAt         DateTime?
+  reasonForApproval String?
   rejectedAt         DateTime?
   reasonForRejection String?
 

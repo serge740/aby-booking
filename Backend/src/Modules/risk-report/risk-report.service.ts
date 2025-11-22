@@ -135,7 +135,7 @@ export class RiskReportService {
   // ───────────────────────────────
   // RESOLVE REPORT
   // ───────────────────────────────
-  async resolveReport(id: string, companyId: string) {
+  async resolveReport(id: string, companyId: string,reason:string) {
     const report = await this.findOne(id, companyId);
 
     if (report.status !== RiskStatus.PENDING) {
@@ -146,6 +146,7 @@ export class RiskReportService {
       where: { id },
       data: {
         status: RiskStatus.RESOLVED,
+        reason,
         resolvedAt: new Date(),
       },
       include: { employee: true },

@@ -131,7 +131,7 @@ export class PreSalaryService {
   // ───────────────────────────────
   // APPROVE PRE-SALARY
   // ───────────────────────────────
-  async approvePreSalary(id: string, companyId: string) {
+  async approvePreSalary(id: string, companyId: string,reason:string) {
     const record = await this.findOne(id, companyId);
 
     if (record.status !== PreSalaryStatus.PENDING) {
@@ -142,6 +142,7 @@ export class PreSalaryService {
       where: { id },
       data: {
         status: PreSalaryStatus.APPROVED,
+        reason: reason,
         approvedAt: new Date(),
         rejectedAt: null,
         reasonForRejection: null,

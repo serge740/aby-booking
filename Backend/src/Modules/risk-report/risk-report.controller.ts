@@ -64,7 +64,7 @@ export class RiskReportController {
     });
 
     // 🔥 Emit event
-    this.riskReportGateway.notifyRiskReportCreated(report);
+    this.riskReportGateway.notifyRiskReportCreated(companyId,report);
 
     return report;
   }
@@ -112,21 +112,21 @@ export class RiskReportController {
     });
 
     // 🔥 Emit event
-    this.riskReportGateway.notifyRiskReportUpdated(updated);
+    this.riskReportGateway.notifyRiskReportUpdated(updated.companyId,updated);
 
     return updated;
   }
 
   // RESOLVE
   @Put(':id/resolve')
-  async resolve(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+  async resolve(@Body('reason') reason:string ,@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     if (!req.company)
       throw new UnauthorizedException('Only companies can resolve reports');
 
-    const resolved = await this.riskReportService.resolveReport(id, req.company.id);
+    const resolved = await this.riskReportService.resolveReport(id, req.company.id,reason);
 
     // 🔥 Emit event
-    this.riskReportGateway.notifyRiskReportResolved(resolved);
+    this.riskReportGateway.notifyRiskReportResolved(resolved.companyId,resolved);
 
     return resolved;
   }
@@ -144,7 +144,7 @@ export class RiskReportController {
     const rejected = await this.riskReportService.rejectReport(id, req.company.id, reason);
 
     // 🔥 Emit event
-    this.riskReportGateway.notifyRiskReportRejected(rejected);
+    this.riskReportGateway.notifyRiskReportRejected(rejected.companyId,rejected);
 
     return rejected;
   }
@@ -154,9 +154,10 @@ export class RiskReportController {
   async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
     const ownerId = req.company?.id || req.employee?.id;
 
-    await this.riskReportService.deleteReport(id, ownerId);
+    const risk = await this.riskReportService.deleteReport(id, ownerId);
 
+    
     // 🔥 Emit event
-    this.riskReportGateway.notifyRiskReportDeleted(id);
+    this.riskReportGateway.notifyRiskReportDeleted(risk.companyId,id);
   }
 }

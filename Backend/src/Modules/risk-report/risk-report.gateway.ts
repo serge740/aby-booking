@@ -3,48 +3,56 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
+  cors: { origin: '*' },
 })
 export class RiskReportGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: any) {
-    console.log('RiskReport WS Client connected:', client.id);
+  handleConnection(client: Socket) {
+    console.log('Client connected:', client.id);
   }
 
-  handleDisconnect(client: any) {
-    console.log('RiskReport WS Client disconnected:', client.id);
+  handleDisconnect(client: Socket) {
+    console.log('Client disconnected:', client.id);
   }
 
-  // 🔥 Emit creation
-  notifyRiskReportCreated(data: any) {
-    this.server.emit('riskReportCreated', data);
+  // 🔥 Client will manually join company room
+  @SubscribeMessage('joinCompanyRoom')
+  handleJoinCompany(
+    @MessageBody() data: { companyId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const roomName = `company_${data.companyId}`;
+    client.join(roomName);
+    console.log(`Client ${client.id} joined ${roomName}`);
   }
 
-  // 🔥 Emit update
-  notifyRiskReportUpdated(data: any) {
-    this.server.emit('riskReportUpdated', data);
+  // 🔥 Emit only to company room
+  notifyRiskReportCreated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('riskReportCreated', data);
   }
 
-  // 🔥 Emit resolve
-  notifyRiskReportResolved(data: any) {
-    this.server.emit('riskReportResolved', data);
+  notifyRiskReportUpdated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('riskReportUpdated', data);
   }
 
-  // 🔥 Emit reject
-  notifyRiskReportRejected(data: any) {
-    this.server.emit('riskReportRejected', data);
+  notifyRiskReportResolved(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('riskReportResolved', data);
   }
 
-  // 🔥 Emit deletion
-  notifyRiskReportDeleted(id: string) {
-    this.server.emit('riskReportDeleted', { id });
+  notifyRiskReportRejected(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('riskReportRejected', data);
+  }
+
+  notifyRiskReportDeleted(companyId: string, id: string) {
+    this.server.to(`company_${companyId}`).emit('riskReportDeleted', { id });
   }
 }
