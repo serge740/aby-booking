@@ -269,11 +269,11 @@ const StockManagementDashboard: React.FC = () => {
   const renderActions = (stock: Stock) => (
     <div className="flex items-center space-x-2">
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewStock(stock)}
-        className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors" title="View">
+        className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="View">
         <Eye className="w-4 h-4" />
       </motion.button>
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditStock(stock)}
-        className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors" title="Edit">
+        className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="Edit">
         <Edit className="w-4 h-4" />
       </motion.button>
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(stock)}
@@ -392,18 +392,18 @@ const StockManagementDashboard: React.FC = () => {
         <div className="flex items-center space-x-2">
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronLeft className="w-4 h-4" />
           </motion.button>
           {pages.map(p => (
             <motion.button key={p} whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p)}
-              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-blue-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50'}`}>
+              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
               {p}
             </motion.button>
           ))}
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronRight className="w-4 h-4" />
           </motion.button>
         </div>
@@ -425,12 +425,12 @@ const StockManagementDashboard: React.FC = () => {
             </div>
             <div className="flex items-center space-x-3">
               <motion.button whileHover={{ scale: 1.05 }} onClick={loadData} disabled={loading}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50">
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="text-sm">Refresh</span>
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} onClick={openAddForm}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors shadow-md">
+                className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium transition-colors shadow-md">
                 <Plus className="w-4 h-4" />
                 <span className="text-sm">Add Item</span>
               </motion.button>
@@ -444,8 +444,8 @@ const StockManagementDashboard: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-full flex items-center justify-center">
-                <Package className="w-5 h-5 text-blue-600" />
+              <div className="p-3 bg-primary-50 rounded-full flex items-center justify-center">
+                <Package className="w-5 h-5 text-primary-600" />
               </div>
               <div>
                 <p className="text-sm text-indigo-600">Total Items</p>
@@ -488,7 +488,7 @@ const StockManagementDashboard: React.FC = () => {
                   placeholder="Search items..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -500,7 +500,7 @@ const StockManagementDashboard: React.FC = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="createdAt-desc">Newest First</option>
                 <option value="createdAt-asc">Oldest First</option>
@@ -510,13 +510,13 @@ const StockManagementDashboard: React.FC = () => {
                 <option value="price-desc">Highest Price</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <List className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-sm transition-colors ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-sm transition-colors ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <Grid3X3 className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-sm transition-colors ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-sm transition-colors ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <List className="w-4 h-4" />
                 </motion.button>
               </div>
@@ -528,7 +528,7 @@ const StockManagementDashboard: React.FC = () => {
         {loading ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center text-gray-600">
             <div className="inline-flex items-center space-x-2">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
               <span className="text-sm">Loading stock items...</span>
             </div>
           </div>
@@ -567,7 +567,7 @@ const StockManagementDashboard: React.FC = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 flex items-center justify-center z-40">
             <div className="bg-white rounded-lg p-4 shadow-xl">
               <div className="flex items-center space-x-2">
-                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-gray-700 text-sm font-medium">Processing...</span>
               </div>
             </div>
@@ -610,8 +610,8 @@ const StockManagementDashboard: React.FC = () => {
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl overflow-y-auto max-h-screen">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                  <Box className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
+                  <Box className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{editStock ? 'Edit Stock Item' : 'Create Stock Item'}</h3>
@@ -622,7 +622,7 @@ const StockManagementDashboard: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
                   <input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
@@ -632,12 +632,12 @@ const StockManagementDashboard: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
                     <input type="number" value={formData.quantity} onChange={e => setFormData(prev => ({ ...prev, quantity: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
                     <select value={formData.unit} onChange={e => setFormData(prev => ({ ...prev, unit: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
                       {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
                     </select>
                   </div>
@@ -645,12 +645,12 @@ const StockManagementDashboard: React.FC = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
                   <input type="number" step="0.01" value={formData.price} onChange={e => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
                   <textarea value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    rows={3} className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    rows={3} className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
               <div className="flex justify-end space-x-3 mt-6">
@@ -658,7 +658,7 @@ const StockManagementDashboard: React.FC = () => {
                   Cancel
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateStock} disabled={operationLoading}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
+                  className="px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
                   {editStock ? 'Update' : 'Create'} Item
                 </motion.button>
               </div>

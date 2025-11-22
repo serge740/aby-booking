@@ -161,7 +161,7 @@ const EmployeeDashboard = () => {
               >
                 <div className="flex items-center space-x-1">
                   <span>Name</span>
-                  <ChevronDown className={`w-4 h-4 ${sortBy === 'first_name' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'first_name' ? 'text-primary-600' : 'text-gray-400'}`} />
                 </div>
               </th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden lg:table-cell">Position</th>
@@ -176,7 +176,7 @@ const EmployeeDashboard = () => {
               >
                 <div className="flex items-center space-x-1">
                   <span>Hired</span>
-                  <ChevronDown className={`w-4 h-4 ${sortBy === 'date_hired' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'date_hired' ? 'text-primary-600' : 'text-gray-400'}`} />
                 </div>
               </th>
               <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
@@ -201,10 +201,10 @@ const EmployeeDashboard = () => {
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex items-center justify-end space-x-2">
-                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                       <Eye className="w-4 h-4" />
                     </motion.button>
-                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                       <Edit className="w-4 h-4" />
                     </motion.button>
                     <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(emp)} title="Delete" className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50">
@@ -238,10 +238,10 @@ const EmployeeDashboard = () => {
           </div>
           <div className="flex items-center justify-between mt-3">
             <div className="flex space-x-2">
-              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                 <Eye className="w-4 h-4" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                 <Edit className="w-4 h-4" />
               </motion.button>
             </div>
@@ -276,10 +276,10 @@ const EmployeeDashboard = () => {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                 <Eye className="w-4 h-4" />
               </motion.button>
-              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
                 <Edit className="w-4 h-4" />
               </motion.button>
               <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(emp)} title="Delete" className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50">
@@ -307,17 +307,17 @@ const EmployeeDashboard = () => {
         </div>
         <div className="flex items-center space-x-2">
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
-            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50">
+            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
             <ChevronLeft className="w-4 h-4" />
           </motion.button>
           {pages.map(p => (
             <motion.button key={p} whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p)}
-              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-blue-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50'}`}>
+              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
               {p}
             </motion.button>
           ))}
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
-            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50">
+            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
             <ChevronRight className="w-4 h-4" />
           </motion.button>
         </div>
@@ -337,12 +337,12 @@ const EmployeeDashboard = () => {
             </div>
             <div className="flex items-center space-x-3">
               <motion.button whileHover={{ scale: 1.05 }} onClick={loadEmployees} disabled={loading}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50">
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="text-sm">Refresh</span>
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateEmployee}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium shadow-md">
+                className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium shadow-md">
                 <Plus className="w-4 h-4" />
                 <span className="text-sm">Add Employee</span>
               </motion.button>
@@ -356,7 +356,7 @@ const EmployeeDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-full"><User className="w-5 h-5 text-blue-600" /></div>
+              <div className="p-3 bg-primary-50 rounded-full"><User className="w-5 h-5 text-primary-600" /></div>
               <div>
                 <p className="text-sm text-gray-600">Total Employees</p>
                 <p className="text-xl font-semibold text-gray-900">{totalEmployees}</p>
@@ -394,7 +394,7 @@ const EmployeeDashboard = () => {
                   placeholder="Search employees..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -406,7 +406,7 @@ const EmployeeDashboard = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="first_name-asc">Name (A-Z)</option>
                 <option value="first_name-desc">Name (Z-A)</option>
@@ -414,13 +414,13 @@ const EmployeeDashboard = () => {
                 <option value="date_hired-desc">Hired (Newest)</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 ${viewMode === 'table' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="Table">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Table">
                   <List className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="Grid">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Grid">
                   <Grid3X3 className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="List">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="List">
                   <List className="w-4 h-4" />
                 </motion.button>
               </div>
@@ -437,7 +437,7 @@ const EmployeeDashboard = () => {
         {loading ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
             <div className="inline-flex items-center space-x-2">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
               <span className="text-sm">Loading employees...</span>
             </div>
           </div>
@@ -477,7 +477,7 @@ const EmployeeDashboard = () => {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 flex items-center justify-center z-40">
               <div className="bg-white rounded-lg p-4 shadow-xl">
                 <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-gray-700 text-sm font-medium">Processing...</span>
                 </div>
               </div>

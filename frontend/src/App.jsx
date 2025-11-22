@@ -59,6 +59,8 @@ import PreSalaryViewDetails from "./components/dashboard/pre-salary/PreSalaryVie
 import RiskReportViewDetails from "./components/dashboard/risk-report/RiskReportViewDetails";
 import EmployeeCreateOrderPage from "./components/dashboard/order/EmployeeCreateOrderPage";
 import StockManagementDashboard from "./pages/dashboard/StockManagement";
+import DashboardSummary from "./pages/dashboard/DashboardSummary";
+import OrderReportAnalysis from "./pages/dashboard/company/OrderReportAnalysis";
 
 
 // Loading component
@@ -135,7 +137,7 @@ const router = createBrowserRouter([
         path: 'dashboard', 
         element: <SuspenseWrapper><DashboardLayout role={'company'} /> </SuspenseWrapper>,
         children:[
-          {index:true , element:<DashboardHome />},
+          {index:true , element:<DashboardSummary />},
  
           {path:'profile' , element:<CompanyProfilePage />},
           {path:'employee' , element:<EmployeeDashboard />},
@@ -159,6 +161,7 @@ const router = createBrowserRouter([
           {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
            {path:'stock' , element:<StockManagementDashboard />},
+           {path:'order-report' , element:<OrderReportAnalysis />},
          
           
         ]
@@ -175,7 +178,7 @@ const router = createBrowserRouter([
         path: 'dashboard', 
         element: <SuspenseWrapper><DashboardLayout role={'employee'} /> </SuspenseWrapper>,
         children:[
-          {index:true , element:<DashboardHome />},
+          {index:true , element:<DashboardSummary />},
  
           {path:'profile' , element:<EmployeeProfilePage />},
            {path:'leave-request' , element:<LeaveRequestDashboard />},

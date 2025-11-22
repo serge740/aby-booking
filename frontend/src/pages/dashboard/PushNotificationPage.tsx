@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Bell, BellOff, Smartphone, Trash2, RefreshCw, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { useCompanyAuth } from '../../context/CompanyAuthContext';
+import { getClientDescription } from '../../stores/detectDevice';
 
 interface OutletContext {
   role: 'employee' | 'company';
@@ -41,12 +42,19 @@ const PushNotificationPage: React.FC = () => {
     company,
   } = auth!;
 
+  const client  = getClientDescription()
+
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
   const [notification, setNotification] = useState<NotificationState | null>(null);
-  const [deviceLabel, setDeviceLabel] = useState<string>('');
+  const [deviceLabel, setDeviceLabel] = useState<string>( client.description || '');
   const [showLabelInput, setShowLabelInput] = useState<boolean>(false);
+
+  useEffect(()=>{
+    setDeviceLabel( client.description || '');
+
+  },[])
 
   // Get user name based on role
   const getUserName = () => {
@@ -203,8 +211,8 @@ const PushNotificationPage: React.FC = () => {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex items-center gap-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <Bell className="w-8 h-8 text-blue-600" />
+            <div className="bg-primary-100 p-3 rounded-full">
+              <Bell className="w-8 h-8 text-primary-600" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Push Notifications</h1>
@@ -256,13 +264,13 @@ const PushNotificationPage: React.FC = () => {
                     value={deviceLabel}
                     onChange={(e) => setDeviceLabel(e.target.value)}
                     placeholder="Device label (optional, e.g., 'Work Laptop')"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
                   />
                   <div className="flex gap-3">
                     <button
                       onClick={handleSubscribe}
                       disabled={actionLoading}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {actionLoading ? (
                         <RefreshCw className="w-5 h-5 animate-spin" />
@@ -286,7 +294,7 @@ const PushNotificationPage: React.FC = () => {
                 <button
                   onClick={() => setShowLabelInput(true)}
                   disabled={actionLoading}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   <Bell className="w-5 h-5" />
                   Enable Notifications
@@ -340,7 +348,7 @@ const PushNotificationPage: React.FC = () => {
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <RefreshCw className="w-8 h-8 text-blue-600 animate-spin" />
+              <RefreshCw className="w-8 h-8 text-primary-600 animate-spin" />
             </div>
           ) : subscriptions.length === 0 ? (
             <div className="text-center py-12">
@@ -359,19 +367,19 @@ const PushNotificationPage: React.FC = () => {
                     key={sub.id}
                     className={`flex items-center justify-between p-4 border rounded-lg transition ${
                       isCurrentDevice
-                        ? 'border-blue-300 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-200'
+                        ? 'border-primary-300 bg-primary-50'
+                        : 'border-gray-200 hover:border-primary-200'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div
                         className={`p-2 rounded-lg ${
-                          isCurrentDevice ? 'bg-blue-100' : 'bg-gray-100'
+                          isCurrentDevice ? 'bg-primary-100' : 'bg-gray-100'
                         }`}
                       >
                         <Smartphone
                           className={`w-5 h-5 ${
-                            isCurrentDevice ? 'text-blue-600' : 'text-gray-600'
+                            isCurrentDevice ? 'text-primary-600' : 'text-gray-600'
                           }`}
                         />
                       </div>
@@ -399,10 +407,10 @@ const PushNotificationPage: React.FC = () => {
         </div>
 
         {/* Info Card */}
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="mt-6 bg-primary-50 border border-primary-200 rounded-lg p-4">
           <div className="flex gap-3">
-            <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-blue-800">
+            <AlertCircle className="w-5 h-5 text-primary-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-primary-800">
               <p className="font-medium mb-1">About Push Notifications</p>
               <p>
                 You can manage notifications separately for each device. Changes made here will

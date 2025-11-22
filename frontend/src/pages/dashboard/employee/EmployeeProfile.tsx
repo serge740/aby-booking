@@ -27,7 +27,7 @@ const InputField: React.FC<InputFieldProps> = memo(({ label, icon: Icon, error, 
       className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 ${
         readOnly
           ? 'bg-gray-50 text-gray-600 cursor-not-allowed'
-          : 'focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+          : 'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent'
       } ${error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
     />
     {error && (
@@ -52,7 +52,7 @@ const SelectField: React.FC<SelectFieldProps> = memo(({ label, icon: Icon, error
       className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 ${
         props.disabled
           ? 'bg-gray-50 text-gray-600 cursor-not-allowed'
-          : 'focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent'
+          : 'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent'
       } ${error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'}`}
     >
       {children}
@@ -84,7 +84,7 @@ const PasswordField: React.FC<PasswordFieldProps> = memo(({ label, field, error,
       <input
         {...props}
         type={showPassword[field] ? 'text' : 'password'}
-        className={`w-full px-4 py-2.5 pr-10 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent ${
+        className={`w-full px-4 py-2.5 pr-10 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
           error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
         }`}
       />
@@ -124,11 +124,11 @@ const DocumentUpload: React.FC<DocumentUploadProps> = memo(({ label, file, exist
         <FileText className="w-4 h-4 mr-1.5 text-gray-400" />
         {label}
       </label>
-      <div className={`border-2 border-dashed rounded-lg p-4 transition-all ${hasFile ? 'border-orange-300 bg-orange-50' : 'border-gray-300'}`}>
+      <div className={`border-2 border-dashed rounded-lg p-4 transition-all ${hasFile ? 'border-primary-300 bg-primary-50' : 'border-gray-300'}`}>
         {hasFile ? (
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <FileText className="w-5 h-5 text-orange-600" />
+              <FileText className="w-5 h-5 text-primary-600" />
               <span className="text-sm font-medium text-gray-900">
                 {file?.name || label + ' (Uploaded)'}
               </span>
@@ -136,7 +136,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = memo(({ label, file, exist
             <div className="flex space-x-2">
               {url && (
                 <>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-700">
+                  <a href={url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700">
                     <Eye className="w-4 h-4" />
                   </a>
                   <a href={url} download className="text-green-600 hover:text-green-700">
@@ -155,7 +155,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = memo(({ label, file, exist
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">No file uploaded</p>
             {isEditing && (
-              <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-700">
+              <label className="cursor-pointer inline-flex items-center px-4 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700">
                 Upload File
                 <input
                   type="file"
@@ -381,7 +381,7 @@ const EmployeeProfilePage: React.FC = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-orange-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
       </div>
     );
   }
@@ -398,17 +398,17 @@ const EmployeeProfilePage: React.FC = () => {
 
         {/* Header & Tabs */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-orange-600 to-orange-700 px-8 py-6">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div>
                 <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
-                <p className="text-orange-100 text-sm mt-1">Manage your account and documents</p>
+                <p className="text-primary-100 text-sm mt-1">Manage your account and documents</p>
               </div>
               {activeTab === 'personal' && (
                 <button
                   onClick={() => isEditing ? handleSaveProfile() : setIsEditing(true)}
                   disabled={isLoading}
-                  className="flex items-center space-x-2 px-6 py-2.5 bg-white text-orange-600 rounded-lg hover:bg-orange-50 transition-all shadow-sm font-medium disabled:opacity-50"
+                  className="flex items-center space-x-2 px-6 py-2.5 bg-white text-primary-600 rounded-lg hover:bg-primary-50 transition-all shadow-sm font-medium disabled:opacity-50"
                 >
                   {isLoading ? (
                     <>
@@ -445,7 +445,7 @@ const EmployeeProfilePage: React.FC = () => {
                       setErrors({});
                     }}
                     className={`flex items-center space-x-2 py-4 border-b-2 transition-all ${
-                      isActive ? 'border-orange-600 text-orange-600' : 'border-transparent text-gray-600 hover:text-gray-900'
+                      isActive ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-600 hover:text-gray-900'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -469,7 +469,7 @@ const EmployeeProfilePage: React.FC = () => {
                   {isEditing && (
                     <div className="absolute bottom-0 right-0">
                       <input type="file" accept="image/*" onChange={(e) => handleFileChange('profileImg', e.target.files?.[0] || null)} className="hidden" id="profile-picture" />
-                      <label htmlFor="profile-picture" className="flex items-center justify-center w-10 h-10 bg-orange-600 text-white rounded-full cursor-pointer hover:bg-orange-700 shadow-lg">
+                      <label htmlFor="profile-picture" className="flex items-center justify-center w-10 h-10 bg-primary-600 text-white rounded-full cursor-pointer hover:bg-primary-700 shadow-lg">
                         <Camera className="w-5 h-5" />
                       </label>
                     </div>
@@ -489,7 +489,7 @@ const EmployeeProfilePage: React.FC = () => {
               {/* Basic Info */}
               <div>
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <User className="w-5 h-5 mr-2 text-orange-600" /> Basic Information
+                  <User className="w-5 h-5 mr-2 text-primary-600" /> Basic Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <InputField label="First Name" icon={User} value={profileData.first_name} onChange={(e) => handleInputChange('first_name', e.target.value)} error={errors.first_name} readOnly={!isEditing} />
@@ -517,7 +517,7 @@ const EmployeeProfilePage: React.FC = () => {
               {/* Address */}
               <div>
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <MapPin className="w-5 h-5 mr-2 text-orange-600" /> Address
+                  <MapPin className="w-5 h-5 mr-2 text-primary-600" /> Address
                 </h3>
                 <textarea
                   value={profileData.address}
@@ -531,7 +531,7 @@ const EmployeeProfilePage: React.FC = () => {
               {/* Professional */}
               <div>
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <Building2 className="w-5 h-5 mr-2 text-orange-600" /> Professional
+                  <Building2 className="w-5 h-5 mr-2 text-primary-600" /> Professional
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <InputField label="Employee ID" value={user?.id || ''} readOnly />
@@ -544,7 +544,7 @@ const EmployeeProfilePage: React.FC = () => {
               {/* Banking & Emergency */}
               <div>
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-orange-600" /> Banking & Emergency
+                  <Shield className="w-5 h-5 mr-2 text-primary-600" /> Banking & Emergency
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <InputField label="Bank Name" icon={Building2} value={profileData.bank_name} onChange={(e) => handleInputChange('bank_name', e.target.value)} readOnly={!isEditing} />
@@ -561,7 +561,7 @@ const EmployeeProfilePage: React.FC = () => {
             <div className="space-y-6">
               <div>
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-orange-600" /> Change Password
+                  <Shield className="w-5 h-5 mr-2 text-primary-600" /> Change Password
                 </h3>
                 <div className="grid lg:grid-cols-2 gap-3 space-y-4">
                   <PasswordField label="Current Password" field="current" value={passwordData.currentPassword} onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))} error={errors.currentPassword} showPassword={showPassword} togglePassword={togglePassword} />
@@ -569,7 +569,7 @@ const EmployeeProfilePage: React.FC = () => {
                   <div className="col-span-1 md:col-span-2">
                     <PasswordField label="Confirm Password" field="confirm" value={passwordData.confirmPassword} onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))} error={errors.confirmPassword} showPassword={showPassword} togglePassword={togglePassword} />
                   </div>
-                  <button onClick={handleChangePassword} disabled={isLoading} className="w-full col-span-1 lg:col-span-2 flex items-center justify-center space-x-2 px-6 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 font-medium">
+                  <button onClick={handleChangePassword} disabled={isLoading} className="w-full col-span-1 lg:col-span-2 flex items-center justify-center space-x-2 px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 font-medium">
                     {isLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Updating...</> : <><Lock className="w-4 h-4" /> Change Password</>}
                   </button>
                 </div>
@@ -581,7 +581,7 @@ const EmployeeProfilePage: React.FC = () => {
             activeTab === 'notifications' && (
               <div className="space-y-6">
                 <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                  <Bell className="w-5 h-5 mr-2 text-orange-600" /> Push Notifications
+                  <Bell className="w-5 h-5 mr-2 text-primary-600" /> Push Notifications
                 </h3>
              <PushNotificationPage />
               </div>
@@ -592,7 +592,7 @@ const EmployeeProfilePage: React.FC = () => {
           {activeTab === 'documents' && (
             <div className="space-y-6">
               <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-                <FileText className="w-5 h-5 mr-2 text-orange-600" /> My Documents
+                <FileText className="w-5 h-5 mr-2 text-primary-600" /> My Documents
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                
@@ -634,7 +634,7 @@ const EmployeeProfilePage: React.FC = () => {
             >
               <X className="w-4 h-4 inline mr-2" /> Cancel
             </button>
-            <button onClick={handleSaveProfile} disabled={isLoading} className="px-6 py-2.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 font-medium">
+            <button onClick={handleSaveProfile} disabled={isLoading} className="px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 font-medium">
               {isLoading ? <><Loader2 className="w-4 h-4 inline mr-2 animate-spin" /> Saving...</> : <><Save className="w-4 h-4 inline mr-2" /> Save Changes</>}
             </button>
           </div>

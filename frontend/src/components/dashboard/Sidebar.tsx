@@ -17,6 +17,8 @@ import {
   DoorOpen,
   File,
   BuildingIcon,
+  Receipt,
+  User2,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
@@ -77,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     const companyLinks: (NavItem | DropdownGroup)[] = [
       { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
       { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
-      { id: "employee", label: "Employee Management", icon: ClipboardList, path: `${basePath}/employee`, allowedRoles: ["company"] },
+      { id: "employee", label: "Employee Management", icon: User2, path: `${basePath}/employee`, allowedRoles: ["company"] },
       { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
       { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
       { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
@@ -90,6 +92,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         items: [
           { id: "menu-category", label: "Menu Category", icon: Layers, path: `${basePath}/menu-category`, allowedRoles: ["company"] },
           { id: "menu-item", label: "Menu Item", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
+
+        ],
+      },
+      {
+        id: "report",
+        label: "Reports",
+        icon: Receipt,
+        allowedRoles: ["company"],
+        items: [
+          { id: "order-report", label: "Order Report", icon: Layers, path: `${basePath}/order-report`, allowedRoles: ["company"] },
+
 
         ],
       },
@@ -163,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       ? user?.email || "company@abybooking.com"
       : user?.email || "employee@abybooking.com";
 
-  const portalTitle = "FRESH CART";
+  const portalTitle =  (role  ? role?.toLocaleUpperCase() : 'FRESH CART') + " PORTAL";
 
   const isDropdownActive = (dropdown: DropdownGroup) => {
     const currentPath = location.pathname;

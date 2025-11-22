@@ -74,9 +74,9 @@ class LeaveService {
   }
 
   // Approve leave
-  async approveLeave(leaveId: string): Promise<Leave> {
+  async approveLeave(leaveId: string,reason?:string): Promise<Leave> {
     try {
-      const response = await api.put(`/leave/${leaveId}/approve`);
+      const response = await api.put(`/leave/${leaveId}/approve`,{reason});
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to approve leave');

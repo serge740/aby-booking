@@ -33,7 +33,7 @@ const CompanyProfilePage = () => {
                 onClick={() => setActiveTab('profile')}
                 className={`w-full flex items-center px-3 py-2 text-xs font-medium rounded transition-colors ${
                   activeTab === 'profile'
-                    ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-500'
+                    ? 'bg-primary-50 text-primary-600 border-r-4 border-primary-500'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -44,7 +44,7 @@ const CompanyProfilePage = () => {
                 onClick={() => setActiveTab('security')}
                 className={`w-full flex items-center px-3 py-2 text-xs font-medium rounded transition-colors ${
                   activeTab === 'security'
-                    ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-500'
+                    ? 'bg-primary-50 text-primary-600 border-r-4 border-primary-500'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -55,7 +55,7 @@ const CompanyProfilePage = () => {
                 onClick={() => setActiveTab('notifications')}
                 className={`w-full flex items-center px-3 py-2 text-xs font-medium rounded transition-colors ${
                   activeTab === 'notifications'
-                    ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-500'
+                    ? 'bg-primary-50 text-primary-600 border-r-4 border-primary-500'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -66,7 +66,7 @@ const CompanyProfilePage = () => {
                 onClick={() => setActiveTab('connected-apps')}
                 className={`w-full flex items-center px-3 py-2 text-xs font-medium rounded transition-colors ${
                   activeTab === 'connected-apps'
-                    ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-500'
+                    ? 'bg-primary-50 text-primary-600 border-r-4 border-primary-500'
                     : 'text-gray-600 hover:bg-gray-50'
                 }`}
               >
@@ -93,7 +93,7 @@ const CompanyProfilePage = () => {
                 </h1>
                 <button
                   onClick={() => navigate('/company/dashboard')}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                  className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
                 >
                   Back to Dashboard
                 </button>

@@ -72,9 +72,9 @@ class RiskReportService {
   }
 
   // Mark report as resolved (company only)
-  async resolveRiskReport(id: string): Promise<RiskReport> {
+  async resolveRiskReport(id: string,reason?:string): Promise<RiskReport> {
     try {
-      const res = await api.put(`/risk-report/${id}/resolve`);
+      const res = await api.put(`/risk-report/${id}/resolve`,{ reason });
       return res.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to resolve risk report');

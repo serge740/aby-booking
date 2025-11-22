@@ -26,6 +26,7 @@ import jsPDF from 'jspdf';
 import orderService from "../../../services/orderService";
 import { useCompanyAuth } from "../../../context/CompanyAuthContext";
 import { useNavigate } from "react-router-dom";
+import { useSocketEvent } from "../../../context/SocketContext";
 
 type ViewMode = "table" | "grid" | "list";
 
@@ -102,6 +103,26 @@ const OrderDashboard: React.FC = () => {
       navigate("/company/login");
     }
   }, [authLoading, isAuthenticated, company, navigate]);
+
+  useSocketEvent('order_created', (newOrder: Order) => {
+    if (newOrder.companyId === company?.id) {
+      setAllOrders(prev => {
+        // Avoid duplicates
+        if (prev.some(o => o.id === newOrder.id)) return prev;
+        return [newOrder, ...prev];
+      });
+      showOperationStatus('success', `New order #${newOrder.orderNumber} created!`);
+    }
+  }, [company?.id]);
+
+  useSocketEvent('order_status_updated', (updatedOrder: Order) => {
+    if (updatedOrder.companyId === company?.id) {
+      setAllOrders(prev => prev.map(order => 
+        order.id === updatedOrder.id ? updatedOrder : order
+      ));
+      showOperationStatus('info', `Order #${updatedOrder.orderNumber} is now ${updatedOrder.status}`);
+    }
+  }, [company?.id]);
 
   useEffect(() => {
     if (company?.id) {
@@ -624,7 +645,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
                   <span>Refresh</span>
                 </button>
                 <button onClick={handleCreateOrder}
-                  className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium shadow-md">
+                  className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium shadow-md">
                   <Plus className="w-4 h-4" />
                   <span className="text-sm">Add Item</span>
                 </button>

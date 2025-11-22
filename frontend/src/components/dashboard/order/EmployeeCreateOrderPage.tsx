@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import menuCategoryService from '../../../services/menuCategoryService';
 import menuItemService from '../../../services/menuItemService';
 import orderService from '../../../services/orderService';
+import { useEmployeeAuth } from '../../../context/EmployeeAuthContext';
 
 // ---------------------------------------------------------------------
 // Helpers
@@ -74,6 +75,7 @@ interface OrderLine {
 // ---------------------------------------------------------------------
 const EmployeeCreateOrderPage = () => {
   const { companyId } = useParams<{ companyId: string }>();
+  const {user}  = useEmployeeAuth();
 
   // ── UI state ───────────────────────────────────────────────────────
   const [clientName, setClientName] = useState('');
@@ -236,6 +238,7 @@ const EmployeeCreateOrderPage = () => {
       const payload = {
         companyId,
         clientName: clientName.trim(),
+        employeeId: user?.id, 
         clientPhone: clientPhone.trim() || undefined,
         clientEmail: clientEmail.trim() || undefined,
         notes: notes.trim() || undefined,

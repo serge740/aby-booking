@@ -49,6 +49,7 @@ interface LeaveData {
   approvedAt?: string | null;
   rejectedAt?: string | null;
   reasonForRejection?: string | null;
+  reasonForApproval?: string | null;
   createdAt: string;
   updatedAt: string;
   employee: Employee;
@@ -69,6 +70,8 @@ const LeaveViewDetails: React.FC = () => {
   const [opLoading, setOpLoading] = useState<boolean>(false);
   const [showReject, setShowReject] = useState<boolean>(false);
   const [rejectReason, setRejectReason] = useState<string>('');
+  const [showApprove, setShowApprove] = useState<boolean>(false);
+const [approveReason, setApproveReason] = useState<string>('');
   const [toast, setToast] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   // ── FETCH ──
@@ -89,19 +92,21 @@ const LeaveViewDetails: React.FC = () => {
   }, [id]);
 
   // ── APPROVE / REJECT ──
-  const approve = async () => {
-    if (!leaveData) return;
-    try {
-      setOpLoading(true);
-      await leaveService.approveLeave(leaveData.id);
-      await refresh();
-      toastMsg('success', 'Leave approved');
-    } catch (e: any) {
-      toastMsg('error', e.message ?? 'Approve failed');
-    } finally {
-      setOpLoading(false);
-    }
-  };
+const approve = async () => {
+  if (!leaveData) return;
+  try {
+    setOpLoading(true);
+    await leaveService.approveLeave(leaveData.id, approveReason.trim());
+    setShowApprove(false);
+    setApproveReason('');
+    await refresh();
+    toastMsg('success', 'Leave approved successfully');
+  } catch (e: any) {
+    toastMsg('error', e.message ?? 'Approve failed');
+  } finally {
+    setOpLoading(false);
+  }
+};
 
   const reject = async () => {
     if (!rejectReason.trim()) return toastMsg('error', 'Reason required');
@@ -333,13 +338,20 @@ useSocketEvent(
               )}
 
               {/* Approval */}
-              {leaveData.status === 'APPROVED' && leaveData.approvedAt && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h3 className="text-lg font-semibold mb-2 flex items-center text-green-800"><CheckCircle className="w-5 h-5 mr-2" /> Leave Approved</h3>
-                  <p className="text-xs text-green-600">Approved on: {fmtDT(leaveData.approvedAt)}</p>
-                </div>
-              )}
-
+          {/* Approval */}
+{leaveData.status === 'APPROVED' && (
+  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2 flex items-center text-green-800">
+      <CheckCircle className="w-5 h-5 mr-2" /> Leave Approved
+    </h3>
+    {leaveData.reasonForApproval && (
+      <p className="text-green-700 mb-2">{leaveData.reasonForApproval}</p>
+    )}
+    <p className="text-xs text-green-600">
+      Approved on: {leaveData.approvedAt ? fmtDT(leaveData.approvedAt) : '—'}
+    </p>
+  </div>
+)}
               {/* Timestamps */}
               <div className="mt-6 pt-6 border-t grid grid-cols-2 gap-4 text-sm">
                 <div><p className="text-gray-500">Created At</p><p className="text-gray-900 font-medium">{fmtDT(leaveData.createdAt)}</p></div>
@@ -352,13 +364,14 @@ useSocketEvent(
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h3 className="text-lg font-semibold mb-4">Actions</h3>
                 <div className="flex gap-3">
-                  <motion.button
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    onClick={approve} disabled={opLoading}
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center disabled:opacity-50"
-                  >
-                    <CheckCircle className="w-5 h-5 mr-2" /> Approve Leave
-                  </motion.button>
+                 <motion.button
+  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+  onClick={() => setShowApprove(true)}
+  disabled={opLoading}
+  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center disabled:opacity-50"
+>
+  <CheckCircle className="w-5 h-5 mr-2" /> Approve Leave
+</motion.button>
                   <motion.button
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     onClick={() => setShowReject(true)} disabled={opLoading}
@@ -372,6 +385,48 @@ useSocketEvent(
           </div>
         </div>
       </div>
+      {/* APPROVE WITH OPTIONAL REASON */}
+<AnimatePresence>
+  {showApprove && (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div initial={{ scale: .95 }} animate={{ scale: 1 }} exit={{ scale: .95 }}
+        className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Approve Leave Request</h3>
+          <button onClick={() => { setShowApprove(false); setApproveReason(''); }}
+            className="text-gray-400 hover:text-gray-600"><X className="w-5 h-5" /></button>
+        </div>
+        <div className="mb-4">
+          <p className="text-sm text-gray-700 mb-3">
+            Approve <strong>{leaveData.type.replace('_', ' ')}</strong> for{' '}
+            <strong>{leaveData.employee.first_name} {leaveData.employee.last_name}</strong>?
+          </p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Approval Note <span className="text-gray-400">(optional)</span>
+          </label>
+          <textarea
+            value={approveReason}
+            onChange={e => setApproveReason(e.target.value)}
+            placeholder="e.g., Enjoy your vacation! or Approved – coverage arranged."
+            rows={4}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div className="flex justify-end space-x-3">
+          <button onClick={() => { setShowApprove(false); setApproveReason(''); }}
+            className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
+            Cancel
+          </button>
+          <button onClick={approve} disabled={opLoading}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50">
+            {opLoading ? 'Approving...' : 'Approve Leave'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* ── REJECT MODAL ── */}
       <AnimatePresence>

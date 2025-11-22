@@ -261,7 +261,7 @@ const NotificationsPage: React.FC = () => {
   // Get sender icon
   const getSenderIcon = (senderType?: 'COMPANY' | 'EMPLOYEE') => {
     if (senderType === 'COMPANY') {
-      return <Building2 className="w-4 h-4 text-blue-600" />;
+      return <Building2 className="w-4 h-4 text-primary-600" />;
     }
     return <User className="w-4 h-4 text-gray-600" />;
   };
@@ -278,8 +278,8 @@ const NotificationsPage: React.FC = () => {
         <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Bell className="w-6 h-6 text-blue-600" />
+              <div className="p-2 bg-primary-100 rounded-lg">
+                <Bell className="w-6 h-6 text-primary-600" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
@@ -330,7 +330,7 @@ const NotificationsPage: React.FC = () => {
                 placeholder="Search notifications..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
               />
             </div>
 
@@ -366,7 +366,7 @@ const NotificationsPage: React.FC = () => {
               <select
                 value={limit}
                 onChange={(e) => handleLimitChange(Number(e.target.value))}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
               >
                 <option value={10}>10</option>
                 <option value={20}>20</option>
@@ -385,7 +385,7 @@ const NotificationsPage: React.FC = () => {
                     type="checkbox"
                     checked={selectedIds.size === filteredNotifications.length}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                   />
                   <span className="text-sm text-gray-700">
                     {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
@@ -396,7 +396,7 @@ const NotificationsPage: React.FC = () => {
               {filteredUnreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                 >
                   <CheckCheck className="w-4 h-4" />
                   <span>Mark all as read</span>
@@ -436,8 +436,8 @@ const NotificationsPage: React.FC = () => {
                   className={`bg-white rounded-lg shadow-sm border transition-all hover:shadow-md ${
                     isRead
                       ? 'border-gray-200'
-                      : 'border-blue-200 bg-blue-50/30'
-                  } ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
+                      : 'border-primary-200 bg-primary-50/30'
+                  } ${isSelected ? 'ring-2 ring-primary-500' : ''}`}
                 >
                   <div className="p-4">
                     <div className="flex items-start space-x-3">
@@ -446,7 +446,7 @@ const NotificationsPage: React.FC = () => {
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => toggleSelection(notif.id)}
-                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-1 w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                       />
 
                       {/* Content */}
@@ -458,7 +458,7 @@ const NotificationsPage: React.FC = () => {
                               {notif.title}
                             </h3>
                             {!isRead && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
                                 New
                               </span>
                             )}
@@ -480,7 +480,7 @@ const NotificationsPage: React.FC = () => {
                           {!isRead && (
                             <button
                               onClick={() => handleMarkAsRead(notif.id)}
-                              className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                             >
                               <Check className="w-3.5 h-3.5" />
                               <span>Mark as read</span>
@@ -532,7 +532,7 @@ const NotificationsPage: React.FC = () => {
                         onClick={() => handlePageClick(pageNum as number)}
                         className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                           page === pageNum
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-primary-600 text-white'
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >

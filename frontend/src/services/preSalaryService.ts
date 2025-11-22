@@ -73,9 +73,9 @@ class PreSalaryService {
   }
 
   // Approve pre-salary (company only)
-  async approvePreSalary(id: string): Promise<PreSalary> {
+  async approvePreSalary(id: string,reason?:string): Promise<PreSalary> {
     try {
-      const response = await api.put(`/pre-salary/${id}/approve`);
+      const response = await api.put(`/pre-salary/${id}/approve`,{reason});
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to approve pre-salary');

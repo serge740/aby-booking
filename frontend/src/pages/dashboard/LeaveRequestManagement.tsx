@@ -86,6 +86,9 @@ const LeaveRequestDashboard: React.FC = () => {
   const [showFormModal, setShowFormModal] = useState<boolean>(false);
   const [editLeave, setEditLeave] = useState<LeaveRequest | null>(null);
   const [approveConfirm, setApproveConfirm] = useState<LeaveRequest | null>(null);
+  // Add this with your other useState declarations
+const [approveReason, setApproveReason] = useState<string>('');
+
   const [rejectConfirm, setRejectConfirm] = useState<LeaveRequest | null>(null);
   const [rejectReason, setRejectReason] = useState<string>('');
   const [formData, setFormData] = useState<FormData>({
@@ -130,7 +133,9 @@ const LeaveRequestDashboard: React.FC = () => {
   'leaveCreated',
   (newLeave: LeaveRequest) => {
     setAllLeaves(prev => [...prev, newLeave]);
-    setLeaves(prev => [...prev, newLeave]);   // will be filtered/sorted automatically on next render
+    if (isEmployee && newLeave.employeeId === employeeId){
+      setLeaves(prev => [...prev, newLeave]);   // will be filtered/sorted automatically on next render
+    }
   },
   []
 );
@@ -142,6 +147,7 @@ useSocketEvent(
       prev.map(l => (l.id === updatedLeave.id ? updatedLeave : l));
 
     setAllLeaves(updateOne);
+    
     setLeaves(updateOne);
   },
   []
@@ -348,20 +354,23 @@ useSocketEvent(
     }
   };
 
-  const handleApproveLeave = async (leave: LeaveRequest) => {
-    if (!canApproveReject(leave)) return;
-    try {
-      setOperationLoading(true);
-      await leaveService.approveLeave(leave.id);
-      setApproveConfirm(null);
-      await loadData();
-      showOperationStatus('success', 'Leave approved');
-    } catch (err: any) {
-      showOperationStatus('error', err.message);
-    } finally {
-      setOperationLoading(false);
-    }
-  };
+const handleApproveLeave = async () => {
+  if (!approveConfirm || !canApproveReject(approveConfirm)) return;
+
+  try {
+    setOperationLoading(true);
+    // Pass the reason (can be empty/optional)
+    await leaveService.approveLeave(approveConfirm.id, approveReason.trim());
+    setApproveConfirm(null);
+    setApproveReason(''); // reset
+    await loadData();
+    showOperationStatus('success', 'Leave approved successfully');
+  } catch (err: any) {
+    showOperationStatus('error', err.message || 'Failed to approve leave');
+  } finally {
+    setOperationLoading(false);
+  }
+};
 
   const handleRejectLeave = async () => {
     if (!rejectReason.trim()) {
@@ -428,7 +437,7 @@ useSocketEvent(
       <motion.button
         whileHover={{ scale: 1.1 }}
         onClick={() => handleViewLeave(leave)}
-        className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+        className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
         title="View"
       >
         <Eye className="w-4 h-4" />
@@ -438,7 +447,7 @@ useSocketEvent(
         <motion.button
           whileHover={{ scale: 1.1 }}
           onClick={() => handleEditLeave(leave)}
-          className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+          className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
           title="Edit"
         >
           <Edit className="w-4 h-4" />
@@ -496,7 +505,7 @@ useSocketEvent(
               >
                 <div className="flex items-center space-x-1">
                   <span>Type</span>
-                  <ChevronDown className={`w-4 h-4 ${sortBy === 'type' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'type' ? 'text-primary-600' : 'text-gray-400'}`} />
                 </div>
               </th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden md:table-cell">Dates</th>
@@ -618,7 +627,7 @@ useSocketEvent(
             whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
           </motion.button>
@@ -629,8 +638,8 @@ useSocketEvent(
               onClick={() => setCurrentPage(page)}
               className={`px-3 py-1.5 text-sm rounded ${
                 currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'
               }`}
             >
               {page}
@@ -640,7 +649,7 @@ useSocketEvent(
             whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />
           </motion.button>
@@ -667,7 +676,7 @@ useSocketEvent(
                 whileHover={{ scale: 1.05 }}
                 onClick={loadData}
                 disabled={loading}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50"
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50"
                 title="Refresh"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -689,7 +698,7 @@ useSocketEvent(
                     setShowFormModal(true);
                   }}
                   disabled={operationLoading}
-                  className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
+                  className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="text-sm">Add Request</span>
@@ -705,8 +714,8 @@ useSocketEvent(
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-full flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-blue-600" />
+              <div className="p-3 bg-primary-50 rounded-full flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-primary-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Requests</p>
@@ -753,7 +762,7 @@ useSocketEvent(
                   placeholder="Search requests..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -765,7 +774,7 @@ useSocketEvent(
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="createdAt-desc">Newest First</option>
                 <option value="createdAt-asc">Oldest First</option>
@@ -773,13 +782,13 @@ useSocketEvent(
                 <option value="type-desc">Type (Z-A)</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="Table View">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Table View">
                   <List className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-sm transition-colors ${viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="Grid View">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-sm transition-colors ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Grid View">
                   <Grid3X3 className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-sm transition-colors ${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'}`} title="List View">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-sm transition-colors ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="List View">
                   <List className="w-4 h-4" />
                 </motion.button>
               </div>
@@ -796,7 +805,7 @@ useSocketEvent(
         {loading ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center text-gray-600">
             <div className="inline-flex items-center space-x-2">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
               <span className="text-sm">Loading leave requests...</span>
             </div>
           </div>
@@ -840,7 +849,7 @@ useSocketEvent(
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 flex items-center justify-center z-40">
             <div className="bg-white rounded-lg p-4 shadow-xl">
               <div className="flex items-center space-x-2">
-                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-gray-700 text-sm font-medium">Processing...</span>
               </div>
             </div>
@@ -881,37 +890,69 @@ useSocketEvent(
       </AnimatePresence>
 
       {/* APPROVE CONFIRM */}
-      <AnimatePresence>
-        {approveConfirm && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Approve Leave</h3>
-                  <p className="text-sm text-gray-500">Confirm approval of this request</p>
-                </div>
-              </div>
-              <div className="mb-4">
-                <p className="text-sm text-gray-700">
-                  Approve <span className="font-semibold">{formatLeaveType(approveConfirm.type)}</span> for{' '}
-                  <span className="font-semibold">{approveConfirm.employee?.name}</span>?
-                </p>
-              </div>
-              <div className="flex items-center justify-end space-x-3">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setApproveConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
-                  Cancel
-                </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleApproveLeave(approveConfirm)} className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700">
-                  Approve
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* APPROVE WITH OPTIONAL REASON */}
+<AnimatePresence>
+  {approveConfirm && (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+    >
+      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Approve Leave Request</h3>
+            <p className="text-sm text-gray-500">You may add an optional approval note</p>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-sm text-gray-700 mb-3">
+            Approve <span className="font-semibold">{formatLeaveType(approveConfirm.type)}</span> for{' '}
+            <span className="font-semibold">
+              {approveConfirm.employee?.first_name || approveConfirm.employee?.last_name
+                ? `${approveConfirm.employee?.first_name || ''} ${approveConfirm.employee?.last_name || ''}`.trim()
+                : 'Employee'}
+            </span>
+            ?
+          </p>
+
+          <textarea
+            value={approveReason}
+            onChange={(e) => setApproveReason(e.target.value)}
+            placeholder="Optional: Add approval note or message (e.g., 'Enjoy your vacation!')"
+            className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+            rows={3}
+          />
+        </div>
+
+        <div className="flex items-center justify-end space-x-3">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={() => {
+              setApproveConfirm(null);
+              setApproveReason('');
+            }}
+            className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50"
+          >
+            Cancel
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            onClick={handleApproveLeave}
+            className="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Approve Leave
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* REJECT WITH REASON */}
       <AnimatePresence>
@@ -955,8 +996,8 @@ useSocketEvent(
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl overflow-y-auto max-h-screen">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -971,7 +1012,7 @@ useSocketEvent(
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value as LeaveRequest['type'] | '' }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                   >
                     <option value="">Select type</option>
                     <option value="VACATION">Vacation Leave</option>
@@ -990,7 +1031,7 @@ useSocketEvent(
                       type="date"
                       value={formData.startDate}
                       onChange={(e) => setFormData((prev) => ({ ...prev, startDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <div>
@@ -999,7 +1040,7 @@ useSocketEvent(
                       type="date"
                       value={formData.endDate}
                       onChange={(e) => setFormData((prev) => ({ ...prev, endDate: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                 </div>
@@ -1009,7 +1050,7 @@ useSocketEvent(
                     value={formData.reasonForRequest}
                     onChange={(e) => setFormData((prev) => ({ ...prev, reasonForRequest: e.target.value }))}
                     placeholder="Explain your leave request..."
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     rows={3}
                   />
                 </div>
@@ -1027,7 +1068,7 @@ useSocketEvent(
                     />
                     <label
                       htmlFor="leave-attachments"
-                      className="cursor-pointer inline-flex items-center space-x-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors"
+                      className="cursor-pointer inline-flex items-center space-x-2 px-3 py-2 text-sm bg-primary-50 text-primary-700 rounded hover:bg-primary-100 transition-colors"
                     >
                       <Upload className="w-4 h-4" />
                       <span>
@@ -1063,7 +1104,7 @@ useSocketEvent(
                 <motion.button whileHover={{ scale: 1.05 }} onClick={resetForm} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateLeave} disabled={operationLoading} className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateLeave} disabled={operationLoading} className="px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
                   {editLeave ? 'Update' : 'Submit'}
                 </motion.button>
               </div>

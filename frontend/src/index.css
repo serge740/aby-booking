@@ -2,17 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @theme {
 /* --- Colors --- */
---color-primary-50:  #fef2f2;
---color-primary-100: #fee2e2;
---color-primary-200: #fecaca;
---color-primary-300: #fca5a5;
---color-primary-400: #f87171;
---color-primary-500: #ef4444; /* The new base color (Red) */
---color-primary-600: #dc2626;
---color-primary-700: #b91c1c;
---color-primary-800: #991b1b;
---color-primary-900: #7f1d1d;
---color-primary-950: #450a0a;
+--color-primary-50:   #fff7ed;
+--color-primary-100:  #ffedd5;
+--color-primary-200:  #fed7aa;
+--color-primary-300:  #fdba74;
+--color-primary-400:  #fb923c;
+--color-primary-500:  #f97316; /* New Base Color (Orange) */
+--color-primary-600:  #ea580c;
+--color-primary-700:  #c2410c;
+--color-primary-800:  #9a3412;
+--color-primary-900:  #7c2d12;
+--color-primary-950:  #431407;
+
 
 --color-secondary-50:  #fff7ed;
 --color-secondary-100: #ffedd5;

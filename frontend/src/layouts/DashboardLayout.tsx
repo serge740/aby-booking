@@ -7,7 +7,7 @@ import Sidebar from '../components/dashboard/Sidebar';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useCompanyAuth } from '../context/CompanyAuthContext';
 import { useEmployeeAuth } from '../context/EmployeeAuthContext';
-import { useSocket } from '../context/SocketContext';
+import { useSocket, useSocketEvent } from '../context/SocketContext';
 import { useNotifications } from '../context/NotificationContext';
 export type RoleType = "admin" | "company" | "employee"
 export interface Roles {
@@ -27,10 +27,29 @@ const DashboardLayout = () => {
   const isEmployeeRegistered = useRef(false);
   const isCompanyRegistered = useRef(false);
 
+  const isEmployeeJoinedCompanyRoom = useRef(false);
+  const isCompanyJoinedCompanyRoom = useRef(false);
+
   const onToggle = () => {
     setIsOpen(!isOpen)
   }
 
+
+useEffect(()=>{
+
+  if(user?.id && isConnected && !isEmployeeJoinedCompanyRoom.current && role == 'employee'){
+      console.log('Joined EMPLOYEE :',user.id);
+      emit('joinCompanyRoom',{ companyId: user.companyId });
+      isEmployeeRegistered.current = true;
+    }
+
+    if(company?.id && isConnected && !isCompanyJoinedCompanyRoom.current && role == 'company'){
+      console.log('jooud COMPANY :',company.id);
+      emit('joinCompanyRoom',{ companyId: company.id });
+      isCompanyJoinedCompanyRoom.current = true;
+    }
+
+},[user?.id, isConnected, emit, socket, company?.id])
 
   useEffect(() => {
     if (user?.id && isConnected && !isEmployeeRegistered.current && role == 'employee') {
@@ -38,12 +57,12 @@ const DashboardLayout = () => {
       emit('registerUser', { id: user.id, type: 'EMPLOYEE' });
       isEmployeeRegistered.current = true;
     }
-    else if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
+     if (company?.id && isConnected && !isCompanyRegistered.current && role == 'company') {
       console.log('online COMPANY :', company.id);
       emit('registerUser', { id: company.id, type: 'COMPANY' });
       isCompanyRegistered.current = true;
     }
-  }, [user?.id, isConnected, emit, socket]);
+  }, [user?.id, isConnected, emit, socket, company?.id]);
 
 
   useEffect(() => {

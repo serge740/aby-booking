@@ -97,6 +97,9 @@ const CreateOrderPage = () => {
   const [submitResult, setSubmitResult] = useState<'success' | 'error' | null>(null);
   const [submitMessage, setSubmitMessage] = useState('');
 
+
+  
+
   // -----------------------------------------------------------------
   // Load categories + menu items (once per companyId)
   // -----------------------------------------------------------------

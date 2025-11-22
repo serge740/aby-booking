@@ -273,7 +273,7 @@ export default function CompanyOrderDetailView() {
   type: 'food' | 'drinks';
   total: number;
 }) => {
-  if (!isOpen || !selectedOrder) return null;
+  if (!isOpen || !order) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -298,16 +298,16 @@ export default function CompanyOrderDetailView() {
             <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
             <p className="text-sm text-gray-600">Official Receipt</p>
             <div className="mt-3 text-sm">
-              <p><span className="font-semibold">Order #:</span> {selectedOrder.orderNumber}</p>
-              <p><span className="font-semibold">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString('en-GB')}</p>
-              <p><span className="font-semibold">Time:</span> {new Date(selectedOrder.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+              <p><span className="font-semibold">Order #:</span> {order.orderNumber}</p>
+              <p><span className="font-semibold">Date:</span> {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
+              <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
             </div>
           </div>
 
           <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
             <p className="font-semibold text-sm mb-2">Customer</p>
-            <p className="text-sm">{selectedOrder.clientName}</p>
-            {selectedOrder.clientPhone && <p className="text-sm text-gray-600">{selectedOrder.clientPhone}</p>}
+            <p className="text-sm">{order.clientName}</p>
+            {order.clientPhone && <p className="text-sm text-gray-600">{order.clientPhone}</p>}
           </div>
 
           <table className="w-full text-sm mb-6">
