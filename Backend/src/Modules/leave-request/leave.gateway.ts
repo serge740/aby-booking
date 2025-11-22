@@ -3,8 +3,11 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -15,36 +18,46 @@ export class LeaveGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  handleConnection(client: any) {
-    console.log('Client connected:', client.id);
+  handleConnection(client: Socket) {
+    console.log('Leave WS Client connected:', client.id);
   }
 
-  handleDisconnect(client: any) {
-    console.log('Client disconnected:', client.id);
+  handleDisconnect(client: Socket) {
+    console.log('Leave WS Client disconnected:', client.id);
   }
 
-  // 🔥 Emit new leave creation
-  notifyLeaveCreated(data: any) {
-    this.server.emit('leaveCreated', data);
+  // 👉 Client manually joins a company room after login
+  @SubscribeMessage('joinCompanyRoom')
+  handleJoinCompanyRoom(
+    @MessageBody() data: { companyId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const room = `company_${data.companyId}`;
+    client.join(room);
+    console.log(`Client ${client.id} joined room ${room}`);
   }
 
-  // 🔥 Emit leave update
-  notifyLeaveUpdated(data: any) {
-    this.server.emit('leaveUpdated', data);
+  // -----------------------------------
+  //    EMIT ONLY TO THE COMPANY ROOM
+  // -----------------------------------
+
+  notifyLeaveCreated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('leaveCreated', data);
   }
 
-  // 🔥 Emit approval
-  notifyLeaveApproved(data: any) {
-    this.server.emit('leaveApproved', data);
+  notifyLeaveUpdated(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('leaveUpdated', data);
   }
 
-  // 🔥 Emit rejection
-  notifyLeaveRejected(data: any) {
-    this.server.emit('leaveRejected', data);
+  notifyLeaveApproved(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('leaveApproved', data);
   }
 
-  // 🔥 Emit delete
-  notifyLeaveDeleted(id: string) {
-    this.server.emit('leaveDeleted', { id });
+  notifyLeaveRejected(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('leaveRejected', data);
+  }
+
+  notifyLeaveDeleted(companyId: string, id: string) {
+    this.server.to(`company_${companyId}`).emit('leaveDeleted', { id });
   }
 }
