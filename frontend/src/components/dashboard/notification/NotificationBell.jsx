@@ -18,7 +18,7 @@ export default function NotificationBell() {
     <div className="relative inline-block">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
         aria-label="Notifications"
       >
         <Bell className="w-6 h-6 text-gray-700" />
@@ -43,7 +43,7 @@ export default function NotificationBell() {
             <div className="overflow-y-auto flex-1">
               {isLoading ? (
                 <div className="py-12 text-center text-gray-500">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="py-12 text-center text-gray-500">
@@ -65,12 +65,12 @@ export default function NotificationBell() {
                           setIsOpen(!isOpen)
                         }}
                         className={`px-4 py-3 border-b border-gray-100 cursor-pointer transition-colors hover:bg-gray-50 ${
-                          isUnread ? 'bg-blue-50' : 'bg-white'
+                          isUnread ? 'bg-primary-50' : 'bg-white'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           {isUnread && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
+                            <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
                             <p className={`text-sm ${isUnread ? 'font-semibold text-gray-900' : 'text-gray-900'}`}>
@@ -103,7 +103,7 @@ export default function NotificationBell() {
                           // For example:  or window.location.href = '/notifications'
                           console.log('Navigate to all notifications page');
                         }}
-                        className="w-full text-center px-4 py-3 text-sm font-medium cursor-pointer text-blue-600 hover:text-blue-700 transition-colors"
+                        className="w-full text-center px-4 py-3 text-sm font-medium cursor-pointer text-primary-600 hover:text-primary-700 transition-colors"
                       >
                         See more notifications
                       </button>

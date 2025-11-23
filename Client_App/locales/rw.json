@@ -2,11 +2,11 @@
     "onboarding": {
         "slides": [{
                 "title": "Menya ubucuruzi bwo mu karere",
-                "description": "Murakaza neza kuri Fresh cart — urubuga rukuganisha ku mareshyo y’amasitora, amaresitora, amasupermaketi, na serivisi ziza cyane muri Kigali. Byose ubibona ahantu hamwe."
+                "description": "Murakaza neza kuri ABY DASH — urubuga rukuganisha ku mareshyo y’amasitora, amaresitora, amasupermaketi, na serivisi ziza primarye muri Kigali. Byose ubibona ahantu hamwe."
             },
             {
                 "title": "Bika no gutumiza byoroshye",
-                "description": "Ukoresheje FRESH CART, ushobora gushakisha, gutegura gahunda, cyangwa gutumiza ibicuruzwa ku bacuruzi b’inyangamugayo bo hafi yawe — byihuse kandi byoroshye."
+                "description": "Ukoresheje ABY DASH, ushobora gushakisha, gutegura gahunda, primarygwa gutumiza ibicuruzwa ku bacuruzi b’inyangamugayo bo hafi yawe — byihuse kandi byoroshye."
             },
             {
                 "title": "Ishyura mu mutekano",
@@ -19,21 +19,21 @@
     },
     "loginAuth": {
         "welcome": "Murakaza neza !",
-        "back": "Kuri FreshCart",
+        "back": "Kuri ABY DASH",
         "subtitle": "Injira kugira ngo ushire amatsiko ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi, urebe gahunda zawe, kandi utumize ibicuruzwa byoroshye.",
-        "placeholder_identifier": "Andika numero ya telefone cyangwa imeri yawe",
+        "placeholder_identifier": "Andika numero ya telefone primarygwa imeri yawe",
         "placeholder_phone": "Andika numero ya telefone",
         "placeholder_email": "Andika imeri yawe",
         "placeholder_password": "Andika ijambo ry’ibanga",
         "remember_me": "Ushaka Ko Nkwibuka",
         "forgot_password": "",
         "sign_in": "Injira",
-        "or": "CYANGWA",
+        "or": "PRIMARYGWA",
         "continue_as_guest": "Komeza utanditseho",
         "no_account": "Nta konti ufite?",
         "create_account": "Hanga konti yawe",
-        "error_identifier_required": "Andika numero ya telefone cyangwa imeri yawe",
-        "error_identifier_invalid": "Andika numero ya telefone cyangwa imeri iboneye",
+        "error_identifier_required": "Andika numero ya telefone primarygwa imeri yawe",
+        "error_identifier_invalid": "Andika numero ya telefone primarygwa imeri iboneye",
         "error_password_required": "Ijambo ry’ibanga ntirishobora kuba ubusa",
         "error_password_length": "Ijambo ry’ibanga rigomba kuba rifite byibura inyuguti 6",
         "login_failed": "Kwinjira byanze",
@@ -42,7 +42,7 @@
     "registerAuth": {
         "hello": "Muraho",
         "there": "neza!",
-        "register_subtitle": "Intambwe nke gusa maze witegure kugera ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi ukoresheje FRESH CART.",
+        "register_subtitle": "Intambwe nke gusa maze witegure kugera ku maresitora, salons, amasupermaketi, n’izindi serivisi zo hafi ukoresheje ABY DASH.",
         "placeholder_name": "Andika izina ryawe ryuzuye",
         "placeholder_email": "Andika imeri yawe",
         "placeholder_phone": "Andika numero ya telefone",
@@ -53,7 +53,7 @@
         "and": " na ",
         "privacy_policy": "Politiki y’ibanga",
         "signup": "Iyandikishe",
-        "or": "Cyangwa",
+        "or": "Primarygwa",
         "already_have_account": "Uramaze kugira konti?",
         "sign_in": "Injira",
 
@@ -71,7 +71,7 @@
     },
     "guest": {
         "index": {
-            "app_name": "FRESH CART",
+            "app_name": "ABY DASH",
             "app_subtitle": "Bukinga ameza yawe",
             "location": "Kigali, u Rwanda",
             "hero_title": "Bukinga ahantu heza ho kurira",
@@ -84,11 +84,11 @@
                 },
                 {
                     "title": "Utubari n’ubuzima bwo nijoro",
-                    "subtitle": "Shaka aho kwicarira mu tubari dukunzwe cyane"
+                    "subtitle": "Shaka aho kwicarira mu tubari dukunzwe primarye"
                 },
                 {
                     "title": "Cafés & Bistro byiza",
-                    "subtitle": "Shaka aho kunywera ikawa cyangwa gusangira byoroheje"
+                    "subtitle": "Shaka aho kunywera ikawa primarygwa gusangira byoroheje"
                 },
                 {
                     "title": "Tegereza ifunguro",
@@ -102,13 +102,13 @@
                 "orders": "50K+ Amaserivisi yakoreshejwe"
             },
 
-            "what_title": "Fresh cart ni iki?",
-            "what_text": "Fresh cart igufasha kubona no kubukinga ameza mu maresitora, utubari, cafés, n’amaduka yo muri Kigali. Reba menu, urebe uboneka, ubukinge cyangwa utegereze ifunguro — byose muri app imwe.",
+            "what_title": "ABY DASH ni iki?",
+            "what_text": "ABY DASH igufasha kubona no kubukinga ameza mu maresitora, utubari, cafés, n’amaduka yo muri Kigali. Reba menu, urebe uboneka, ubukinge primarygwa utegereze ifunguro — byose muri app imwe.",
 
             "categories_title": "Reba ibyiciro",
             "categories_subtitle": "Hitamo ahabereye buri gihe",
             "categories": [
-                { "title": "Amaresitora", "subtitle": "Kurira neza cyangwa bisanzwe" },
+                { "title": "Amaresitora", "subtitle": "Kurira neza primarygwa bisanzwe" },
                 { "title": "Amaduka makuru", "subtitle": "Ibiribwa bishya bitangirwa iwe" },
                 { "title": "Utubari & Lounges", "subtitle": "Ijoro ryiza & ibinyobwa" },
                 { "title": "Fast Food", "subtitle": "Ifunguro ryihuse" },
@@ -120,14 +120,14 @@
             "step_1_title": "Reba",
             "step_1_subtitle": "Tembera urebemo amaresitora na menu",
             "step_2_title": "Bukinga",
-            "step_2_subtitle": "Bukinga ameza cyangwa utegereze ifunguro",
+            "step_2_subtitle": "Bukinga ameza primarygwa utegereze ifunguro",
             "step_3_title": "Emeza",
             "step_3_subtitle": "Bona ubutumwa bwemeza ako kanya",
             "step_4_title": "Nezerwa",
             "step_4_subtitle": "Ibiryo byiza n’uburambe bwiza",
 
-            "business_title": "Ufite resitora cyangwa akabari?",
-            "business_subtitle": "Injira kuri Fresh cart wakire abakiriya, utegure ameza, kandi ugererwe abakiriya benshi bo muri Kigali.",
+            "business_title": "Ufite resitora primarygwa akabari?",
+            "business_subtitle": "Injira kuri ABY DASH wakire abakiriya, utegure ameza, kandi ugererwe abakiriya benshi bo muri Kigali.",
             "cta_button": "Andikisha ubucuruzi bwawe"
         },
         "settings": {
@@ -138,26 +138,26 @@
             "change_language": "Hindura ururimi",
             "section_account": "Konti",
             "logout": "Sohoka",
-            "logout_confirm": "Urabizi neza ko ushaka gusohoka muri FRESH CART?",
+            "logout_confirm": "Urabizi neza ko ushaka gusohoka muri ABY DASH?",
             "language_alert": "Amahitamo y’indimi azaboneka vuba.",
-            "footer": "Fresh cart Verisiyo 1.0.0"
+            "footer": "ABY DASH Verisiyo 1.0.0"
         },
         "support": {
             "header": "Ikigo cy’Ubujyanama",
-            "subheader": "Duhari kugira ngo tugufashe ku bibazo byose cyangwa amakuru wifuza ku FRESH CART.",
+            "subheader": "Duhari kugira ngo tugufashe ku bibazo byose primarygwa amakuru wifuza ku ABY DASH.",
             "contact_title": "Twandikire",
             "phone": "Telefone: +250 788 123 456",
-            "email": "Imeri: support@freshcart.rw",
+            "email": "Imeri: support@aby dash.rw",
             "whatsapp_title": "Inkunga kuri WhatsApp",
             "whatsapp_link": "Vugana natwe kuri WhatsApp",
             "faq_title": "Ibibazo Bikunze Kubazwa",
             "faq": [
-                "Nigute nashobora gutumiza serivisi cyangwa igicuruzwa?",
-                "Nshobora guhindura cyangwa gusiba gahunda yanjye?",
-                "Nigute nakurikirana ibyo natumije cyangwa gahunda yanjye?",
+                "Nigute nashobora gutumiza serivisi primarygwa igicuruzwa?",
+                "Nshobora guhindura primarygwa gusiba gahunda yanjye?",
+                "Nigute nakurikirana ibyo natumije primarygwa gahunda yanjye?",
                 "Nakora iki niba habaye ikibazo ku gahunda yanjye?"
             ],
-            "footer": "Murakoze gukoresha FRESH CART!"
+            "footer": "Murakoze gukoresha ABY DASH!"
         },
         "bus": {
             "header": "Ubucuruzi bwo hafi yawe"
@@ -174,7 +174,7 @@
                 "shop_now": "Gura nonaha",
                 "favorites": "Ibyakunzwe"
             },
-            "promo_title": "Murakaza neza kuri FRESH CART! 🎉",
+            "promo_title": "Murakaza neza kuri ABY DASH! 🎉",
             "promo_subtitle": "Menya ubucuruzi n’amaserivisi yo mu karere ka Kigali",
             "promo_button": "Tangira gusura",
             "browse_categories": "Reba ibyiciro",
@@ -194,9 +194,9 @@
             },
             "empty": {
                 "no_services": "Nta bucuruzi bubonetse",
-                "try_different": "Gerageza icyiciro cyangwa ijambo rishya"
+                "try_different": "Gerageza icyiciro primarygwa ijambo rishya"
             },
-            "info_title": "Fresh cart ni iki?",
+            "info_title": "ABY DASH ni iki?",
             "info_text": "Isoko rya serivisi n’ibicuruzwa byo mu Rwanda — rifasha abakiriya kuzigama igihe n’abacuruzi gukura mu ikoranabuhanga.",
             "learn_more": "Menya byinshi"
         },
@@ -217,22 +217,22 @@
             "dark_mode": "Imiterere yijimye",
             "help_center": "Ikigo cy’ubujyanama",
             "contact_support": "Twandikire",
-            "rate_app": "Tanga igitekerezo kuri FRESH CART",
+            "rate_app": "Tanga igitekerezo kuri ABY DASH",
             "terms_conditions": "Amategeko & Amabwiriza",
             "privacy_policy": "Politiki y’ibanga",
             "logout": "Sohoka",
             "delete_account": "Siba konti",
-            "footer_brand": "FRESH CART",
+            "footer_brand": "ABY DASH",
             "footer_version": "Verisiyo 1.0.0",
             "footer_member_since": "Uhuye na konti kuva",
-            "footer_copyright": "© 2024 FRESH CART. Uburenganzira bwose burabitswe.",
+            "footer_copyright": "© 2024 ABY DASH. Uburenganzira bwose burabitswe.",
             "alerts": {
                 "logout_title": "Sohoka",
-                "logout_message": "Urabizi neza ko ushaka gusohoka muri FRESH CART?",
+                "logout_message": "Urabizi neza ko ushaka gusohoka muri ABY DASH?",
                 "logout_cancel": "Hagarika",
                 "logout_confirm": "Sohoka",
                 "delete_title": "Siba konti",
-                "delete_message": "Urabizi neza ko ushaka gusiba konti yawe ya FRESH CART? Ibi ntibishobora gusubizwa inyuma.",
+                "delete_message": "Urabizi neza ko ushaka gusiba konti yawe ya ABY DASH? Ibi ntibishobora gusubizwa inyuma.",
                 "delete_cancel": "Hagarika",
                 "delete_confirm": "Siba",
                 "error_logout": "Ntibyashobotse gusohoka. Ongera ugerageze.",

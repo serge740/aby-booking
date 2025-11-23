@@ -81,7 +81,7 @@ const EmployeeDetailsPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -94,7 +94,7 @@ const EmployeeDetailsPage = () => {
           <p className="text-gray-700">Employee not found</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
             Go Back
           </button>
@@ -114,7 +114,7 @@ const EmployeeDetailsPage = () => {
           <div>
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-2"
+              className="flex items-center gap-2 text-primary-600 hover:text-primary-700 mb-2"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="text-sm">Back</span>
@@ -278,7 +278,7 @@ const EmployeeDetailsPage = () => {
             </h3>
             <div className="space-y-6">
               {experienceList.map((exp, i) => (
-                <div key={i} className="border-l-4 border-blue-500 pl-4">
+                <div key={i} className="border-l-4 border-primary-500 pl-4">
                   <h4 className="font-semibold text-gray-900">{exp.company_name || 'Unknown Company'}</h4>
                   <p className="text-gray-600 mt-1">{exp.description || 'No description'}</p>
                   <p className="text-sm text-gray-500 mt-2">
@@ -341,7 +341,7 @@ const DocumentLink = ({ label, url }: { label: string; url?: string }) => {
       <div className="flex gap-2">
         <button
           onClick={() => window.open(url, '_blank')}
-          className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1"
+          className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center gap-1"
         >
           <Eye className="w-4 h-4" /> View
         </button>

@@ -92,8 +92,8 @@ const EmployeeLoginPage = () => {
   // Show loading while checking auth
   if (authLoading) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <svg className="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+      <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-primary-50 to-primary-100">
+        <svg className="animate-spin h-8 w-8 text-primary-600" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
         </svg>
@@ -114,11 +114,11 @@ const EmployeeLoginPage = () => {
             <img src={image} alt={`Office ${index + 1}`} className="w-full h-full object-cover" />
           </div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-blue-900/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary-900/60"></div>
         <div className="relative z-10 flex flex-col justify-center items-center text-white p-12">
           <div className="max-w-md">
             <div className="mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-600 rounded-2xl flex items-center justify-center shadow-2xl">
                 <Users className="w-10 h-10 text-white" />
               </div>
             </div>
@@ -170,7 +170,7 @@ const EmployeeLoginPage = () => {
           <div className="mb-8">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-6 group"
+              className="flex items-center gap-2 text-gray-600 hover:text-primary-600 transition-colors mb-6 group"
             >
               <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
               <span className="font-medium">Back to Home</span>
@@ -200,7 +200,7 @@ const EmployeeLoginPage = () => {
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="block w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                   placeholder="employee@company.com"
                   disabled={isLoading}
                 />
@@ -221,7 +221,7 @@ const EmployeeLoginPage = () => {
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="block w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="block w-full pl-12 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
                   placeholder="••••••••"
                   disabled={isLoading}
                 />
@@ -243,7 +243,7 @@ const EmployeeLoginPage = () => {
             <div className="flex justify-end">
               <button
                 onClick={() => navigate('/employee/forgot-password')}
-                className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
               >
                 Forgot Password?
               </button>
@@ -253,7 +253,7 @@ const EmployeeLoginPage = () => {
             <button
               onClick={handleSubmit}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-500 hover:to-cyan-500 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+              className="w-full bg-gradient-to-r from-primary-600 to-primary-600 text-white py-4 rounded-xl font-bold text-lg hover:from-primary-500 hover:to-primary-500 focus:outline-none focus:ring-4 focus:ring-primary-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -273,7 +273,7 @@ const EmployeeLoginPage = () => {
               New employee?{' '}
               <button
                 onClick={() => navigate('/employee/register')}
-                className="font-semibold text-blue-600 hover:text-blue-700"
+                className="font-semibold text-primary-600 hover:text-primary-700"
               >
                 Contact HR to register
               </button>

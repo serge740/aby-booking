@@ -87,7 +87,7 @@ const InputField = memo(({ label, icon: Icon, required, error, ...props }: any) 
     </label>
     <input
       {...props}
-      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
         error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
       }`}
     />
@@ -108,7 +108,7 @@ const SelectField = memo(({ label, icon: Icon, required, error, children, ...pro
     </label>
     <select
       {...props}
-      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
         error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
       }`}
     >
@@ -158,17 +158,17 @@ const FileUpload = memo(
           {label} {showRequired && <span className="text-red-500">*</span>}
         </label>
         {hasFile ? (
-          <div className="border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-blue-50 to-white">
+          <div className="border border-gray-200 rounded-xl p-4 bg-gradient-to-br from-primary-50 to-white">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <FileText className="h-6 w-6 text-blue-600" />
+                <div className="p-2 bg-primary-100 rounded-lg">
+                  <FileText className="h-6 w-6 text-primary-600" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">
                     {files[fileType]?.name || existingFiles[fileType]?.split('/').pop()}
                     {existingFiles[fileType] && !files[fileType] && (
-                      <span className="ml-2 text-xs text-blue-600">(Existing)</span>
+                      <span className="ml-2 text-xs text-primary-600">(Existing)</span>
                     )}
                   </p>
                   {files[fileType] && (
@@ -183,7 +183,7 @@ const FileUpload = memo(
                   <button
                     type="button"
                     onClick={() => window.open(previewFiles[fileType]!)}
-                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                    className="p-2 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors"
                     title="Preview"
                   >
                     <Eye className="h-4 w-4" />
@@ -203,12 +203,12 @@ const FileUpload = memo(
               <img
                 src={previewFiles[fileType]!}
                 alt="Preview"
-                className="mt-3 h-24 w-24 object-cover rounded-xl border-2 border-blue-200"
+                className="mt-3 h-24 w-24 object-cover rounded-xl border-2 border-primary-200"
               />
             )}
           </div>
         ) : (
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 cursor-pointer">
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-primary-400 hover:bg-primary-50 transition-all duration-200 cursor-pointer">
             <input
               type="file"
               accept={accept}
@@ -253,7 +253,7 @@ const PersonalInfoStep = memo(
       {/* Basic Information */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-          <User className="w-5 h-5 mr-2 text-blue-600" /> Basic Information
+          <User className="w-5 h-5 mr-2 text-primary-600" /> Basic Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField label="First Name" icon={User} required value={formData.first_name} onChange={e => onChange('first_name', e.target.value)} placeholder="Enter first name" error={errors.first_name} />
@@ -270,7 +270,7 @@ const PersonalInfoStep = memo(
       {/* Contact Information */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-          <Mail className="w-5 h-5 mr-2 text-blue-600" /> Contact Information
+          <Mail className="w-5 h-5 mr-2 text-primary-600" /> Contact Information
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField label="Email Address" icon={Mail} type="email" required value={formData.email} onChange={e => onChange('email', e.target.value)} placeholder="email@example.com" error={errors.email} />
@@ -286,7 +286,7 @@ const PersonalInfoStep = memo(
             onChange={e => onChange('address', e.target.value)}
             rows={3}
             placeholder="Enter full address"
-            className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+            className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
               errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
             }`}
           />
@@ -301,7 +301,7 @@ const PersonalInfoStep = memo(
       {/* Employment Details */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-          <Briefcase className="w-5 h-5 mr-2 text-blue-600" /> Employment Details
+          <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Employment Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField label="Position" icon={Briefcase} required value={formData.position} onChange={e => onChange('position', e.target.value)} placeholder="e.g., Software Engineer" error={errors.position} />
@@ -321,7 +321,7 @@ const PersonalInfoStep = memo(
       {/* Banking & Emergency */}
       <div>
         <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center">
-          <CreditCard className="w-5 h-5 mr-2 text-blue-600" /> Banking & Emergency Contact
+          <CreditCard className="w-5 h-5 mr-2 text-primary-600" /> Banking & Emergency Contact
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField label="Bank Name" icon={Building2} value={formData.bank_name} onChange={e => onChange('bank_name', e.target.value)} placeholder="e.g., Bank of Kigali" error={errors.bank_name} />
@@ -354,7 +354,7 @@ const DocumentsStep = memo(
   }) => (
     <div className="space-y-6 max-w-2xl mx-auto">
       <div className="text-center mb-8">
-        <FileText className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+        <FileText className="w-12 h-12 text-primary-600 mx-auto mb-3" />
         <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
         <p className="text-sm text-gray-600 mt-1">Please upload the required documents</p>
       </div>
@@ -397,11 +397,11 @@ const ExperienceStep = memo(
       <div className="flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-            <Briefcase className="w-5 h-5 mr-2 text-blue-600" /> Work Experience
+            <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Work Experience
           </h3>
           <p className="text-sm text-gray-600 mt-1">Add your previous work experience</p>
         </div>
-        <button type="button" onClick={onAdd} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm">
+        <button type="button" onClick={onAdd} className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm">
           <Plus className="h-4 w-4" /> <span>Add Experience</span>
         </button>
       </div>
@@ -409,7 +409,7 @@ const ExperienceStep = memo(
         <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-xl">
           <Briefcase className="w-12 h-12 text-gray-400 mx-auto mb-3" />
           <p className="text-gray-500 mb-4">No work experience added yet</p>
-          <button type="button" onClick={onAdd} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+          <button type="button" onClick={onAdd} className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
             Add Your First Experience
           </button>
         </div>
@@ -419,8 +419,8 @@ const ExperienceStep = memo(
             <div key={i} className="border border-gray-200 rounded-xl p-5 bg-gradient-to-br from-gray-50 to-white">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-sm font-semibold text-blue-600">{i + 1}</span>
+                  <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
+                    <span className="text-sm font-semibold text-primary-600">{i + 1}</span>
                   </div>
                   <h4 className="font-medium text-gray-900">Experience {i + 1}</h4>
                 </div>
@@ -433,7 +433,7 @@ const ExperienceStep = memo(
                   placeholder="Company Name *"
                   value={exp.company_name}
                   onChange={e => onUpdate(i, 'company_name', e.target.value)}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                     errors[`exp_${i}_company`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
@@ -450,7 +450,7 @@ const ExperienceStep = memo(
                       type="date"
                       value={exp.start_date}
                       onChange={e => onUpdate(i, 'start_date', e.target.value)}
-                      className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                         errors[`exp_${i}_start`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     />
@@ -467,7 +467,7 @@ const ExperienceStep = memo(
                       type="date"
                       value={exp.end_date || ''}
                       onChange={e => onUpdate(i, 'end_date', e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                 </div>
@@ -476,7 +476,7 @@ const ExperienceStep = memo(
                   value={exp.description}
                   onChange={e => onUpdate(i, 'description', e.target.value)}
                   rows={3}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                     errors[`exp_${i}_desc`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
@@ -526,7 +526,7 @@ const ReviewStep = memo(
           {/* Personal */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-              <User className="w-5 h-5 mr-2 text-blue-600" /> Personal Information
+              <User className="w-5 h-5 mr-2 text-primary-600" /> Personal Information
             </h4>
             <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
               <div className="flex justify-between"><span className="text-gray-600">Name:</span><span className="font-medium text-gray-900">{formData.first_name} {formData.last_name}</span></div>
@@ -540,7 +540,7 @@ const ReviewStep = memo(
           {/* Employment */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-              <Briefcase className="w-5 h-5 mr-2 text-blue-600" /> Employment Details
+              <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Employment Details
             </h4>
             <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
               <div className="flex justify-between"><span className="text-gray-600">Position:</span><span className="font-medium text-gray-900">{formData.position}</span></div>
@@ -554,7 +554,7 @@ const ReviewStep = memo(
           {/* Documents */}
           <div className="bg-white border border-gray-200 rounded-xl p-6">
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-              <FileText className="w-5 h-5 mr-2 text-blue-600" /> Documents
+              <FileText className="w-5 h-5 mr-2 text-primary-600" /> Documents
             </h4>
             <div className="space-y-2 text-sm">
               {(['profileImg', 'applicationLetter', 'cv', 'identityCardImage'] as const).map(type => (
@@ -575,11 +575,11 @@ const ReviewStep = memo(
           {formData.experience.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-                <Briefcase className="w-5 h-5 mr-2 text-blue-600" /> Work Experience ({formData.experience.length})
+                <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Work Experience ({formData.experience.length})
               </h4>
               <div className="space-y-4">
                 {formData.experience.map((exp, i) => (
-                  <div key={i} className="border-l-4 border-blue-500 pl-4 py-2">
+                  <div key={i} className="border-l-4 border-primary-500 pl-4 py-2">
                     <p className="font-medium text-gray-900">{exp.company_name}</p>
                     <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
                     <p className="text-xs text-gray-500 mt-1">{exp.start_date} - {exp.end_date || 'Present'}</p>
@@ -831,7 +831,7 @@ const EmployeeFormPage: React.FC = () => {
   if (isLoading && employeeId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -841,9 +841,9 @@ const EmployeeFormPage: React.FC = () => {
       <div className="mx-auto ">
         {/* Header & Progress */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+          <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
             <h1 className="text-2xl font-bold text-white">{employeeId ? 'Update Employee' : 'Create New Employee'}</h1>
-            <p className="text-blue-100 text-sm mt-1">Fill in the employee information step by step</p>
+            <p className="text-primary-100 text-sm mt-1">Fill in the employee information step by step</p>
           </div>
           <div className="px-8 py-6 bg-gray-50">
             <div className="flex items-center justify-between">
@@ -857,15 +857,15 @@ const EmployeeFormPage: React.FC = () => {
                       <div
                         className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                           isCompleted ? 'bg-green-500 text-white' :
-                          isActive ? 'bg-blue-600 text-white shadow-lg scale-110' :
+                          isActive ? 'bg-primary-600 text-white shadow-lg scale-110' :
                           'bg-gray-200 text-gray-500'
                         }`}
                       >
                         {isCompleted ? <Check className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
-                        {isActive && <span className="absolute -inset-1 bg-blue-400 rounded-full animate-ping opacity-75"></span>}
+                        {isActive && <span className="absolute -inset-1 bg-primary-400 rounded-full animate-ping opacity-75"></span>}
                       </div>
                       <div className="mt-3 text-center">
-                        <p className={`text-sm font-medium ${isActive ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
+                        <p className={`text-sm font-medium ${isActive ? 'text-primary-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
                           {step.title}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">{step.description}</p>
@@ -896,7 +896,7 @@ const EmployeeFormPage: React.FC = () => {
               </button>
             )}
             {currentStep < steps.length - 1 ? (
-              <button onClick={nextStep} className="flex items-center space-x-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-sm hover:shadow-md font-medium">
+              <button onClick={nextStep} className="flex items-center space-x-2 px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md font-medium">
                 <span>Next Step</span> <ChevronRight className="h-4 w-4" />
               </button>
             ) : (

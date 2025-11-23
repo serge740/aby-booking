@@ -103,11 +103,11 @@ export class OrderService {
 
       await this.email.sendEmail(
         order?.clientEmail,
-        `Your order from ${partner.name} — Fresh Cart`,
+        `Your order from ${partner.name} — ABY DASH`,
         'Order-Confirmation', // HBS template name
         {
           clientName: order.clientName,
-          company_name: 'Fresh Cart',
+          company_name: 'ABY DASH',
           partner_name: partner.name,
           orderNumber: order.orderNumber,
           totalAmount: order.totalAmount.toFixed(2),

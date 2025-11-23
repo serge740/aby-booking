@@ -448,7 +448,7 @@ const StockManagementDashboard: React.FC = () => {
                 <Package className="w-5 h-5 text-primary-600" />
               </div>
               <div>
-                <p className="text-sm text-indigo-600">Total Items</p>
+                <p className="text-sm text-primary-600">Total Items</p>
                 <p className="text-xl font-semibold text-gray-900">{allStocks.length}</p>
               </div>
             </div>

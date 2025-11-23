@@ -250,7 +250,7 @@ const DashboardSummary = () => {
               <StatCard
                 title="Stock Items"
                 value={stats.totalStock}
-                icon={<Package className="w-6 h-6 text-indigo-500" />}
+                icon={<Package className="w-6 h-6 text-primary-500" />}
                 subtitle={
                   <span>
                     <span className="text-red-600">{stats.lowStockItems} low</span>
@@ -272,7 +272,7 @@ const DashboardSummary = () => {
               <StatCard
                 title="Salary Requests"
                 value={stats.totalSalaries}
-                icon={<Briefcase className="w-6 h-6 text-cyan-500" />}
+                icon={<Briefcase className="w-6 h-6 text-primary-500" />}
                 subtitle={`${stats.pendingSalaries} pending • ${stats.approvedSalaries} approved`}
               />
               <StatCard
@@ -337,7 +337,7 @@ const DashboardSummary = () => {
               <StatCard
                 title="Salary Requests"
                 value={stats.totalSalaries}
-                icon={<Briefcase className="w-6 h-6 text-cyan-500" />}
+                icon={<Briefcase className="w-6 h-6 text-primary-500" />}
                 subtitle={`${stats.pendingSalaries} pending • ${stats.approvedSalaries} approved`}
               />
               <StatCard

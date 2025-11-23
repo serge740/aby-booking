@@ -130,7 +130,7 @@ export default function AbyAboutPage() {
                               <div className="w-20 h-20 rounded-full overflow-hidden">
                                 <img
                                   src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=200&h=200&fit=crop"
-                                  alt="Fresh cart app"
+                                  alt="ABY DASH app"
                                   className="w-full h-full object-cover"
                                 />
                               </div>
@@ -234,7 +234,7 @@ export default function AbyAboutPage() {
               <div className="w-2 h-2 rounded-full bg-orange-500"></div>
             </div>
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-              Why Choose <span className="text-red-600">FRESH CART</span>
+              Why Choose <span className="text-red-600">ABY DASH</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               More than just an app — we’re your daily partner for convenience, trust, and supporting local growth in Rwanda.
@@ -266,7 +266,7 @@ export default function AbyAboutPage() {
 
             {/* 3. Find Services Near You */}
             <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
                 <MapPin className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Find Services Near You</h3>
@@ -293,13 +293,13 @@ export default function AbyAboutPage() {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Trusted & Verified Providers</h3>
               <p className="text-gray-600">
-                Every business on Fresh cart is verified to ensure quality, trust, and reliability for all our users.
+                Every business on ABY DASH is verified to ensure quality, trust, and reliability for all our users.
               </p>
             </div>
 
             {/* 6. Fast, Simple, and Reliable */}
             <div className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-1">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-primary-600 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform">
                 <Clock className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Fast, Simple, and Reliable</h3>

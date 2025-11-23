@@ -25,7 +25,7 @@
         },
         "easyUse": {
             "title": "Byoroshye gukoresha ku mbuga zose",
-            "description": "Porogaramu yacu n’urubuga rwacu byakozwe ku buryo buri wese yabikoresha, yaba kuri mudasobwa, tablet cyangwa telefone."
+            "description": "Porogaramu yacu n’urubuga rwacu byakozwe ku buryo buri wese yabikoresha, yaba kuri mudasobwa, tablet primarygwa telefone."
         }
     },
     "buttons": {
@@ -71,13 +71,13 @@
      "services": {
     "sectionTitle": "Serivisi Zacu",
     "sectionHeader": "Tegura urugendo rwawe rworoshye",
-    "sectionDescription": "Fata itike, ukurikire imodoka, cyangwa utegure urugendo rwawe byoroshye ukoresheje online, offline cyangwa USSD.",
+    "sectionDescription": "Fata itike, ukurikire imodoka, primarygwa utegure urugendo rwawe byoroshye ukoresheje online, offline primarygwa USSD.",
     "bookTicket": "Fata Itike",
     "bookTicketDesc": "Tegura urugendo rwawe uhereye ku itike yihuse, ihuye n’ingendo zawe.",
     "trackCar": "Kurikirana Imodoka",
     "trackCarDesc": "Reba aho imodoka yawe iri mu gihe nyacyo ukanamenya igihe igeze aho ugomba kujya.",
     "onlineOfflineBooking": "Booking Online/Offline",
-    "onlineOfflineBookingDesc": "Fata itike ukoresheje porogaramu yacu cyangwa aho tugurisha amatike.",
+    "onlineOfflineBookingDesc": "Fata itike ukoresheje porogaramu yacu primarygwa aho tugurisha amatike.",
     "ussdBooking": "Booking ukoresheje USSD",
     "ussdBookingDesc": "Fata itike vuba ukoresheje code ya USSD kuri telefoni yawe.",
     "bottomDescription": "Duhanga uburyo bworoshye bwo gutegura urugendo rwawe, guhitamo imodoka, no kugura itike byihuse.",
@@ -85,7 +85,7 @@
   },
    "about": {
     "badge": "Ibijyanye na Aby Ticket",
-    "title": "Serivisi y'Amabus Yizewe Cyane mu Rwanda",
+    "title": "Serivisi y'Amabus Yizewe Primarye mu Rwanda",
     "subtitle": "Tuhuza imigi mu Rwanda yose hamwe n'ubwitwararike butinzwe, bworoshye kandi bwizewe. Menya itandukaniro ry'ingendo n'amabus agezweho hamwe na Aby Ticket.",
     "description": "Kuva twashinzwe, Aby Ticket yiyemeje gutanga serivisi idasanzwe y'amabus mu Rwanda hose. Dukoresha amabus agezweho kandi yitaweho neza, hamwe n'abashoferi b'inararibonye bashyira imbere umutekano wawe n'ihumure ryawe. Urusobe rwacu rwagutse ruhuza imigi mikuru harimo Kigali, Musanze, Huye, Rubavu, n'izindi.",
     "cta": "Tanga Urugendo Rwawe",
@@ -142,7 +142,7 @@
    "bookingProcess": {
     "badge": "Uburyo Bikora",
     "title": "Intambwe zoroshye zo gutanga itike rya bisi",
-    "subtitle": "Tanga itike rya bisi muburyo butatu bworoshye - ukoresheje urubuga rwacu, aplikasiyo ya mudasobwa, cyangwa ukoresheje kode ya USSD. Gutanga byihuse, byizewe kandi byoroshye.",
+    "subtitle": "Tanga itike rya bisi muburyo butatu bworoshye - ukoresheje urubuga rwacu, aplikasiyo ya mudasobwa, primarygwa ukoresheje kode ya USSD. Gutanga byihuse, byizewe kandi byoroshye.",
     "trustBadge": {
       "title": "Amatike 500K+ Yatanzwe",
       "subtitle": "Yizerwaho n'abagenzi mu Rwanda hose"
@@ -154,7 +154,7 @@
       },
       "book": {
         "title": "Tanga Itike Ryawe",
-        "content": "Rangiza gutanga itike ukoresheje urubuga rwacu, aplikasiyo, cyangwa ukanda *334# kuri USSD. Hitamo intebe yawe, ongeraho amakuru y'umugenzi, wishyure ukoresheje Mobile Money (MTN, Airtel), karita, cyangwa amafaranga mu biro byacu."
+        "content": "Rangiza gutanga itike ukoresheje urubuga rwacu, aplikasiyo, primarygwa ukanda *334# kuri USSD. Hitamo intebe yawe, ongeraho amakuru y'umugenzi, wishyure ukoresheje Mobile Money (MTN, Airtel), karita, primarygwa amafaranga mu biro byacu."
       },
       "travel": {
         "title": "Genda Byoroshye",
@@ -168,9 +168,9 @@
     "busAlt": "Imodoka rusange",
     "q1": "Nigute nabona tike y’imodoka?",
     "a1": "Ushobora kubona tike yawe kuri interineti, uhitemo aho uturuka n’aho ujya, igihe ushaka kugenda, hanyuma wishyure ukoresheje uburyo bwizewe.",
-    "q2": "Nshobora guhagarika cyangwa guhindura urugendo rwanjye?",
-    "a2": "Yego, ushobora guhagarika cyangwa guhindura urugendo rwawe nibura amasaha 24 mbere yo guhaguruka. Igihe cy’imihango myinshi bishobora kugira ingaruka.",
-    "q3": "Hariho igabanyirizwa ku banyeshuri cyangwa abakuru?",
+    "q2": "Nshobora guhagarika primarygwa guhindura urugendo rwanjye?",
+    "a2": "Yego, ushobora guhagarika primarygwa guhindura urugendo rwawe nibura amasaha 24 mbere yo guhaguruka. Igihe cy’imihango myinshi bishobora kugira ingaruka.",
+    "q3": "Hariho igabanyirizwa ku banyeshuri primarygwa abakuru?",
     "a3": "Yego, abanyeshuri n’abakuze bafite uburenganzira ku giciro gito. Ugomba kwerekana indangamuntu igaragaza icyiciro cyawe.",
     "q4": "Ni ubuhe buryo bwo kwishyura bwemewe?",
     "a4": "Dufata amakarita yo kwishyura, Mobile Money, n’ubundi buryo bwemewe bwo kwishyura mu gihugu.",
@@ -232,7 +232,7 @@
       },
       "punctualService": {
         "title": "Serivisi ku Gihe",
-        "description": "Gahunda z’ingendo zacu zateguwe hashingiwe ku mibereho y’itembera ry’imodoka mu Rwanda, kugira ngo amabisi ahaguruke ku gihe cyane cyane kuva muri Nyabugogo Bus Station i Kigali."
+        "description": "Gahunda z’ingendo zacu zateguwe hashingiwe ku mibereho y’itembera ry’imodoka mu Rwanda, kugira ngo amabisi ahaguruke ku gihe primarye primarye kuva muri Nyabugogo Bus Station i Kigali."
       },
       "customerFocus": {
         "title": "Kwita ku Bakiriya",
@@ -271,7 +271,7 @@
       "onlineBooking": {
         "title": "Kubika Itike kuri Interineti",
         "subtitle": "Kigali & Mu Gihugu Hose",
-        "description": "Bika amatike y’amabisi cyangwa imodoka kuri interineti ku ngendo zo muri Kigali no mu gihugu hose. Wishyure ukoresheje Mobile Money, amakarita cyangwa kohereza kuri konti ya banki.",
+        "description": "Bika amatike y’amabisi primarygwa imodoka kuri interineti ku ngendo zo muri Kigali no mu gihugu hose. Wishyure ukoresheje Mobile Money, amakarita primarygwa kohereza kuri konti ya banki.",
         "features": ["Icyemezo gihita gitangwa", "Kwemera Mobile Money", "Itike ya mudasobwa (E-ticket)"]
       },
       "interCityCar": {
@@ -283,13 +283,13 @@
       "carRental": {
         "title": "Serivisi zo Gukodesha Imodoka",
         "subtitle": "Ku munsi no mu gihe kirekire",
-        "description": "Kodesha imodoka zinoze ku mpamvu z’ubucuruzi cyangwa izo kwidagadura. Hitamo hagati ya sedan, SUV, cyangwa van — hamwe cyangwa hatarimo umushoferi.",
+        "description": "Kodesha imodoka zinoze ku mpamvu z’ubucuruzi primarygwa izo kwidagadura. Hitamo hagati ya sedan, SUV, primarygwa van — hamwe primarygwa hatarimo umushoferi.",
         "features": ["Amasezerano yoroheje", "Ubwishingizi bwuzuye", "Kwakirwa ku kibuga cy’indege"]
       },
       "ussdBooking": {
         "title": "Kubika Itike ukoresheje USSD",
         "subtitle": "Nta Interineti Ikenewe",
-        "description": "Bika itike udakoresheje interineti ukoresheje kode ya USSD *XXX#. Ibijyanye cyane n’ahantu hatagera interineti cyangwa kuri telefone zisanzwe.",
+        "description": "Bika itike udakoresheje interineti ukoresheje kode ya USSD *XXX#. Ibijyanye primarye n’ahantu hatagera interineti primarygwa kuri telefone zisanzwe.",
         "features": ["Ikora idakoresha interineti", "Ikora kuri telefone iyo ari yo yose", "Kubika ako kanya"]
       },
       "realTimeTracking": {
@@ -316,14 +316,14 @@
         "role": "Umuyobozi w’Ubucuruzi",
         "image": "JM",
         "rating": 5,
-        "text": "Serivisi nziza cyane! Nkoresha uburyo bwo kubika imodoka hagati y’imijyi buri cyumweru njya Musanze mu kazi. Bahora ku gihe kandi ari abahanga."
+        "text": "Serivisi nziza primarye! Nkoresha uburyo bwo kubika imodoka hagati y’imijyi buri cyumweru njya Musanze mu kazi. Bahora ku gihe kandi ari abahanga."
       },
       {
         "name": "Grace Uwase",
         "role": "Mwarimu",
         "image": "GU",
         "rating": 5,
-        "text": "Uburyo bwo kubika ukoresheje USSD ni impinduka ikomeye. Nshobora kubika itike n’iyo ntari ku murongo wa interineti. Biroroshye cyane!"
+        "text": "Uburyo bwo kubika ukoresheje USSD ni impinduka ikomeye. Nshobora kubika itike n’iyo ntari ku murongo wa interineti. Biroroshye primarye!"
       },
       {
         "name": "Patrick Niyonzima",
@@ -430,10 +430,10 @@
               { "type": "steps", "steps": [
                 "Jya ku rupapuro rwo kubika kuri interineti (Online Booking).",
                 "Hitamo aho uva, aho ujya, n’itariki y’urugendo.",
-                "Hitamo bisi cyangwa icyiciro cy’intebe wifuza.",
-                "Wishyure ukoresheje Mobile Money, ikarita, cyangwa kohereza kuri konti ya banki."
+                "Hitamo bisi primarygwa icyiciro cy’intebe wifuza.",
+                "Wishyure ukoresheje Mobile Money, ikarita, primarygwa kohereza kuri konti ya banki."
               ]},
-              { "type": "text", "content": "Itike yawe izahita yoherezwa kuri SMS cyangwa kuri email ako kanya." }
+              { "type": "text", "content": "Itike yawe izahita yoherezwa kuri SMS primarygwa kuri email ako kanya." }
             ]
           },
           {
@@ -445,7 +445,7 @@
               { "type": "list", "items": [
                 "Ikora kuri telefone iyo ari yo yose",
                 "Icyemezo cyo kubika gihita gitangwa",
-                "Bikwiriye cyane ahatagera interineti neza"
+                "Bikwiriye primarye ahatagera interineti neza"
               ]}
             ]
           },
@@ -460,7 +460,7 @@
             "number": 4,
             "question": "Namenya nte ko itike yanjye yemejwe?",
             "answer": [
-              { "type": "text", "content": "Nimara kwishyura, uzahita ubona SMS cyangwa email yemeza ko itike yawe yemejwe hamwe n’umubare w’icyemezo cy’urugendo." }
+              { "type": "text", "content": "Nimara kwishyura, uzahita ubona SMS primarygwa email yemeza ko itike yawe yemejwe hamwe n’umubare w’icyemezo cy’urugendo." }
             ]
           }
         ]
@@ -491,7 +491,7 @@
           },
           {
             "number": 7,
-            "question": "Nashobora guhagarika cyangwa guhindura itike?",
+            "question": "Nashobora guhagarika primarygwa guhindura itike?",
             "answer": [
               { "type": "text", "content": "Yego, biterwa n’isosiyete y’ubwikorezi n’igihe cya gahunda yo guhaguruka." },
               { "type": "text", "content": "Vugana n’itsinda ryacu ryita ku bakiriya ukoresheje umubare w’icyemezo cyawe, bazagufasha gukomeza inzira yo kubihindura." },
@@ -516,7 +516,7 @@
             "number": 9,
             "question": "Ngomba gucapa itike yanjye?",
             "answer": [
-              { "type": "text", "content": "Oya, ntibikenewe! Erekana gusa itike yawe ya SMS cyangwa E-ticket igihe winjira muri bisi." }
+              { "type": "text", "content": "Oya, ntibikenewe! Erekana gusa itike yawe ya SMS primarygwa E-ticket igihe winjira muri bisi." }
             ]
           },
           {
@@ -538,7 +538,7 @@
             "number": 12,
             "question": "Bizagenda bite niba bisi itinze guhaguruka?",
             "answer": [
-              { "type": "text", "content": "Tuzakumenyesha kuri SMS cyangwa duhamagare niba habaye gutinda." },
+              { "type": "text", "content": "Tuzakumenyesha kuri SMS primarygwa duhamagare niba habaye gutinda." },
               { "type": "text", "content": "Itsinda ryacu rikora uko rishoboye kugira ngo igihe cyo gutegereza kigabanuke kandi ingendo zikorwe ku gihe." }
             ]
           }
@@ -598,10 +598,10 @@
           },
           {
             "number": 18,
-            "question": "Nshobora gute gutanga igitekerezo cyangwa gutanga ikirego?",
+            "question": "Nshobora gute gutanga igitekerezo primarygwa gutanga ikirego?",
             "answer": [
               { "type": "text", "content": "Dushima ibitekerezo byawe!" },
-              { "type": "text", "content": "Ohereza email kuri feedback@abyticket.rw cyangwa utwandikire kuri WhatsApp kugira ngo dusangire uko wanyuzwe na serivisi zacu." }
+              { "type": "text", "content": "Ohereza email kuri feedback@abyticket.rw primarygwa utwandikire kuri WhatsApp kugira ngo dusangire uko wanyuzwe na serivisi zacu." }
             ]
           }
         ]
@@ -626,7 +626,7 @@
     "hero": {
       "badge": "Uko Wabika Itike",
       "title": "Uko Wabika Itike Yawe Neza kandi Byoroshye",
-      "description": "Kubika urugendo rwawe rukurikira mu Rwanda ntibyari byoroshye gutya! Dutanga uburyo bwinshi bworoshye bwo kubika — haba kuri interineti, kuri telefone, cyangwa uri mu rugendo."
+      "description": "Kubika urugendo rwawe rukurikira mu Rwanda ntibyari byoroshye gutya! Dutanga uburyo bwinshi bworoshye bwo kubika — haba kuri interineti, kuri telefone, primarygwa uri mu rugendo."
     },
     "steps": [
       {
@@ -635,9 +635,9 @@
         "list": [
           "Jya ku rubuga rwacu rwo kubika kuri interineti.",
           "Hitamo aho uva, aho ujya, n’itariki y’urugendo.",
-          "Hitamo intebe cyangwa ubwoko bw’imodoka (bisi cyangwa imodoka).",
-          "Wishyure mu mutekano ukoresheje Mobile Money, ikarita, cyangwa kohereza kuri konti ya banki.",
-          "Wakira itike yawe (E-ticket) ako kanya kuri SMS cyangwa email."
+          "Hitamo intebe primarygwa ubwoko bw’imodoka (bisi primarygwa imodoka).",
+          "Wishyure mu mutekano ukoresheje Mobile Money, ikarita, primarygwa kohereza kuri konti ya banki.",
+          "Wakira itike yawe (E-ticket) ako kanya kuri SMS primarygwa email."
         ],
         "features": [
           "Icyemezo gihita gitangwa",
@@ -647,7 +647,7 @@
       },
       {
         "title": "2. Kubika Ukoresheje USSD (Nta Interineti Ikenewe)",
-        "subtitle": "Bikwiriye cyane ahantu hatagera interineti neza",
+        "subtitle": "Bikwiriye primarye ahantu hatagera interineti neza",
         "list": [
           "Hamagara *XXX# kuri telefone yawe.",
           "Kurikirana menu yo guhitamo inzira n’itariki y’urugendo.",
@@ -663,8 +663,8 @@
       {
         "title": "3. Ukeneye Urugendo Rwihariye?",
         "list": [
-          "Hitamo hagati ya sedans, SUVs, cyangwa vans ziryoshye.",
-          "Birahari hamwe n’umushoferi cyangwa udafite umushoferi.",
+          "Hitamo hagati ya sedans, SUVs, primarygwa vans ziryoshye.",
+          "Birahari hamwe n’umushoferi primarygwa udafite umushoferi.",
           "Kwakirwa ku kibuga cy’indege no kuva ku rugo ukajya aho ujya birahari.",
           "Wishyure mu mutekano kandi ukurikirane imodoka yawe mu gihe nyacyo."
         ],
@@ -706,7 +706,7 @@
     "hero": {
       "badge": "Ikigo cy’Ubufasha",
       "title": "Ubufasha & Inkunga",
-      "description": "Turi hano kugira ngo urugendo rwawe rube rworoshye kandi nta stress. Shakisha ibisubizo, vugana n’itsinda ryacu, cyangwa ubone ubufasha mu gihe nyacyo hasi hano."
+      "description": "Turi hano kugira ngo urugendo rwawe rube rworoshye kandi nta stress. Shakisha ibisubizo, vugana n’itsinda ryacu, primarygwa ubone ubufasha mu gihe nyacyo hasi hano."
     },
     "faqSection": {
       "title": "Ibibazo Bikunze Kubazwa (FAQs)"
@@ -720,8 +720,8 @@
           { "type": "steps", "steps": [
             "Jya ku rubuga rwacu rwo kubika kuri interineti.",
             "Hitamo inzira, itariki, n’intebe.",
-            "Wishyure ukoresheje Mobile Money, banki, cyangwa ikarita.",
-            "Wakira E-ticket yawe ako kanya kuri SMS cyangwa email."
+            "Wishyure ukoresheje Mobile Money, banki, primarygwa ikarita.",
+            "Wakira E-ticket yawe ako kanya kuri SMS primarygwa email."
           ]}
         ]
       },
@@ -748,22 +748,22 @@
       },
       {
         "icon": "car",
-        "question": "Nashobora gukodesha imodoka cyangwa kubika imodoka hagati y’imijyi?",
+        "question": "Nashobora gukodesha imodoka primarygwa kubika imodoka hagati y’imijyi?",
         "answer": [
-          { "type": "text", "content": "Yego. Dutanga serivisi zo gukodesha imodoka (ku munsi cyangwa igihe kirekire) ndetse n’imodoka zihuza imijyi yose i Kigali — harimo Musanze, Rubavu, Huye, na Rusizi." }
+          { "type": "text", "content": "Yego. Dutanga serivisi zo gukodesha imodoka (ku munsi primarygwa igihe kirekire) ndetse n’imodoka zihuza imijyi yose i Kigali — harimo Musanze, Rubavu, Huye, na Rusizi." }
         ]
       },
       {
         "icon": "track",
         "question": "Nabasha gute gukurikirana imodoka yanjye?",
         "answer": [
-          { "type": "text", "content": "Ushobora gukurikirana imodoka cyangwa bisi mu gihe nyacyo ukoresheje GPS." },
+          { "type": "text", "content": "Ushobora gukurikirana imodoka primarygwa bisi mu gihe nyacyo ukoresheje GPS." },
           { "type": "text", "content": "Wakira amakuru nyayo y’igihe cyo kugera kandi usangire amakuru y’urugendo n’umuryango wawe ku mutekano." }
         ]
       },
       {
         "icon": "cancel",
-        "question": "Nshobora guhindura cyangwa guhagarika kubika kwanjye?",
+        "question": "Nshobora guhindura primarygwa guhagarika kubika kwanjye?",
         "answer": [
           { "type": "text", "content": "Yego, guhindura no guhagarika birashoboka bitewe n’ubwoko bw’itike yawe." },
           { "type": "text", "content": "Vugana n’itsinda ryacu ryita ku bakiriya ukoresheje umubare w’icyemezo cyawe, bazagufasha." }
@@ -805,7 +805,7 @@
     },
     "feedback": {
       "title": "Ibitekerezo",
-      "description": "Ibitekerezo byawe bidufasha kunoza serivisi! Ohereza ibitekerezo cyangwa utange amakuru y’ikibazo igihe icyo ari cyo cyose.",
+      "description": "Ibitekerezo byawe bidufasha kunoza serivisi! Ohereza ibitekerezo primarygwa utange amakuru y’ikibazo igihe icyo ari cyo cyose.",
       "cta": "Ohereza Igitekerezo"
     }
   },

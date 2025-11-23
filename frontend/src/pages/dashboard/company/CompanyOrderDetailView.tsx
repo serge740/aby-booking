@@ -141,7 +141,7 @@ export default function CompanyOrderDetailView() {
       case 'COMPLETED':
         return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, message: 'Order completed!', bg: 'bg-green-50' };
       case 'PROCESSING':
-        return { color: 'bg-blue-100 text-blue-800', icon: <PlayCircle className="w-5 h-5" />, message: 'Order is being prepared', bg: 'bg-blue-50' };
+        return { color: 'bg-primary-100 text-primary-800', icon: <PlayCircle className="w-5 h-5" />, message: 'Order is being prepared', bg: 'bg-primary-50' };
       case 'PENDING':
         return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, message: 'Order received', bg: 'bg-yellow-50' };
       case 'CANCELLED':
@@ -455,7 +455,7 @@ export default function CompanyOrderDetailView() {
                 className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
                   drinkItems.length === 0
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                    : 'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg'
                 }`}
               >
                 <Receipt className="w-5 h-5" />
@@ -475,7 +475,7 @@ export default function CompanyOrderDetailView() {
                   <button
                     onClick={() => updateOrderStatus('PROCESSING')}
                     disabled={updatingStatus}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
                   >
                     {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
                     <span>Approve & Start Processing</span>
@@ -676,7 +676,7 @@ export default function CompanyOrderDetailView() {
               <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-sm ${
                 operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
                 operationStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
-                'bg-blue-50 border border-blue-200 text-blue-800'
+                'bg-primary-50 border border-primary-200 text-primary-800'
               }`}>
                 <AlertCircle className="w-4 h-4" />
                 <span className="font-medium">{operationStatus.message}</span>

@@ -51,7 +51,7 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail({
-        from: `Fresh cart <${process.env.SMTP_USERNAME}>`,
+        from: `ABY DASH <${process.env.SMTP_USERNAME}>`,
         to,
         subject,
         html,

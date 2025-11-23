@@ -445,12 +445,12 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
         <Receipt className="w-3 h-3" />
       </button>
       <button onClick={() => openDrinkReceipt(order)} disabled={getDrinkItems(order).length === 0}
-        className={`p-1 rounded hover:bg-blue-50 ${getDrinkItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-blue-600 hover:text-blue-700'}`} title="Drinks Receipt">
+        className={`p-1 rounded hover:bg-primary-50 ${getDrinkItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-primary-600 hover:text-primary-700'}`} title="Drinks Receipt">
         <Receipt className="w-3 h-3" />
       </button>
       <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id}
-        className="text-gray-400 hover:text-blue-600 p-1 disabled:opacity-50" title="Full PDF">
-        {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}
+        className="text-gray-400 hover:text-primary-600 p-1 disabled:opacity-50" title="Full PDF">
+        {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}
       </button>
     </div>
   );
@@ -499,7 +499,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
                 <td className="py-2 px-2 hidden sm:table-cell">
                   <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
                     order.status === "PENDING" ? "bg-yellow-100 text-yellow-800" :
-                    order.status === "PROCESSING" ? "bg-blue-100 text-blue-800" :
+                    order.status === "PROCESSING" ? "bg-primary-100 text-primary-800" :
                     order.status === "COMPLETED" ? "bg-green-100 text-green-800" :
                     "bg-red-100 text-red-800"
                   }`}>{order.status}</span>
@@ -523,7 +523,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
             <span className="font-medium text-orange-600 text-xs">{order.orderNumber}</span>
             <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
               order.status === "PENDING" ? "bg-yellow-100 text-yellow-800" :
-              order.status === "PROCESSING" ? "bg-blue-100 text-blue-800" :
+              order.status === "PROCESSING" ? "bg-primary-100 text-primary-800" :
               order.status === "COMPLETED" ? "bg-green-100 text-green-800" :
               "bg-red-100 text-red-800"
             }`}>{order.status}</span>
@@ -565,7 +565,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
             <div className="hidden md:flex items-center space-x-4 text-xs text-gray-600">
               <span className={`px-2 py-1 rounded-full font-medium ${
                 order.status === "PENDING" ? "bg-yellow-100 text-yellow-800" :
-                order.status === "PROCESSING" ? "bg-blue-100 text-blue-800" :
+                order.status === "PROCESSING" ? "bg-primary-100 text-primary-800" :
                 order.status === "COMPLETED" ? "bg-green-100 text-green-800" :
                 "bg-red-100 text-red-800"
               }`}>{order.status}</span>
@@ -672,7 +672,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
             </div>
             <div className="bg-white rounded shadow p-4">
               <div className="flex items-center space-x-3">
-                <div className="p-3 bg-blue-100 rounded-full"><FileText className="w-5 h-5 text-blue-600" /></div>
+                <div className="p-3 bg-primary-100 rounded-full"><FileText className="w-5 h-5 text-primary-600" /></div>
                 <div><p className="text-xs text-gray-600">Processing</p><p className="text-lg font-semibold text-gray-900">{processingOrders}</p></div>
               </div>
             </div>
@@ -751,7 +751,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
               <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-xs ${
                 operationStatus.type === "success" ? "bg-green-50 border border-green-200 text-green-800" :
                 operationStatus.type === "error" ? "bg-red-50 border border-red-200 text-red-800" :
-                "bg-blue-50 border border-blue-200 text-blue-800"
+                "bg-primary-50 border border-primary-200 text-primary-800"
               }`}>
                 <AlertCircle className="w-4 h-4" />
                 <span className="font-medium">{operationStatus.message}</span>

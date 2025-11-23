@@ -103,7 +103,7 @@ const EmployeeProfileSettings = () => {
             )}
           </div>
           {isEditing && (
-            <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">
+            <label className="absolute bottom-0 right-0 bg-primary-600 text-white p-2 rounded-full cursor-pointer hover:bg-primary-700 transition-colors">
               <Camera className="w-4 h-4" />
               <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
             </label>
@@ -242,7 +242,7 @@ const EmployeeProfileSettings = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 flex items-center space-x-2"
             >
               {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
               <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
@@ -251,7 +251,7 @@ const EmployeeProfileSettings = () => {
         ) : (
           <button
             onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
             Edit Profile
           </button>

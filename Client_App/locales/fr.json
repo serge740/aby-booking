@@ -2,11 +2,11 @@
     "onboarding": {
         "slides": [{
                 "title": "Découvrez les entreprises locales",
-                "description": "Bienvenue sur Fresh cart — votre passerelle vers les meilleurs restaurants, supermarchés, salons et services de Kigali. Tout ce dont vous avez besoin, réuni au même endroit."
+                "description": "Bienvenue sur ABY DASH — votre passerelle vers les meilleurs restaurants, supermarchés, salons et services de Kigali. Tout ce dont vous avez besoin, réuni au même endroit."
             },
             {
                 "title": "Réservez et commandez facilement",
-                "description": "Avec FRESH CART, explorez, prenez des rendez-vous et commandez des produits auprès d’entreprises locales de confiance — rapidement et facilement."
+                "description": "Avec ABY DASH, explorez, prenez des rendez-vous et commandez des produits auprès d’entreprises locales de confiance — rapidement et facilement."
             },
             {
                 "title": "Payez en toute sécurité",
@@ -19,7 +19,7 @@
     },
     "loginAuth": {
         "welcome": "Bon retour !",
-        "back": "Bienvenue sur FRESH CART",
+        "back": "Bienvenue sur ABY DASH",
         "subtitle": "Connectez-vous pour découvrir les restaurants, salons, supermarchés et services locaux, gérer vos réservations et commander vos produits facilement.",
         "placeholder_identifier": "Entrez votre numéro de téléphone ou votre e-mail",
         "placeholder_phone": "Entrez votre numéro de téléphone",
@@ -42,7 +42,7 @@
     "registerAuth": {
         "hello": "Bonjour",
         "there": "!",
-        "register_subtitle": "Quelques étapes seulement et vous êtes prêt à découvrir les restaurants, salons, supermarchés et services locaux avec FRESH CART.",
+        "register_subtitle": "Quelques étapes seulement et vous êtes prêt à découvrir les restaurants, salons, supermarchés et services locaux avec ABY DASH.",
         "placeholder_name": "Entrez votre nom complet",
         "placeholder_email": "Entrez votre e-mail",
         "placeholder_phone": "Entrez votre numéro de téléphone",
@@ -71,7 +71,7 @@
     },
     "guest": {
         "index": {
-            "app_name": "FRESH CART",
+            "app_name": "ABY DASH",
             "app_subtitle": "Réservez votre table",
             "location": "Kigali, Rwanda",
             "hero_title": "Réservez votre expérience culinaire idéale",
@@ -102,8 +102,8 @@
                 "orders": "50K+ Réservations effectuées"
             },
 
-            "what_title": "Qu’est-ce qu’Fresh cart ?",
-            "what_text": "Fresh cart vous permet de découvrir et réserver des tables dans les restaurants, bars, cafés et supermarchés de Kigali. Consultez les menus, vérifiez la disponibilité, réservez et commandez — le tout dans une seule application.",
+            "what_title": "Qu’est-ce qu’ABY DASH ?",
+            "what_text": "ABY DASH vous permet de découvrir et réserver des tables dans les restaurants, bars, cafés et supermarchés de Kigali. Consultez les menus, vérifiez la disponibilité, réservez et commandez — le tout dans une seule application.",
 
             "categories_title": "Parcourir par catégorie",
             "categories_subtitle": "Trouvez l’endroit idéal pour chaque occasion",
@@ -127,7 +127,7 @@
             "step_4_subtitle": "Savourez votre expérience culinaire",
 
             "business_title": "Vous avez un restaurant ou un bar ?",
-            "business_subtitle": "Rejoignez Fresh cart pour recevoir des réservations, gérer vos tables et atteindre des milliers de clients à Kigali.",
+            "business_subtitle": "Rejoignez ABY DASH pour recevoir des réservations, gérer vos tables et atteindre des milliers de clients à Kigali.",
             "cta_button": "Inscrire mon établissement"
         },
 
@@ -139,17 +139,17 @@
             "change_language": "Changer de langue",
             "section_account": "Compte",
             "logout": "Se déconnecter",
-            "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter d’Fresh cart ?",
+            "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter d’ABY DASH ?",
             "language_alert": "Les options de langue seront bientôt disponibles.",
-            "footer": "Version de l’application Fresh cart 1.0.0"
+            "footer": "Version de l’application ABY DASH 1.0.0"
 
         },
         "support": {
             "header": "Centre d’assistance",
-            "subheader": "Nous sommes là pour vous aider pour toutes questions ou problèmes liés à FRESH CART.",
+            "subheader": "Nous sommes là pour vous aider pour toutes questions ou problèmes liés à ABY DASH.",
             "contact_title": "Contactez-nous",
             "phone": "Téléphone : +250 788 123 456",
-            "email": "E-mail : support@freshcart.rw",
+            "email": "E-mail : support@aby dash.rw",
             "whatsapp_title": "Support WhatsApp",
             "whatsapp_link": "Discutez avec nous sur WhatsApp",
             "faq_title": "Questions fréquentes",
@@ -159,7 +159,7 @@
                 "Comment suivre ma commande ou réservation ?",
                 "Que faire si je rencontre un problème avec ma réservation ?"
             ],
-            "footer": "Merci d’utiliser Fresh cart !"
+            "footer": "Merci d’utiliser ABY DASH !"
         },
 
         "bus": {
@@ -178,7 +178,7 @@
                 "shop_now": "Acheter maintenant",
                 "favorites": "Favoris"
             },
-            "promo_title": "Bienvenue sur Fresh cart ! 🎉",
+            "promo_title": "Bienvenue sur ABY DASH ! 🎉",
             "promo_subtitle": "Découvrez les entreprises et services locaux à Kigali",
             "promo_button": "Explorer maintenant",
             "browse_categories": "Parcourir les catégories",
@@ -200,7 +200,7 @@
                 "no_services": "Aucune entreprise trouvée",
                 "try_different": "Essayez une autre catégorie ou un autre terme de recherche"
             },
-            "info_title": "Qu’est-ce qu’Fresh cart ?",
+            "info_title": "Qu’est-ce qu’ABY DASH ?",
             "info_text": "Le marché local du Rwanda pour réserver des services et commander des produits — vous aide à gagner du temps et à faire croître les entreprises localement.",
             "learn_more": "En savoir plus"
         },
@@ -221,22 +221,22 @@
             "dark_mode": "Mode sombre",
             "help_center": "Centre d’assistance",
             "contact_support": "Contacter le support",
-            "rate_app": "Noter FRESH CART",
+            "rate_app": "Noter ABY DASH",
             "terms_conditions": "Termes & Conditions",
             "privacy_policy": "Politique de confidentialité",
             "logout": "Se déconnecter",
             "delete_account": "Supprimer le compte",
-            "footer_brand": "FRESH CART",
+            "footer_brand": "ABY DASH",
             "footer_version": "Version 1.0.0",
             "footer_member_since": "Membre depuis",
-            "footer_copyright": "© 2024 FRESH CART. Tous droits réservés.",
+            "footer_copyright": "© 2024 ABY DASH. Tous droits réservés.",
             "alerts": {
                 "logout_title": "Déconnexion",
-                "logout_message": "Êtes-vous sûr de vouloir vous déconnecter d’Fresh cart ?",
+                "logout_message": "Êtes-vous sûr de vouloir vous déconnecter d’ABY DASH ?",
                 "logout_cancel": "Annuler",
                 "logout_confirm": "Se déconnecter",
                 "delete_title": "Supprimer le compte",
-                "delete_message": "Êtes-vous sûr de vouloir supprimer votre compte Fresh cart ? Cette action est irréversible.",
+                "delete_message": "Êtes-vous sûr de vouloir supprimer votre compte ABY DASH ? Cette action est irréversible.",
                 "delete_cancel": "Annuler",
                 "delete_confirm": "Supprimer",
                 "error_logout": "Échec de la déconnexion. Veuillez réessayer.",

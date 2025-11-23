@@ -107,16 +107,16 @@ const TeamMembersPage = () => {
   const TeamMemberCard = ({ member }) => (
     <div className="group relative bg-white rounded-3xl p-8 hover:transform hover:scale-105 transition-all duration-500 shadow-xl hover:shadow-2xl overflow-hidden">
       {/* Gradient Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-purple-500/5 to-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
       {/* Decorative Top Corner */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-200/40 via-blue-200/30 to-transparent rounded-bl-full"></div>
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-purple-200/40 via-primary-200/30 to-transparent rounded-bl-full"></div>
       
       {/* Profile Image & Basic Info */}
       <div className="relative text-center mb-6">
         <div className="relative mb-6 inline-block">
           {/* Gradient Ring */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-500 scale-110"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full blur-md opacity-0 group-hover:opacity-70 transition-opacity duration-500 scale-110"></div>
           
           <img
             src={member.image}
@@ -125,12 +125,12 @@ const TeamMembersPage = () => {
           />
           
           {/* Status Badge */}
-          <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+          <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-gradient-to-br from-primary-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
             <Star className="w-5 h-5 text-white fill-white" />
           </div>
         </div>
         
-        <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
+        <h3 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary-700 via-purple-700 to-primary-700 bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300">
           {member.name}
         </h3>
         <p className="text-purple-600 font-semibold text-sm mb-1">
@@ -141,15 +141,15 @@ const TeamMembersPage = () => {
 
       {/* Contact Info */}
       <div className="relative space-y-3 mb-6">
-        <div className="flex items-center text-gray-700 text-sm bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-xl hover:shadow-md transition-all duration-300 group/item">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover/item:scale-110 transition-transform duration-300">
+        <div className="flex items-center text-gray-700 text-sm bg-gradient-to-r from-primary-50 to-purple-50 p-3 rounded-xl hover:shadow-md transition-all duration-300 group/item">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-purple-600 rounded-lg flex items-center justify-center mr-3 group-hover/item:scale-110 transition-transform duration-300">
             <MapPin className="w-4 h-4 text-white" />
           </div>
           <span className="text-xs">{member.location}</span>
         </div>
         
-        <div className="flex items-center text-gray-700 text-sm bg-gradient-to-r from-purple-50 to-indigo-50 p-3 rounded-xl hover:shadow-md transition-all duration-300 group/item">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center mr-3 group-hover/item:scale-110 transition-transform duration-300">
+        <div className="flex items-center text-gray-700 text-sm bg-gradient-to-r from-purple-50 to-primary-50 p-3 rounded-xl hover:shadow-md transition-all duration-300 group/item">
+          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-primary-600 rounded-lg flex items-center justify-center mr-3 group-hover/item:scale-110 transition-transform duration-300">
             <Mail className="w-4 h-4 text-white" />
           </div>
           <span className="truncate text-xs">{member.email}</span>
@@ -159,25 +159,25 @@ const TeamMembersPage = () => {
    
 
       {/* Bottom Decorative Element */}
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-200/30 via-purple-200/20 to-transparent rounded-tr-full"></div>
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary-200/30 via-purple-200/20 to-transparent rounded-tr-full"></div>
     </div>
   );
 
   return (
-    <div className="w-full flex flex-col pb-4 items-center gap-12 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 min-h-screen">
+    <div className="w-full flex flex-col pb-4 items-center gap-12 bg-gradient-to-br from-primary-50 via-purple-50 to-primary-50 min-h-screen">
          <Header title={`Our Team`} path={`Our Team`} />
 
       {/* Hero Section */}
       <div className="text-center max-w-8xl mx-auto px-6 mt-0">
-        <div className="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full">
-          <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <div className="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-primary-100 to-purple-100 rounded-full">
+          <span className="text-sm font-semibold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">
             Meet Our Team
           </span>
         </div>
         
         <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
           Our{" "}
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 bg-clip-text text-transparent">
             Exceptional Team
           </span>
         </h1>

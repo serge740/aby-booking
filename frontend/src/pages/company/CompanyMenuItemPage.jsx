@@ -210,7 +210,7 @@ const MenuItemDetail = () => {
     // Update cart context (you may want a `setCart` or `replaceCompanyCart`)
     // For now, clear and add
     otherCompanyItems.forEach(item => addToCart(item)); // re-add others
-    // We'll let modal use fresh cart state
+    // We'll let modal use ABY DASH state
 
     // Open modal
     setIsOrderModalOpen(true);

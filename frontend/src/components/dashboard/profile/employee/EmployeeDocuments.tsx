@@ -29,8 +29,8 @@ const EmployeeDocuments = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className={`p-2 rounded-lg ${url ? 'bg-blue-100' : 'bg-gray-200'}`}>
-                    <doc.icon className={`w-5 h-5 ${url ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <div className={`p-2 rounded-lg ${url ? 'bg-primary-100' : 'bg-gray-200'}`}>
+                    <doc.icon className={`w-5 h-5 ${url ? 'text-primary-600' : 'text-gray-400'}`} />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900">{doc.label}</p>
@@ -45,7 +45,7 @@ const EmployeeDocuments = () => {
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                      className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
                       title="View"
                     >
                       <Eye className="w-4 h-4" />

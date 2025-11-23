@@ -69,7 +69,7 @@ const getStatusInfo = (status: string) => {
     case 'COMPLETED':
       return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, message: 'Order Completed', bg: 'bg-green-50' };
     case 'PROCESSING':
-      return { color: 'bg-blue-100 text-blue-800', icon: <PlayCircle className="w-5 h-5" />, message: 'In Kitchen', bg: 'bg-blue-50' };
+      return { color: 'bg-primary-100 text-primary-800', icon: <PlayCircle className="w-5 h-5" />, message: 'In Kitchen', bg: 'bg-primary-50' };
     case 'PENDING':
       return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, message: 'Order Received', bg: 'bg-yellow-50' };
     case 'CANCELLED':
@@ -320,12 +320,12 @@ export default function OrderTrackingPage() {
 
             {/* Notes */}
             {order.notes && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-blue-900 mb-3 flex items-center gap-2">
+              <div className="bg-primary-50 border border-primary-200 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-primary-900 mb-3 flex items-center gap-2">
                   <FileText className="w-5 h-5" />
                   Special Requests
                 </h3>
-                <p className="text-blue-800 italic">"{order.notes}"</p>
+                <p className="text-primary-800 italic">"{order.notes}"</p>
               </div>
             )}
 

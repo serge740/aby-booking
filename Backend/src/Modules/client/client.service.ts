@@ -35,13 +35,13 @@ export class ClientService {
     // Send welcome email
     await this.email.sendEmail(
       email,
-      'Welcome to Fresh Cart',
+      'Welcome to ABY DASH',
       'Welcome-User-notification', // HBS template name
       {
         name,
         email,
         phoneNumber,
-        company_name:'Fresh Cart',
+        company_name:'ABY DASH',
         loginUrl:`${process.env.FRONTEND_URL}/auth/client/login`,
         password: rawPassword,
         year: currentYear,

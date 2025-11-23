@@ -53,8 +53,8 @@ function NavBar() {
       >
         <div className="menuItem mx-auto flex flex-col lg:flex-row items-center justify-between px-4 gap-3 text-sm">
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <a href="mailto:support@freshcart.com" className="flex items-center gap-1 hover:underline">
-              <FiMail className="w-4 h-4" /> support@freshcart.com
+            <a href="mailto:support@aby dash.com" className="flex items-center gap-1 hover:underline">
+              <FiMail className="w-4 h-4" /> support@aby dash.com
             </a>
             <a href="tel:+18005551234" className="flex items-center gap-1 hover:underline">
               <FiPhone className="w-4 h-4" /> +1 800-555-1234
@@ -97,7 +97,7 @@ function NavBar() {
                 </svg>
               </div>
               <span className={`font-bold text-gray-900 ${scrolled ? "text-lg" : "text-xl"}`}>
-                FreshCart
+                ABY DASH
               </span>
             </NavLink>
 
@@ -214,7 +214,7 @@ function NavBar() {
 
             <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
               <p className="flex items-center gap-2">
-                <FiMail className="text-orange-500" /> support@freshcart.com
+                <FiMail className="text-orange-500" /> support@aby dash.com
               </p>
               <p className="flex items-center gap-2">
                 <FiPhone className="text-orange-500" /> +1 800-555-1234

@@ -270,7 +270,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="e.g., Grilled Chicken Salad"
               />
             </div>
@@ -281,7 +281,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
               <select
                 value={formData.categoryId}
                 onChange={(e) => handleInputChange('categoryId', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="">Select a category</option>
                 {categories.map(cat => (
@@ -295,7 +295,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => handleInputChange('isActive', e.target.checked)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                 />
                 <span className="text-sm font-medium text-gray-700">Active Item</span>
               </label>
@@ -328,7 +328,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                   onClick={() => handleInputChange('purpose', 'EATING')}
                   className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${
                     formData.purpose === 'EATING'
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-primary-500 bg-primary-50'
                       : 'border-gray-300 hover:border-gray-400'
                   }`}
                 >
@@ -340,7 +340,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                   onClick={() => handleInputChange('purpose', 'DRINKING')}
                   className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${
                     formData.purpose === 'DRINKING'
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-primary-500 bg-primary-50'
                       : 'border-gray-300 hover:border-gray-400'
                   }`}
                 >
@@ -359,7 +359,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                   <select
                     value={formData.drinkState}
                     onChange={(e) => handleInputChange('drinkState', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   >
                     <option value="">Select drink state</option>
                     <option value="ALCOHOLIC">Alcoholic</option>
@@ -374,7 +374,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                     <select
                       value={formData.alcoholicType}
                       onChange={(e) => handleInputChange('alcoholicType', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     >
                       <option value="">Select type</option>
                       <option value="LIQUOR">Liquor</option>
@@ -399,12 +399,12 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                       onChange={(e) => setIngredientName(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && addIngredient()}
                       placeholder="e.g., Chicken, Rice, Spices"
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     />
                     <button
                       type="button"
                       onClick={addIngredient}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 whitespace-nowrap"
+                      className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 whitespace-nowrap"
                     >
                       Add
                     </button>
@@ -432,7 +432,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                     value={formData.recipe}
                     onChange={(e) => handleInputChange('recipe', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Cooking instructions..."
                   />
                 </div>
@@ -455,7 +455,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                   step="0.01"
                   value={formData.sellingPrice}
                   onChange={(e) => handleInputChange('sellingPrice', e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="0.00"
                 />
               </div>
@@ -473,7 +473,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                     step="0.01"
                     value={formData.purchasingPrice}
                     onChange={(e) => handleInputChange('purchasingPrice', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="0.00"
                   />
                 </div>
@@ -503,7 +503,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                 max="100"
                 value={formData.discount}
                 onChange={(e) => handleInputChange('discount', parseInt(e.target.value) || 0)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 placeholder="0"
               />
             </div>
@@ -697,13 +697,13 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                         isCompleted
                           ? 'bg-green-600 text-white'
                           : isActive
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary-600 text-white'
                           : 'bg-gray-200 text-gray-400'
                       }`}
                     >
                       {isCompleted ? <Check className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
                     </div>
-                    <span className={`mt-2 text-xs font-medium ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
+                    <span className={`mt-2 text-xs font-medium ${isActive ? 'text-primary-600' : 'text-gray-500'}`}>
                       {step.name}
                     </span>
                   </div>
@@ -755,7 +755,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                 type="button"
                 onClick={nextStep}
                 disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium flex items-center space-x-2 disabled:opacity-50"
+                className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium flex items-center space-x-2 disabled:opacity-50"
               >
                 <span>Next</span>
                 <ChevronRight className="w-4 h-4" />
@@ -824,7 +824,7 @@ export function EditMenuItemPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

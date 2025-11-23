@@ -325,8 +325,8 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }: { isOpen: boolean; o
                   </div>
 
                   {/* Order Notes */}
-                  <div className="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border-2 border-blue-100 shadow-sm">
-                    <label className="block text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
+                  <div className="mt-8 bg-gradient-to-br from-primary-50 to-primary-50 rounded-2xl p-5 border-2 border-primary-100 shadow-sm">
+                    <label className="block text-sm font-bold text-primary-900 mb-3 flex items-center gap-2">
                       <FileCheck className="w-4 h-4" />
                       Order Notes (Optional)
                     </label>
@@ -335,9 +335,9 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }: { isOpen: boolean; o
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder="e.g. No onions, extra spicy, deliver to table 5..."
                       rows={3}
-                      className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-blue-400 resize-none bg-white shadow-sm transition-all duration-200"
+                      className="w-full px-4 py-3 border-2 border-primary-200 rounded-xl focus:ring-2 focus:ring-primary-400 focus:border-primary-400 resize-none bg-white shadow-sm transition-all duration-200"
                     />
-                    <p className="text-xs text-blue-600 mt-2 font-medium">
+                    <p className="text-xs text-primary-600 mt-2 font-medium">
                       Let the restaurant know any special requests
                     </p>
                   </div>
@@ -446,12 +446,12 @@ const MenuItemOrderModal = ({ isOpen, onClose, companyId }: { isOpen: boolean; o
 
               {/* Order Notes */}
               {notes && (
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 shadow-md">
-                  <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-primary-50 to-primary-50 border-2 border-primary-200 rounded-2xl p-6 shadow-md">
+                  <h3 className="font-bold text-primary-900 mb-3 flex items-center gap-2">
                     <FileCheck className="w-5 h-5" />
                     Order Notes
                   </h3>
-                  <p className="text-sm text-blue-800 whitespace-pre-wrap bg-white rounded-xl p-4 italic">
+                  <p className="text-sm text-primary-800 whitespace-pre-wrap bg-white rounded-xl p-4 italic">
                     "{notes}"
                   </p>
                 </div>

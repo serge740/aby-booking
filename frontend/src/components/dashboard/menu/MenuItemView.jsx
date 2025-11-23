@@ -223,7 +223,7 @@ export default function MenuItemView() {
                 </span>
               )}
               {item.purpose && (
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
                   {item.purpose}
                 </span>
               )}
@@ -268,7 +268,7 @@ export default function MenuItemView() {
 
             {/* Purpose-Specific Details */}
             {item.purpose === 'DRINKING' && (
-              <div className="bg-blue-50 rounded-xl p-5 space-y-3">
+              <div className="bg-primary-50 rounded-xl p-5 space-y-3">
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-700">Drink Type:</span>
                   <span className="capitalize">{item.drinkState?.toLowerCase()}</span>
