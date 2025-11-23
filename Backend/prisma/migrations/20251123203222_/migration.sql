@@ -189,8 +189,12 @@ CREATE TABLE `Stock` (
     `sku` VARCHAR(191) NOT NULL,
     `quantity` DOUBLE NOT NULL DEFAULT 0,
     `unit` VARCHAR(191) NOT NULL,
-    `price` DOUBLE NOT NULL,
     `description` VARCHAR(191) NULL,
+    `purpose` ENUM('EATING', 'DRINKING') NOT NULL DEFAULT 'EATING',
+    `subquantity` DOUBLE NULL,
+    `purchasingPrice` DOUBLE NULL,
+    `sellingPrice` DOUBLE NOT NULL,
+    `reoderLevel` DOUBLE NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

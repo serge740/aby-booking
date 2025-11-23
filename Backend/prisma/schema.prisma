@@ -125,11 +125,21 @@ model Order {
   employee       Employee?        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   items         OrderItem[]
+   paymentStatus  PaymentStatus @default(PENDING)
+
+  
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
    @@map("Order")
 }
+enum PaymentStatus {
+  SUCCESSFUL
+  FAILED
+  PENDING
+  DEBTED
+}
+
 
 model OrderItem {
   id          String     @id @default(cuid())
@@ -177,9 +187,7 @@ model Company {
 
   type           CompanyType @default(OTHER)
   isActive       Boolean     @default(true)
-  
-  // Relations
-  category MenuCategory[]
+
  
   orders       Order[]
   items     MenuItem[] // One category can have many items
@@ -204,15 +212,6 @@ enum CompanyType {
   OTHER
 }
 
-model MenuCategory {
-  id        String     @id @default(cuid())
-  name      String
-  image     String?
-  companyId String
-  company   Company    @relation(fields: [companyId], references: [id],onDelete: Cascade)
-  items     MenuItem[] // One category can have many items
-   @@map("MenuCategory")
-}
 
 
 model Employee {
@@ -302,14 +301,27 @@ model Stock {
   sku         String   @unique
   quantity    Float     @default(0)
   unit        String
-  price       Float
+
   description String?
+  purpose         StockPurposeStatus      @default(EATING)
+  subquantity    Float?
+
+  purchasingPrice  Float?
+  sellingPrice     Float
+  reoderLevel     Float
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   company     Company  @relation(fields: [companyId], references: [id])
   employee    Employee? @relation(fields: [employeeId], references: [id])
+   items     MenuItem[] // One category can have many items
   @@map("Stock")
+}
+
+enum StockPurposeStatus {
+  EATING
+  DRINKING
 }
 
 model Leave {
@@ -491,12 +503,15 @@ model MenuItem {
   discount        Int                @default(0)
   isActive        Boolean            @default(true)
 
+  tags           Json                @default("[]")
+
+
+  stock         Stock?            @relation(fields: [stockId], references: [id])
+  stockId       String?
+
   // 🔹 Relations
   company         Company?            @relation(fields: [companyId], references: [id])
   companyId       String?
-
-  category        MenuCategory?      @relation(fields: [categoryId], references: [id])
-  categoryId      String?
 
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt

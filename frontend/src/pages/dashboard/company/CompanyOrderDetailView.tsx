@@ -1,25 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Package,
-  User,
-  Mail,
-  Phone,
-  Calendar,
-  FileText,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertCircle,
-  Hash,
-  Download,
-  ShoppingCart,
-  Percent,
-  PlayCircle,
-  X,
-  Check,
-  RefreshCw,
-  Receipt,
+  Package, User, Mail, Phone, Calendar, FileText,
+  CheckCircle, XCircle, Clock, AlertCircle, Hash,
+  Download, ShoppingCart, Percent, PlayCircle, X, Check,
+  RefreshCw, Receipt, CreditCard, AlertTriangle
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import orderService from '../../../services/orderService';
@@ -45,6 +30,7 @@ interface Order {
   id: string;
   orderNumber: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED';
+  paymentStatus: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED';
   totalAmount: number;
   notes?: string;
   clientName: string;
@@ -83,6 +69,7 @@ export default function CompanyOrderDetailView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [updatingPayment, setUpdatingPayment] = useState(false);
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [operationStatus, setOperationStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [showFoodReceipt, setShowFoodReceipt] = useState(false);
@@ -119,7 +106,7 @@ export default function CompanyOrderDetailView() {
 
   const showToast = (type: 'success' | 'error' | 'info', message: string) => {
     setOperationStatus({ type, message });
-    setTimeout(() => setOperationStatus(null), 3000);
+    setTimeout(() => setOperationStatus(null), 4000);
   };
 
   const updateOrderStatus = async (newStatus: 'PROCESSING' | 'CANCELLED' | 'COMPLETED') => {
@@ -136,18 +123,41 @@ export default function CompanyOrderDetailView() {
     }
   };
 
+  const updatePaymentStatus = async (newStatus: 'SUCCESSFUL' | 'FAILED' | 'DEBTED') => {
+    if (!order || updatingPayment) return;
+    setUpdatingPayment(true);
+    try {
+      const updated = await orderService.updatePaymentStatus(order.id, newStatus);
+      setOrder(updated);
+      showToast('success', `Payment marked as ${newStatus}!`);
+    } catch (err: any) {
+      showToast('error', err.message || 'Failed to update payment status');
+    } finally {
+      setUpdatingPayment(false);
+    }
+  };
+
   const getStatusInfo = (status: string) => {
     switch (status) {
-      case 'COMPLETED':
-        return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, message: 'Order completed!', bg: 'bg-green-50' };
-      case 'PROCESSING':
-        return { color: 'bg-primary-100 text-primary-800', icon: <PlayCircle className="w-5 h-5" />, message: 'Order is being prepared', bg: 'bg-primary-50' };
+      case 'COMPLETED': return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, message: 'Order completed!', bg: 'bg-green-50' };
+      case 'PROCESSING': return { color: 'bg-primary-100 text-primary-800', icon: <PlayCircle className="w-5 h-5" />, message: 'Order is being prepared', bg: 'bg-primary-50' };
+      case 'PENDING': return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, message: 'Order received', bg: 'bg-yellow-50' };
+      case 'CANCELLED': return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, message: 'Order cancelled', bg: 'bg-red-50' };
+      default: return { color: 'bg-gray-100 text-gray-800', icon: <Package className="w-5 h-5" />, message: 'Unknown', bg: 'bg-gray-50' };
+    }
+  };
+
+  const getPaymentStatusInfo = (status: string) => {
+    switch (status) {
+      case 'SUCCESSFUL':
+        return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, label: 'Paid', bg: 'bg-green-50' };
+      case 'FAILED':
+        return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, label: 'Payment Failed', bg: 'bg-red-50' };
+      case 'DEBTED':
+        return { color: 'bg-orange-100 text-orange-800', icon: <AlertTriangle className="w-5 h-5" />, label: 'On Credit (Debted)', bg: 'bg-orange-50' };
       case 'PENDING':
-        return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, message: 'Order received', bg: 'bg-yellow-50' };
-      case 'CANCELLED':
-        return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, message: 'Order has been cancelled', bg: 'bg-red-50' };
       default:
-        return { color: 'bg-gray-100 text-gray-800', icon: <Package className="w-5 h-5" />, message: 'Unknown status', bg: 'bg-gray-50' };
+        return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, label: 'Payment Pending', bg: 'bg-yellow-50' };
     }
   };
 
@@ -169,7 +179,6 @@ export default function CompanyOrderDetailView() {
         return y + (lines.length * fontSize * 0.4);
       };
 
-      // Header
       pdf.setFillColor(251, 146, 60);
       pdf.rect(0, 0, pageWidth, 25, 'F');
       pdf.setTextColor(255, 255, 255);
@@ -179,7 +188,6 @@ export default function CompanyOrderDetailView() {
       yPos = 35;
       pdf.setTextColor(0, 0, 0);
 
-      // Order Info
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Order Information', margin, yPos); yPos += 8;
@@ -188,9 +196,9 @@ export default function CompanyOrderDetailView() {
       pdf.text(`Order #: ${order.orderNumber}`, margin, yPos); yPos += 6;
       pdf.text(`Date: ${formatDate(order.createdAt)}`, margin, yPos); yPos += 6;
       pdf.text(`Status: ${order.status}`, margin, yPos); yPos += 6;
+      pdf.text(`Payment: ${order.paymentStatus}`, margin, yPos); yPos += 6;
       pdf.text(`Total: ${formatRWF(order.totalAmount)}`, margin, yPos); yPos += 10;
 
-      // Client Info
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Customer', margin, yPos); yPos += 8;
@@ -199,7 +207,6 @@ export default function CompanyOrderDetailView() {
       if (order.clientPhone) pdf.text(`Phone: ${order.clientPhone}`, margin, yPos), yPos += 6;
       if (order.clientEmail) pdf.text(`Email: ${order.clientEmail}`, margin, yPos), yPos += 10;
 
-      // Notes
       if (order.notes) {
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
@@ -209,7 +216,6 @@ export default function CompanyOrderDetailView() {
         yPos += 5;
       }
 
-      // Items Table
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
       pdf.text('Order Items', margin, yPos); yPos += 8;
@@ -249,7 +255,6 @@ export default function CompanyOrderDetailView() {
       pdf.text('TOTAL:', pageWidth - margin - 60, yPos);
       pdf.text(formatRWF(order.totalAmount), pageWidth - margin - 30, yPos, { align: 'right' });
 
-      // Footer
       yPos = 280;
       pdf.setFontSize(8);
       pdf.setTextColor(128, 128, 128);
@@ -265,106 +270,84 @@ export default function CompanyOrderDetailView() {
     }
   };
 
-  // Receipt Modal Component
   const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
-  isOpen: boolean;
-  onClose: () => void;
-  items: OrderItem[];
-  type: 'food' | 'drinks';
-  total: number;
-}) => {
-  if (!isOpen || !order) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto receipt-print-container">
-
-        {/* Header with Close button (hidden on print) */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between print:hidden">
-          <div className="flex items-center gap-2">
-            <Receipt className="w-5 h-5 text-gray-700" />
-            <h2 className="text-xl font-bold text-gray-800">
-              {type === 'food' ? 'Food' : 'Drinks'} Receipt
-            </h2>
-          </div>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full transition print:hidden">
-            <X className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-
-        {/* Receipt Content – this is what gets printed */}
-        <div className="p-6 pt-8">
-          <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
-            <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
-            <p className="text-sm text-gray-600">Official Receipt</p>
-            <div className="mt-3 text-sm">
-              <p><span className="font-semibold">Order #:</span> {order.orderNumber}</p>
-              <p><span className="font-semibold">Date:</span> {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
-              <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+    isOpen: boolean; onClose: () => void; items: OrderItem[]; type: 'food' | 'drinks'; total: number;
+  }) => {
+    if (!isOpen || !order) return null;
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto receipt-print-container">
+          <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between print:hidden">
+            <div className="flex items-center gap-2">
+              <Receipt className="w-5 h-5 text-gray-700" />
+              <h2 className="text-xl font-bold text-gray-800">
+                {type === 'food' ? 'Food' : 'Drinks'} Receipt
+              </h2>
             </div>
+            <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-full transition print:hidden">
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
-
-          <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
-            <p className="font-semibold text-sm mb-2">Customer</p>
-            <p className="text-sm">{order.clientName}</p>
-            {order.clientPhone && <p className="text-sm text-gray-600">{order.clientPhone}</p>}
-          </div>
-
-          <table className="w-full text-sm mb-6">
-            <thead>
-              <tr className="border-b border-gray-400">
-                <th className="text-left py-2 font-semibold">Item</th>
-                <th className="text-center py-2 font-semibold">Qty</th>
-                <th className="text-right py-2 font-semibold">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr key={item.id} className="border-b border-gray-200">
-                  <td className="py-2">
-                    <p className="font-medium">{item.menuItem.name}</p>
-                    {item.menuItem.description && (
-                      <div className="text-xs text-gray-500" dangerouslySetInnerHTML={{__html: item.menuItem.description}}></div>
-                    )}
-                  </td>
-                  <td className="text-center py-2">{item.quantity}</td>
-                  <td className="text-right py-2 font-medium">{formatRWF(item.totalPrice)}</td>
+          <div className="p-6 pt-8">
+            <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
+              <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
+              <p className="text-sm text-gray-600">Official Receipt</p>
+              <div className="mt-3 text-sm">
+                <p><span className="font-semibold">Order #:</span> {order.orderNumber}</p>
+                <p><span className="font-semibold">Date:</span> {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
+                <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+              </div>
+            </div>
+            <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
+              <p className="font-semibold text-sm mb-2">Customer</p>
+              <p className="text-sm">{order.clientName}</p>
+              {order.clientPhone && <p className="text-sm text-gray-600">{order.clientPhone}</p>}
+            </div>
+            <table className="w-full text-sm mb-6">
+              <thead>
+                <tr className="border-b border-gray-400">
+                  <th className="text-left py-2 font-semibold">Item</th>
+                  <th className="text-center py-2 font-semibold">Qty</th>
+                  <th className="text-right py-2 font-semibold">Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="border-t-2 border-double border-gray-800 pt-4 text-right">
-            <div className="text-xl font-bold">
-              {type === 'food' ? 'FOOD' : 'DRINKS'} TOTAL: {formatRWF(total)}
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.id} className="border-b border-gray-200">
+                    <td className="py-2">
+                      <p className="font-medium">{item.menuItem.name}</p>
+                      {item.menuItem.description && (
+                        <div className="text-xs text-gray-500" dangerouslySetInnerHTML={{__html: item.menuItem.description}}></div>
+                      )}
+                    </td>
+                    <td className="text-center py-2">{item.quantity}</td>
+                    <td className="text-right py-2 font-medium">{formatRWF(item.totalPrice)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="border-t-2 border-double border-gray-800 pt-4 text-right">
+              <div className="text-xl font-bold">
+                {type === 'food' ? 'FOOD' : 'DRINKS'} TOTAL: {formatRWF(total)}
+              </div>
+            </div>
+            <div className="text-center mt-8 text-xs text-gray-600">
+              <p>*** Thank you for your order! ***</p>
+              <p>Come again!</p>
             </div>
           </div>
-
-          <div className="text-center mt-8 text-xs text-gray-600">
-            <p>*** Thank you for your order! ***</p>
-            <p>Come again!</p>
+          <div className="border-t px-6 py-4 bg-gray-50 flex gap-3 print:hidden">
+            <button onClick={() => window.print()} className="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition shadow-md">
+              Print Receipt
+            </button>
+            <button onClick={onClose} className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-medium transition">
+              Close
+            </button>
           </div>
-        </div>
-
-        {/* Action Buttons – hidden when printing */}
-        <div className="border-t px-6 py-4 bg-gray-50 flex gap-3 print:hidden">
-          <button
-            onClick={() => window.print()}
-            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg font-semibold transition shadow-md"
-          >
-            Print Receipt
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-4 rounded-lg font-medium transition"
-          >
-            Close
-          </button>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   if (authLoading || loading) {
     return (
@@ -388,12 +371,10 @@ export default function CompanyOrderDetailView() {
   }
 
   const status = getStatusInfo(order.status);
+  const paymentStatus = getPaymentStatusInfo(order.paymentStatus);
 
-  // Separate items by type
   const foodItems = order.items.filter(item => item.menuItem.purpose === 'EATING');
   const drinkItems = order.items.filter(item => item.menuItem.purpose === 'DRINKING');
-
-  // Calculate totals
   const foodTotal = foodItems.reduce((sum, item) => sum + item.totalPrice, 0);
   const drinkTotal = drinkItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
@@ -431,40 +412,81 @@ export default function CompanyOrderDetailView() {
             </div>
           </div>
 
-          {/* Receipt Buttons */}
-
-           {order.status !== 'PENDING' && (
+          {/* Payment Status Section */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">View Receipts by Category</h3>
-            <div className="flex gap-4">
-              <button
-                onClick={() => setShowFoodReceipt(true)}
-                disabled={foodItems.length === 0}
-                className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                  foodItems.length === 0
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
-                }`}
-              >
-                <Receipt className="w-5 h-5" />
-                Food Receipt ({foodItems.length} items)
-              </button>
-              <button
-                onClick={() => setShowDrinkReceipt(true)}
-                disabled={drinkItems.length === 0}
-                className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                  drinkItems.length === 0
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg'
-                }`}
-              >
-                <Receipt className="w-5 h-5" />
-                Drinks Receipt ({drinkItems.length} items)
-              </button>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
+                Payment Status
+              </h3>
+              <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${paymentStatus.color}`}>
+                {paymentStatus.icon}
+                <span className="font-semibold">{paymentStatus.label}</span>
+              </div>
             </div>
+
+            {order.paymentStatus === 'PENDING' && (
+              <div className="flex flex-wrap gap-3 mt-4">
+                <button
+                  onClick={() => updatePaymentStatus('SUCCESSFUL')}
+                  disabled={updatingPayment}
+                  className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
+                >
+                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+                  Mark as Paid
+                </button>
+                <button
+                  onClick={() => updatePaymentStatus('FAILED')}
+                  disabled={updatingPayment}
+                  className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition"
+                >
+                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                  Mark as Failed
+                </button>
+                <button
+                  onClick={() => updatePaymentStatus('DEBTED')}
+                  disabled={updatingPayment}
+                  className="flex items-center gap-2 px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition"
+                >
+                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
+                  Mark as Credit (Debted)
+                </button>
+              </div>
+            )}
           </div>
 
-              )}
+          {/* Receipt Buttons */}
+          {order.status !== 'PENDING' && (
+            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">View Receipts by Category</h3>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowFoodReceipt(true)}
+                  disabled={foodItems.length === 0}
+                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
+                    foodItems.length === 0
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
+                  }`}
+                >
+                  <Receipt className="w-5 h-5" />
+                  Food Receipt ({foodItems.length} items)
+                </button>
+                <button
+                  onClick={() => setShowDrinkReceipt(true)}
+                  disabled={drinkItems.length === 0}
+                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
+                    drinkItems.length === 0
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg'
+                  }`}
+                >
+                  <Receipt className="w-5 h-5" />
+                  Drinks Receipt ({drinkItems.length} items)
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -508,7 +530,6 @@ export default function CompanyOrderDetailView() {
               )}
             </div>
           </div>
-
           {/* Order Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">

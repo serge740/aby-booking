@@ -20,30 +20,18 @@ export class MenuItemService {
       alcoholicType,
       ingredients,
       recipe,
-      categoryId,
     } = data;
 
-    // --- Required fields ---
     if (!name || !sellingPrice)
       throw new BadRequestException('Name & selling price are required.');
-
-    // --- Validate category ownership ---
-    if (categoryId) {
-      const category = await this.prisma.menuCategory.findUnique({
-        where: { id: categoryId },
-      });
-      if (!category || category.companyId !== companyId)
-        throw new HttpException('Invalid category for this company', 403);
-    }
 
     // --- Validate based on purpose ---
     if (purpose === PurposeStatus.DRINKING) {
       if (!drinkState)
         throw new BadRequestException('Drink state is required for drinks.');
-
       if (drinkState === DrinkStateStatus.ALCOHOLIC && !alcoholicType) {
         throw new BadRequestException(
-          'Alcoholic type is required for alcoholic drinks.',
+          'Alcoholic type is required for alcoholic drinks.'
         );
       }
     }
@@ -51,12 +39,11 @@ export class MenuItemService {
     if (purpose === PurposeStatus.EATING) {
       if (!ingredients || !recipe) {
         throw new BadRequestException(
-          'Ingredients and recipe are required for food items.',
+          'Ingredients and recipe are required for food items.'
         );
       }
     }
 
-    // --- Auto-calculate profit difference ---
     const diff =
       purchasingPrice && sellingPrice
         ? parseFloat(sellingPrice) - parseFloat(purchasingPrice)
@@ -67,7 +54,7 @@ export class MenuItemService {
         ...data,
         companyId,
         sellingPrice: parseFloat(sellingPrice),
-        discount : parseInt(data.discount),
+        discount: parseInt(data.discount),
         purchasingPrice: purchasingPrice ? parseFloat(purchasingPrice) : null,
         difference: diff,
         isActive: data.isActive === 'true' || data.isActive === true,
@@ -81,7 +68,7 @@ export class MenuItemService {
   async findAllByCompanyId(companyId: string) {
     return this.prisma.menuItem.findMany({
       where: { companyId },
-      include: { category: true, company: true },
+      include: { company: true },
     });
   }
 
@@ -90,7 +77,7 @@ export class MenuItemService {
    * =============================== */
   async findAll() {
     return this.prisma.menuItem.findMany({
-      include: { category: true, company: true },
+      include: { company: true },
     });
   }
 
@@ -100,7 +87,7 @@ export class MenuItemService {
   async findOne(id: string) {
     return this.prisma.menuItem.findUnique({
       where: { id },
-      include: { category: true, company: true },
+      include: { company: true },
     });
   }
 
@@ -113,14 +100,6 @@ export class MenuItemService {
     if (!item || item.companyId !== companyId)
       throw new HttpException('Item not found or unauthorized', 403);
 
-    if (data.categoryId) {
-      const category = await this.prisma.menuCategory.findUnique({
-        where: { id: data.categoryId },
-      });
-      if (!category || category.companyId !== companyId)
-        throw new HttpException('Invalid category', 403);
-    }
-
     // --- Validate based on purpose ---
     if (data.purpose === PurposeStatus.DRINKING) {
       if (!data.drinkState)
@@ -130,7 +109,7 @@ export class MenuItemService {
         !data.alcoholicType
       ) {
         throw new BadRequestException(
-          'Alcoholic type is required for alcoholic drinks.',
+          'Alcoholic type is required for alcoholic drinks.'
         );
       }
     }
@@ -138,12 +117,11 @@ export class MenuItemService {
     if (data.purpose === PurposeStatus.EATING) {
       if (!data.ingredients || !data.recipe) {
         throw new BadRequestException(
-          'Ingredients and recipe are required for food items.',
+          'Ingredients and recipe are required for food items.'
         );
       }
     }
 
-    // --- Recalculate difference ---
     const sellingPrice = data.sellingPrice
       ? parseFloat(data.sellingPrice)
       : item.sellingPrice;
@@ -175,7 +153,7 @@ export class MenuItemService {
         sellingPrice,
         purchasingPrice,
         difference,
-         discount : parseInt(data.discount),
+        discount: parseInt(data.discount),
         otherImages: finalImages,
         isActive: data.isActive === 'true' || data.isActive === true,
       },

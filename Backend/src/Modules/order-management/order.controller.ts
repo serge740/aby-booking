@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrdersGateway } from './orders.gateway';
-import { OrderStatus } from 'generated/prisma';
+import { OrderStatus,PaymentStatus } from 'generated/prisma';
 
 @Controller('orders')
 export class OrderController {
@@ -72,6 +72,32 @@ export class OrderController {
       this.ordersGateway.server
         .to(`client_${updated.clientId}`)
         .emit('order_status_updated', updated);
+    }
+
+    return updated;
+  }
+
+  
+  /** ===============================
+   * 🧩 Update Payment Status
+   * =============================== */
+  @Patch(':id/payment-status')
+  async updatePaymentStatus(
+    @Param('id') id: string,
+    @Body('status') status: PaymentStatus
+  ) {
+    const updated = await this.orderService.updatePaymentStatus(id, status);
+
+    // 🔥 Emit event to company
+    this.ordersGateway.server
+      .to(`company_${updated.companyId}`)
+      .emit('order_payment_status_updated', updated);
+
+    // 🔥 Emit event to client if exists
+    if (updated.clientId) {
+      this.ordersGateway.server
+        .to(`client_${updated.clientId}`)
+        .emit('order_payment_status_updated', updated);
     }
 
     return updated;

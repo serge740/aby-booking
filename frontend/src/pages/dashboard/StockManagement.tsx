@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Plus, Edit, Trash2, Search, ChevronDown, Eye, ChevronLeft, ChevronRight,
   AlertTriangle, CheckCircle, XCircle, X, RefreshCw,
-  Grid3X3, List, Package, DollarSign, Hash, Box
+  Grid3X3, List, Package, DollarSign, Hash, Box,
+  Utensils,
+  Wine
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -21,7 +23,11 @@ interface Stock {
   sku: string;
   quantity: number;
   unit: string;
-  price: number;
+  purpose: 'EATING' | 'DRINKING';
+  purchasingPrice: number;
+  subquantity: number;
+  sellingPrice: number;
+  reoderLevel: number;
   description?: string;
   createdAt: string;
   updatedAt: string;
@@ -39,14 +45,18 @@ interface OperationStatus {
 interface FormData {
   name: string;
   sku: string;
+  purpose: 'EATING' | 'DRINKING';
   quantity: string;
+  subquantity: string;
   unit: string;
-  price: string;
+  purchasingPrice: string;
+  sellingPrice: string;
+  reoderLevel: string;
   description: string;
 }
 
 const UNIT_OPTIONS = [
-  'pcs', 'kg', 'g', 'lb', '6', 'box', 'pack', 'liter', 'ml', 'meter', 'cm', 'dozen', 'roll', 'set', 'pair', 'unit'
+  'pcs', 'pack', 'kg', 'g', 'lb', 'liter', 'ml', 'meter', 'cm', 'dozen', 'roll', 'set', 'pair', 'unit'
 ];
 
 // ──────────────────────────────────────────────────────────────
@@ -78,9 +88,13 @@ const StockManagementDashboard: React.FC = () => {
     name: '',
     sku: '',
     quantity: '',
+    subquantity: '',
     unit: 'pcs',
-    price: '',
+    purchasingPrice: '',
+    sellingPrice: '',
+    reoderLevel: '',
     description: '',
+    purpose: 'EATING',
   });
 
   const navigate = useNavigate();
@@ -98,9 +112,13 @@ const StockManagementDashboard: React.FC = () => {
       name: '',
       sku: generateSKU(),
       quantity: '',
+      subquantity: '',
       unit: 'pcs',
-      price: '',
+      sellingPrice: '',
+      purchasingPrice: '',
+      reoderLevel: '',
       description: '',
+      purpose: 'EATING',
     });
     setShowFormModal(true);
   };
@@ -177,8 +195,8 @@ const StockManagementDashboard: React.FC = () => {
 
   // ── CREATE / UPDATE ──
   const handleCreateOrUpdateStock = async () => {
-    if (!formData.name || !formData.quantity || !formData.price) {
-      showOperationStatus('error', 'Name, Quantity and Price are required');
+    if (!formData.name || !formData.quantity || !formData.sellingPrice) {
+      showOperationStatus('error', 'Name, Quantity and Selling Price are required');
       return;
     }
 
@@ -187,7 +205,11 @@ const StockManagementDashboard: React.FC = () => {
       sku: editStock ? editStock.sku : formData.sku,
       quantity: Number(formData.quantity),
       unit: formData.unit,
-      price: Number(formData.price),
+      purchasingPrice: formData.purpose === 'DRINKING' ? Number(formData.purchasingPrice) || 0 : 0,
+      sellingPrice: Number(formData.sellingPrice),
+      subquantity: Number(formData.subquantity) || 0,
+      reoderLevel: Number(formData.reoderLevel) || 0,
+      purpose: formData.purpose,
       description: formData.description || undefined,
     };
 
@@ -217,7 +239,11 @@ const StockManagementDashboard: React.FC = () => {
       sku: stock.sku,
       quantity: String(stock.quantity),
       unit: stock.unit,
-      price: String(stock.price),
+      subquantity: String(stock.subquantity),
+      purchasingPrice: String(stock.purchasingPrice),
+      sellingPrice: String(stock.sellingPrice),
+      reoderLevel: String(stock.reoderLevel),
+      purpose: stock.purpose,
       description: stock.description || '',
     });
     setShowFormModal(true);
@@ -240,6 +266,26 @@ const StockManagementDashboard: React.FC = () => {
     navigate(`/${role}/dashboard/stock/${stock.id}`);
   };
 
+  // ── FORM HANDLERS ──
+  const handlePurposeChange = (purpose: 'EATING' | 'DRINKING') => {
+    if (purpose === 'EATING') {
+      setFormData(prev => ({
+        ...prev,
+        purpose: 'EATING',
+        unit: 'kg',
+        subquantity: '',
+        purchasingPrice: '',
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        purpose: 'DRINKING',
+        unit: 'pcs',
+        purchasingPrice: prev.purchasingPrice || '',
+      }));
+    }
+  };
+
   // ── PAGINATION ──
   const totalStocks = stocks.length;
   const totalPages = Math.ceil(totalStocks / itemsPerPage);
@@ -248,16 +294,22 @@ const StockManagementDashboard: React.FC = () => {
   const currentStocks = stocks.slice(startIndex, endIndex);
 
   // ── HELPERS ──
-  const formatPrice = (price: number) => `$${Number(price).toFixed(2)}`;
-
-  const getStockStatus = (quantity: number) => {
-    if (quantity === 0) return { bg: 'bg-red-100', txt: 'text-red-800', icon: XCircle, label: 'Out of Stock' };
-    if (quantity < 10) return { bg: 'bg-yellow-100', txt: 'text-yellow-800', icon: AlertTriangle, label: 'Low Stock' };
-    return { bg: 'bg-green-100', txt: 'text-green-800', icon: CheckCircle, label: 'In Stock' };
+  const formatRWF = (amount: number) => {
+    return new Intl.NumberFormat('rw-RW', {
+      style: 'currency',
+      currency: 'RWF',
+      minimumFractionDigits: 0,
+    }).format(amount);
   };
 
-  const renderStatusBadge = (quantity: number) => {
-    const { bg, txt, icon: Icon, label } = getStockStatus(quantity);
+  const getReorderStatus = (stock: Stock) => {
+    if (stock.quantity === 0) return { bg: 'bg-red-100', txt: 'text-red-800', icon: XCircle, label: 'Out of Stock' };
+    if (stock.quantity <= stock.reoderLevel) return { bg: 'bg-orange-100', txt: 'text-orange-800', icon: AlertTriangle, label: 'Reorder Now' };
+    return { bg: 'bg-green-100', txt: 'text-green-800', icon: CheckCircle, label: 'Sufficient' };
+  };
+
+  const renderReorderBadge = (stock: Stock) => {
+    const { bg, txt, icon: Icon, label } = getReorderStatus(stock);
     return (
       <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-xs font-medium ${bg} ${txt}`}>
         <Icon className="w-3 h-3" />
@@ -293,7 +345,11 @@ const StockManagementDashboard: React.FC = () => {
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Item Name</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">SKU</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Quantity</th>
-              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Price</th>
+              {currentStocks.some(s => s.purpose === 'DRINKING') && (
+                <th className="text-left py-3 px-4 text-gray-600 font-semibold">Purchasing Price</th>
+              )}
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Selling Price</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Reorder Level</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Status</th>
               <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
             </tr>
@@ -308,12 +364,22 @@ const StockManagementDashboard: React.FC = () => {
                     <span className="font-mono text-xs">{stock.sku}</span>
                   </div>
                 </td>
+
                 <td className="py-3 px-4">
                   <span className="font-semibold">{stock.quantity}</span>
                   <span className="text-gray-500 text-xs ml-1">{stock.unit}</span>
+                  {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && (
+                    <span className="block text-xs text-gray-500">({stock.subquantity} items inside)</span>
+                  )}
                 </td>
-                <td className="py-3 px-4 font-semibold text-green-600">{formatPrice(stock.price)}</td>
-                <td className="py-3 px-4">{renderStatusBadge(stock.quantity)}</td>
+              
+                  <td className="py-3 px-4 font-medium text-green-600">{formatRWF(stock.purchasingPrice || stock.sellingPrice)}</td>
+                
+                <td className="py-3 px-4 font-semibold text-red-600">{formatRWF(stock.sellingPrice)}</td>
+                <td className="py-3 px-4 text-sm">
+                  <span className="font-medium">{stock.reoderLevel} {stock.unit}</span>
+                </td>
+                <td className="py-3 px-4">{renderReorderBadge(stock)}</td>
                 <td className="py-3 px-4 text-right">{renderActions(stock)}</td>
               </motion.tr>
             ))}
@@ -330,19 +396,26 @@ const StockManagementDashboard: React.FC = () => {
           className="bg-white rounded-lg shadow border border-gray-100 p-4 hover:shadow-md transition-shadow">
           <div className="flex flex-col items-center space-y-3 mb-3">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-              <Package className="w-8 h-8 text-gray-400" />
+              {stock.purpose === 'EATING' ? <Utensils className="w-8 h-8 text-orange-500" /> : <Wine className="w-8 h-8 text-purple-600" />}
             </div>
+           
             <div className="text-center w-full">
               <div className="font-semibold text-gray-900 text-sm truncate">{stock.name}</div>
               <div className="text-gray-500 text-xs">SKU: {stock.sku}</div>
             </div>
           </div>
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <div>{stock.quantity} {stock.unit}</div>
-              <div className="font-semibold text-green-600">{formatPrice(stock.price)}</div>
+          <div className="text-sm space-y-1">
+            <div><strong>{stock.quantity}</strong> {stock.unit}
+              {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && (
+                <span className="text-xs text-gray-500 block">({stock.subquantity} items)</span>
+              )}
             </div>
-            {renderStatusBadge(stock.quantity)}
+            {stock.purpose === 'DRINKING' && (
+              <div className="font-medium text-green-600">Buy: {formatRWF(stock.purchasingPrice)}</div>
+            )}
+            <div className="font-semibold text-red-600">Sell: {formatRWF(stock.sellingPrice)}</div>
+            <div className="text-xs text-gray-500">Reorder at: {stock.reoderLevel} {stock.unit}</div>
+            <div className="mt-2">{renderReorderBadge(stock)}</div>
           </div>
           <div className="mt-3 flex justify-center">{renderActions(stock)}</div>
         </motion.div>
@@ -357,15 +430,20 @@ const StockManagementDashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                <Package className="w-6 h-6 text-gray-400" />
+                {stock.purpose === 'EATING' ? <Utensils className="w-6 h-6 text-orange-500" /> : <Wine className="w-6 h-6 text-purple-600" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900 text-sm truncate">{stock.name}</div>
-                <div className="text-gray-500 text-xs truncate">SKU: {stock.sku} • {stock.quantity} {stock.unit}</div>
+                <div className="text-gray-500 text-xs truncate">
+                  SKU: {stock.sku} • {stock.quantity} {stock.unit}
+                  {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && ` (${stock.subquantity} items)`}
+                  {stock.purpose === 'DRINKING' && ` • Buy: ${formatRWF(stock.purchasingPrice)}`}
+                </div>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600 flex-1 max-w-md px-4">
-              <span className="truncate">{renderStatusBadge(stock.quantity)}</span>
+              <span>{formatRWF(stock.sellingPrice)}</span>
+              <span>{renderReorderBadge(stock)}</span>
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
               {renderActions(stock)}
@@ -459,19 +537,23 @@ const StockManagementDashboard: React.FC = () => {
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">In Stock</p>
-                <p className="text-xl font-semibold text-gray-900">{allStocks.filter(s => s.quantity > 0).length}</p>
+                <p className="text-sm text-gray-600">Sufficient Stock</p>
+                <p className="text-xl font-semibold text-gray-900">
+                  {allStocks.filter(s => s.quantity > s.reoderLevel).length}
+                </p>
               </div>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-yellow-50 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-yellow-600" />
+              <div className="p-3 bg-orange-50 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Low Stock</p>
-                <p className="text-xl font-semibold text-gray-900">{allStocks.filter(s => s.quantity > 0 && s.quantity < 10).length}</p>
+                <p className="text-sm text-gray-600">Needs Reorder</p>
+                <p className="text-xl font-semibold text-gray-900">
+                  {allStocks.filter(s => s.quantity <= s.reoderLevel && s.quantity > 0).length}
+                </p>
               </div>
             </div>
           </motion.div>
@@ -507,7 +589,7 @@ const StockManagementDashboard: React.FC = () => {
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
                 <option value="quantity-desc">Highest Stock</option>
-                <option value="price-desc">Highest Price</option>
+                <option value="reoderLevel-asc">Reorder Level</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
                 <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
@@ -545,8 +627,8 @@ const StockManagementDashboard: React.FC = () => {
             {renderPagination()}
           </div>
         )}
-      </div>
 
+      </div>
       {/* Toast, Loading, Delete Modal, Form Modal – 100% same as LeaveRequestDashboard */}
       <AnimatePresence>
         {operationStatus && (
@@ -608,7 +690,7 @@ const StockManagementDashboard: React.FC = () => {
       <AnimatePresence>
         {showFormModal && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-lg shadow-xl overflow-y-auto max-h-screen">
+            <div className="bg-white rounded-lg p-6 w-full max-w-5xl shadow-xl overflow-y-auto max-h-screen">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
                   <Box className="w-5 h-5 text-primary-600" />
@@ -619,15 +701,50 @@ const StockManagementDashboard: React.FC = () => {
                 </div>
               </div>
               <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
-                  <input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                <div className="grid grid-cols-2 gap-4">
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
+                    <input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
+                    <input value={formData.sku} disabled className="w-full px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 cursor-not-allowed" />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
-                  <input value={formData.sku} disabled className="w-full px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 cursor-not-allowed" />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Purpose *
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeChange('EATING')}
+                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'EATING'
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                    >
+                      <Utensils className="w-8 h-8" />
+                      <span className="font-medium">Food</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handlePurposeChange('DRINKING')}
+
+                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'DRINKING'
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                    >
+                      <Wine className="w-8 h-8" />
+                      <span className="font-medium">Drink</span>
+                    </button>
+                  </div>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
@@ -635,17 +752,55 @@ const StockManagementDashboard: React.FC = () => {
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Re-OrderLevel *</label>
+                    <input type="number" value={formData.reoderLevel} onChange={e => setFormData(prev => ({ ...prev, reoderLevel: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+
+                  <div className={`${ (formData.purpose === 'DRINKING' && formData.unit == 'pack' )? 'col-span-1' : 'col-span-2' }`}>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
                     <select value={formData.unit} onChange={e => setFormData(prev => ({ ...prev, unit: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
-                      {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u}</option>)}
+                      {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u} {u == 'pack' && '( for container or case )'}</option>)}
                     </select>
                   </div>
+                  {
+                    formData.purpose === 'DRINKING' && formData.unit == 'pack' && (
+                      <div className=" text-sm text-gray-500">
+                        <div className='col-span-2'>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Quantity *</label>
+                          <input type="number" value={formData.subquantity} onChange={e => setFormData(prev => ({ ...prev, subquantity: e.target.value }))}
+                            className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                        </div>
+                        <div className="pt-2">
+                          <span className="font-semibold">Note for Drinks:</span>
+                          <p>- Unit = pcs (bottles/cans)</p>
+                          <p>- Case = pack (container)</p>
+                          <p>- Packs: add all total items in sub-quantity</p>
+                        </div>
+
+                      </div>
+
+                    )
+                  }
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
-                  <input type="number" step="0.01" value={formData.price} onChange={e => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+
+                <div className="grid grid-cols-2 gap-3">
+              {
+                    formData.purpose === 'DRINKING' && (
+                  <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
+                    <label className={`block text-sm font-medium text-gray-700 mb-1`}>Purchasing Price *</label>
+                    <input type="number" step="0.01" value={formData.purchasingPrice} onChange={e => setFormData(prev => ({ ...prev, purchasingPrice: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                    )
+                  }
+    
+                      <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price *</label>
+                        <input type="number" step="0.01" value={formData.sellingPrice} onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                      </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>

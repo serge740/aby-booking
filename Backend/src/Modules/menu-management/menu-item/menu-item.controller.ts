@@ -8,7 +8,6 @@ import { CompanyAuthGuard, RequestWithCompany } from 'src/Guards/company-auth.gu
 import { CompanyUploadConfig } from 'src/common/Utils/file-upload.util';
 
 @Controller('menu-item')
-
 export class MenuItemController {
   constructor(private readonly service: MenuItemService) {}
 
@@ -37,22 +36,22 @@ export class MenuItemController {
   }
 
   @Get()
-   @UseGuards(CompanyAuthGuard)
+  @UseGuards(CompanyAuthGuard)
   findAllAsCompany(@Req() req: RequestWithCompany) {
     return this.service.findAllByCompanyId(req.company!.id);
   }
+
   @Get('all')
   findAll() {
     return this.service.findAll();
   }
+
   @Get('company/:id')
   findAllByCompanyId(@Param('id') id:string) {
-    console.log(id);
-    
     return this.service.findAllByCompanyId(id);
   }
-  @Get(':id')
 
+  @Get(':id')
   findOne(@Param('id') id:string) {
     return this.service.findOne(id);
   }
@@ -83,7 +82,7 @@ export class MenuItemController {
   }
 
   @Delete(':id')
-   @UseGuards(CompanyAuthGuard)
+  @UseGuards(CompanyAuthGuard)
   delete(@Req() req: RequestWithCompany, @Param('id') id: string) {
     return this.service.delete(req.company!.id, id);
   }

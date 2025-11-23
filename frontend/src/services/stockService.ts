@@ -8,7 +8,11 @@ export interface Stock {
   sku: string;
   quantity: number;
   unit: string;
-  price: number;
+  purpose: 'EATING' | 'DRINKING';
+  purchasingPrice?: number;
+  sellingPrice: number;
+  reoderLevel: number;
+
   description?: string;
   createdAt: string;
   updatedAt: string;
@@ -22,7 +26,11 @@ class StockService {
     sku: string;
     quantity: number;
     unit: string;
-    price: number;
+   purpose: 'EATING' | 'DRINKING';
+  purchasingPrice?: number;
+  sellingPrice: number;
+  reoderLevel: number;
+
     description?: string;
     companyId?: string;
     employeeId?: string;
@@ -39,6 +47,14 @@ class StockService {
   async getAllStock(): Promise<Stock[]> {
     try {
       const response = await api.get("/stock");
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Failed to fetch stocks");
+    }
+  }
+  async getAllStockByPurpose(purpose:'EATING' | 'DRINKING'): Promise<Stock[]> {
+    try {
+      const response = await api.get(`/stock/purpose/${purpose}`);
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Failed to fetch stocks");

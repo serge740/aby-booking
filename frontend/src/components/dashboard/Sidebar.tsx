@@ -90,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         icon: MenuSquare,
         allowedRoles: ["company"],
         items: [
-          { id: "menu-category", label: "Menu Category", icon: Layers, path: `${basePath}/menu-category`, allowedRoles: ["company"] },
+         
           { id: "menu-item", label: "Menu Item", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
 
         ],

@@ -31,6 +31,20 @@ class OrderService {
     }
   }
 
+  async updatePaymentStatus(
+  orderId: string,
+  status: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED'
+) {
+  try {
+    const response = await api.patch(`/orders/${orderId}/payment-status`, { status });
+    console.log('Payment status updated:', response.data);
+    return response.data;
+  } catch (error: any) {
+    const msg = error.response?.data?.message || 'Failed to update payment status';
+    throw new Error(msg);
+  }
+}
+
   // ✅ Get order by ID
   async getOrderById(orderId: string) {
     try {
