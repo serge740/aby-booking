@@ -363,7 +363,7 @@ const CreateOrderPage = () => {
                       <ShoppingCart className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-bold text-gray-900">Order Items</h2>
+                      <h2 className="text-sm font-bold text-gray-900">Order Items</h2> 
                     </div>
                   </div>
                   <button
