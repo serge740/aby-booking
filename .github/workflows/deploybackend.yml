@@ -1,31 +1,33 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Deploy Fullstack App
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+      - name: ⏬ Checkout code
+        uses: actions/checkout@v4
+
+      # === BACKEND DEPLOYMENT ===
+      - name: 📦 Install backend dependencies
+        run: npm install
+        working-directory: ./Backend
+
+      - name: 🛠 Build backend
+        run: npm run build
+        working-directory: ./Backend
+
+      - name: 📂 Upload backend to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 162.0.224.102
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "Backend/**"
+          target: "/var/www/abydash"
+          strip_components: 1
