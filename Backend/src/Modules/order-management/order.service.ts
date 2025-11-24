@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
-import { OrderStatus } from 'generated/prisma'; // optional import if using enums from Prisma
+import { OrderStatus , PaymentStatus, PurposeStatus} from 'generated/prisma'; // optional import if using enums from Prisma
 import { EmailService } from 'src/Global/email/email.service';
 import { CompanyNotificationService } from '../company-notification/company-notification.service';
 
@@ -125,14 +125,98 @@ export class OrderService {
   }
 
   // Update order status
-  async updateStatus(orderId: string, status: OrderStatus) {
-    return this.prisma.order.update({
+
+
+
+  /** ===============================
+   * 🧩 Update Order Status
+   * - If COMPLETED, reduce stock of DRINKING menu items
+   * - Handles stock unit "pack" using subquantity
+   * =============================== */
+  async updateStatus(
+    orderId: string,
+    status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED'
+  ) {
+    // 1️⃣ Update order status
+    const updatedOrder = await this.prisma.order.update({
       where: { id: orderId },
       data: { status },
-      include: { items: { include: { menuItem: true } }, client: true, company: true },
+      include: {
+        items: { include: { menuItem: { include: { stock: true } } } },
+        client: true,
+        company: true,
+      },
     });
+
+    // 2️⃣ If COMPLETED, reduce stock for DRINKING menu items
+    if (status === 'COMPLETED') {
+      for (const orderItem of updatedOrder.items) {
+        const menuItem = orderItem.menuItem;
+        const stock = menuItem.stock;
+
+        if (menuItem.purpose === PurposeStatus.DRINKING && stock) {
+          let quantityToRemove: number;
+
+          if (stock.unit.toLowerCase() === 'pack' && stock.subquantity) {
+            // Remove total subquantity for the pack
+            quantityToRemove = stock.subquantity;
+          } else {
+            // Remove quantity based on order item
+            quantityToRemove = orderItem.quantity;
+          }
+
+          console.log(quantityToRemove);
+          
+          
+
+          const newQuantity =  quantityToRemove - orderItem.quantity;
+
+          if (newQuantity < 0) {
+            throw new HttpException(
+              `Not enough stock for menu item: ${menuItem.name}`,
+              400
+            );
+          }
+
+           if (stock.unit.toLowerCase() === 'pack' && stock.subquantity) {
+             
+             await this.prisma.stock.update({
+               where: { id: stock.id },
+               data: { subquantity: newQuantity },
+              });
+
+           }
+
+           else{
+
+             
+             await this.prisma.stock.update({
+               where: { id: stock.id },
+               data: { quantity: newQuantity },
+              });
+            }
+            }
+      }
+    }
+
+    return updatedOrder;
   }
 
+
+   /** ===============================
+   * 🧩 Update Payment Status
+   * =============================== */
+  async updatePaymentStatus(orderId: string, status: PaymentStatus) {
+    return this.prisma.order.update({
+      where: { id: orderId },
+      data: { paymentStatus: status },
+      include: {
+        items: { include: { menuItem: true } },
+        client: true,
+        company: true,
+      },
+    });
+  }
   // Get order by ID
   async getOrder(orderId: string) {
     return this.prisma.order.findUnique({

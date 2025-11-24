@@ -38,7 +38,13 @@ export class StockController {
       sku: body.sku,
       quantity: body.quantity,
       unit: body.unit,
-      price: body.price,
+      purchasingPrice: body.purchasingPrice,
+      subquantity: body.subquantity,
+
+        purpose: body.purpose,
+  sellingPrice: body.sellingPrice,
+  reoderLevel: body.reoderLevel,
+
       description: body.description,
     });
 
@@ -52,6 +58,12 @@ export class StockController {
     return req.company
       ? this.stockService.findAll(req.company.id)
       : this.stockService.findAllByEmployee(req.employee.id);
+  }
+  @Get('/purpose/:purpose')
+  findAllByPurpose(@Param('purpose') purpose:'EATING' | 'DRINKING' ,@Req() req: RequestWithCompanyEmployee) {
+    return req.company
+      ? this.stockService.findAllByPurpsose(req.company.id,purpose)
+      : this.stockService.findAllByPurpsose(req.company.id,purpose);
   }
 
   @Get(':id')

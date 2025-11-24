@@ -15,7 +15,7 @@ import { SubscribersModule } from './Modules/subscribers/subscribers.module';
 
 import { CompanyModule } from './Modules/Company-management/company.module';
 import { MenuItemModule } from './Modules/menu-management/menu-item/menu-item.module';
-import { MenuCategoryModule } from './Modules/menu-management/menu-category/menu-category.module';
+
 import { ClientModule } from './Modules/client/client.module';
 import { EmployeeModule } from './Modules/employee/employee.module';
 import { LeaveModule } from './Modules/leave-request/leave.module';
@@ -46,7 +46,7 @@ import { StockModule } from './Modules/stock/stock.module';
     SubscribersModule,
     CompanyModule,
     MenuItemModule,
-    MenuCategoryModule,
+
     ClientModule,
     EmployeeModule,
     LeaveModule,

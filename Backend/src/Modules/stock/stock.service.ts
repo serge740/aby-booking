@@ -13,8 +13,13 @@ export class StockService {
     sku: string;
     quantity: number;
     unit: string;
-    price: number;
+ 
     description?: string;
+    purchasingPrice?: number;
+    subquantity?: number;
+      purpose: 'EATING' | 'DRINKING';
+  sellingPrice: number;
+  reoderLevel: number;
   }) {
     
     return this.prisma.stock.create({
@@ -42,6 +47,15 @@ export class StockService {
   async findOne(id: string, companyId: string) {
     const stock = await this.prisma.stock.findFirst({
       where: { id, companyId },
+    });
+
+    if (!stock) throw new NotFoundException('Stock item not found');
+
+    return stock;
+  }
+  async findAllByPurpsose( companyId: string,purpose: 'EATING' | 'DRINKING') {
+    const stock = await this.prisma.stock.findMany({
+      where: {  companyId ,purpose },
     });
 
     if (!stock) throw new NotFoundException('Stock item not found');
