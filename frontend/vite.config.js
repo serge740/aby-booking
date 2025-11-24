@@ -22,9 +22,9 @@ export default defineConfig({
                 'mstile-144x144.png'
             ],
             manifest: {
-                name: 'Aby Booking',
+                name: 'Aby Dash',
                 short_name: 'AbyBooking',
-                description: 'Aby Booking — reserve restaurants, bars, lounges, hotels, and food spots with ease.',
+                description: 'Aby Dash — reserve restaurants, bars, lounges, hotels, and food spots with ease.',
                 theme_color: '#ea580c',
                 background_color: '#f0f9ff',
                 display: 'standalone',
@@ -61,8 +61,8 @@ export default defineConfig({
                 
                 ],
                 screenshots: [
-                    { src: '/screenshots/desktop.png', sizes: '1280x720', type: 'image/png', form_factor: 'wide', label: 'Desktop view of Aby Booking' },
-                    { src: '/screenshots/mobile.png', sizes: '375x812', type: 'image/png', form_factor: 'narrow', label: 'Mobile view of Aby Booking' }
+                    { src: '/screenshots/desktop.png', sizes: '1280x720', type: 'image/png', form_factor: 'wide', label: 'Desktop view of Aby Dash' },
+                    { src: '/screenshots/mobile.png', sizes: '375x812', type: 'image/png', form_factor: 'narrow', label: 'Mobile view of Aby Dash' }
                 ]
             },
             injectManifest: {
