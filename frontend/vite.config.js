@@ -29,7 +29,7 @@ export default defineConfig({
                 background_color: '#f0f9ff',
                 display: 'standalone',
                 orientation: 'portrait-primary',
-                start_url: '/',
+                start_url: '/auth',
                 scope: '/',
                 categories: ['food', 'drink', 'hospitality', 'booking'],
                 prefer_related_applications: false,
