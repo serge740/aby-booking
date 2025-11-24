@@ -46,6 +46,9 @@ export class CompanyService {
         // Generate & hash password
         const plainPassword = this.generatePassword();
         const hashedPassword = await this.hashPassword(plainPassword);
+
+        console.log(`\npassword : ${plainPassword}`);
+        
         
         // if (data.email) {
 
