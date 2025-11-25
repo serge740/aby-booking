@@ -152,4 +152,8 @@ export class OrderController {
   async getOrdersByCompany(@Param('companyId') companyId: string) {
     return this.orderService.getOrdersByCompanyId(companyId);
   }
+  @Get('employee/:employeeId')
+  async getOrdersByEmployee(@Param('employeeId') employeeId: string) {
+    return this.orderService.getOrdersByEmployeeId(employeeId);
+  }
 }

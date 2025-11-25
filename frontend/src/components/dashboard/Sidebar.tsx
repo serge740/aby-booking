@@ -102,11 +102,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     ];
 
     const employeeLinks: (NavItem | DropdownGroup)[] = [
-      { id: "dashboard ", label: "My Dashboard Summary", icon: TrendingUp, path: basePath },
-      { id: "place-order", label: "Orders Management", icon: DoorOpen, path: `${basePath}/place-order/${employeeAuth.user?.companyId}` },
-      { id: "leave-request", label: "Leave Request Management", icon: DoorOpen, path: `${basePath}/leave-request` },
-      { id: "pre-salary", label: "Pre Salary Management", icon: DollarSign, path: `${basePath}/pre-salary` },
-      { id: "risk-report", label: "Risk Report Management", icon: File, path: `${basePath}/risk-report` },
+      { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
+      { id: "place-order", label: " Order", icon: DoorOpen, path: `${basePath}/order` },
+      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
+      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
+      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
 
     ];
 

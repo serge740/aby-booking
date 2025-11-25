@@ -258,6 +258,13 @@ export class OrderService {
   async getOrdersByCompanyId(companyId: string) {
     return this.prisma.order.findMany({
       where: { companyId },
+      include: { items: { include: { menuItem: true } }, client: true, company: true, employee: true },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+  async getOrdersByEmployeeId(employeeId: string) {
+    return this.prisma.order.findMany({
+      where: { employeeId },
       include: { items: { include: { menuItem: true } }, client: true, company: true },
       orderBy: { createdAt: 'desc' },
     });
