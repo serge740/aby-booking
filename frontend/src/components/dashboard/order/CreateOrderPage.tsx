@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';''
 import {
   ClipboardList,
   Plus,
@@ -24,6 +25,8 @@ import {
 import { useParams } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
 import orderService from '../../../services/orderService';
+
+
 
 // ---------------------------------------------------------------------
 // Helpers
@@ -71,6 +74,8 @@ interface OrderLine {
 const CreateOrderPage = () => {
   const { companyId } = useParams<{ companyId: string }>();
 
+  const navigate = useNavigate();
+
   // ── UI state ───────────────────────────────────────────────────────
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
@@ -103,7 +108,7 @@ const CreateOrderPage = () => {
       setFetchError(null);
       try {
         const items = await menuItemService.getMenuItemsByCompanyId(companyId);
-        setMenuItems(items.filter(item => item.isActive)); // Only active items
+        setMenuItems(items.filter((item: { isActive: any; }) => item.isActive)); // Only active items
       } catch (err: any) {
         setFetchError(err.message || 'Failed to load menu items');
       } finally {
@@ -226,6 +231,9 @@ const CreateOrderPage = () => {
       setSubmitResult('success');
       setSubmitMessage(`Order ${result.orderNumber || ''} created successfully!`);
       resetForm();
+
+    // 👉 Navigate after successful submit
+    navigate(`/company/dashboard/orders`); // or any route you prefer
     } catch (err: any) {
       setSubmitResult('error');
       setSubmitMessage(err.message || 'Failed to create order');

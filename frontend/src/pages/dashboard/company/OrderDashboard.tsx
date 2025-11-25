@@ -345,8 +345,8 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
         <div className="p-6 pt-8">
           <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
             <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
-            <p className="text-sm text-gray-600">Official Receipt</p>
-            <div className="mt-3 text-sm">
+            <p className="text-xs text-gray-600">Official Receipt</p>
+            <div className="mt-3 text-xs">
               <p><span className="font-semibold">Order #:</span> {selectedOrder.orderNumber}</p>
               <p><span className="font-semibold">Date:</span> {new Date(selectedOrder.createdAt).toLocaleDateString('en-GB')}</p>
               <p><span className="font-semibold">Time:</span> {new Date(selectedOrder.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
@@ -354,12 +354,12 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
           </div>
 
           <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
-            <p className="font-semibold text-sm mb-2">Customer</p>
-            <p className="text-sm">{selectedOrder.clientName}</p>
-            {selectedOrder.clientPhone && <p className="text-sm text-gray-600">{selectedOrder.clientPhone}</p>}
+            <p className="font-semibold text-xs mb-2">Customer</p>
+            <p className="text-xs">{selectedOrder.clientName}</p>
+            {selectedOrder.clientPhone && <p className="text-xs text-gray-600">{selectedOrder.clientPhone}</p>}
           </div>
 
-          <table className="w-full text-sm mb-6">
+          <table className="w-full text-xs mb-6">
             <thead>
               <tr className="border-b border-gray-400">
                 <th className="text-left py-2 font-semibold">Item</th>
@@ -533,7 +533,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
             <div className="text-gray-500 text-xs">{order.clientPhone || order.clientEmail || "—"}</div>
           </div>
           <div className="flex items-center justify-between">
-            <div className="font-semibold text-orange-600 text-sm">{formatRWF(order.totalAmount)}</div>
+            <div className="font-semibold text-orange-600 text-xs">{formatRWF(order.totalAmount)}</div>
             <div className="text-xs text-gray-500">{order.items.length} items</div>
           </div>
           <div className="flex items-center justify-between pt-2 border-t border-gray-100 mt-2">
@@ -555,10 +555,10 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2">
-                  <span className="font-medium text-orange-600 text-sm">{order.orderNumber}</span>
+                  <span className="font-medium text-orange-600 text-xs">{order.orderNumber}</span>
                   <span className="text-gray-400 text-xs">• {order.items.length} items</span>
                 </div>
-                <div className="font-medium text-gray-900 text-sm truncate">{order.clientName}</div>
+                <div className="font-medium text-gray-900 text-xs truncate">{order.clientName}</div>
                 <div className="text-gray-500 text-xs">{order.clientPhone || order.clientEmail || "—"}</div>
               </div>
             </div>
@@ -619,7 +619,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-600">Loading orders...</p>
+          <p className="mt-2 text-xs text-gray-600">Loading orders...</p>
         </div>
       </div>
     );
@@ -647,7 +647,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
                 <button onClick={handleCreateOrder}
                   className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium shadow-md">
                   <Plus className="w-4 h-4" />
-                  <span className="text-sm">Add Item</span>
+                  <span className="text-xs">Add Item</span>
                 </button>
               </div>
             </div>

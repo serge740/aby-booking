@@ -321,10 +321,7 @@ const StockManagementDashboard: React.FC = () => {
 
   const renderActions = (stock: Stock) => (
     <div className="flex items-center space-x-2">
-      <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewStock(stock)}
-        className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="View">
-        <Eye className="w-4 h-4" />
-      </motion.button>
+   
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditStock(stock)}
         className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="Edit">
         <Edit className="w-4 h-4" />
@@ -340,7 +337,7 @@ const StockManagementDashboard: React.FC = () => {
   const renderTableView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Item Name</th>
@@ -401,11 +398,11 @@ const StockManagementDashboard: React.FC = () => {
             </div>
            
             <div className="text-center w-full">
-              <div className="font-semibold text-gray-900 text-sm truncate">{stock.name}</div>
+              <div className="font-semibold text-gray-900 text-xs truncate">{stock.name}</div>
               <div className="text-gray-500 text-xs">SKU: {stock.sku}</div>
             </div>
           </div>
-          <div className="text-sm space-y-1">
+          <div className="text-xs space-y-1">
             <div><strong>{stock.quantity}</strong> {stock.unit}
               {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && (
                 <span className="text-xs text-gray-500 block">({stock.subquantity} items)</span>
@@ -434,7 +431,7 @@ const StockManagementDashboard: React.FC = () => {
                 {stock.purpose === 'EATING' ? <Utensils className="w-6 h-6 text-orange-500" /> : <Wine className="w-6 h-6 text-purple-600" />}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm truncate">{stock.name}</div>
+                <div className="font-semibold text-gray-900 text-xs truncate">{stock.name}</div>
                 <div className="text-gray-500 text-xs truncate">
                   SKU: {stock.sku} • {stock.quantity} {stock.unit}
                   {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && ` (${stock.subquantity} items)`}
@@ -465,24 +462,24 @@ const StockManagementDashboard: React.FC = () => {
 
     return totalPages > 1 && (
       <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-100 rounded-b-lg shadow">
-        <div className="text-sm text-gray-600">
+        <div className="text-xs text-gray-600">
           Showing {startIndex + 1}-{Math.min(endIndex, totalStocks)} of {totalStocks}
         </div>
         <div className="flex items-center space-x-2">
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex items-center px-3 py-1.5 text-xs text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronLeft className="w-4 h-4" />
           </motion.button>
           {pages.map(p => (
             <motion.button key={p} whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p)}
-              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
+              className={`px-3 py-1.5 text-xs rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
               {p}
             </motion.button>
           ))}
           <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
+            className="flex items-center px-3 py-1.5 text-xs text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed">
             <ChevronRight className="w-4 h-4" />
           </motion.button>
         </div>
@@ -499,19 +496,19 @@ const StockManagementDashboard: React.FC = () => {
             <div className="flex items-center space-x-3">
               <div>
                 <h1 className="text-xl font-semibold text-gray-900">Stock Management</h1>
-                <p className="text-sm text-gray-500">Create, view and manage inventory items</p>
+                <p className="text-xs text-gray-500">Create, view and manage inventory items</p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <motion.button whileHover={{ scale: 1.05 }} onClick={loadData} disabled={loading}
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                <span className="text-sm">Refresh</span>
+                <span className="text-xs">Refresh</span>
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} onClick={openAddForm}
                 className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium transition-colors shadow-md">
                 <Plus className="w-4 h-4" />
-                <span className="text-sm">Add Item</span>
+                <span className="text-xs">Add Item</span>
               </motion.button>
             </div>
           </div>
@@ -527,7 +524,7 @@ const StockManagementDashboard: React.FC = () => {
                 <Package className="w-5 h-5 text-primary-600" />
               </div>
               <div>
-                <p className="text-sm text-primary-600">Total Items</p>
+                <p className="text-xs text-primary-600">Total Items</p>
                 <p className="text-xl font-semibold text-gray-900">{allStocks.length}</p>
               </div>
             </div>
@@ -538,7 +535,7 @@ const StockManagementDashboard: React.FC = () => {
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Sufficient Stock</p>
+                <p className="text-xs text-gray-600">Sufficient Stock</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {allStocks.filter(s => s.quantity > s.reoderLevel).length}
                 </p>
@@ -551,7 +548,7 @@ const StockManagementDashboard: React.FC = () => {
                 <AlertTriangle className="w-5 h-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Needs Reorder</p>
+                <p className="text-xs text-gray-600">Needs Reorder</p>
                 <p className="text-xl font-semibold text-gray-900">
                   {allStocks.filter(s => s.quantity <= s.reoderLevel && s.quantity > 0).length}
                 </p>
@@ -571,7 +568,7 @@ const StockManagementDashboard: React.FC = () => {
                   placeholder="Search items..."
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-64 pl-10 pr-4 py-2 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -583,7 +580,7 @@ const StockManagementDashboard: React.FC = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="text-xs border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="createdAt-desc">Newest First</option>
                 <option value="createdAt-asc">Oldest First</option>
@@ -593,13 +590,13 @@ const StockManagementDashboard: React.FC = () => {
                 <option value="reoderLevel-asc">Reorder Level</option>
               </select>
               <div className="flex items-center border border-gray-200 rounded">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-sm transition-colors ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 text-xs transition-colors ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <List className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-sm transition-colors ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 text-xs transition-colors ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <Grid3X3 className="w-4 h-4" />
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-sm transition-colors ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 text-xs transition-colors ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`}>
                   <List className="w-4 h-4" />
                 </motion.button>
               </div>
@@ -612,13 +609,13 @@ const StockManagementDashboard: React.FC = () => {
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center text-gray-600">
             <div className="inline-flex items-center space-x-2">
               <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-sm">Loading stock items...</span>
+              <span className="text-xs">Loading stock items...</span>
             </div>
           </div>
         ) : stocks.length === 0 ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
             <p className="text-lg font-semibold text-gray-900">No Stock Items Available</p>
-            <p className="text-sm text-gray-500 mt-1">Add your first item to get started.</p>
+            <p className="text-xs text-gray-500 mt-1">Add your first item to get started.</p>
           </div>
         ) : (
           <div>
@@ -634,7 +631,7 @@ const StockManagementDashboard: React.FC = () => {
       <AnimatePresence>
         {operationStatus && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-4 right-4 z-50">
-            <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-sm ${operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
+            <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-xs ${operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
               {operationStatus.type === 'success' ? <CheckCircle className="w-5 h-5 text-green-600" /> : <XCircle className="w-5 h-5 text-red-600" />}
               <span className="font-medium">{operationStatus.message}</span>
               <motion.button whileHover={{ scale: 1.1 }} onClick={() => setOperationStatus(null)}>
@@ -651,7 +648,7 @@ const StockManagementDashboard: React.FC = () => {
             <div className="bg-white rounded-lg p-4 shadow-xl">
               <div className="flex items-center space-x-2">
                 <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-gray-700 text-sm font-medium">Processing...</span>
+                <span className="text-gray-700 text-xs font-medium">Processing...</span>
               </div>
             </div>
           </motion.div>
@@ -668,17 +665,17 @@ const StockManagementDashboard: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Delete Item</h3>
-                  <p className="text-sm text-gray-500">This action cannot be undone</p>
+                  <p className="text-xs text-gray-500">This action cannot be undone</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 mb-4">
+              <p className="text-xs text-gray-700 mb-4">
                 Are you sure you want to delete <span className="font-semibold">{deleteConfirm.name}</span> (SKU: {deleteConfirm.sku})?
               </p>
               <div className="flex justify-end space-x-3">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteStock(deleteConfirm)} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteStock(deleteConfirm)} className="px-4 py-2 text-xs bg-red-600 text-white rounded hover:bg-red-700">
                   Delete
                 </motion.button>
               </div>
@@ -698,25 +695,25 @@ const StockManagementDashboard: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">{editStock ? 'Edit Stock Item' : 'Create Stock Item'}</h3>
-                  <p className="text-sm text-gray-500">Fill in the details below</p>
+                  <p className="text-xs text-gray-500">Fill in the details below</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Item Name *</label>
                     <input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
                     <input value={formData.sku} disabled className="w-full px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 cursor-not-allowed" />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-xs font-medium text-gray-700 mb-2">
                     Purpose *
                   </label>
                   <div className="grid grid-cols-2 gap-4">
@@ -748,18 +745,18 @@ const StockManagementDashboard: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Quantity *</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Quantity *</label>
                     <input type="number" value={formData.quantity} onChange={e => setFormData(prev => ({ ...prev, quantity: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Re-OrderLevel *</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Re-OrderLevel *</label>
                     <input type="number" value={formData.reoderLevel} onChange={e => setFormData(prev => ({ ...prev, reoderLevel: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
 
                   <div className={`${ (formData.purpose === 'DRINKING' && formData.unit == 'pack' )? 'col-span-1' : 'col-span-2' }`}>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Unit *</label>
                     <select value={formData.unit} onChange={e => setFormData(prev => ({ ...prev, unit: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
                       {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u} {u == 'pack' && '( for container or case )'}</option>)}
@@ -767,9 +764,9 @@ const StockManagementDashboard: React.FC = () => {
                   </div>
                   {
                     formData.purpose === 'DRINKING' && formData.unit == 'pack' && (
-                      <div className=" text-sm text-gray-500">
+                      <div className=" text-xs text-gray-500">
                         <div className='col-span-2'>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Quantity *</label>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Sub-Quantity *</label>
                           <input type="number" value={formData.subquantity} onChange={e => setFormData(prev => ({ ...prev, subquantity: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                         </div>
@@ -789,14 +786,14 @@ const StockManagementDashboard: React.FC = () => {
                 <div className="grid grid-cols-2 gap-3">
           
                   <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
-                    <label className={`block text-sm font-medium text-gray-700 mb-1`}>Purchasing Price *</label>
+                    <label className={`block text-xs font-medium text-gray-700 mb-1`}>Purchasing Price *</label>
                     <input type="number" step="0.01" value={formData.purchasingPrice} onChange={e => setFormData(prev => ({ ...prev, purchasingPrice: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
         {
                     formData.purpose === 'DRINKING' && (
                       <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price *</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">Selling Price *</label>
                         <input type="number" step="0.01" value={formData.sellingPrice} onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
                           className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                       </div>
@@ -804,17 +801,17 @@ const StockManagementDashboard: React.FC = () => {
                       }
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Description (Optional)</label>
                   <textarea value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     rows={3} className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
               <div className="flex justify-end space-x-3 mt-6">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setShowFormModal(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setShowFormModal(false)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                   Cancel
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateStock} disabled={operationLoading}
-                  className="px-4 py-2 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
+                  className="px-4 py-2 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
                   {editStock ? 'Update' : 'Create'} Item
                 </motion.button>
               </div>

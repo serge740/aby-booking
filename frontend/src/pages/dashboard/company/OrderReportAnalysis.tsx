@@ -193,7 +193,7 @@ const OrderReportAnalysis = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-3 text-sm text-gray-600">Loading analytics...</p>
+          <p className="mt-3 text-xs text-gray-600">Loading analytics...</p>
         </div>
       </div>
     );
@@ -295,7 +295,7 @@ const OrderReportAnalysis = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           {/* Revenue Trend */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
+            <h3 className="text-xs font-semibold mb-3 flex items-center gap-2">
               <Activity className="w-4 h-4 text-blue-500" />
               Revenue Trend
             </h3>
@@ -321,7 +321,7 @@ const OrderReportAnalysis = () => {
 
           {/* Order Status */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-semibold mb-3">Order Status</h3>
+            <h3 className="text-xs font-semibold mb-3">Order Status</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -346,7 +346,7 @@ const OrderReportAnalysis = () => {
 
           {/* Orders Per Day */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-semibold mb-3">Daily Orders</h3>
+            <h3 className="text-xs font-semibold mb-3">Daily Orders</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={revenueByDay}>
                 <defs>
@@ -366,7 +366,7 @@ const OrderReportAnalysis = () => {
 
           {/* Top Clients */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4">
-            <h3 className="text-sm font-semibold mb-3">Top Clients</h3>
+            <h3 className="text-xs font-semibold mb-3">Top Clients</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={topClients} layout="vertical">
                 <defs>
@@ -389,7 +389,7 @@ const OrderReportAnalysis = () => {
 
           {/* Hourly Distribution */}
           <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-4 lg:col-span-2">
-            <h3 className="text-sm font-semibold mb-3">24-Hour Order Distribution</h3>
+            <h3 className="text-xs font-semibold mb-3">24-Hour Order Distribution</h3>
             <ResponsiveContainer width="100%" height={250}>
               <AreaChart data={hourlyData}>
                 <defs>
@@ -411,7 +411,7 @@ const OrderReportAnalysis = () => {
         {/* Compact Table */}
         <div className="bg-white/80 backdrop-blur-sm rounded-lg shadow-md overflow-hidden">
           <div className="p-3 border-b border-gray-200">
-            <h3 className="text-sm font-semibold">Recent Orders</h3>
+            <h3 className="text-xs font-semibold">Recent Orders</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">

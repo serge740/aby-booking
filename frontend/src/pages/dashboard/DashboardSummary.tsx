@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import {
   TrendingUp, ShoppingCart, DollarSign, Users, Package,
-  UserCheck, AlertTriangle, Calendar, Clock, ChevronRight, Briefcase
+  UserCheck, AlertTriangle, Calendar, Clock, ChevronRight, Briefcase,
+  Activity, BarChart3, PieChart as PieChartIcon, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import {
   AreaChart, Area, PieChart, Pie, Cell,
@@ -189,243 +190,452 @@ const DashboardSummary = () => {
     }));
   }, [riskReports]);
 
-  const COLORS = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-RW', {
       style: 'currency',
-      currency: 'RWF'
+      currency: 'RWF',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-3">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-primary-600 border-t-transparent"></div>
+          <p className="text-sm font-medium text-slate-600">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {role === 'company' ? 'Company Dashboard' : 'My Dashboard'}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-primary-50">
+      <div className="p-4 space-y-4">
+        {/* Compact Header */}
+        <div className="mb-2">
+          <h1 className="text-xl font-bold text-slate-900">
+            {role === 'company' ? 'Company Overview' : 'My Dashboard'}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-xs text-slate-500 mt-0.5">
             {role === 'company'
-              ? 'Complete business insights and analytics across all operations'
-              : 'Your personal performance dashboard'}
+              ? 'Complete business insights and analytics'
+              : 'Your personal performance metrics'}
           </p>
         </div>
 
-        {/* Main Stats - Company Role (Show Everything) */}
+        {/* Main Stats - Company Role */}
         {role === 'company' ? (
           <>
             {/* Orders & Revenue Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 title="Total Orders"
                 value={stats.totalOrders}
-                icon={<ShoppingCart className="w-6 h-6 text-primary-500" />}
-                subtitle={`${stats.completedOrders} completed • ${stats.pendingOrders} pending • ${stats.processingOrders} processing`}
+                icon={ShoppingCart}
+                gradient="from-primary-500 to-primary-600"
+                bgLight="bg-primary-50"
+                textColor="text-primary-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                    <span className="text-emerald-600">{stats.completedOrders} done</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-amber-600">{stats.pendingOrders} pending</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-primary-600">{stats.processingOrders} active</span>
+                  </div>
+                }
+                trend="up"
+                change="+12%"
               />
               <StatCard
                 title="Total Revenue"
                 value={formatCurrency(stats.totalRevenue)}
-                icon={<DollarSign className="w-6 h-6 text-green-500" />}
+                icon={DollarSign}
+                gradient="from-emerald-500 to-emerald-600"
+                bgLight="bg-emerald-50"
+                textColor="text-emerald-600"
                 subtitle="From completed orders"
+                trend="up"
+                change="+8%"
               />
               <StatCard
-                title="Active Employees"
+                title="Active Staff"
                 value={stats.activeEmployees}
-                icon={<Users className="w-6 h-6 text-purple-500" />}
-                subtitle={`${stats.totalEmployees} total • ${stats.inactiveEmployees} inactive`}
+                icon={Users}
+                gradient="from-purple-500 to-purple-600"
+                bgLight="bg-purple-50"
+                textColor="text-purple-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span>{stats.totalEmployees} total</span>
+                    {stats.inactiveEmployees > 0 && (
+                      <>
+                        <span className="text-slate-300">•</span>
+                        <span className="text-red-600">{stats.inactiveEmployees} inactive</span>
+                      </>
+                    )}
+                  </div>
+                }
+                trend="up"
+                change="+3%"
               />
               <StatCard
                 title="Stock Items"
                 value={stats.totalStock}
-                icon={<Package className="w-6 h-6 text-primary-500" />}
+                icon={Package}
+                gradient="from-indigo-500 to-indigo-600"
+                bgLight="bg-indigo-50"
+                textColor="text-indigo-600"
                 subtitle={
-                  <span>
-                    <span className="text-red-600">{stats.lowStockItems} low</span>
-                    {' • '}
-                    <span className="text-red-800">{stats.outOfStockItems} out</span>
-                  </span>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-orange-600">{stats.lowStockItems} low</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-red-600">{stats.outOfStockItems} out</span>
+                  </div>
                 }
+                trend={stats.lowStockItems > 5 ? 'down' : 'up'}
+                change={stats.lowStockItems > 5 ? '-5%' : '+2%'}
               />
             </div>
 
             {/* Leave & Salary Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 title="Leave Requests"
                 value={stats.totalLeaves}
-                icon={<Calendar className="w-6 h-6 text-teal-500" />}
-                subtitle={`${stats.pendingLeaves} pending • ${stats.approvedLeaves} approved • ${stats.rejectedLeaves} rejected`}
+                icon={Calendar}
+                gradient="from-teal-500 to-teal-600"
+                bgLight="bg-teal-50"
+                textColor="text-teal-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                    <span className="text-amber-600">{stats.pendingLeaves} pending</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-600">{stats.approvedLeaves} approved</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-red-600">{stats.rejectedLeaves} rejected</span>
+                  </div>
+                }
+                trend="up"
+                change="+5%"
               />
               <StatCard
                 title="Salary Requests"
                 value={stats.totalSalaries}
-                icon={<Briefcase className="w-6 h-6 text-primary-500" />}
-                subtitle={`${stats.pendingSalaries} pending • ${stats.approvedSalaries} approved`}
+                icon={Briefcase}
+                gradient="from-cyan-500 to-cyan-600"
+                bgLight="bg-cyan-50"
+                textColor="text-cyan-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-amber-600">{stats.pendingSalaries} pending</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-600">{stats.approvedSalaries} approved</span>
+                  </div>
+                }
+                trend="up"
+                change="+7%"
               />
               <StatCard
                 title="Approved Salaries"
                 value={formatCurrency(stats.totalSalaryAmount)}
-                icon={<DollarSign className="w-6 h-6 text-emerald-500" />}
+                icon={DollarSign}
+                gradient="from-emerald-500 to-emerald-600"
+                bgLight="bg-emerald-50"
+                textColor="text-emerald-600"
                 subtitle="Total paid out"
+                trend="up"
+                change="+15%"
               />
               <StatCard
                 title="Risk Reports"
                 value={stats.totalRisks}
-                icon={<AlertTriangle className="w-6 h-6 text-red-500" />}
+                icon={AlertTriangle}
+                gradient="from-red-500 to-red-600"
+                bgLight="bg-red-50"
+                textColor="text-red-600"
                 subtitle={
-                  <span>
+                  <div className="flex items-center gap-1.5 flex-wrap text-xs">
                     <span className="text-red-600">{stats.criticalRisks} critical</span>
-                    {' • '}
+                    <span className="text-slate-300">•</span>
                     <span className="text-orange-600">{stats.highRisks} high</span>
-                    {' • '}
-                    <span className="text-green-600">{stats.resolvedRisks} resolved</span>
-                  </span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-600">{stats.resolvedRisks} resolved</span>
+                  </div>
                 }
+                trend={stats.criticalRisks > 0 ? 'down' : 'up'}
+                change={stats.criticalRisks > 0 ? '+3 critical' : 'All clear'}
               />
             </div>
           </>
         ) : (
           // Employee Role - Personal Stats
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 title="My Orders"
                 value={stats.totalOrders}
-                icon={<ShoppingCart className="w-6 h-6 text-primary-500" />}
-                subtitle={`${stats.completedOrders} completed • ${stats.pendingOrders} pending`}
+                icon={ShoppingCart}
+                gradient="from-primary-500 to-primary-600"
+                bgLight="bg-primary-50"
+                textColor="text-primary-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-emerald-600">{stats.completedOrders} done</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-amber-600">{stats.pendingOrders} pending</span>
+                  </div>
+                }
+                trend="up"
+                change="+10%"
               />
               <StatCard
-                title="Total Revenue"
+                title="My Revenue"
                 value={formatCurrency(stats.totalRevenue)}
-                icon={<DollarSign className="w-6 h-6 text-green-500" />}
-                subtitle="From my completed orders"
+                icon={DollarSign}
+                gradient="from-emerald-500 to-emerald-600"
+                bgLight="bg-emerald-50"
+                textColor="text-emerald-600"
+                subtitle="From completed orders"
+                trend="up"
+                change="+12%"
               />
               <StatCard
                 title="Leave Requests"
                 value={stats.totalLeaves}
-                icon={<Calendar className="w-6 h-6 text-teal-500" />}
-                subtitle={`${stats.pendingLeaves} pending • ${stats.approvedLeaves} approved`}
+                icon={Calendar}
+                gradient="from-teal-500 to-teal-600"
+                bgLight="bg-teal-50"
+                textColor="text-teal-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-amber-600">{stats.pendingLeaves} pending</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-600">{stats.approvedLeaves} approved</span>
+                  </div>
+                }
+                trend="up"
+                change="+2"
               />
               <StatCard
                 title="Risk Reports"
                 value={stats.totalRisks}
-                icon={<AlertTriangle className="w-6 h-6 text-red-500" />}
+                icon={AlertTriangle}
+                gradient="from-red-500 to-red-600"
+                bgLight="bg-red-50"
+                textColor="text-red-600"
                 subtitle={
-                  <span>
-                    {stats.pendingRisks} pending
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-amber-600">{stats.pendingRisks} pending</span>
                     {stats.criticalRisks > 0 && (
-                      <span className="text-red-600"> • {stats.criticalRisks} critical</span>
+                      <>
+                        <span className="text-slate-300">•</span>
+                        <span className="text-red-600">{stats.criticalRisks} critical</span>
+                      </>
                     )}
-                  </span>
+                  </div>
                 }
+                trend={stats.criticalRisks > 0 ? 'down' : 'up'}
+                change={stats.criticalRisks > 0 ? 'Action needed' : 'On track'}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 title="Salary Requests"
                 value={stats.totalSalaries}
-                icon={<Briefcase className="w-6 h-6 text-primary-500" />}
-                subtitle={`${stats.pendingSalaries} pending • ${stats.approvedSalaries} approved`}
+                icon={Briefcase}
+                gradient="from-cyan-500 to-cyan-600"
+                bgLight="bg-cyan-50"
+                textColor="text-cyan-600"
+                subtitle={
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="text-amber-600">{stats.pendingSalaries} pending</span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-600">{stats.approvedSalaries} approved</span>
+                  </div>
+                }
+                trend="up"
+                change="+1"
               />
               <StatCard
                 title="Approved Salary"
                 value={formatCurrency(stats.totalSalaryAmount)}
-                icon={<DollarSign className="w-6 h-6 text-emerald-500" />}
+                icon={DollarSign}
+                gradient="from-emerald-500 to-emerald-600"
+                bgLight="bg-emerald-50"
+                textColor="text-emerald-600"
                 subtitle="Total approved amount"
+                trend="up"
+                change="+20%"
               />
               <StatCard
-                title="Order Performance"
+                title="Completion Rate"
                 value={stats.completedOrders > 0 ? `${Math.round((stats.completedOrders / stats.totalOrders) * 100)}%` : '0%'}
-                icon={<TrendingUp className="w-6 h-6 text-purple-500" />}
-                subtitle="Completion rate"
+                icon={TrendingUp}
+                gradient="from-purple-500 to-purple-600"
+                bgLight="bg-purple-50"
+                textColor="text-purple-600"
+                subtitle="Order success rate"
+                trend="up"
+                change="+5%"
               />
               <StatCard
                 title="Pending Actions"
                 value={stats.pendingOrders + stats.pendingLeaves + stats.pendingSalaries + stats.pendingRisks}
-                icon={<Clock className="w-6 h-6 text-orange-500" />}
+                icon={Clock}
+                gradient="from-orange-500 to-orange-600"
+                bgLight="bg-orange-50"
+                textColor="text-orange-600"
                 subtitle="Items awaiting response"
+                trend="down"
+                change="-3"
               />
             </div>
           </>
         )}
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold mb-4">Order Trend (Last 7 Days)</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={orderTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip formatter={(v) => (typeof v === 'number' ? (v > 1000 ? formatCurrency(v) : v) : v)} />
-                <Area type="monotone" dataKey="orders" stroke="#3b82f6" fill="#dbeafe" name="Orders" />
-                <Area type="monotone" dataKey="revenue" stroke="#10b981" fill="#d1fae5" name="Revenue" />
-              </AreaChart>
-            </ResponsiveContainer>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-slate-600" />
+                <h3 className="text-sm font-semibold text-slate-900">7-Day Trend</h3>
+              </div>
+            </div>
+            <div className="p-4">
+              <ResponsiveContainer width="100%" height={240}>
+                <AreaChart data={orderTrend}>
+                  <defs>
+                    <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 11 }} 
+                    stroke="#94a3b8"
+                  />
+                  <YAxis 
+                    tick={{ fontSize: 11 }} 
+                    stroke="#94a3b8"
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: 12, 
+                      borderRadius: 8, 
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                    }}
+                    formatter={(v) => (typeof v === 'number' ? (v > 1000 ? formatCurrency(v) : v) : v)} 
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="orders" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorOrders)" 
+                    name="Orders" 
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="#10b981" 
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorRevenue)" 
+                    name="Revenue" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="text-lg font-semibold mb-4">
-              {role === 'company' ? 'Order Status Distribution' : 'My Order Status'}
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={orderStatusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                >
-                  {orderStatusData.map((entry, i) => (
-                    <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+              <div className="flex items-center gap-2">
+                <PieChartIcon className="w-4 h-4 text-slate-600" />
+                <h3 className="text-sm font-semibold text-slate-900">
+                  {role === 'company' ? 'Order Distribution' : 'My Order Status'}
+                </h3>
+              </div>
+            </div>
+            <div className="p-4">
+              <ResponsiveContainer width="100%" height={240}>
+                <PieChart>
+                  <Pie
+                    data={orderStatusData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={85}
+                    paddingAngle={3}
+                    dataKey="value"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    labelStyle={{ fontSize: 10, fontWeight: 600 }}
+                  >
+                    {orderStatusData.map((entry, i) => (
+                      <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: 12, 
+                      borderRadius: 8, 
+                      border: '1px solid #e2e8f0' 
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
-        {/* Additional Charts for Company Role */}
+        {/* Additional Chart for Company Role */}
         {role === 'company' && riskSeverityData.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-semibold mb-4">Risk Severity Distribution</h3>
-              <ResponsiveContainer width="100%" height={300}>
+          <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-slate-600" />
+                <h3 className="text-sm font-semibold text-slate-900">Risk Severity Distribution</h3>
+              </div>
+            </div>
+            <div className="p-4">
+              <ResponsiveContainer width="100%" height={240}>
                 <PieChart>
                   <Pie
                     data={riskSeverityData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={5}
+                    innerRadius={50}
+                    outerRadius={85}
+                    paddingAngle={3}
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    labelStyle={{ fontSize: 10, fontWeight: 600 }}
                   >
                     {riskSeverityData.map((entry, i) => (
                       <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: 12, 
+                      borderRadius: 8, 
+                      border: '1px solid #e2e8f0' 
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -433,20 +643,21 @@ const DashboardSummary = () => {
         )}
 
         {/* Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {role === 'company' ? (
             <>
               <ActivityCard
                 title="Recent Leave Requests"
+                icon={Calendar}
                 data={leaves.slice(0, 5)}
                 renderItem={(item: any) => (
-                  <div className="flex justify-between">
-                    <div>
-                      <p className="font-medium">{item.type || 'Leave Request'}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(item.startDate || item.createdAt).toLocaleDateString()}
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{item.type || 'Leave Request'}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {new Date(item.startDate || item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         {item.employeeName && (
-                          <span className="ml-2 text-primary-600">• {item.employeeName}</span>
+                          <span className="ml-1.5 text-primary-600">• {item.employeeName}</span>
                         )}
                       </p>
                     </div>
@@ -457,21 +668,22 @@ const DashboardSummary = () => {
 
               <ActivityCard
                 title="Recent Risk Reports"
+                icon={AlertTriangle}
                 data={riskReports.slice(0, 5)}
                 renderItem={(item: any) => (
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">{item.title}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(item.createdAt).toLocaleDateString()}
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{item.title}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         {item.employeeName && (
-                          <span className="ml-2 text-primary-600">• {item.employeeName}</span>
+                          <span className="ml-1.5 text-primary-600">• {item.employeeName}</span>
                         )}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col gap-1 items-end">
                       <SeverityBadge severity={item.severity} />
-                      <StatusBadge status={item.status} className="mt-1" />
+                      <StatusBadge status={item.status} />
                     </div>
                   </div>
                 )}
@@ -481,15 +693,16 @@ const DashboardSummary = () => {
             <>
               <ActivityCard
                 title="My Recent Orders"
+                icon={ShoppingCart}
                 data={orders.slice(0, 5)}
                 renderItem={(item: any) => (
-                  <div className="flex justify-between">
-                    <div>
-                      <p className="font-medium">Order #{item.id?.slice(0, 8)}</p>
-                      <p className="text-sm text-gray-500">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900">Order #{item.id?.slice(0, 8)}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
                         {formatCurrency(item.totalAmount || 0)}
                         {' • '}
-                        {new Date(item.createdAt).toLocaleDateString()}
+                        {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </p>
                     </div>
                     <StatusBadge status={item.status} />
@@ -499,15 +712,16 @@ const DashboardSummary = () => {
 
               <ActivityCard
                 title="My Leave Requests"
+                icon={Calendar}
                 data={leaves.slice(0, 5)}
                 renderItem={(item: any) => (
-                  <div className="flex justify-between">
-                    <div>
-                      <p className="font-medium">{item.type || 'Leave Request'}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(item.startDate || item.createdAt).toLocaleDateString()}
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{item.type || 'Leave Request'}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {new Date(item.startDate || item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         {item.endDate && (
-                          <span> - {new Date(item.endDate).toLocaleDateString()}</span>
+                          <span> - {new Date(item.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                         )}
                       </p>
                     </div>
@@ -521,18 +735,19 @@ const DashboardSummary = () => {
 
         {/* Additional Activity Cards */}
         {role === 'company' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <ActivityCard
               title="Recent Salary Requests"
+              icon={Briefcase}
               data={preSalaries.slice(0, 5)}
               renderItem={(item: any) => (
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-medium">{formatCurrency(item.amount || 0)}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(item.createdAt).toLocaleDateString()}
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-slate-900">{formatCurrency(item.amount || 0)}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       {item.employeeName && (
-                        <span className="ml-2 text-primary-600">• {item.employeeName}</span>
+                        <span className="ml-1.5 text-primary-600">• {item.employeeName}</span>
                       )}
                     </p>
                   </div>
@@ -543,15 +758,16 @@ const DashboardSummary = () => {
 
             <ActivityCard
               title="Recent Orders"
+              icon={ShoppingCart}
               data={orders.slice(0, 5)}
               renderItem={(item: any) => (
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-medium">Order #{item.id?.slice(0, 8)}</p>
-                    <p className="text-sm text-gray-500">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-900">Order #{item.id?.slice(0, 8)}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
                       {formatCurrency(item.totalAmount || 0)}
                       {' • '}
-                      {new Date(item.createdAt).toLocaleDateString()}
+                      {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </p>
                   </div>
                   <StatusBadge status={item.status} />
@@ -560,18 +776,19 @@ const DashboardSummary = () => {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <ActivityCard
               title="My Salary Requests"
+              icon={Briefcase}
               data={preSalaries.slice(0, 5)}
               renderItem={(item: any) => (
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-medium">{formatCurrency(item.amount || 0)}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(item.createdAt).toLocaleDateString()}
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-slate-900">{formatCurrency(item.amount || 0)}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       {item.reason && (
-                        <span className="block mt-1 text-xs">{item.reason}</span>
+                        <span className="block mt-1 text-xs text-slate-400 truncate">{item.reason}</span>
                       )}
                     </p>
                   </div>
@@ -582,18 +799,19 @@ const DashboardSummary = () => {
 
             <ActivityCard
               title="My Risk Reports"
+              icon={AlertTriangle}
               data={riskReports.slice(0, 5)}
               renderItem={(item: any) => (
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="font-medium">{item.title}</p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(item.createdAt).toLocaleDateString()}
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-900 truncate">{item.title}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="flex flex-col gap-1 items-end">
                     <SeverityBadge severity={item.severity} />
-                    <StatusBadge status={item.status} className="mt-1" />
+                    <StatusBadge status={item.status} />
                   </div>
                 </div>
               )}
@@ -606,54 +824,88 @@ const DashboardSummary = () => {
 };
 
 // Helper Components
-const StatCard = ({ title, value, icon, subtitle }: any) => (
-  <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition-shadow">
-    <div className="flex items-center justify-between mb-3">
-      <span className="text-sm font-medium text-gray-600">{title}</span>
-      {icon}
+const StatCard = ({ title, value, icon: Icon, gradient, bgLight, textColor, subtitle, trend, change }: any) => (
+  <div className="group bg-white rounded-xl p-3.5 border border-slate-200/60 shadow-sm hover:shadow-md hover:border-slate-300/60 transition-all duration-300">
+    <div className="flex items-start justify-between mb-2">
+      <div className="flex items-center gap-2">
+        <div className={`w-8 h-8 ${bgLight} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
+          <Icon className={`w-4 h-4 ${textColor}`} />
+        </div>
+        <span className="text-xs font-medium text-slate-600">{title}</span>
+      </div>
     </div>
-    <p className="text-3xl font-bold text-gray-900">{value}</p>
-    {subtitle && <p className="text-sm text-gray-500 mt-2">{subtitle}</p>}
+    <p className="text-xl font-bold text-slate-900 mb-1.5">{value}</p>
+    <div className="flex items-center justify-between">
+      <div className="text-xs text-slate-500 flex-1 min-w-0">{subtitle}</div>
+      {change && (
+        <div className="flex items-center gap-0.5 ml-2">
+          {trend === 'up' ? (
+            <ArrowUpRight className="w-3 h-3 text-emerald-500 flex-shrink-0" />
+          ) : (
+            <ArrowDownRight className="w-3 h-3 text-red-500 flex-shrink-0" />
+          )}
+          <span className={`text-xs font-semibold whitespace-nowrap ${trend === 'up' ? 'text-emerald-600' : 'text-red-600'}`}>
+            {change}
+          </span>
+        </div>
+      )}
+    </div>
   </div>
 );
 
 const StatusBadge = ({ status, className = '' }: { status: string; className?: string }) => {
   const colors: any = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    APPROVED: 'bg-green-100 text-green-800',
-    REJECTED: 'bg-red-100 text-red-800',
-    RESOLVED: 'bg-green-100 text-green-800',
-    COMPLETED: 'bg-green-100 text-green-800',
-    PROCESSING: 'bg-primary-100 text-primary-800',
-    CANCELLED: 'bg-gray-100 text-gray-800',
+    PENDING: 'bg-amber-100 text-amber-700',
+    APPROVED: 'bg-emerald-100 text-emerald-700',
+    REJECTED: 'bg-red-100 text-red-700',
+    RESOLVED: 'bg-emerald-100 text-emerald-700',
+    COMPLETED: 'bg-emerald-100 text-emerald-700',
+    PROCESSING: 'bg-primary-100 text-primary-700',
+    CANCELLED: 'bg-slate-100 text-slate-700',
   };
-  return <span className={`px-2 py-1 text-xs font-medium rounded-full ${colors[status] || 'bg-gray-100'} ${className}`}>{status}</span>;
+  return (
+    <span className={`px-2 py-0.5 text-xs font-semibold rounded-md ${colors[status] || 'bg-slate-100 text-slate-700'} ${className}`}>
+      {status}
+    </span>
+  );
 };
 
 const SeverityBadge = ({ severity }: { severity: string }) => {
   const colors: any = {
-    CRITICAL: 'bg-red-100 text-red-800',
-    HIGH: 'bg-orange-100 text-orange-800',
-    MEDIUM: 'bg-yellow-100 text-yellow-800',
-    LOW: 'bg-primary-100 text-primary-800',
+    CRITICAL: 'bg-red-100 text-red-700 ring-1 ring-red-200',
+    HIGH: 'bg-orange-100 text-orange-700 ring-1 ring-orange-200',
+    MEDIUM: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+    LOW: 'bg-primary-100 text-primary-700 ring-1 ring-primary-200',
   };
-  return <span className={`px-2 py-1 text-xs font-medium rounded-full ${colors[severity] || 'bg-gray-100'}`}>{severity}</span>;
+  return (
+    <span className={`px-2 py-0.5 text-xs font-semibold rounded-md ${colors[severity] || 'bg-slate-100 text-slate-700'}`}>
+      {severity}
+    </span>
+  );
 };
 
-const ActivityCard = ({ title, data, renderItem }: any) => (
-  <div className="bg-white rounded-xl shadow-sm">
-    <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-      <h3 className="text-lg font-semibold">{title}</h3>
-      <button className="text-primary-600 text-sm font-medium hover:text-primary-700 flex items-center gap-1">
-        View All <ChevronRight className="w-4 h-4" />
-      </button>
+const ActivityCard = ({ title, icon: Icon, data, renderItem }: any) => (
+  <div className="bg-white rounded-xl border border-slate-200/60 shadow-sm overflow-hidden">
+    <div className="px-4 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Icon className="w-4 h-4 text-slate-600" />
+          <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+        </div>
+        <button className="text-primary-600 text-xs font-medium hover:text-primary-700 flex items-center gap-0.5 hover:bg-primary-50 px-2 py-1 rounded-lg transition-all">
+          View All <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
-    <div className="divide-y divide-gray-200">
+    <div className="divide-y divide-slate-100">
       {data.length === 0 ? (
-        <div className="p-8 text-center text-gray-500">No records found</div>
+        <div className="p-8 text-center">
+          <Activity className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <p className="text-xs text-slate-500">No records found</p>
+        </div>
       ) : (
         data.map((item: any) => (
-          <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
+          <div key={item.id} className="p-3 hover:bg-slate-50 transition-colors">
             {renderItem(item)}
           </div>
         ))

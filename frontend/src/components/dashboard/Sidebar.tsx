@@ -77,27 +77,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     ];
 
     const companyLinks: (NavItem | DropdownGroup)[] = [
-      { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
-      { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
-      { id: "employee", label: "Employee Management", icon: User2, path: `${basePath}/employee`, allowedRoles: ["company"] },
-      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
-      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
-      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
-      { id: "stock", label: "Stock", icon: BuildingIcon, path: `${basePath}/stock` },
-      {
-        id: "menu-category",
-        label: "Menu",
-        icon: MenuSquare,
-        allowedRoles: ["company"],
-        items: [
-         
-          { id: "menu-item", label: "Menu Item", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
+      { id: "dashboard", label: "Dashboard Summary", icon: TrendingUp, path: basePath },
 
-        ],
-      },
+      { id: "employee", label: "Employee Management", icon: User2, path: `${basePath}/employee`, allowedRoles: ["company"] },
+      { id: "leave-request", label: "Leave Request Management", icon: DoorOpen, path: `${basePath}/leave-request` },
+      { id: "pre-salary", label: "Pre Salary Management", icon: DollarSign, path: `${basePath}/pre-salary` },
+      { id: "risk-report", label: "Risk Report Management", icon: File, path: `${basePath}/risk-report` },
+      { id: "stock", label: "Stock Management", icon: BuildingIcon, path: `${basePath}/stock` },
+     { id: "menu-item", label: "Menu Item Management", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
+           { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
+
+    
       {
         id: "report",
-        label: "Reports",
+        label: "Reports Management",
         icon: Receipt,
         allowedRoles: ["company"],
         items: [

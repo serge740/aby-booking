@@ -81,13 +81,13 @@ const steps = [
 /* -------------------------------------------------------------------------- */
 const InputField = memo(({ label, icon: Icon, required, error, ...props }: any) => (
   <div className="space-y-1.5">
-    <label className="flex items-center text-sm font-medium text-gray-700">
+    <label className="flex items-center text-xs font-medium text-gray-700">
       {Icon && <Icon className="w-4 h-4 mr-1.5 text-gray-400" />}
       {label} {required && <span className="text-red-500 ml-1">*</span>}
     </label>
     <input
       {...props}
-      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+      className={`w-full px-4 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
         error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
       }`}
     />
@@ -102,13 +102,13 @@ const InputField = memo(({ label, icon: Icon, required, error, ...props }: any) 
 
 const SelectField = memo(({ label, icon: Icon, required, error, children, ...props }: any) => (
   <div className="space-y-1.5">
-    <label className="flex items-center text-sm font-medium text-gray-700">
+    <label className="flex items-center text-xs font-medium text-gray-700">
       {Icon && <Icon className="w-4 h-4 mr-1.5 text-gray-400" />}
       {label} {required && <span className="text-red-500 ml-1">*</span>}
     </label>
     <select
       {...props}
-      className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+      className={`w-full px-4 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
         error ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
       }`}
     >
@@ -154,7 +154,7 @@ const FileUpload = memo(
 
     return (
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-xs font-medium text-gray-700">
           {label} {showRequired && <span className="text-red-500">*</span>}
         </label>
         {hasFile ? (
@@ -165,7 +165,7 @@ const FileUpload = memo(
                   <FileText className="h-6 w-6 text-primary-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-xs font-medium text-gray-900">
                     {files[fileType]?.name || existingFiles[fileType]?.split('/').pop()}
                     {existingFiles[fileType] && !files[fileType] && (
                       <span className="ml-2 text-xs text-primary-600">(Existing)</span>
@@ -220,7 +220,7 @@ const FileUpload = memo(
               <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                 <Upload className="h-6 w-6 text-gray-400" />
               </div>
-              <p className="text-sm font-medium text-gray-700">Click to upload {label.toLowerCase()}</p>
+              <p className="text-xs font-medium text-gray-700">Click to upload {label.toLowerCase()}</p>
               <p className="text-xs text-gray-500 mt-1">{accept}</p>
             </label>
           </div>
@@ -278,7 +278,7 @@ const PersonalInfoStep = memo(
           <InputField label="National ID" required value={formData.national_id} onChange={e => onChange('national_id', e.target.value)} placeholder="1 XXXX X XXXXXXX X XX" error={errors.national_id} />
         </div>
         <div className="mt-4">
-          <label className="flex items-center text-sm font-medium text-gray-700">
+          <label className="flex items-center text-xs font-medium text-gray-700">
             <MapPin className="w-4 h-4 mr-1.5 text-gray-400" /> Address <span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
@@ -286,7 +286,7 @@ const PersonalInfoStep = memo(
             onChange={e => onChange('address', e.target.value)}
             rows={3}
             placeholder="Enter full address"
-            className={`w-full px-4 py-2.5 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
+            className={`w-full px-4 py-2 border rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ${
               errors.address ? 'border-red-300 bg-red-50' : 'border-gray-300 hover:border-gray-400'
             }`}
           />
@@ -356,7 +356,7 @@ const DocumentsStep = memo(
       <div className="text-center mb-8">
         <FileText className="w-12 h-12 text-primary-600 mx-auto mb-3" />
         <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
-        <p className="text-sm text-gray-600 mt-1">Please upload the required documents</p>
+        <p className="text-xs text-gray-600 mt-1">Please upload the required documents</p>
       </div>
       <FileUpload label="Profile Picture" fileType="profileImg" accept="image/*" files={files} previewFiles={previewFiles} existingFiles={existingFiles} removedFiles={removedFiles} errors={errors} onFileChange={onFileChange} onRemove={onRemove} />
       <FileUpload label="Application Letter" fileType="applicationLetter" accept=".pdf,.doc,.docx" required files={files} previewFiles={previewFiles} existingFiles={existingFiles} removedFiles={removedFiles} errors={errors} onFileChange={onFileChange} onRemove={onRemove} />
@@ -399,7 +399,7 @@ const ExperienceStep = memo(
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Work Experience
           </h3>
-          <p className="text-sm text-gray-600 mt-1">Add your previous work experience</p>
+          <p className="text-xs text-gray-600 mt-1">Add your previous work experience</p>
         </div>
         <button type="button" onClick={onAdd} className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm">
           <Plus className="h-4 w-4" /> <span>Add Experience</span>
@@ -420,7 +420,7 @@ const ExperienceStep = memo(
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center mr-3">
-                    <span className="text-sm font-semibold text-primary-600">{i + 1}</span>
+                    <span className="text-xs font-semibold text-primary-600">{i + 1}</span>
                   </div>
                   <h4 className="font-medium text-gray-900">Experience {i + 1}</h4>
                 </div>
@@ -433,7 +433,7 @@ const ExperienceStep = memo(
                   placeholder="Company Name *"
                   value={exp.company_name}
                   onChange={e => onUpdate(i, 'company_name', e.target.value)}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                     errors[`exp_${i}_company`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
@@ -450,7 +450,7 @@ const ExperienceStep = memo(
                       type="date"
                       value={exp.start_date}
                       onChange={e => onUpdate(i, 'start_date', e.target.value)}
-                      className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                         errors[`exp_${i}_start`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                       }`}
                     />
@@ -467,7 +467,7 @@ const ExperienceStep = memo(
                       type="date"
                       value={exp.end_date || ''}
                       onChange={e => onUpdate(i, 'end_date', e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                 </div>
@@ -476,7 +476,7 @@ const ExperienceStep = memo(
                   value={exp.description}
                   onChange={e => onUpdate(i, 'description', e.target.value)}
                   rows={3}
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                     errors[`exp_${i}_desc`] ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
@@ -520,7 +520,7 @@ const ReviewStep = memo(
             <Check className="w-8 h-8 text-green-600" />
           </div>
           <h3 className="text-xl font-semibold text-gray-900">Review Your Information</h3>
-          <p className="text-sm text-gray-600 mt-2">Please review all details before submitting</p>
+          <p className="text-xs text-gray-600 mt-2">Please review all details before submitting</p>
         </div>
         <div className="space-y-6">
           {/* Personal */}
@@ -528,7 +528,7 @@ const ReviewStep = memo(
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
               <User className="w-5 h-5 mr-2 text-primary-600" /> Personal Information
             </h4>
-            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-xs">
               <div className="flex justify-between"><span className="text-gray-600">Name:</span><span className="font-medium text-gray-900">{formData.first_name} {formData.last_name}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Gender:</span><span className="font-medium text-gray-900">{formData.gender}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Email:</span><span className="font-medium text-gray-900">{formData.email}</span></div>
@@ -542,7 +542,7 @@ const ReviewStep = memo(
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
               <Briefcase className="w-5 h-5 mr-2 text-primary-600" /> Employment Details
             </h4>
-            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+            <div className="grid md:grid-cols-2 gap-x-8 gap-y-3 text-xs">
               <div className="flex justify-between"><span className="text-gray-600">Position:</span><span className="font-medium text-gray-900">{formData.position}</span></div>
               <div className="flex justify-between"><span className="text-gray-600">Status:</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${formData.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>{formData.status}</span>
@@ -556,7 +556,7 @@ const ReviewStep = memo(
             <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
               <FileText className="w-5 h-5 mr-2 text-primary-600" /> Documents
             </h4>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-xs">
               {(['profileImg', 'applicationLetter', 'cv', 'identityCardImage'] as const).map(type => (
                 <div key={type} className="flex items-center justify-between py-2">
                   <span className="text-gray-600">
@@ -581,7 +581,7 @@ const ReviewStep = memo(
                 {formData.experience.map((exp, i) => (
                   <div key={i} className="border-l-4 border-primary-500 pl-4 py-2">
                     <p className="font-medium text-gray-900">{exp.company_name}</p>
-                    <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
+                    <p className="text-xs text-gray-600 mt-1">{exp.description}</p>
                     <p className="text-xs text-gray-500 mt-1">{exp.start_date} - {exp.end_date || 'Present'}</p>
                   </div>
                 ))}
@@ -592,7 +592,7 @@ const ReviewStep = memo(
         {errors.general && (
           <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
             <AlertCircle className="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-600">{errors.general}</p>
+            <p className="text-xs text-red-600">{errors.general}</p>
           </div>
         )}
       </div>
@@ -843,7 +843,7 @@ const EmployeeFormPage: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-6">
           <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
             <h1 className="text-2xl font-bold text-white">{employeeId ? 'Update Employee' : 'Create New Employee'}</h1>
-            <p className="text-primary-100 text-sm mt-1">Fill in the employee information step by step</p>
+            <p className="text-primary-100 text-xs mt-1">Fill in the employee information step by step</p>
           </div>
           <div className="px-8 py-6 bg-gray-50">
             <div className="flex items-center justify-between">
@@ -865,7 +865,7 @@ const EmployeeFormPage: React.FC = () => {
                         {isActive && <span className="absolute -inset-1 bg-primary-400 rounded-full animate-ping opacity-75"></span>}
                       </div>
                       <div className="mt-3 text-center">
-                        <p className={`text-sm font-medium ${isActive ? 'text-primary-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
+                        <p className={`text-xs font-medium ${isActive ? 'text-primary-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
                           {step.title}
                         </p>
                         <p className="text-xs text-gray-500 mt-0.5">{step.description}</p>
@@ -886,24 +886,24 @@ const EmployeeFormPage: React.FC = () => {
 
         {/* Navigation */}
         <div className="bg-white rounded-2xl shadow-sm px-8 py-5 flex justify-between items-center">
-          <button onClick={() => navigate(-1)} className="px-5 py-2.5 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors font-medium">
+          <button onClick={() => navigate(-1)} className="px-5 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors font-medium">
             Cancel
           </button>
           <div className="flex space-x-3">
             {currentStep > 0 && (
-              <button onClick={prevStep} className="flex items-center space-x-2 px-5 py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+              <button onClick={prevStep} className="flex items-center space-x-2 px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                 <ChevronLeft className="h-4 w-4" /> <span>Previous</span>
               </button>
             )}
             {currentStep < steps.length - 1 ? (
-              <button onClick={nextStep} className="flex items-center space-x-2 px-6 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md font-medium">
+              <button onClick={nextStep} className="flex items-center space-x-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-all shadow-sm hover:shadow-md font-medium">
                 <span>Next Step</span> <ChevronRight className="h-4 w-4" />
               </button>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className="flex items-center space-x-2 px-8 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                className="flex items-center space-x-2 px-8 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
                 {isLoading ? (
                   <>
