@@ -48,8 +48,8 @@ export class EmployeeAuthController {
       
       res.cookie('AccessEmployeeToken', loginResult.token, {
   httpOnly: true,
-  secure: false, // must be false on localhost
-  sameSite: 'lax', // works on localhost
+  secure: true, // HTTPS required
+  sameSite: 'none', // allows cross-site cookies
   maxAge: 7 * 24 * 60 * 60 * 1000,
   path: '/',
 });
