@@ -65,7 +65,7 @@ const [approveReason, setApproveReason] = useState<string>('');
         const data = await preSalaryService.getPreSalaryById(id);
         setPreSalary(data);
       } catch (e: any) {
-        setError(e.message ?? 'Failed to load pre-salary');
+        setError(e.message ?? 'Failed to load pre salary');
       } finally {
         setLoading(false);
       }
