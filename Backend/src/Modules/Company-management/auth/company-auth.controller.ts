@@ -44,12 +44,12 @@ export class CompanyAuthController {
       const { company, token } = await this.authService.login(body);
 
       res.cookie('AccessCompanyToken', token, {
-  httpOnly: true,
-  secure: true,                  // Always true now (required for sameSite: 'none')
-  sameSite: 'none',              // Required for cross-site (almost all SPA cases)
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: '/',
-});
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/',
+      });
 
       return { message: 'Login successful', company };
     } catch (error: any) {
@@ -61,8 +61,8 @@ export class CompanyAuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('AccessCompanyToken', {
       httpOnly: true,
-      secure: process.env.ABY_NODE_ENV === 'production',
-      sameSite: process.env.ABY_NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
     });
     return { message: 'Logged out successfully' };

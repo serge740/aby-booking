@@ -61,6 +61,7 @@ import EmployeeCreateOrderPage from "./components/dashboard/order/EmployeeCreate
 import StockManagementDashboard from "./pages/dashboard/StockManagement";
 import DashboardSummary from "./pages/dashboard/DashboardSummary";
 import OrderReportAnalysis from "./pages/dashboard/company/OrderReportAnalysis";
+import PortalSection from "./pages/auth/PortalSection";
 
 
 // Loading component
@@ -195,6 +196,18 @@ const router = createBrowserRouter([
        },
 
     ]
+  },
+  {
+
+      
+    path: '/auth',
+    element: (
+      <SuspenseWrapper>
+        <PortalSection />
+      </SuspenseWrapper>
+    ),
+  
+
   },
   {
     path: '/auth/admin/login',

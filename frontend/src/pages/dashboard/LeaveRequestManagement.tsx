@@ -682,7 +682,7 @@ const handleApproveLeave = async () => {
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="text-sm">Refresh</span>
               </motion.button>
-              {(isEmployee || isCompany) && (
+              {(isEmployee) && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   onClick={() => {

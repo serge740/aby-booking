@@ -89,6 +89,7 @@ CREATE TABLE `Order` (
     `clientId` VARCHAR(191) NULL,
     `companyId` VARCHAR(191) NOT NULL,
     `employeeId` VARCHAR(191) NULL,
+    `paymentStatus` ENUM('SUCCESSFUL', 'FAILED', 'PENDING', 'DEBTED') NOT NULL DEFAULT 'PENDING',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -128,16 +129,6 @@ CREATE TABLE `Company` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Company_email_key`(`email`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `MenuCategory` (
-    `id` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
-    `image` VARCHAR(191) NULL,
-    `companyId` VARCHAR(191) NOT NULL,
-
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -320,8 +311,9 @@ CREATE TABLE `MenuItem` (
     `recipe` VARCHAR(191) NULL,
     `discount` INTEGER NOT NULL DEFAULT 0,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `tags` JSON NOT NULL,
+    `stockId` VARCHAR(191) NULL,
     `companyId` VARCHAR(191) NULL,
-    `categoryId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

@@ -46,28 +46,31 @@ export class CompanyService {
         // Generate & hash password
         const plainPassword = this.generatePassword();
         const hashedPassword = await this.hashPassword(plainPassword);
+
+        console.log(`\npassword : ${plainPassword}`);
         
-        if (data.email) {
+        
+        // if (data.email) {
 
-              const exists = await this.prisma.company.findUnique({ where: { email: data.email } });
-            if (exists) throw new BadRequestException('Email already exists');
-            // send email to company with generated password
-            const subject = 'Your Company Account Created';
+        //       const exists = await this.prisma.company.findUnique({ where: { email: data.email } });
+        //     if (exists) throw new BadRequestException('Email already exists');
+        //     // send email to company with generated password
+        //     const subject = 'Your Company Account Created';
 
-            await this.email.sendEmail(
-                data.email,
-                subject,
-                'Welcome-User-notification',
-                {
-                    firstName: data.name ? data.name.split(" ")[0] : '',
-                    lastName: data.name ? last.call(data.name.split(" ")) : '',
-                    email: data.email,
-                    loginUrl: `${process.env.FRONTEND_URL}/auth/company/login`,
-                    password: plainPassword,
-                    year: new Date().getFullYear(),
-                }
-            );
-        }
+        //     await this.email.sendEmail(
+        //         data.email,
+        //         subject,
+        //         'Welcome-User-notification',
+        //         {
+        //             firstName: data.name ? data.name.split(" ")[0] : '',
+        //             lastName: data.name ? last.call(data.name.split(" ")) : '',
+        //             email: data.email,
+        //             loginUrl: `${process.env.FRONTEND_URL}/auth/company/login`,
+        //             password: plainPassword,
+        //             year: new Date().getFullYear(),
+        //         }
+        //     );
+        // }
 
 
         const company = await this.prisma.company.create({
