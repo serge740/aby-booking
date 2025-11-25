@@ -1,0 +1,44 @@
+name: Publish Frontend & Backend to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Frontend and Backend to cPanel
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3  # Clone your repo
+
+    # -----------------------------
+    # FRONTEND BUILD AND DEPLOY
+    # -----------------------------
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Install Dependencies & Build Frontend
+      working-directory: ./frontend
+      run: |
+        npm install
+        npm run build
+
+    - name: Deploy Frontend to cPanel
+      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      with:
+        server: ftp.abydash.com
+        username:  dash@abydash.com
+        password: Abydash123@
+        protocol: ftps
+        local-dir: ./frontend/dist/   # Path to frontend build output
+        server-dir: ./     # Path on cPanel for frontend
+        exclude: |
+          **/.git*
+          **/node_modules/**
+          **/.github/**
+          **/README.md

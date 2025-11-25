@@ -148,7 +148,7 @@ const MenuItemDashboard = () => {
   const renderTableView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-xs">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Image</th>
@@ -225,7 +225,7 @@ const MenuItemDashboard = () => {
           <div className="flex flex-col items-center space-y-3">
             {renderImage(item.mainImage, 'w-20 h-20')}
             <div className="text-center w-full">
-              <h3 className="font-semibold text-gray-900 text-sm truncate">{item.name}</h3>
+              <h3 className="font-semibold text-gray-900 text-xs truncate">{item.name}</h3>
               <p className="text-lg font-bold text-primary-600">${parseFloat(item.sellingPrice).toFixed(2)}</p>
               <p className="text-xs text-gray-500">{item.category?.name || 'Uncategorized'}</p>
             </div>
@@ -261,11 +261,11 @@ const MenuItemDashboard = () => {
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {renderImage(item.mainImage)}
               <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 text-sm truncate">{item.name}</div>
+                <div className="font-semibold text-gray-900 text-xs truncate">{item.name}</div>
                 <div className="text-xs text-gray-500 truncate">{item.category?.name || 'Uncategorized'} • ${parseFloat(item.sellingPrice).toFixed(2)}</div>
               </div>
             </div>
-            <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600">
+            <div className="hidden md:flex items-center space-x-4 text-xs text-gray-600">
               <span className={`px-2 py-1 rounded-full text-xs ${item.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {item.isActive ? 'Active' : 'Inactive'}
               </span>
@@ -296,7 +296,7 @@ const MenuItemDashboard = () => {
     for (let i = start; i <= end; i++) pages.push(i);
     return (
       <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-100 rounded-b-lg shadow">
-        <div className="text-sm text-gray-600">
+        <div className="text-xs text-gray-600">
           Showing {startIndex + 1}-{Math.min(endIndex, items.length)} of {items.length}
         </div>
         <div className="flex items-center space-x-2">
@@ -306,7 +306,7 @@ const MenuItemDashboard = () => {
           </motion.button>
           {pages.map(p => (
             <motion.button key={p} whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p)}
-              className={`px-3 py-1.5 text-sm rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
+              className={`px-3 py-1.5 text-xs rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
               {p}
             </motion.button>
           ))}
@@ -327,23 +327,23 @@ const MenuItemDashboard = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-semibold text-gray-900">Menu Item Management</h1>
-              <p className="text-sm text-gray-500">Manage all your menu items</p>
+              <p className="text-xs text-gray-500">Manage all your menu items</p>
             </div>
             <div className="flex items-center space-x-3">
               <motion.button whileHover={{ scale: 1.05 }} onClick={()=> navigate(`/partners/menu/${company?.id}`)} 
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <MenuSquare className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                <span className="text-sm">See Whole Menu</span>
+                <span className="text-xs">See Whole Menu</span>
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} onClick={loadItems} disabled={loading}
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                <span className="text-sm">Refresh</span>
+                <span className="text-xs">Refresh</span>
               </motion.button>
               <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateItem}
                 className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium shadow-md">
                 <Plus className="w-4 h-4" />
-                <span className="text-sm">Add Item</span>
+                <span className="text-xs">Add Item</span>
               </motion.button>
             </div>
           </div>
@@ -357,7 +357,7 @@ const MenuItemDashboard = () => {
             <div className="flex items-center space-x-3">
               <div className="p-3 bg-primary-50 rounded-full"><Menu className="w-5 h-5 text-primary-600" /></div>
               <div>
-                <p className="text-sm text-gray-600">Total Items</p>
+                <p className="text-xs text-gray-600">Total Items</p>
                 <p className="text-xl font-semibold text-gray-900">{totalItems}</p>
               </div>
             </div>
@@ -366,7 +366,7 @@ const MenuItemDashboard = () => {
             <div className="flex items-center space-x-3">
               <div className="p-3 bg-green-50 rounded-full"><CheckCircle className="w-5 h-5 text-green-600" /></div>
               <div>
-                <p className="text-sm text-gray-600">Active</p>
+                <p className="text-xs text-gray-600">Active</p>
                 <p className="text-xl font-semibold text-gray-900">{allItems.filter(i => i.isActive).length}</p>
               </div>
             </div>
@@ -375,7 +375,7 @@ const MenuItemDashboard = () => {
             <div className="flex items-center space-x-3">
               <div className="p-3 bg-purple-50 rounded-full"><Menu className="w-5 h-5 text-purple-600" /></div>
               <div>
-                <p className="text-sm text-gray-600">Categories</p>
+                <p className="text-xs text-gray-600">Categories</p>
                 <p className="text-xl font-semibold text-gray-900">{categories.length}</p>
               </div>
             </div>
@@ -393,7 +393,7 @@ const MenuItemDashboard = () => {
                   placeholder="Search items..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-64 pl-10 pr-4 py-2 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             </div>
@@ -405,7 +405,7 @@ const MenuItemDashboard = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="text-xs border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -429,7 +429,7 @@ const MenuItemDashboard = () => {
 
         {/* Content */}
         {error && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-xs">
             {error}
           </motion.div>
         )}
@@ -437,7 +437,7 @@ const MenuItemDashboard = () => {
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
             <div className="inline-flex items-center space-x-2">
               <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-              <span className="text-sm">Loading items...</span>
+              <span className="text-xs">Loading items...</span>
             </div>
           </div>
         ) : items.length === 0 ? (
@@ -445,7 +445,7 @@ const MenuItemDashboard = () => {
             <p className="text-lg font-semibold text-gray-900">
               {searchTerm ? 'No Items Found' : 'No Menu Items Available'}
             </p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-1">
               {searchTerm ? 'Try adjusting your search.' : 'Add your first menu item to get started.'}
             </p>
           </div>
@@ -462,7 +462,7 @@ const MenuItemDashboard = () => {
         <AnimatePresence>
           {operationStatus && (
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-4 right-4 z-50">
-              <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-sm ${operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
+              <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-xs ${operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
                 {operationStatus.type === 'success' ? <CheckCircle className="w-5 h-5 text-green-600" /> : <XCircle className="w-5 h-5 text-red-600" />}
                 <span className="font-medium">{operationStatus.message}</span>
                 <motion.button whileHover={{ scale: 1.1 }} onClick={() => setOperationStatus(null)}><X className="w-4 h-4" /></motion.button>
@@ -476,7 +476,7 @@ const MenuItemDashboard = () => {
               <div className="bg-white rounded-lg p-4 shadow-xl">
                 <div className="flex items-center space-x-2">
                   <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-gray-700 text-sm font-medium">Processing...</span>
+                  <span className="text-gray-700 text-xs font-medium">Processing...</span>
                 </div>
               </div>
             </motion.div>
@@ -494,17 +494,17 @@ const MenuItemDashboard = () => {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Delete Item</h3>
-                    <p className="text-sm text-gray-500">This action cannot be undone</p>
+                    <p className="text-xs text-gray-500">This action cannot be undone</p>
                   </div>
                 </div>
-                <p className="text-sm text-gray-700 mb-4">
+                <p className="text-xs text-gray-700 mb-4">
                   Are you sure you want to delete <span className="font-semibold">{deleteConfirm.name}</span>?
                 </p>
                 <div className="flex justify-end space-x-3">
-                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
                     Cancel
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteItem(deleteConfirm)} className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700">
+                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteItem(deleteConfirm)} className="px-4 py-2 text-xs bg-red-600 text-white rounded hover:bg-red-700">
                     Delete
                   </motion.button>
                 </div>

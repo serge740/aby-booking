@@ -5,19 +5,25 @@ import {
   Settings,
   User,
   ChevronDown,
+  Maximize,
+  Minimize,
+  Grid,
+  Sun,
+  Moon,
+  Minus,
 } from "lucide-react";
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
-import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
+import { useEmployeeAuth } from "../../context/EmployeeAuthContext";
 import { API_URL } from "../../api/api";
 import NotificationBell from "./notification/NotificationBell";
-
+import Flag from "react-world-flags";
 
 interface HeaderProps {
   onToggle: () => void;
-  role: "admin" | "company" | "employee"; // Now includes employee
+  role: "admin" | "company" | "employee";
 }
 
 const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
@@ -26,15 +32,29 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
   // Auth contexts
   const { user: adminUser, logout: adminLogout } = useAdminAuth();
   const { company, logout: companyLogout } = useCompanyAuth();
-  const { user:employee, logout: employeeLogout } = useEmployeeAuth(); // NEW
+  const { user: employee, logout: employeeLogout } = useEmployeeAuth();
 
   // Select correct user and logout
   const user = role === "admin" ? adminUser : role === "company" ? company : employee;
   const logout = role === "admin" ? adminLogout : role === "company" ? companyLogout : employeeLogout;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("US"); // Default to US
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const languageDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Language options
+  const languages = [
+    { code: "US", name: "English" },
+    { code: "FR", name: "French" },
+    { code: "ES", name: "Spanish" },
+    { code: "DE", name: "German" },
+    { code: "RW", name: "Kinyarwanda" },
+  ];
 
   // Logout handler
   const onLogout = async () => {
@@ -50,6 +70,33 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
       navigate(loginPath, { replace: true });
     } catch (error) {
       console.error("Logout error:", error);
+    }
+  };
+
+  // Fullscreen toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    }
+  };
+
+  // Theme toggle
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    // Here you can add logic to apply dark mode to your app
+    document.documentElement.classList.toggle("dark");
+  };
+
+  // Minimize window (works in Electron/desktop apps)
+  const minimizeWindow = () => {
+    if (window.electron) {
+      window.electron.minimize();
     }
   };
 
@@ -85,6 +132,9 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
       }
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setIsLanguageDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -93,17 +143,29 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
   // Close dropdown on Escape key
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsDropdownOpen(false);
+      if (event.key === "Escape") {
+        setIsDropdownOpen(false);
+        setIsLanguageDropdownOpen(false);
+      }
     };
-    if (isDropdownOpen) {
+    if (isDropdownOpen || isLanguageDropdownOpen) {
       document.addEventListener("keydown", handleEscapeKey);
     }
     return () => document.removeEventListener("keydown", handleEscapeKey);
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, isLanguageDropdownOpen]);
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="px-6 py-3">
+      <div className="px-6 py-1">
         <div className="flex md:items-center flex-wrap justify-center gap-3 md:gap-0 md:justify-between">
           {/* Left: Menu + Title */}
           <div className="flex items-center space-x-4">
@@ -118,28 +180,99 @@ const Header: React.FC<HeaderProps> = ({ onToggle, role }) => {
                 {role === "admin"
                   ? "Admin Dashboard"
                   : role === "company"
-                  ? "Company Dashboard"
-                  : "Employee Portal"}
+                  ? "Best Corner Bar & Resto "
+                  : "Best Corner Bar & Resto "}
               </h1>
             </div>
           </div>
 
           {/* Right: Icons + Profile */}
-          <div className="flex md:items-center space-x-4">
-            <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              {
-              (role == 'company' || role == 'employee') ?
-              <NotificationBell />
-
-              : 
-
-              <Bell className="w-5 h-5" />
-              
-            }
+          <div className="flex md:items-center space-x-2">
+            {/* Application/Grid Icon */}
+            <button
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Applications"
+            >
+              <Grid className="w-5 h-5" />
             </button>
+
+            {/* Notification Bell */}
             <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <Settings className="w-5 h-5" />
+              {role === "company" || role === "employee" ? (
+                <NotificationBell />
+              ) : (
+                <Bell className="w-5 h-5" />
+              )}
             </button>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title={isDarkMode ? "Light Mode" : "Dark Mode"}
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Language Selector */}
+            <div className="relative" ref={languageDropdownRef}>
+              <button
+                onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors flex items-center"
+                title="Select Language"
+              >
+                <Flag code={selectedLanguage} style={{ width: 20, height: 20 }} />
+              </button>
+
+              {/* Language Dropdown */}
+              {isLanguageDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                  <div className="py-1">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setSelectedLanguage(lang.code);
+                          setIsLanguageDropdownOpen(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 transition-colors"
+                      >
+                        <Flag code={lang.code} style={{ width: 20, height: 20, marginRight: 12 }} />
+                        {lang.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Fullscreen Toggle */}
+            <button
+              onClick={toggleFullscreen}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? (
+                <Minimize className="w-5 h-5" />
+              ) : (
+                <Maximize className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Minimize Window */}
+            <button
+              onClick={minimizeWindow}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Minimize"
+            >
+              <Minus className="w-5 h-5" />
+            </button>
+
+           
 
             {/* User Dropdown */}
             <div className="relative" ref={dropdownRef}>
