@@ -96,6 +96,15 @@ class OrderService {
       throw new Error(msg);
     }
   }
+  async getOrdersByEmployee(employeeId: string) {
+    try {
+      const response = await api.get(`/orders/employee/${employeeId}`);
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to fetch client orders';
+      throw new Error(msg);
+    }
+  }
 }
 
 const orderService = new OrderService();

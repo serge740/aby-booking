@@ -195,7 +195,7 @@ const StockManagementDashboard: React.FC = () => {
 
   // ── CREATE / UPDATE ──
   const handleCreateOrUpdateStock = async () => {
-    if (!formData.name || !formData.quantity || !formData.sellingPrice) {
+    if (!formData.name || !formData.quantity || !formData.purchasingPrice) {
       showOperationStatus('error', 'Name, Quantity and Selling Price are required');
       return;
     }
@@ -205,8 +205,9 @@ const StockManagementDashboard: React.FC = () => {
       sku: editStock ? editStock.sku : formData.sku,
       quantity: Number(formData.quantity),
       unit: formData.unit,
-      purchasingPrice: formData.purpose === 'DRINKING' ? Number(formData.purchasingPrice) || 0 : 0,
-      sellingPrice: Number(formData.sellingPrice),
+      purchasingPrice: Number(formData.purchasingPrice),
+      sellingPrice:formData.purpose === 'DRINKING' ? Number(formData.sellingPrice) || 0 : 0,
+
       subquantity: Number(formData.subquantity) || 0,
       reoderLevel: Number(formData.reoderLevel) || 0,
       purpose: formData.purpose,
@@ -345,10 +346,10 @@ const StockManagementDashboard: React.FC = () => {
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Item Name</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">SKU</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Quantity</th>
-              {currentStocks.some(s => s.purpose === 'DRINKING') && (
+             
                 <th className="text-left py-3 px-4 text-gray-600 font-semibold">Purchasing Price</th>
-              )}
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Selling Price</th>
+              
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Reorder Level</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Status</th>
               <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
@@ -373,9 +374,9 @@ const StockManagementDashboard: React.FC = () => {
                   )}
                 </td>
               
-                  <td className="py-3 px-4 font-medium text-green-600">{formatRWF(stock.purchasingPrice || stock.sellingPrice)}</td>
+                  <td className="py-3 px-4 font-medium text-green-600">{formatRWF(stock.purchasingPrice )}</td>
                 
-                <td className="py-3 px-4 font-semibold text-red-600">{formatRWF(stock.sellingPrice)}</td>
+                <td className="py-3 px-4 font-semibold text-red-600">{formatRWF(stock.sellingPrice || stock.purchasingPrice)}</td>
                 <td className="py-3 px-4 text-sm">
                   <span className="font-medium">{stock.reoderLevel} {stock.unit}</span>
                 </td>
@@ -410,10 +411,10 @@ const StockManagementDashboard: React.FC = () => {
                 <span className="text-xs text-gray-500 block">({stock.subquantity} items)</span>
               )}
             </div>
-            {stock.purpose === 'DRINKING' && (
+           
               <div className="font-medium text-green-600">Buy: {formatRWF(stock.purchasingPrice)}</div>
-            )}
-            <div className="font-semibold text-red-600">Sell: {formatRWF(stock.sellingPrice)}</div>
+            
+            <div className="font-semibold text-red-600">Sell: {formatRWF(stock.sellingPrice || stock.purchasingPrice)}</div>
             <div className="text-xs text-gray-500">Reorder at: {stock.reoderLevel} {stock.unit}</div>
             <div className="mt-2">{renderReorderBadge(stock)}</div>
           </div>
@@ -437,12 +438,12 @@ const StockManagementDashboard: React.FC = () => {
                 <div className="text-gray-500 text-xs truncate">
                   SKU: {stock.sku} • {stock.quantity} {stock.unit}
                   {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && ` (${stock.subquantity} items)`}
-                  {stock.purpose === 'DRINKING' && ` • Buy: ${formatRWF(stock.purchasingPrice)}`}
+                   • Buy: ${formatRWF(stock.purchasingPrice)}
                 </div>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600 flex-1 max-w-md px-4">
-              <span>{formatRWF(stock.sellingPrice)}</span>
+              <span> {formatRWF(stock.sellingPrice || stock.purchasingPrice)}</span>
               <span>{renderReorderBadge(stock)}</span>
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
@@ -786,21 +787,21 @@ const StockManagementDashboard: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-              {
-                    formData.purpose === 'DRINKING' && (
+          
                   <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
                     <label className={`block text-sm font-medium text-gray-700 mb-1`}>Purchasing Price *</label>
                     <input type="number" step="0.01" value={formData.purchasingPrice} onChange={e => setFormData(prev => ({ ...prev, purchasingPrice: e.target.value }))}
                       className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                   </div>
-                    )
-                  }
-    
+        {
+                    formData.purpose === 'DRINKING' && (
                       <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Selling Price *</label>
                         <input type="number" step="0.01" value={formData.sellingPrice} onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
                           className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
                       </div>
+                        )
+                      }
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>

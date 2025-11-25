@@ -62,6 +62,8 @@ import StockManagementDashboard from "./pages/dashboard/StockManagement";
 import DashboardSummary from "./pages/dashboard/DashboardSummary";
 import OrderReportAnalysis from "./pages/dashboard/company/OrderReportAnalysis";
 import PortalSection from "./pages/auth/PortalSection";
+import EmployeeOrderDashboard from "./pages/dashboard/employee/OrderDashboard";
+import EmployeeOrderDetailView from "./pages/dashboard/employee/CompanyOrderDetailView";
 
 
 // Loading component
@@ -189,7 +191,10 @@ const router = createBrowserRouter([
            {path:'risk-report' , element:<RiskReportDashboard />},
            {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
-           {path:'place-order/:companyId' , element:<EmployeeCreateOrderPage />},
+          
+           {path:'place-order' , element:<EmployeeOrderDashboard />},
+           {path:'order' , element:<EmployeeOrderDashboard />},
+           {path:'order/:id' , element:<EmployeeOrderDetailView />},
 
           
         ]

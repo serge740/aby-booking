@@ -38,3 +38,23 @@ if (avgDolphins > avgKoalas && avgDolphins >= minScore) {
 } else {
   console.log("❌ No team wins the trophy...");
 }
+
+function cals(a,b,o){
+  switch(o){
+
+    case '+':
+      return a + b; 
+    case '-': 
+      return a - b;
+    case '*':
+      return a * b; 
+    case '/': 
+      
+      return a / b;
+    default:
+      return "Invalid operator";
+  }
+}
+
+const ressult = cals(4, 2, '/');
+console.log(ressult); 
