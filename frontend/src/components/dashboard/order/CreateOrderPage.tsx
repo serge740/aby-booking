@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';''
 import {
   ClipboardList,
   Plus,
@@ -24,6 +25,8 @@ import {
 import { useParams } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
 import orderService from '../../../services/orderService';
+
+const navigate = useNavigate();
 
 // ---------------------------------------------------------------------
 // Helpers
@@ -226,6 +229,9 @@ const CreateOrderPage = () => {
       setSubmitResult('success');
       setSubmitMessage(`Order ${result.orderNumber || ''} created successfully!`);
       resetForm();
+
+    // 👉 Navigate after successful submit
+    navigate(`/company/dashboard/orders`); // or any route you prefer
     } catch (err: any) {
       setSubmitResult('error');
       setSubmitMessage(err.message || 'Failed to create order');
