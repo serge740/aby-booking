@@ -345,7 +345,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
         {/* Receipt Content – this is what gets printed */}
         <div className="p-6 pt-8">
           <div className="text-center mb-6 pb-4 border-b border-dashed border-gray-400">
-            <h3 className="font-bold text-lg">{company?.name || 'Your Restaurant'}</h3>
+            <h3 className="font-bold text-lg">{employee?.company?.name || 'Your Restaurant'}</h3>
             <p className="text-sm text-gray-600">Official Receipt</p>
             <div className="mt-3 text-sm">
               <p><span className="font-semibold">Order #:</span> {selectedOrder.orderNumber}</p>
