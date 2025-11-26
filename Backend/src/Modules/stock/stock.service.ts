@@ -26,6 +26,7 @@ export class StockService {
       data,
     });
   }
+  
 
   // FIND ALL FOR COMPANY
   async findAll(companyId: string) {
