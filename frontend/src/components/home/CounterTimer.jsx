@@ -137,59 +137,14 @@ export default function AbyComingSoon() {
             </p>
 
             {/* Countdown Timer */}
-            <div className="flex items-center gap-4 md:gap-8 flex-wrap">
-              {/* Days */}
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-2 border border-white/20">
-                  <span className="text-white text-4xl md:text-5xl font-bold">
-                    {formatNumber(timeLeft.days)}
-                  </span>
-                </div>
-                <p className="text-white/70 text-sm md:text-base">Days</p>
-              </div>
-
-              <span className="text-red-500 text-3xl md:text-4xl font-bold">:</span>
-
-              {/* Hours */}
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-2 border border-white/20">
-                  <span className="text-white text-4xl md:text-5xl font-bold">
-                    {formatNumber(timeLeft.hours)}
-                  </span>
-                </div>
-                <p className="text-white/70 text-sm md:text-base">Hour</p>
-              </div>
-
-              <span className="text-red-500 text-3xl md:text-4xl font-bold">:</span>
-
-              {/* Minutes */}
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-2 border border-white/20">
-                  <span className="text-white text-4xl md:text-5xl font-bold">
-                    {formatNumber(timeLeft.minutes)}
-                  </span>
-                </div>
-                <p className="text-white/70 text-sm md:text-base">Minutes</p>
-              </div>
-
-              <span className="text-red-500 text-3xl md:text-4xl font-bold">:</span>
-
-              {/* Seconds */}
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 mb-2 border border-white/20">
-                  <span className="text-white text-4xl md:text-5xl font-bold">
-                    {formatNumber(timeLeft.seconds)}
-                  </span>
-                </div>
-                <p className="text-white/70 text-sm md:text-base">Seconds</p>
-              </div>
-            </div>
+       
 
             {/* CTA Button */}
             <div className="pt-4">
-              <button className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white px-12 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <a href="/partners" 
+              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-600 text-white px-12 py-4 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 Order Now
-              </button>
+              </a>
             </div>
           </div>
         </div>

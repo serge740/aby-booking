@@ -29,14 +29,14 @@ const HomePage = () => {
             <LandingPage />
             <FeatureCategory />
             <HomeAbout />
-            <Menu />
+            {/* <Menu /> */}
 
             <WhyChooseUs />
             <AbyComingSoon />
             {/* <ContentReach /> */}
-            <AbyPopularDishes  />
+            {/* <AbyPopularDishes  /> */}
                     <Programs />
-            <FoodPromoCards  />
+            {/* <FoodPromoCards  /> */}
  
 
     
