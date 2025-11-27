@@ -180,8 +180,8 @@ function NavBar() {
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <FiPhone className="text-orange-500 w-4 h-4" />
             <span>Hotline:</span>
-            <a href="tel:18005551234" className="font-medium text-orange-500 hover:underline">
-              1800-555-1234
+            <a href="tel:+250792888980" className="font-medium text-orange-500 hover:underline">
+             +250792888980
             </a>
           </div>
         </div>
