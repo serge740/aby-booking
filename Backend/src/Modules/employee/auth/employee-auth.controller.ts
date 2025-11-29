@@ -47,12 +47,13 @@ export class EmployeeAuthController {
     
       
       res.cookie('AccessEmployeeToken', loginResult.token, {
-        httpOnly: true,
-        secure: process.env.ABY_NODE_ENV === 'production', // only secure in production
-        sameSite:  process.env.ABY_NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        path: '/', // ensure path matches when clearing
-      });
+  httpOnly: true,
+  secure: true, // HTTPS required
+  sameSite: 'none', // allows cross-site cookies
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: '/',
+});
+
       
 
       return res.status(200).json(loginResult);

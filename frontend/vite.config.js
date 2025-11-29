@@ -65,10 +65,11 @@ export default defineConfig({
                     { src: '/screenshots/mobile.png', sizes: '375x812', type: 'image/png', form_factor: 'narrow', label: 'Mobile view of Aby Dash' }
                 ]
             },
-            injectManifest: {
-                globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf,eot}'],
-                maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
-            },
+           injectManifest: {
+    globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2,ttf,eot}'],
+    maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
+},
+
             devOptions: {
                 enabled: true,
                 type: 'module',
