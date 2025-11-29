@@ -23,8 +23,8 @@ export default function AbyBookingAbout() {
               {/* 2. Stats Card – Local Businesses */}
               <div className="col-span-1 row-span-2 bg-gradient-to-br from-primary-600 to-primary-500 rounded-2xl shadow-lg flex flex-col items-center justify-center p-6 hover:scale-[1.02] transition-transform duration-300">
                 <Store className="w-12 h-12 text-white mb-3" />
-                <h3 className="text-white text-4xl font-bold mb-1">500+</h3>
-                <p className="text-white text-sm font-medium text-center">Local Businesses</p>
+                <h3 className="text-white text-4xl font-bold mb-1">Work </h3>
+                <p className="text-white text-sm font-medium text-center">with Local Businesses</p>
               </div>
 
               {/* 3. Happy users */}
