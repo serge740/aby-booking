@@ -13,116 +13,176 @@ export class OrderService {
      private readonly notificationService:  CompanyNotificationService,
   ) { }
 
-  // Create a new order
-  async createOrder(data: {
-    clientId?: string;
-    clientName: string;
-    companyId: string;
-    clientEmail?: string;
-    clientPhone?: string;
-    notes?: string;
-    employeeId?: string;
-    items: { menuItemId: string; unitPrice: number; quantity: number }[];
-  }) {
-    console.log(data)
-    // Validate client info
-    const partner = await this.prisma.company.findUnique({ where: { id: data.companyId } })
-    if (!data.clientName) {
-      throw new BadRequestException('Client name is required.');
-    }
-    if (!partner) {
-      throw new BadRequestException('Partner is required.');
-    }
+async createOrder(data: {
+  clientId?: string;
+  clientName: string;
+  companyId: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  notes?: string;
+  employeeId?: string;
+  items: { menuItemId: string; unitPrice: number; quantity: number }[];
+}) {
+  console.log(data);
+  
+  // Validate client info
+  const partner = await this.prisma.company.findUnique({ where: { id: data.companyId } });
+  if (!data.clientName) {
+    throw new BadRequestException('Client name is required.');
+  }
+  if (!partner) {
+    throw new BadRequestException('Partner is required.');
+  }
 
-    // Validate items
-    if (!Array.isArray(data.items) || data.items.length === 0) {
-      throw new BadRequestException('At least one order item is required.');
-    }
+  // Validate items
+  if (!Array.isArray(data.items) || data.items.length === 0) {
+    throw new BadRequestException('At least one order item is required.');
+  }
 
-    data.items.forEach((item, idx) => {
-      if (!item.menuItemId) throw new BadRequestException(`Item at index ${idx} is missing menuItemId.`);
-      if (typeof item.unitPrice !== 'number' || item.unitPrice <= 0)
-        throw new BadRequestException(`Item at index ${idx} has invalid unitPrice.`);
-      if (!Number.isInteger(item.quantity) || item.quantity <= 0)
-        throw new BadRequestException(`Item at index ${idx} has invalid quantity.`);
+  data.items.forEach((item, idx) => {
+    if (!item.menuItemId) throw new BadRequestException(`Item at index ${idx} is missing menuItemId.`);
+    if (typeof item.unitPrice !== 'number' || item.unitPrice <= 0)
+      throw new BadRequestException(`Item at index ${idx} has invalid unitPrice.`);
+    if (!Number.isInteger(item.quantity) || item.quantity <= 0)
+      throw new BadRequestException(`Item at index ${idx} has invalid quantity.`);
+  });
+
+  // Calculate total amount for new items
+  const newItemsTotal = data.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+
+  // 🔹 Check if order with same phone number exists today with PENDING or PROCESSING status
+  let existingOrder = null as any;
+  if (data.clientPhone) {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    existingOrder = await this.prisma.order.findFirst({
+      where: {
+        clientPhone: data.clientPhone,
+        companyId: data.companyId,
+        status: {
+          in: ['PENDING', 'PROCESSING'],
+        },
+        createdAt: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+      include: { 
+        items: { include: { menuItem: true } }, 
+        client: true, 
+        company: true 
+      },
     });
+  }
 
-    // Calculate total amount
-    const totalAmount = data.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-
-    // Generate order number
-    const orderNumber = uuidv4().slice(0, 8).toUpperCase();
-
-    const orderData: any = {
-      orderNumber,
-      clientName: data.clientName,
-      companyId: data.companyId,
-      
-
-      totalAmount,
-    };
-
-    // Only add optional fields if they exist
-    if (data.clientId) orderData.clientId = data.clientId;
-    if (data.clientEmail) orderData.clientEmail = data.clientEmail;
-    if (data.clientPhone) orderData.clientPhone = data.clientPhone;
-    if (data.notes) orderData.notes = data.notes;
-    if (data.employeeId) orderData.employeeId = data.employeeId;
-
-    // Nested items
-    orderData.items = {
-      create: data.items.map((item) => ({
+  // 🔹 If existing order found, add items to it
+  if (existingOrder) {
+    // Add new items to existing order
+    const createdItems = await this.prisma.orderItem.createMany({
+      data: data.items.map((item) => ({
+        orderId: existingOrder.id,
         menuItemId: item.menuItemId,
         unitPrice: item.unitPrice,
         quantity: item.quantity,
         totalPrice: item.unitPrice * item.quantity,
       })),
-
-    };
-
-    const order = await this.prisma.order.create({
-      data: orderData,
-     include: { items: { include: { menuItem: true } }, client: true, company: true },
     });
 
-    
+    // Update total amount
+    const updatedOrder = await this.prisma.order.update({
+      where: { id: existingOrder.id },
+      data: {
+        totalAmount: existingOrder.totalAmount + newItemsTotal,
+        // Optionally update notes if new ones are provided
+        ...(data.notes && { notes: data.notes }),
+      },
+      include: { 
+        items: { include: { menuItem: true } }, 
+        client: true, 
+        company: true 
+      },
+    });
 
-      
-      await this.notificationService.createNotification({
-        title: `New order created`,
-        message: `New order ${order.orderNumber} has been created by ${data.clientName}.`,
-        recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
-        senderId: data.companyId,
-        senderType: 'COMPANY',
-        link: `/company/dashboard/orders/${order.id}`
-      });
-    
+    // Send notification about order update
+    await this.notificationService.createNotification({
+      title: `Order updated`,
+      message: `Order ${updatedOrder.orderNumber} has been updated with new items by ${data.clientName}.`,
+      recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
+      senderId: data.companyId,
+      senderType: 'COMPANY',
+      link: `/company/dashboard/orders/${updatedOrder.id}`
+    });
 
-    // Email part here
-    if (order?.clientEmail) {
-
-      await this.email.sendEmail(
-        order?.clientEmail,
-        `Your order from ${partner.name} — ABY DASH`,
-        'Order-Confirmation', // HBS template name
-        {
-          clientName: order.clientName,
-          company_name: 'ABY DASH',
-          partner_name: partner.name,
-          orderNumber: order.orderNumber,
-          totalAmount: order.totalAmount.toFixed(2),
-          orderDate: new Date().toLocaleDateString(),
-          notes: order.notes || '',
-          orderUrl: `${process.env.FRONTEND_URL}/track-orders?order=${order.orderNumber}`,
-          year: new Date().getFullYear(),
-        },
-      );
-    }
-
-
-
-    return order;
+    return updatedOrder;
   }
+
+  // 🔹 If no existing order, create new one (original logic)
+  const orderNumber = uuidv4().slice(0, 8).toUpperCase();
+
+  const orderData: any = {
+    orderNumber,
+    clientName: data.clientName,
+    companyId: data.companyId,
+    totalAmount: newItemsTotal,
+  };
+
+  // Only add optional fields if they exist
+  if (data.clientId) orderData.clientId = data.clientId;
+  if (data.clientEmail) orderData.clientEmail = data.clientEmail;
+  if (data.clientPhone) orderData.clientPhone = data.clientPhone;
+  if (data.notes) orderData.notes = data.notes;
+  if (data.employeeId) orderData.employeeId = data.employeeId;
+
+  // Nested items
+  orderData.items = {
+    create: data.items.map((item) => ({
+      menuItemId: item.menuItemId,
+      unitPrice: item.unitPrice,
+      quantity: item.quantity,
+      totalPrice: item.unitPrice * item.quantity,
+    })),
+  };
+
+  const order = await this.prisma.order.create({
+    data: orderData,
+    include: { items: { include: { menuItem: true } }, client: true, company: true },
+  });
+
+  await this.notificationService.createNotification({
+    title: `New order created`,
+    message: `New order ${order.orderNumber} has been created by ${data.clientName}.`,
+    recipients: [{ id: data.companyId, type: 'COMPANY', read: false }],
+    senderId: data.companyId,
+    senderType: 'COMPANY',
+    link: `/company/dashboard/orders/${order.id}`
+  });
+
+  // Email part here
+  if (order?.clientEmail) {
+    await this.email.sendEmail(
+      order?.clientEmail,
+      `Your order from ${partner.name} — ABY DASH`,
+      'Order-Confirmation',
+      {
+        clientName: order.clientName,
+        company_name: 'ABY DASH',
+        partner_name: partner.name,
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount.toFixed(2),
+        orderDate: new Date().toLocaleDateString(),
+        notes: order.notes || '',
+        orderUrl: `${process.env.FRONTEND_URL}/track-orders?order=${order.orderNumber}`,
+        year: new Date().getFullYear(),
+      },
+    );
+  }
+
+  return order;
+}
 
   // Update order status
 

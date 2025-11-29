@@ -27,7 +27,7 @@ export class DualAuthGuard implements CanActivate {
           secret: process.env.JWT_SECRET || 'secretkey',
         });
         req.company = decodedCompany;
-        return true;
+       
       } catch (err) {
         console.log('Invalid company token:', err);
       }
@@ -43,12 +43,13 @@ export class DualAuthGuard implements CanActivate {
        
         
         req.employee = decodedEmployee;
-        return true;
+        
       } catch (err) {
         console.log('Invalid employee token:', err);
       }
     }
-
+    
+    return true;
     // 3️⃣ Neither company nor employee authenticated
     throw new UnauthorizedException('You do not have permission to access this resource');
   }

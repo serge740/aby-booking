@@ -7,6 +7,13 @@ import { ExpirationPlugin } from 'workbox-expiration';
 
 declare let self: ServiceWorkerGlobalScope;
 
+interface ExtendedNotificationOptions extends NotificationOptions {
+  vibrate?: number[] | number;
+  renotify?: boolean;
+  timestamp: any;
+  actions?: any;
+}
+
 // Take control of all pages immediately
 clientsClaim();
 
@@ -18,6 +25,97 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // Skip waiting and activate immediately
 self.skipWaiting();
+
+// ==========================================
+// BADGE MANAGEMENT
+// ==========================================
+
+// Store unread count in IndexedDB for persistence
+const DB_NAME = 'NotificationDB';
+const STORE_NAME = 'unreadCount';
+const UNREAD_KEY = 'count';
+
+async function openDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event: any) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+  });
+}
+
+async function getUnreadCount(): Promise<number> {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.get(UNREAD_KEY);
+      
+      request.onsuccess = () => resolve(request.result || 0);
+      request.onerror = () => reject(request.error);
+    });
+  } catch (error) {
+    console.error('❌ [SW Badge] Failed to get unread count:', error);
+    return 0;
+  }
+}
+
+async function setUnreadCount(count: number): Promise<void> {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.put(count, UNREAD_KEY);
+      
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  } catch (error) {
+    console.error('❌ [SW Badge] Failed to set unread count:', error);
+  }
+}
+
+async function incrementUnreadCount(): Promise<number> {
+  const current = await getUnreadCount();
+  const newCount = current + 1;
+  await setUnreadCount(newCount);
+  return newCount;
+}
+
+async function decrementUnreadCount(): Promise<number> {
+  const current = await getUnreadCount();
+  const newCount = Math.max(0, current - 1);
+  await setUnreadCount(newCount);
+  return newCount;
+}
+
+async function updateBadge(count: number): Promise<void> {
+  console.log(`🔢 [SW Badge] Updating badge to: ${count}`);
+  
+  try {
+    // Update App Badge API (Chrome, Edge, Safari)
+    if ('setAppBadge' in self.navigator) {
+      if (count > 0) {
+        await (self.navigator as any).setAppBadge(count);
+        console.log(`✅ [SW Badge] Badge set to ${count}`);
+      } else {
+        await (self.navigator as any).clearAppBadge();
+        console.log('✅ [SW Badge] Badge cleared');
+      }
+    }
+  } catch (error) {
+    console.error('❌ [SW Badge] Failed to update badge:', error);
+  }
+}
 
 // ==========================================
 // CACHING STRATEGIES
@@ -70,7 +168,7 @@ registerRoute(
 // ==========================================
 
 // 🔔 Handle incoming push notifications
-self.addEventListener('push', (event: PushEvent) => {
+self.addEventListener('push', async (event: PushEvent) => {
   console.log('🔔 [Service Worker] Push notification received:', event);
   
   let data: any = {};
@@ -96,21 +194,18 @@ self.addEventListener('push', (event: PushEvent) => {
   }
 
   const title = data.title || 'Abytech Hub';
-  const options: NotificationOptions = {
-    body: data.body || 'You have a new message',
+  const options: ExtendedNotificationOptions = {
+    body: data.body || data.message || 'You have a new message',
     icon: data.icon || '/pwa-192x192.png',
-    badge: data.icon ||  data.badge || '/pwa-72x72.png',
-    data: data.data || { url: data.url , notificationId: data.notificationId },
-    tag: data.tag || 'abytech-notification',
+    badge: data.icon || data.badge || '/pwa-72x72.png',
+    data: data.data || { url: data.url, notificationId: data.notificationId },
+    tag: data.tag || data.notificationId || 'abytech-notification',
     requireInteraction: data.requireInteraction || false,
-    vibrate: data.vibrate || [200, 100, 200],
     silent: false,
+    vibrate: data.vibrate || [300, 200, 300, 200, 300],
+    renotify: true,
     timestamp: Date.now(),
-    
   };
-
-  console.warn(options)
-  console.warn(options)
 
   // Add actions if provided
   if (data.actions && Array.isArray(data.actions)) {
@@ -119,15 +214,22 @@ self.addEventListener('push', (event: PushEvent) => {
 
   console.log('📢 [Service Worker] Showing notification:', title, options);
 
-  // Show the notification
+  // Show the notification and update badge
   event.waitUntil(
-    self.registration.showNotification(title, options)
-      .then(() => {
+    (async () => {
+      try {
+        // Show notification
+        await self.registration.showNotification(title, options);
         console.log('✅ [Service Worker] Notification displayed successfully');
-      })
-      .catch((error) => {
+        
+        // Increment unread count and update badge
+        const newCount = await incrementUnreadCount();
+        await updateBadge(newCount);
+        
+      } catch (error) {
         console.error('❌ [Service Worker] Failed to show notification:', error);
-      })
+      }
+    })()
   );
 });
 
@@ -137,43 +239,50 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
   
   event.notification.close();
 
+  console.warn('📦 [Service Worker] Passed in Data:', event.notification.data);
 
-   console.warn('📦 [Service Worker] Passed in Data :', event.notification.data);
+  const urlNotify = event.notification.data?.notificationId 
+    ? `${event.notification.data?.url}?notificationId=${event.notification.data?.notificationId}`
+    : event.notification.data?.url;
 
-   const urlNotify=  event.notification.data?.notificationId ? 
-   `${event.notification.data?.url}?notificationId=${event.notification.data?.notificationId}`  :
-    event.notification.data?.url;
-
- 
-  const urlToOpen = urlNotify  || '/';
+  const urlToOpen = urlNotify || '/';
   const action = event.action;
 
   console.log('🔗 [Service Worker] Opening URL:', urlToOpen, 'Action:', action);
 
   event.waitUntil(
-    self.clients.matchAll({ 
-      type: 'window', 
-      includeUncontrolled: true 
-    }).then((clientList) => {
-      // Check if there's already a window/tab open
-      for (const client of clientList) {
-        const clientUrl = new URL(client.url);
-        const targetUrl = new URL(urlToOpen, self.location.origin);
+    (async () => {
+      try {
+        // Decrement unread count when notification is clicked
+        const newCount = await decrementUnreadCount();
+        await updateBadge(newCount);
         
-        if (clientUrl.pathname === targetUrl.pathname && 'focus' in client) {
-          console.log('✅ [Service Worker] Focusing existing window');
-          return client.focus();
+        // Handle window/tab opening
+        const clientList = await self.clients.matchAll({ 
+          type: 'window', 
+          includeUncontrolled: true 
+        });
+        
+        // Check if there's already a window/tab open
+        for (const client of clientList) {
+          const clientUrl = new URL(client.url);
+          const targetUrl = new URL(urlToOpen, self.location.origin);
+          
+          if (clientUrl.pathname === targetUrl.pathname && 'focus' in client) {
+            console.log('✅ [Service Worker] Focusing existing window');
+            return client.focus();
+          }
         }
+        
+        // If no matching window found, open a new one
+        if (self.clients.openWindow) {
+          console.log('🆕 [Service Worker] Opening new window');
+          return self.clients.openWindow(urlToOpen);
+        }
+      } catch (error) {
+        console.error('❌ [Service Worker] Error handling notification click:', error);
       }
-      
-      // If no matching window found, open a new one
-      if (self.clients.openWindow) {
-        console.log('🆕 [Service Worker] Opening new window');
-        return self.clients.openWindow(urlToOpen);
-      }
-    }).catch((error) => {
-      console.error('❌ [Service Worker] Error handling notification click:', error);
-    })
+    })()
   );
 });
 
@@ -181,10 +290,17 @@ self.addEventListener('notificationclick', (event: NotificationEvent) => {
 self.addEventListener('notificationclose', (event: NotificationEvent) => {
   console.log('🚫 [Service Worker] Notification closed:', event);
   
+  // Decrement unread count when notification is dismissed
+  event.waitUntil(
+    (async () => {
+      const newCount = await decrementUnreadCount();
+      await updateBadge(newCount);
+    })()
+  );
+  
   // Optional: Send analytics or track dismissals
   const notificationData = event.notification.data;
   if (notificationData?.trackClose) {
-    // You can send analytics here
     console.log('📊 [Service Worker] Tracking notification close');
   }
 });
@@ -198,7 +314,6 @@ self.addEventListener('sync', (event: any) => {
   
   if (event.tag === 'sync-notifications') {
     event.waitUntil(
-      // Perform background sync tasks
       Promise.resolve().then(() => {
         console.log('✅ [Service Worker] Background sync completed');
       })
@@ -217,7 +332,15 @@ self.addEventListener('install', (event: ExtendableEvent) => {
 
 self.addEventListener('activate', (event: ExtendableEvent) => {
   console.log('✅ [Service Worker] Activated');
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      await self.clients.claim();
+      
+      // Initialize badge on activation
+      const count = await getUnreadCount();
+      await updateBadge(count);
+    })()
+  );
 });
 
 // Handle messages from clients
@@ -227,6 +350,27 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+  
+  // Handle badge updates from client
+  if (event.data && event.data.type === 'UPDATE_BADGE') {
+    event.waitUntil(
+      (async () => {
+        const count = event.data.count || 0;
+        await setUnreadCount(count);
+        await updateBadge(count);
+      })()
+    );
+  }
+  
+  // Handle notification read from client
+  if (event.data && event.data.type === 'NOTIFICATION_READ') {
+    event.waitUntil(
+      (async () => {
+        const newCount = await decrementUnreadCount();
+        await updateBadge(newCount);
+      })()
+    );
+  }
 });
 
-console.log('🚀 [Service Worker] Initialized with push notification support');
+console.log('🚀 [Service Worker] Initialized with push notification and badge support');

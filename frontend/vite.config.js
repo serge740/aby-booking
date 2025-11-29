@@ -23,7 +23,7 @@ export default defineConfig({
             ],
             manifest: {
                 name: 'Aby Dash',
-                short_name: 'AbyBooking',
+                short_name: 'AbyDash',
                 description: 'Aby Dash — reserve restaurants, bars, lounges, hotels, and food spots with ease.',
                 theme_color: '#ea580c',
                 background_color: '#f0f9ff',

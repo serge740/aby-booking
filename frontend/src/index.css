@@ -158,3 +158,11 @@ body{
           min-height: 400px;
         }
      
+.small-quill .ql-container {
+  height: 80px !important;     /* adjust height */
+}
+
+.small-quill .ql-editor {
+  height: 80px !important;     /* editor height */
+  padding: 8px 12px;
+}

@@ -414,7 +414,7 @@ export default function EmployeeOrderDetailView() {
           </div>
 
           {/* Payment Status Section */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+       {  order.status !== 'PENDING' &&  <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <CreditCard className="w-5 h-5" />
@@ -426,16 +426,17 @@ export default function EmployeeOrderDetailView() {
               </div>
             </div>
 
-            {order.paymentStatus === 'PENDING' && (
               <div className="flex flex-wrap gap-3 mt-4">
-                <button
+                { order.paymentStatus != 'SUCCESSFUL' &&<button
                   onClick={() => updatePaymentStatus('SUCCESSFUL')}
                   disabled={updatingPayment}
                   className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
-                >
+                  >
                   {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                   Mark as Paid
-                </button>
+                </button>}
+                  {order.paymentStatus === 'PENDING' && (
+                    <>
                 <button
                   onClick={() => updatePaymentStatus('FAILED')}
                   disabled={updatingPayment}
@@ -452,10 +453,11 @@ export default function EmployeeOrderDetailView() {
                   {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
                   Mark as Credit (Debted)
                 </button>
+                  </>
+                )}
               </div>
-            )}
           </div>
-
+}
           {/* Receipt Buttons */}
           {order.status !== 'PENDING' && (
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
@@ -516,8 +518,8 @@ export default function EmployeeOrderDetailView() {
               {order.status === 'PROCESSING' && (
                 <button
                   onClick={() => updateOrderStatus('COMPLETED')}
-                  disabled={updatingStatus}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                  disabled={updatingStatus || order.paymentStatus != 'SUCCESSFUL'}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 disabled:bg-amber-600/50 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
                 >
                   {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
                   <span>Mark as Completed</span>

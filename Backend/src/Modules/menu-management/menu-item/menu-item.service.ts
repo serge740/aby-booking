@@ -114,13 +114,7 @@ export class MenuItemService {
       }
     }
 
-    if (data.purpose === PurposeStatus.EATING) {
-      if (!data.ingredients || !data.recipe) {
-        throw new BadRequestException(
-          'Ingredients and recipe are required for food items.'
-        );
-      }
-    }
+
 
     const sellingPrice = data.sellingPrice
       ? parseFloat(data.sellingPrice)

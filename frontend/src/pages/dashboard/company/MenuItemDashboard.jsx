@@ -8,16 +8,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
-import menuCategoryService from '../../../services/menuCategoryService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
 
 const MenuItemDashboard = () => {
-  const {company}  = useCompanyAuth()
+  const { company } = useCompanyAuth();
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingCategories, setLoadingCategories] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
@@ -31,10 +28,8 @@ const MenuItemDashboard = () => {
 
   const navigate = useNavigate();
 
-  // Load data
   useEffect(() => {
     loadItems();
-    loadCategories();
   }, []);
 
   useEffect(() => {
@@ -55,18 +50,6 @@ const MenuItemDashboard = () => {
     }
   };
 
-  const loadCategories = async () => {
-    try {
-      setLoadingCategories(true);
-      const cats = await menuCategoryService.getCategories();
-      setCategories(Array.isArray(cats) ? cats : []);
-    } catch (err) {
-      console.error('Failed to load categories:', err);
-    } finally {
-      setLoadingCategories(false);
-    }
-  };
-
   const showOperationStatus = (type, message, duration = 3000) => {
     setOperationStatus({ type, message });
     setTimeout(() => setOperationStatus(null), duration);
@@ -74,12 +57,14 @@ const MenuItemDashboard = () => {
 
   const handleFilterAndSort = () => {
     let filtered = [...allItems];
+
     if (searchTerm.trim()) {
       filtered = filtered.filter(item =>
         item?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item?.description?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
     filtered.sort((a, b) => {
       let aValue = a[sortBy] ?? '';
       let bValue = b[sortBy] ?? '';
@@ -94,6 +79,7 @@ const MenuItemDashboard = () => {
         ? aValue > bValue ? 1 : -1
         : aValue < bValue ? 1 : -1;
     });
+
     setItems(filtered);
     setCurrentPage(1);
   };
@@ -144,6 +130,28 @@ const MenuItemDashboard = () => {
     return <img src={url} alt="" className={`${size} rounded-full object-cover border border-gray-200`} />;
   };
 
+  // Purpose badge (replaces old category)
+  const renderPurposeBadge = (item) => {
+    if (item.purpose === 'DRINKING') {
+      const isAlcoholic = item.drinkState === 'ALCOHOLIC';
+      const type = item.alcoholicType;
+      const label = isAlcoholic
+        ? (type === 'BEER' ? 'Beer' : type === 'WINE' ? 'Wine' : type === 'LIQUOR' ? 'Liquor' : 'Alcoholic')
+        : 'Non-Alcoholic';
+
+      return (
+        <span className={`px-2 py-1 text-xs rounded-full ${isAlcoholic ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
+          {label}
+        </span>
+      );
+    }
+    return (
+      <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+        Food
+      </span>
+    );
+  };
+
   // === Render Views ===
   const renderTableView = () => (
     <div className="bg-white rounded-lg shadow border border-gray-100">
@@ -164,7 +172,7 @@ const MenuItemDashboard = () => {
                   <ChevronDown className={`w-4 h-4 ${sortBy === 'name' ? 'text-primary-600' : 'text-gray-400'}`} />
                 </div>
               </th>
-              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden lg:table-cell">Category</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden lg:table-cell">Type</th>
               <th
                 className="text-left py-3 px-4 text-gray-600 font-semibold cursor-pointer hover:bg-gray-100 hidden md:table-cell"
                 onClick={() => {
@@ -187,7 +195,7 @@ const MenuItemDashboard = () => {
                 <td className="py-3 px-4">{renderImage(item.mainImage)}</td>
                 <td className="py-3 px-4 font-medium text-gray-900 max-w-xs truncate">{item.name}</td>
                 <td className="py-3 px-4 text-gray-600 hidden lg:table-cell">
-                  {item.category?.name || 'Uncategorized'}
+                  {renderPurposeBadge(item)}
                 </td>
                 <td className="py-3 px-4 text-gray-600 hidden md:table-cell">
                   ${parseFloat(item.sellingPrice).toFixed(2)}
@@ -227,7 +235,7 @@ const MenuItemDashboard = () => {
             <div className="text-center w-full">
               <h3 className="font-semibold text-gray-900 text-xs truncate">{item.name}</h3>
               <p className="text-lg font-bold text-primary-600">${parseFloat(item.sellingPrice).toFixed(2)}</p>
-              <p className="text-xs text-gray-500">{item.category?.name || 'Uncategorized'}</p>
+              <div className="mt-1">{renderPurposeBadge(item)}</div>
             </div>
             <div className="flex space-x-1 text-xs">
               <span className={`px-2 py-1 rounded-full ${item.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -262,7 +270,9 @@ const MenuItemDashboard = () => {
               {renderImage(item.mainImage)}
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900 text-xs truncate">{item.name}</div>
-                <div className="text-xs text-gray-500 truncate">{item.category?.name || 'Uncategorized'} • ${parseFloat(item.sellingPrice).toFixed(2)}</div>
+                <div className="text-xs text-gray-500 truncate">
+                  {renderPurposeBadge(item)} • ${parseFloat(item.sellingPrice).toFixed(2)}
+                </div>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4 text-xs text-gray-600">
@@ -294,6 +304,7 @@ const MenuItemDashboard = () => {
     const end = Math.min(totalPages, start + maxVisible - 1);
     if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
     for (let i = start; i <= end; i++) pages.push(i);
+
     return (
       <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-100 rounded-b-lg shadow">
         <div className="text-xs text-gray-600">
@@ -330,7 +341,7 @@ const MenuItemDashboard = () => {
               <p className="text-xs text-gray-500">Manage all your menu items</p>
             </div>
             <div className="flex items-center space-x-3">
-              <motion.button whileHover={{ scale: 1.05 }} onClick={()=> navigate(`/partners/menu/${company?.id}`)} 
+              <motion.button whileHover={{ scale: 1.05 }} onClick={() => navigate(`/partners/menu/${company?.id}`)}
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <MenuSquare className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="text-xs">See Whole Menu</span>
@@ -371,15 +382,7 @@ const MenuItemDashboard = () => {
               </div>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-purple-50 rounded-full"><Menu className="w-5 h-5 text-purple-600" /></div>
-              <div>
-                <p className="text-xs text-gray-600">Categories</p>
-                <p className="text-xl font-semibold text-gray-900">{categories.length}</p>
-              </div>
-            </div>
-          </motion.div>
+          {/* Removed Categories stat */}
         </div>
 
         {/* Controls */}
@@ -458,7 +461,7 @@ const MenuItemDashboard = () => {
           </div>
         )}
 
-        {/* Toasts & Loading */}
+        {/* Toasts & Modals - unchanged */}
         <AnimatePresence>
           {operationStatus && (
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-4 right-4 z-50">
@@ -470,6 +473,7 @@ const MenuItemDashboard = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
         <AnimatePresence>
           {operationLoading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 flex items-center justify-center z-40">
@@ -483,7 +487,6 @@ const MenuItemDashboard = () => {
           )}
         </AnimatePresence>
 
-        {/* Delete Confirm Modal */}
         <AnimatePresence>
           {deleteConfirm && (
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -517,4 +520,4 @@ const MenuItemDashboard = () => {
   );
 };
 
-export default MenuItemDashboard;
+export default MenuItemDashboard; 

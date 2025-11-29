@@ -75,8 +75,13 @@ export const CompanyAuthProvider = ({ children }) => {
         applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
       });
 
+      
+      
       // 6. Convert subscription to plain object
       const subscriptionObject = subscription.toJSON();
+      console.log('file fox this is : ',subscription);
+
+
 
       // 7. Send subscription to backend using push notification service
       await pushNotificationService.subscribe(

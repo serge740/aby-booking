@@ -4,8 +4,7 @@ import {
   Plus, Edit, Trash2, Search, ChevronDown, Eye, ChevronLeft, ChevronRight,
   AlertTriangle, CheckCircle, XCircle, X, RefreshCw,
   Grid3X3, List, Package, DollarSign, Hash, Box,
-  Utensils,
-  Wine
+  Utensils, Wine, TrendingUp, TrendingDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -55,9 +54,7 @@ interface FormData {
   description: string;
 }
 
-const UNIT_OPTIONS = [
-  'pcs', 'pack', 'kg', 'g', 'lb', 'liter', 'ml', 'meter', 'cm', 'dozen', 'roll', 'set', 'pair', 'unit'
-];
+const UNIT_OPTIONS = ['pcs', 'pack', 'kg'];
 
 // ──────────────────────────────────────────────────────────────
 // ── COMPONENT ─────────────────────────────────────────────────
@@ -83,7 +80,6 @@ const StockManagementDashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'grid' | 'list'>('table');
   const [showFormModal, setShowFormModal] = useState<boolean>(false);
   const [editStock, setEditStock] = useState<Stock | null>(null);
-
   const [formData, setFormData] = useState<FormData>({
     name: '',
     sku: '',
@@ -173,7 +169,6 @@ const StockManagementDashboard: React.FC = () => {
   // ── FILTER / SORT ──
   const handleFilterAndSort = () => {
     let filtered = [...allStocks];
-
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(s =>
@@ -182,21 +177,41 @@ const StockManagementDashboard: React.FC = () => {
         s.unit.toLowerCase().includes(term)
       );
     }
-
     filtered.sort((a, b) => {
       const aVal = (a[sortBy] ?? '').toString().toLowerCase();
       const bVal = (b[sortBy] ?? '').toString().toLowerCase();
       return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
     });
-
     setStocks(filtered);
     setCurrentPage(1);
+  };
+
+  // ── CALCULATIONS ──
+  const calculateTotalPurchase = () => {
+    const qty = parseFloat(formData.quantity) || 0;
+    const price = parseFloat(formData.purchasingPrice) || 0;
+    return qty * price;
+  };
+
+  const calculateProfit = () => {
+    if (formData.purpose !== 'DRINKING') return null;
+    const qty = parseFloat(formData.quantity) || 0;
+    const buy = parseFloat(formData.purchasingPrice) || 0;
+    const sell = parseFloat(formData.sellingPrice) || 0;
+    const totalBuy = qty * buy;
+    const totalSell = qty * sell;
+    const profit = totalSell - totalBuy;
+    return { totalBuy, totalSell, profit };
   };
 
   // ── CREATE / UPDATE ──
   const handleCreateOrUpdateStock = async () => {
     if (!formData.name || !formData.quantity || !formData.purchasingPrice) {
-      showOperationStatus('error', 'Name, Quantity and Selling Price are required');
+      showOperationStatus('error', 'Name, Quantity and Purchasing Price are required');
+      return;
+    }
+    if (formData.purpose === 'DRINKING' && !formData.sellingPrice) {
+      showOperationStatus('error', 'Selling Price is required for drinks');
       return;
     }
 
@@ -206,8 +221,7 @@ const StockManagementDashboard: React.FC = () => {
       quantity: Number(formData.quantity),
       unit: formData.unit,
       purchasingPrice: Number(formData.purchasingPrice),
-      sellingPrice:formData.purpose === 'DRINKING' ? Number(formData.sellingPrice) || 0 : 0,
-
+      sellingPrice: formData.purpose === 'DRINKING' ? Number(formData.sellingPrice) || 0 : 0,
       subquantity: Number(formData.subquantity) || 0,
       reoderLevel: Number(formData.reoderLevel) || 0,
       purpose: formData.purpose,
@@ -274,15 +288,13 @@ const StockManagementDashboard: React.FC = () => {
         ...prev,
         purpose: 'EATING',
         unit: 'kg',
-        subquantity: '',
-        purchasingPrice: '',
+        sellingPrice: '',
       }));
     } else {
       setFormData(prev => ({
         ...prev,
         purpose: 'DRINKING',
         unit: 'pcs',
-        purchasingPrice: prev.purchasingPrice || '',
       }));
     }
   };
@@ -321,7 +333,6 @@ const StockManagementDashboard: React.FC = () => {
 
   const renderActions = (stock: Stock) => (
     <div className="flex items-center space-x-2">
-   
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditStock(stock)}
         className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="Edit">
         <Edit className="w-4 h-4" />
@@ -343,10 +354,8 @@ const StockManagementDashboard: React.FC = () => {
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Item Name</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">SKU</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Quantity</th>
-             
-                <th className="text-left py-3 px-4 text-gray-600 font-semibold">Purchasing Price</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Purchasing Price</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Selling Price</th>
-              
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Reorder Level</th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold">Status</th>
               <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
@@ -362,7 +371,6 @@ const StockManagementDashboard: React.FC = () => {
                     <span className="font-mono text-xs">{stock.sku}</span>
                   </div>
                 </td>
-
                 <td className="py-3 px-4">
                   <span className="font-semibold">{stock.quantity}</span>
                   <span className="text-gray-500 text-xs ml-1">{stock.unit}</span>
@@ -370,10 +378,10 @@ const StockManagementDashboard: React.FC = () => {
                     <span className="block text-xs text-gray-500">({stock.subquantity} items inside)</span>
                   )}
                 </td>
-              
-                  <td className="py-3 px-4 font-medium text-green-600">{formatRWF(stock.purchasingPrice )}</td>
-                
-                <td className="py-3 px-4 font-semibold text-red-600">{formatRWF(stock.sellingPrice || stock.purchasingPrice)}</td>
+                <td className="py-3 px-4 font-medium text-green-600">{formatRWF(stock.purchasingPrice)}</td>
+                <td className={`py-3 px-4 font-semibold ${stock.purpose === 'DRINKING' ? 'text-amber-600' : 'text-gray-600'}`}>
+                  {stock.purpose === 'DRINKING' ? formatRWF(stock.sellingPrice) : 'Not applicable'}
+                </td>
                 <td className="py-3 px-4 text-sm">
                   <span className="font-medium">{stock.reoderLevel} {stock.unit}</span>
                 </td>
@@ -396,7 +404,6 @@ const StockManagementDashboard: React.FC = () => {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
               {stock.purpose === 'EATING' ? <Utensils className="w-8 h-8 text-orange-500" /> : <Wine className="w-8 h-8 text-purple-600" />}
             </div>
-           
             <div className="text-center w-full">
               <div className="font-semibold text-gray-900 text-xs truncate">{stock.name}</div>
               <div className="text-gray-500 text-xs">SKU: {stock.sku}</div>
@@ -408,10 +415,10 @@ const StockManagementDashboard: React.FC = () => {
                 <span className="text-xs text-gray-500 block">({stock.subquantity} items)</span>
               )}
             </div>
-           
-              <div className="font-medium text-green-600">Buy: {formatRWF(stock.purchasingPrice)}</div>
-            
-            <div className="font-semibold text-red-600">Sell: {formatRWF(stock.sellingPrice || stock.purchasingPrice)}</div>
+            <div className="font-medium text-green-600">Buy: {formatRWF(stock.purchasingPrice)}</div>
+            <div className={`font-semibold ${stock.purpose === 'DRINKING' ? 'text-amber-600' : 'text-gray-600'}`}>
+              Sell: {stock.purpose === 'DRINKING' ? formatRWF(stock.sellingPrice) : 'Not applicable'}
+            </div>
             <div className="text-xs text-gray-500">Reorder at: {stock.reoderLevel} {stock.unit}</div>
             <div className="mt-2">{renderReorderBadge(stock)}</div>
           </div>
@@ -435,12 +442,14 @@ const StockManagementDashboard: React.FC = () => {
                 <div className="text-gray-500 text-xs truncate">
                   SKU: {stock.sku} • {stock.quantity} {stock.unit}
                   {stock.purpose === 'DRINKING' && stock.unit === 'pack' && stock.subquantity > 0 && ` (${stock.subquantity} items)`}
-                   • Buy: ${formatRWF(stock.purchasingPrice)}
+                  {' '}• Buy: {formatRWF(stock.purchasingPrice)}
                 </div>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-4 text-sm text-gray-600 flex-1 max-w-md px-4">
-              <span> {formatRWF(stock.sellingPrice || stock.purchasingPrice)}</span>
+              <span>
+                {stock.purpose === 'DRINKING' ? formatRWF(stock.sellingPrice) : 'Not applicable'}
+              </span>
               <span>{renderReorderBadge(stock)}</span>
             </div>
             <div className="flex items-center space-x-2 flex-shrink-0">
@@ -625,9 +634,153 @@ const StockManagementDashboard: React.FC = () => {
             {renderPagination()}
           </div>
         )}
-
       </div>
-      {/* Toast, Loading, Delete Modal, Form Modal – 100% same as LeaveRequestDashboard */}
+
+      {/* Form Modal with Profit/Loss Calculation */}
+      <AnimatePresence>
+        {showFormModal && (
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg p-6 w-full max-w-5xl shadow-xl overflow-y-auto max-h-screen">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
+                  <Box className="w-5 h-5 text-primary-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{editStock ? 'Edit Stock Item' : 'Create Stock Item'}</h3>
+                  <p className="text-xs text-gray-500">Fill in the details below</p>
+                </div>
+              </div>
+
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Item Name *</label>
+                    <input placeholder="e.g. Heineken Beer" value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
+                    <input value={formData.sku} disabled className="w-full px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 cursor-not-allowed" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-2">Purpose *</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button type="button" onClick={() => handlePurposeChange('EATING')}
+                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'EATING' ? 'border-primary-500 bg-primary-50' : 'border-gray-300 hover:border-gray-400'}`}>
+                      <Utensils className="w-8 h-8" />
+                      <span className="font-medium">Food</span>
+                    </button>
+                    <button type="button" onClick={() => handlePurposeChange('DRINKING')}
+                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'DRINKING' ? 'border-primary-500 bg-primary-50' : 'border-gray-300 hover:border-gray-400'}`}>
+                      <Wine className="w-8 h-8" />
+                      <span className="font-medium">Drink</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Quantity *</label>
+                    <input type="number" placeholder="e.g. 50" value={formData.quantity} onChange={e => setFormData(prev => ({ ...prev, quantity: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Reorder Level *</label>
+                    <input type="number" placeholder="e.g. 10" value={formData.reoderLevel} onChange={e => setFormData(prev => ({ ...prev, reoderLevel: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                  <div className={`${formData.purpose === 'DRINKING' && formData.unit === 'pack' ? 'col-span-1' : 'col-span-2'}`}>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Unit *</label>
+                    <select value={formData.unit} onChange={e => setFormData(prev => ({ ...prev, unit: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
+                      {UNIT_OPTIONS.map(u => (
+                        <option key={u} value={u}>
+                          {u} {u === 'pack' && '(for cases/containers)'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {formData.purpose === 'DRINKING' && formData.unit === 'pack' && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Items per Pack *</label>
+                      <input type="number" placeholder="e.g. 24 bottles" value={formData.subquantity} onChange={e => setFormData(prev => ({ ...prev, subquantity: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                    <p className="text-xs text-gray-500 mt-1">Total bottles/cans in one pack</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Purchasing Price (per unit) *</label>
+                    <input type="number" step="0.01" placeholder="e.g. 1500" value={formData.purchasingPrice} onChange={e => setFormData(prev => ({ ...prev, purchasingPrice: e.target.value }))}
+                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  </div>
+                  {formData.purpose === 'DRINKING' && (
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Selling Price (per unit) *</label>
+                      <input type="number" step="0.01" placeholder="e.g. 2500" value={formData.sellingPrice} onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
+                        className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Profit / Total Cost Summary */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  {formData.purpose === 'EATING' ? (
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">Total Purchase Cost:</span>
+                      <span className="text-lg font-bold text-gray-900">{formatRWF(calculateTotalPurchase())}</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {calculateProfit() && (
+                        <>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Total Cost:</span>
+                            <span className="font-medium">{formatRWF(calculateProfit()!.totalBuy)}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Total Revenue (if sold):</span>
+                            <span className="font-medium text-amber-600">{formatRWF(calculateProfit()!.totalSell)}</span>
+                          </div>
+                          <div className={`flex items-center justify-between text-lg font-bold ${calculateProfit()!.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <span className="flex items-center gap-2">
+                              {calculateProfit()!.profit >= 0 ? <TrendingUp className="w-5 h-5" /> : <TrendingDown className="w-5 h-5" />}
+                              {calculateProfit()!.profit >= 0 ? 'Expected Profit:' : 'Expected Loss:'}
+                            </span>
+                            <span>{formatRWF(Math.abs(calculateProfit()!.profit))}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Description (Optional)</label>
+                  <textarea placeholder="Any notes about this item..." value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                    rows={3} className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setShowFormModal(false)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                  Cancel
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateStock} disabled={operationLoading}
+                  className="px-4 py-2 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
+                  {editStock ? 'Update' : 'Create'} Item
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Toast, Loading, Delete Modal */}
       <AnimatePresence>
         {operationStatus && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-4 right-4 z-50">
@@ -677,142 +830,6 @@ const StockManagementDashboard: React.FC = () => {
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteStock(deleteConfirm)} className="px-4 py-2 text-xs bg-red-600 text-white rounded hover:bg-red-700">
                   Delete
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Form Modal – IDENTICAL to LeaveRequestDashboard */}
-      <AnimatePresence>
-        {showFormModal && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg p-6 w-full max-w-5xl shadow-xl overflow-y-auto max-h-screen">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
-                  <Box className="w-5 h-5 text-primary-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{editStock ? 'Edit Stock Item' : 'Create Stock Item'}</h3>
-                  <p className="text-xs text-gray-500">Fill in the details below</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Item Name *</label>
-                    <input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">SKU (Auto-generated)</label>
-                    <input value={formData.sku} disabled className="w-full px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 cursor-not-allowed" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-2">
-                    Purpose *
-                  </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      type="button"
-                      onClick={() => handlePurposeChange('EATING')}
-                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'EATING'
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                    >
-                      <Utensils className="w-8 h-8" />
-                      <span className="font-medium">Food</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handlePurposeChange('DRINKING')}
-
-                      className={`p-4 border-2 rounded-lg flex flex-col items-center justify-center space-y-2 transition ${formData.purpose === 'DRINKING'
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                    >
-                      <Wine className="w-8 h-8" />
-                      <span className="font-medium">Drink</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Quantity *</label>
-                    <input type="number" value={formData.quantity} onChange={e => setFormData(prev => ({ ...prev, quantity: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Re-OrderLevel *</label>
-                    <input type="number" value={formData.reoderLevel} onChange={e => setFormData(prev => ({ ...prev, reoderLevel: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                  </div>
-
-                  <div className={`${ (formData.purpose === 'DRINKING' && formData.unit == 'pack' )? 'col-span-1' : 'col-span-2' }`}>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Unit *</label>
-                    <select value={formData.unit} onChange={e => setFormData(prev => ({ ...prev, unit: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500">
-                      {UNIT_OPTIONS.map(u => <option key={u} value={u}>{u} {u == 'pack' && '( for container or case )'}</option>)}
-                    </select>
-                  </div>
-                  {
-                    formData.purpose === 'DRINKING' && formData.unit == 'pack' && (
-                      <div className=" text-xs text-gray-500">
-                        <div className='col-span-2'>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Sub-Quantity *</label>
-                          <input type="number" value={formData.subquantity} onChange={e => setFormData(prev => ({ ...prev, subquantity: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                        </div>
-                        <div className="pt-2">
-                          <span className="font-semibold">Note for Drinks:</span>
-                          <p>- Unit = pcs (bottles/cans)</p>
-                          <p>- Case = pack (container)</p>
-                          <p>- Packs: add all total items in sub-quantity</p>
-                        </div>
-
-                      </div>
-
-                    )
-                  }
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-          
-                  <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
-                    <label className={`block text-xs font-medium text-gray-700 mb-1`}>Purchasing Price *</label>
-                    <input type="number" step="0.01" value={formData.purchasingPrice} onChange={e => setFormData(prev => ({ ...prev, purchasingPrice: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                  </div>
-        {
-                    formData.purpose === 'DRINKING' && (
-                      <div className={`${formData.purpose == 'DRINKING' ? 'col-span-1' : '  col-span-2'}  `}>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Selling Price *</label>
-                        <input type="number" step="0.01" value={formData.sellingPrice} onChange={e => setFormData(prev => ({ ...prev, sellingPrice: e.target.value }))}
-                          className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                      </div>
-                        )
-                      }
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Description (Optional)</label>
-                  <textarea value={formData.description} onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    rows={3} className="w-full px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500" />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-3 mt-6">
-                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setShowFormModal(false)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
-                  Cancel
-                </motion.button>
-                <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateOrUpdateStock} disabled={operationLoading}
-                  className="px-4 py-2 text-xs bg-primary-600 text-white rounded hover:bg-primary-700 disabled:opacity-50">
-                  {editStock ? 'Update' : 'Create'} Item
                 </motion.button>
               </div>
             </div>

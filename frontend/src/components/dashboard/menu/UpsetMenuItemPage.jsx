@@ -187,7 +187,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
       if (!formData.sellingPrice || parseFloat(formData.sellingPrice) <= 0) return setError('Valid selling price is required');
       if (formData.purpose === 'DRINKING' && !formData.stockId) return setError('Please select a stock item for drinks');
       if (formData.purpose === 'EATING' && formData.ingredients.length === 0) return setError('At least one ingredient is required');
-      if (formData.purpose === 'EATING' && !formData.recipe.trim()) return setError('Recipe is required for food');
+    
 
       const dataToSend = {
         ...formData,
@@ -410,72 +410,36 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Recipe / Instructions *</label>
-                <textarea
-                  value={formData.recipe}
-                  onChange={(e) => handleInputChange('recipe', e.target.value)}
-                  rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Cooking instructions..."
-                />
-              </div>
+            
             </>
           )}
 
-          {/* Tags */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tags (Optional)</label>
-            <div className="flex space-x-2 mb-3">
-              <input
-                type="text"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addTag()}
-                placeholder="e.g., Popular, Spicy, Vegan"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-              <button type="button" onClick={addTag} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
-                Add Tag
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {formData.tags.map((tag, idx) => (
-                <span key={idx} className="inline-flex items-center px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm">
-                  {tag}
-                  <button type="button" onClick={() => removeTag(idx)} className="ml-2">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
-
+         
           {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <ReactQuill
-              theme="snow"
-              value={formData.description}
-              onChange={(value) => handleInputChange('description', value)}
-              className="bg-white rounded-lg"
-              placeholder="Describe your menu item..."
-            />
-          </div>
+          <div className=''>
+  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+  <textarea
+    value={formData.description}
+    onChange={(e) => handleInputChange('description', e.target.value)}
+    className="bg-white rounded-lg p-2 w-full text-sm border border-gray-300 h-20"
+    placeholder="Describe your menu item..."
+  />
+</div>
+
 
           {/* Images */}
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Main Image</label>
               {mainImagePreview ? (
-                <div className="relative w-full h-64 border-2 border-gray-300 rounded-lg overflow-hidden">
+                <div className="relative w-full h-32 border-2 border-gray-300 rounded-lg overflow-hidden">
                   <img src={mainImagePreview} alt="Main" className="w-full h-full object-cover" />
                   <button type="button" onClick={removeMainImage} className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full hover:bg-red-700">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 bg-gray-50">
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 bg-gray-50">
                   <Upload className="w-12 h-12 text-gray-400 mb-2" />
                   <span className="text-sm text-gray-500">Click to upload main image</span>
                   <input type="file" accept="image/*" onChange={handleMainImageChange} className="hidden" />
@@ -485,10 +449,10 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Other Images (Max 10)</label>
-              <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 {otherImagesPreviews.map((preview, idx) => (
-                  <div key={idx} className="relative aspect-square border-2 border-gray-300 rounded-lg overflow-hidden">
-                    <img src={preview} alt={`Other ${idx}`} className="w-full h-full object-cover" />
+                  <div key={idx} className="relative border-2 border-gray-300 rounded-lg overflow-hidden">
+                    <img src={preview} alt={`Other ${idx}`} className="w-full h-32 object-cover" />
                     <button type="button" onClick={() => removeOtherImage(idx)} className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full hover:bg-red-700">
                       <X className="w-3 h-3" />
                     </button>
@@ -525,7 +489,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium flex items-center space-x-2 disabled:opacity-50"
+              className="px-8 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium flex items-center space-x-2 disabled:opacity-50"
             >
               {loading ? (
                 <>

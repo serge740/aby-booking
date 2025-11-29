@@ -47,6 +47,29 @@ interface NotificationProviderProps {
 const NotificationContext = createContext<NotificationContextValue | null>(null);
 
 // ────────────────────────────────────────────────────────
+// SERVICE WORKER BADGE UTILITY
+// ────────────────────────────────────────────────────────
+
+const updateServiceWorkerBadge = (count: number): void => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'UPDATE_BADGE',
+      count: count
+    });
+    console.log(`📤 [Badge] Updated badge to: ${count}`);
+  }
+};
+
+const notifyServiceWorkerNotificationRead = (): void => {
+  if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({
+      type: 'NOTIFICATION_READ'
+    });
+    console.log('📤 [Badge] Notified notification read');
+  }
+};
+
+// ────────────────────────────────────────────────────────
 // NOTIFICATION PROVIDER COMPONENT
 // ────────────────────────────────────────────────────────
 
@@ -114,6 +137,13 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       )
     ).length;
   }, [notifications, recipientId, recipientType]);
+
+  // ────────────────────────────────
+  // SYNC BADGE WITH SERVICE WORKER
+  // ────────────────────────────────
+  useEffect(() => {
+    updateServiceWorkerBadge(unreadCount);
+  }, [unreadCount]);
 
   // ────────────────────────────────
   // FETCH NOTIFICATIONS
@@ -185,6 +215,9 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
           return notif;
         })
       );
+
+      // Notify Service Worker to decrement badge
+      notifyServiceWorkerNotificationRead();
     } catch (err: any) {
       console.error('Failed to mark notification as read:', err);
       setError(err.message || 'Failed to mark notification as read');
