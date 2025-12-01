@@ -10,6 +10,16 @@ import { useNavigate } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
 
+const formatRWF = (amount) => {
+  return new Intl.NumberFormat('rw-RW', {
+    style: 'currency',
+    currency: 'RWF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
+
 const MenuItemDashboard = () => {
   const { company } = useCompanyAuth();
   const [items, setItems] = useState([]);
@@ -198,7 +208,7 @@ const MenuItemDashboard = () => {
                   {renderPurposeBadge(item)}
                 </td>
                 <td className="py-3 px-4 text-gray-600 hidden md:table-cell">
-                  ${parseFloat(item.sellingPrice).toFixed(2)}
+                  {formatRWF(parseFloat(item.sellingPrice).toFixed(2))}
                 </td>
                 <td className="py-3 px-4 hidden sm:table-cell">
                   <span className={`px-2 py-1 text-xs rounded-full ${item.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -234,7 +244,7 @@ const MenuItemDashboard = () => {
             {renderImage(item.mainImage, 'w-20 h-20')}
             <div className="text-center w-full">
               <h3 className="font-semibold text-gray-900 text-xs truncate">{item.name}</h3>
-              <p className="text-lg font-bold text-primary-600">${parseFloat(item.sellingPrice).toFixed(2)}</p>
+              <p className="text-lg font-bold text-primary-600">{formatRWF(parseFloat(item.sellingPrice).toFixed(2))}</p>
               <div className="mt-1">{renderPurposeBadge(item)}</div>
             </div>
             <div className="flex space-x-1 text-xs">
@@ -271,7 +281,7 @@ const MenuItemDashboard = () => {
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900 text-xs truncate">{item.name}</div>
                 <div className="text-xs text-gray-500 truncate">
-                  {renderPurposeBadge(item)} • ${parseFloat(item.sellingPrice).toFixed(2)}
+                  {renderPurposeBadge(item)} • {formatRWF(parseFloat(item.sellingPrice).toFixed(2))}
                 </div>
               </div>
             </div>

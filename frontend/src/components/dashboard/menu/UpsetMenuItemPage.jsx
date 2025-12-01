@@ -65,13 +65,13 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
         drinkState: itemToEdit.drinkState || '',
         alcoholicType: itemToEdit.alcoholicType || '',
         ingredients: Array.isArray(JSON.parse(itemToEdit.ingredients)) ? JSON.parse(itemToEdit.ingredients) : [],
-        recipe: itemToEdit.recipe || '',
+      
         sellingPrice: itemToEdit.sellingPrice?.toString() || '',
         purchasingPrice: itemToEdit.purchasingPrice?.toString() || '',
         discount: itemToEdit.discount || 0,
         isActive: itemToEdit.isActive !== false,
-        tags: Array.isArray(JSON.parse(itemToEdit.tags)) ? JSON.parse(itemToEdit.tags) : [],
-        stockId: itemToEdit.stockId || ''
+    
+        stockId: itemToEdit?.stockId || ''
       });
 
       if (itemToEdit.mainImage) setMainImagePreview(itemToEdit.mainImage ?`${API_URL}${itemToEdit.mainImage}` : '');
@@ -185,7 +185,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
 
       if (!formData.name.trim()) return setError('Item name is required');
       if (!formData.sellingPrice || parseFloat(formData.sellingPrice) <= 0) return setError('Valid selling price is required');
-      if (formData.purpose === 'DRINKING' && !formData.stockId) return setError('Please select a stock item for drinks');
+
       if (formData.purpose === 'EATING' && formData.ingredients.length === 0) return setError('At least one ingredient is required');
     
 
@@ -199,7 +199,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
         difference: formData.purpose === 'DRINKING' && formData.sellingPrice && formData.purchasingPrice
           ? parseFloat(formData.sellingPrice) - parseFloat(formData.purchasingPrice)
           : undefined,
-        stockId: formData.purpose === 'DRINKING' ? formData.stockId : null,
+        stockId: formData.purpose === 'DRINKING' ? formData?.stockId : null,
         tags: formData.tags.length > 0 ? formData.tags : undefined,
         removedImages: removedImages.length > 0 ? removedImages : undefined
       };
