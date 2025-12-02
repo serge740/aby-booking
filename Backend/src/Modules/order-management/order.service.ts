@@ -21,7 +21,8 @@ async createOrder(data: {
   clientPhone?: string;
   notes?: string;
   employeeId?: string;
-  items: { menuItemId: string; unitPrice: number; quantity: number }[];
+ 
+  items: { menuItemId: string; unitPrice: number; quantity: number, typeShots?:string,typeDrink?:string }[];
 }) {
   console.log(data);
   
@@ -144,6 +145,8 @@ async createOrder(data: {
       unitPrice: item.unitPrice,
       quantity: item.quantity,
       totalPrice: item.unitPrice * item.quantity,
+      typeDrink:item.typeDrink,
+      typeShots:item.typeShots 
     })),
   };
 

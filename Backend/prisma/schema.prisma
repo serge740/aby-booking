@@ -151,6 +151,10 @@ model OrderItem {
   order       Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId     String
 
+  typeDrink  String?
+  typeShots  String?
+  
+
   menuItem    MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   menuItemId  String
 
