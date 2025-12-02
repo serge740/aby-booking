@@ -200,7 +200,7 @@ function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
           ? parseFloat(formData.sellingPrice) - parseFloat(formData.purchasingPrice)
           : undefined,
         stockId: formData.purpose === 'DRINKING' ? formData?.stockId : null,
-        tags: formData.tags.length > 0 ? formData.tags : undefined,
+    
         removedImages: removedImages.length > 0 ? removedImages : undefined
       };
 

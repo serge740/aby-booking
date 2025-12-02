@@ -441,14 +441,7 @@ const ReceiptModal = ({ isOpen, onClose, items, type, total }: {
       <button onClick={() => handleViewOrder(order)} className="text-gray-400 hover:text-green-600 p-1" title="View">
         <Eye className="w-3 h-3" />
       </button>
-      <button onClick={() => openFoodReceipt(order)} disabled={getFoodItems(order).length === 0}
-        className={`p-1 rounded hover:bg-orange-50 ${getFoodItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-orange-600 hover:text-orange-700'}`} title="Food Receipt">
-        <Receipt className="w-3 h-3" />
-      </button>
-      <button onClick={() => openDrinkReceipt(order)} disabled={getDrinkItems(order).length === 0}
-        className={`p-1 rounded hover:bg-primary-50 ${getDrinkItems(order).length === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-primary-600 hover:text-primary-700'}`} title="Drinks Receipt">
-        <Receipt className="w-3 h-3" />
-      </button>
+     
       <button onClick={() => handleDownloadPDF(order)} disabled={generatingPDF === order.id}
         className="text-gray-400 hover:text-primary-600 p-1 disabled:opacity-50" title="Full PDF">
         {generatingPDF === order.id ? <div className="w-3 h-3 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div> : <Download className="w-3 h-3" />}

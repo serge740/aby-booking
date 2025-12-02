@@ -413,126 +413,8 @@ export default function EmployeeOrderDetailView() {
             </div>
           </div>
 
-          {/* Payment Status Section */}
-       {  order.status !== 'PENDING' &&  <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
-                Payment Status
-              </h3>
-              <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${paymentStatus.color}`}>
-                {paymentStatus.icon}
-                <span className="font-semibold">{paymentStatus.label}</span>
-              </div>
-            </div>
-
-              <div className="flex flex-wrap gap-3 mt-4">
-                { order.paymentStatus != 'SUCCESSFUL' &&<button
-                  onClick={() => updatePaymentStatus('SUCCESSFUL')}
-                  disabled={updatingPayment}
-                  className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
-                  >
-                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-                  Mark as Paid
-                </button>}
-                  {order.paymentStatus === 'PENDING' && (
-                    <>
-                <button
-                  onClick={() => updatePaymentStatus('FAILED')}
-                  disabled={updatingPayment}
-                  className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition"
-                >
-                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                  Mark as Failed
-                </button>
-                <button
-                  onClick={() => updatePaymentStatus('DEBTED')}
-                  disabled={updatingPayment}
-                  className="flex items-center gap-2 px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition"
-                >
-                  {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
-                  Mark as Credit (Debted)
-                </button>
-                  </>
-                )}
-              </div>
-          </div>
-}
-          {/* Receipt Buttons */}
-          {order.status !== 'PENDING' && (
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">View Receipts by Category</h3>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setShowFoodReceipt(true)}
-                  disabled={foodItems.length === 0}
-                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                    foodItems.length === 0
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
-                  }`}
-                >
-                  <Receipt className="w-5 h-5" />
-                  Food Receipt ({foodItems.length} items)
-                </button>
-                <button
-                  onClick={() => setShowDrinkReceipt(true)}
-                  disabled={drinkItems.length === 0}
-                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                    drinkItems.length === 0
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg'
-                  }`}
-                >
-                  <Receipt className="w-5 h-5" />
-                  Drinks Receipt ({drinkItems.length} items)
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Order Status</h3>
-            <div className="flex flex-wrap gap-3">
-              {order.status === 'PENDING' && (
-                <>
-                  <button
-                    onClick={() => updateOrderStatus('PROCESSING')}
-                    disabled={updatingStatus}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
-                  >
-                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
-                    <span>Approve & Start Processing</span>
-                  </button>
-                  <button
-                    onClick={() => updateOrderStatus('CANCELLED')}
-                    disabled={updatingStatus}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                  >
-                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-                    <span>Cancel Order</span>
-                  </button>
-                </>
-              )}
-              {order.status === 'PROCESSING' && (
-                <button
-                  onClick={() => updateOrderStatus('COMPLETED')}
-                  disabled={updatingStatus || order.paymentStatus != 'SUCCESSFUL'}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 disabled:bg-amber-600/50 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
-                >
-                  {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                  <span>Mark as Completed</span>
-                </button>
-              )}
-              {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
-                <div className="flex items-center text-gray-500 text-sm">
-                  <AlertCircle className="w-4 h-4 mr-1" />
-                  <span>No further actions available</span>
-                </div>
-              )}
-            </div>
-          </div>
+ 
+   
           {/* Order Header */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-4">
@@ -612,87 +494,104 @@ export default function EmployeeOrderDetailView() {
             </div>
           )}
 
-          {/* Order Items Table */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <Package className="w-5 h-5" />
-                Order Items ({order.items.length})
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {order.items.map((item) => {
-                    const discount = item.menuItem.discount || 0;
-                    const original = item.menuItem.sellingPrice;
-                    const discounted = item.unitPrice;
-                    const subtotal = item.totalPrice;
-
-                    return (
-                      <tr key={item.id} className="hover:bg-gray-25">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            {item.menuItem.image ? (
-                              <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 rounded-lg object-cover" />
-                            ) : (
-                              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <Package className="w-6 h-6 text-gray-400" />
-                              </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-gray-900">{item.menuItem.name}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-right font-medium">{item.quantity}</td>
-                        <td className="px-6 py-4 text-right">
-                          {discount > 0 ? (
-                            <div>
-                              <p className="text-sm font-medium text-orange-600">{formatRWF(discounted)}</p>
-                              <p className="text-xs text-gray-500 line-through">{formatRWF(original)}</p>
-                            </div>
-                          ) : (
-                            <p className="font-medium">{formatRWF(discounted)}</p>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {discount > 0 ? (
-                            <div className="flex items-center justify-end gap-1">
-                              <Percent className="w-3 h-3 text-orange-600" />
-                              <span className="text-sm font-medium text-orange-600">{discount}%</span>
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right font-semibold text-gray-900">
-                          {formatRWF(subtotal)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot className="bg-gray-50 font-bold">
-                  <tr>
-                    <td colSpan={4} className="px-6 py-4 text-right text-gray-900">TOTAL</td>
-                    <td className="px-6 py-4 text-right text-lg text-gray-900">
-                      {formatRWF(order.totalAmount)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
+           {/* Order Items Table - ONLY THIS PART UPDATED */}
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                      <div className="p-6 border-b border-gray-200">
+                        <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                          <Package className="w-5 h-5" />
+                          Order Items ({order.items.length})
+                        </h2>
+                      </div>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {order.items.map((item) => {
+                              const isCustomServed = !!item.typeShots;
+                              const displayName = item.note || item.menuItem.name;
+                              const discount = item.menuItem.discount || 0;
+                              const original = item.menuItem.sellingPrice;
+                              const discounted = item.unitPrice;
+                              const subtotal = item.totalPrice;
+          
+                              return (
+                                <tr key={item.id} className="hover:bg-gray-25">
+                                  <td className="px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                      {item.menuItem.image ? (
+                                        <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 rounded-lg object-cover" />
+                                      ) : (
+                                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                          <Package className="w-6 h-6 text-gray-400" />
+                                        </div>
+                                      )}
+                                      <div>
+                                        <p className="font-medium text-gray-900">{displayName}</p>
+                                        {isCustomServed && (
+                                          <div className="flex items-center gap-2 mt-1">
+                                            {item.typeDrink === 'WINE' ? (
+                                              <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded">WINE</span>
+                                            ) : item.typeDrink === 'LIQUOR' ? (
+                                              <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">LIQUOR</span>
+                                            ) : null}
+                                            {item.typeShots && (
+                                              <span className="text-xs text-gray-600">• {item.typeShots}</span>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="px-6 py-4 text-right font-medium">{item.quantity}</td>
+                                  <td className="px-6 py-4 text-right">
+                                    {isCustomServed ? (
+                                      <span className="text-gray-400">–</span>
+                                    ) : discount > 0 ? (
+                                      <div>
+                                        <p className="text-sm font-medium text-orange-600">{formatRWF(discounted)}</p>
+                                        <p className="text-xs text-gray-500 line-through">{formatRWF(original)}</p>
+                                      </div>
+                                    ) : (
+                                      <p className="font-medium">{formatRWF(discounted)}</p>
+                                    )}
+                                  </td>
+                                  <td className="px-6 py-4 text-right">
+                                    {discount > 0 ? (
+                                      <div className="flex items-center justify-end gap-1">
+                                        <Percent className="w-3 h-3 text-orange-600" />
+                                        <span className="text-sm font-medium text-orange-600">{discount}%</span>
+                                      </div>
+                                    ) : (
+                                      <span className="text-gray-400">—</span>
+                                    )}
+                                  </td>
+                                  <td className="px-6 py-4 text-right font-semibold text-gray-900">
+                                    {formatRWF(subtotal)}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                          <tfoot className="bg-gray-50 font-bold">
+                            <tr>
+                              <td colSpan={4} className="px-6 py-4 text-right text-gray-900">TOTAL</td>
+                              <td className="px-6 py-4 text-right text-lg text-gray-900">
+                                {formatRWF(order.totalAmount)}
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+          
 
           {/* Toast */}
           {operationStatus && (
