@@ -40,6 +40,30 @@ import CompanyMenuPage from "./pages/company/CompanyMenuPage";
 import MenuItemView from "./components/dashboard/menu/MenuItemView";
 import { CreateMenuItemPage, EditMenuItemPage } from "./components/dashboard/menu/UpsetMenuItemPage";
 import MenuItemDetail from "./pages/company/CompanyMenuItemPage";
+import OrderDashboard from "./pages/dashboard/company/OrderDashboard";
+import CompanyOrderDetailView from "./pages/dashboard/company/CompanyOrderDetailView";
+import OrderTrackingPage from "./pages/client/OrderTrackingPage";
+import CreateOrderPage from "./components/dashboard/order/CreateOrderPage";
+import EmployeeDashboard from "./pages/dashboard/company/EmployeeDashboard";
+import EmployeeFomPage from "./components/dashboard/employee/EmployeeFomPage";
+import EmployeeDetailsPage from "./components/dashboard/employee/EmployeeDetailsPage";
+import EmployeeLoginPage from "./pages/auth/employee/Login";
+import ProtectPrivateEmployeeRoute from "./layouts/protectors/ProtectPrivateEmployeeRoute";
+import EmployeeProfilePage from "./pages/dashboard/employee/EmployeeProfile";
+import LeaveRequestDashboard from "./pages/dashboard/LeaveRequestManagement";
+import PreSalaryDashboard from "./pages/dashboard/PreSalaryDashboard";
+import RiskReportDashboard from "./pages/dashboard/RiskReportDashboard";
+import NotificationsPage from "./pages/dashboard/NotificationPage";
+import LeaveViewDetails from "./components/dashboard/leave/LeaveViewDetails";
+import PreSalaryViewDetails from "./components/dashboard/pre-salary/PreSalaryViewDetails";
+import RiskReportViewDetails from "./components/dashboard/risk-report/RiskReportViewDetails";
+import EmployeeCreateOrderPage from "./components/dashboard/order/EmployeeCreateOrderPage";
+import StockManagementDashboard from "./pages/dashboard/StockManagement";
+import DashboardSummary from "./pages/dashboard/DashboardSummary";
+import OrderReportAnalysis from "./pages/dashboard/company/OrderReportAnalysis";
+import PortalSection from "./pages/auth/PortalSection";
+import EmployeeOrderDashboard from "./pages/dashboard/employee/OrderDashboard";
+import EmployeeOrderDetailView from "./pages/dashboard/employee/CompanyOrderDetailView";
 
 
 // Loading component
@@ -79,6 +103,8 @@ const router = createBrowserRouter([
     { path: 'partners/details/:id', element: <SuspenseWrapper><CompanyDetailsPage /></SuspenseWrapper> },
     { path: 'partners/menu/:id', element: <SuspenseWrapper><CompanyMenuPage /></SuspenseWrapper> },
     { path: 'partners/menu/:companyId/item/:itemId', element: <SuspenseWrapper><MenuItemDetail /></SuspenseWrapper> },
+    { path: 'track-orders', element: <SuspenseWrapper><OrderTrackingPage /></SuspenseWrapper> },
+
  
   ]
 },
@@ -99,6 +125,7 @@ const router = createBrowserRouter([
           {path:'company/:id' , element:<CompanyViewPage />},
           {path:'profile' , element:<AdminProfilePage />},
           
+          
         ]
        },
 
@@ -113,14 +140,32 @@ const router = createBrowserRouter([
         path: 'dashboard', 
         element: <SuspenseWrapper><DashboardLayout role={'company'} /> </SuspenseWrapper>,
         children:[
-          {index:true , element:<DashboardHome />},
+          {index:true , element:<DashboardSummary />},
  
           {path:'profile' , element:<CompanyProfilePage />},
+          {path:'employee' , element:<EmployeeDashboard />},
+          {path:'employee/create' , element:<EmployeeFomPage />},
+          {path:'employee/edit/:id' , element:<EmployeeFomPage />},
+          {path:'employee/:id' , element:<EmployeeDetailsPage />},
+          {path:'orders/:id' , element:<CompanyOrderDetailView />},
+          {path:'orders' , element:<OrderDashboard />},
+          {path:'orders/:id' , element:<CompanyOrderDetailView />},
+          {path:'orders/create/:companyId' , element:<CreateOrderPage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/create' , element:<CreateMenuItemPage />},
           {path:'menu-item/:id' , element:<MenuItemView />},
           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
+          {path:'leave-request' , element:<LeaveRequestDashboard />},
+          {path:'leave-request/:id' , element:<LeaveViewDetails />},
+          {path:'pre-salary' , element:<PreSalaryDashboard />},
+          {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
+          {path:'risk-report' , element:<RiskReportDashboard />},
+          {path:'risk-report/:id' , element:<RiskReportViewDetails />},
+           {path:'notifications' , element:<NotificationsPage />},
+           {path:'stock' , element:<StockManagementDashboard />},
+           {path:'order-report' , element:<OrderReportAnalysis />},
+         
           
         ]
        },
@@ -128,10 +173,60 @@ const router = createBrowserRouter([
     ]
   },
   {
+    path:'/employee',
+    element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'employee'}} /></ProtectPrivateEmployeeRoute>,
+    children:[
+       { index: true, element: <Navigate to={'/employee/dashboard'}></Navigate>},
+       { 
+        path: 'dashboard', 
+        element: <SuspenseWrapper><DashboardLayout role={'employee'} /> </SuspenseWrapper>,
+        children:[
+          {index:true , element:<DashboardSummary />},
+ 
+          {path:'profile' , element:<EmployeeProfilePage />},
+           {path:'leave-request' , element:<LeaveRequestDashboard />},
+           {path:'leave-request/:id' , element:<LeaveViewDetails />},
+           {path:'pre-salary' , element:<PreSalaryDashboard />},
+           {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
+           {path:'risk-report' , element:<RiskReportDashboard />},
+           {path:'risk-report/:id' , element:<RiskReportViewDetails />},
+           {path:'notifications' , element:<NotificationsPage />},
+          
+           {path:'place-order/:companyId' , element:<EmployeeCreateOrderPage />},
+           {path:'order' , element:<EmployeeOrderDashboard />},
+           {path:'order/:id' , element:<EmployeeOrderDetailView />},
+
+          
+        ]
+       },
+
+    ]
+  },
+  {
+
+      
+    path: '/auth',
+    element: (
+      <SuspenseWrapper>
+        <PortalSection />
+      </SuspenseWrapper>
+    ),
+  
+
+  },
+  {
     path: '/auth/admin/login',
     element: (
       <SuspenseWrapper>
         <AdminLogin />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: '/auth/admin/unlock',
+    element: (
+      <SuspenseWrapper>
+        <UnlockScreen />
       </SuspenseWrapper>
     ),
   },
@@ -144,10 +239,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/auth/admin/unlock',
+    path: '/auth/employee/login',
     element: (
       <SuspenseWrapper>
-        <UnlockScreen />
+        <EmployeeLoginPage />
       </SuspenseWrapper>
     ),
   },

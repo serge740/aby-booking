@@ -4,15 +4,19 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-}
+  generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+    previewFeatures = ["referentialIntegrity"]
+  }
 
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
+  datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+    referentialIntegrity = "prisma"   // ← this is the missing piece
+  }
+
+
 
 
 
@@ -30,8 +34,11 @@ model Admin {
   isLocked  Boolean    @default(false)
   role      AdminRole  @default(ADMIN) // Default role is ADMIN
   createdAt DateTime   @default(now())
+  
   updatedAt DateTime   @updatedAt
+   @@map("Admin") 
 }
+
 
 
 
@@ -44,6 +51,7 @@ model Subscriber {
   email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+    @@map("Subscriber") 
 }
 
 model Blog {
@@ -55,6 +63,7 @@ model Blog {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   replies     BlogReply[] // relation
+   @@map("Blog")
 }
 
 model BlogReply {
@@ -65,6 +74,7 @@ model BlogReply {
   blogId    String
   blog      Blog     @relation(fields: [blogId], references: [id])
   createdAt DateTime @default(now())
+   @@map("BlogReply")
 }
 
 model ContactMessage {
@@ -75,6 +85,7 @@ model ContactMessage {
   phone     String?
   message   String
   createdAt DateTime @default(now())
+  @@map("ContactMessage")
 }
 
 
@@ -86,6 +97,7 @@ model Testmonial{
   message   String  @db.Text
   rate     Int @default(0)
   createdAt DateTime @default(now())
+  @@map("Testmonial")
 }
 
 
@@ -109,11 +121,25 @@ model Order {
   companyId     String
   company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
+  employeeId     String?
+  employee       Employee?        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
   items         OrderItem[]
+   paymentStatus  PaymentStatus @default(PENDING)
+
+  
 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
+   @@map("Order")
 }
+enum PaymentStatus {
+  SUCCESSFUL
+  FAILED
+  PENDING
+  DEBTED
+}
+
 
 model OrderItem {
   id          String     @id @default(cuid())
@@ -125,11 +151,18 @@ model OrderItem {
   order       Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId     String
 
+  typeDrink  String?
+  typeShots  String?
+  
+
   menuItem    MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
   menuItemId  String
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @default(now()) @updatedAt
+
+ @@map("OrderItem")
+
 }
 
 // 🔹 Enums
@@ -158,15 +191,19 @@ model Company {
 
   type           CompanyType @default(OTHER)
   isActive       Boolean     @default(true)
-  
-  // Relations
-  category MenuCategory[]
+
  
   orders       Order[]
   items     MenuItem[] // One category can have many items
+  employee  Employee[]
+  leave  Leave[]
+  employeeRiskReports  EmployeeRiskReport[]
+  presalary  PreSalary[]
+  stock  Stock[]
  
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+   @@map("Company")
 }
 
 enum CompanyType {
@@ -179,14 +216,270 @@ enum CompanyType {
   OTHER
 }
 
-model MenuCategory {
-  id        String     @id @default(cuid())
-  name      String
-  image     String?
-  companyId String
-  company   Company    @relation(fields: [companyId], references: [id],onDelete: Cascade)
-  items     MenuItem[] // One category can have many items
+
+
+model Employee {
+  id                      String         @id @unique @default(uuid())
+  first_name              String
+  last_name               String
+  gender                  String
+  date_of_birth           DateTime
+  phone                   String
+  email                   String         @unique
+  password                String?
+  address                 String
+  national_id             String         @unique
+  profile_picture         String?
+  bank_account_number     String?
+  bank_name               String?
+  cv                      String?
+  application_letter      String?
+  identityCardImage      String?
+
+  position                String
+
+  marital_status          MaritalStatus? @default(SINGLE)
+  date_hired              DateTime
+  status                  EmployeeStatus @default(ACTIVE)
+  experience              Json?
+  emergency_contact_name  String?
+  emergency_contact_phone String?
+
+    company         Company?            @relation(fields: [companyId], references: [id])
+  companyId       String?
+  // security
+  google_id    String?  @unique
+  isLocked   Boolean? @default(false)
+  is2FA   Boolean? @default(false)
+  leave  Leave[]
+   presalary  PreSalary[]
+   stock  Stock[]
+   employeeRiskReports  EmployeeRiskReport[]
+
+   orders Order[]
+ 
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+   @@map("Employee")
+
 }
+
+// Define the enum first
+enum EmployeeStatus {
+  ACTIVE
+  TERMINATED
+  RESIGNED
+  PROBATION
+}
+
+// Enum for marital status
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum LeaveType {
+  VACATION
+  SICK
+  PERSONAL
+  MATERNITY
+  PATERNITY
+  UNPAID
+  COMPASSIONATE
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model Stock {
+  id          String   @id @default(cuid())
+  companyId   String
+  employeeId  String?
+  name        String
+  sku         String   @unique
+  quantity    Float     @default(0)
+  unit        String
+
+  description String?
+  purpose         StockPurposeStatus      @default(EATING)
+  subquantity    Float?
+
+  purchasingPrice  Float?
+  sellingPrice     Float
+  reoderLevel     Float
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company  @relation(fields: [companyId], references: [id])
+  employee    Employee? @relation(fields: [employeeId], references: [id])
+   items     MenuItem[] // One category can have many items
+  @@map("Stock")
+}
+
+enum StockPurposeStatus {
+  EATING
+  DRINKING
+}
+
+model Leave {
+  id                 String       @id @default(cuid())
+  employee               Employee         @relation(fields: [employeeId], references: [id])
+  employeeId             String
+
+  company         Company         @relation(fields: [companyId], references: [id])
+  companyId       String
+
+  type               LeaveType
+  status             LeaveStatus  @default(PENDING)
+  startDate          DateTime
+  endDate            DateTime
+
+  // Request info
+  reasonForRequest   String?
+  attachments        Json?        // JSON array [ { filename, url, mimeType } ]
+
+  // Decision info
+  approvedAt         DateTime?
+  reasonForApproval String?
+  rejectedAt         DateTime?
+  reasonForRejection String?
+
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([companyId])
+  @@index([employeeId])
+  
+  @@index([status])
+  @@index([startDate, endDate])
+  @@map("Leave")
+}
+
+
+model CompanyNotification {
+  id          String   @id @default(cuid())
+  recipients  Json     // [{id: string, type: "COMPANY" | "EMPLOYEE", read: false}]
+  senderId    String?
+  senderType  SenderType?
+  title       String
+  message     String
+  link        String?
+  createdAt   DateTime @default(now())
+   @@map("CompanyNotification")
+}
+
+
+enum SenderType {
+  COMPANY
+  EMPLOYEE
+}
+
+model PreSalary {
+  id          String      @id @default(cuid())
+  employee    Employee    @relation(fields: [employeeId], references: [id])
+  employeeId  String
+  company     Company     @relation(fields: [companyId], references: [id])
+  companyId   String
+
+  amount      Float       // Salary amount
+  currency    String      @default("RWF") // optional, default currency
+  periodStart DateTime    // Salary period start
+  periodEnd   DateTime    // Salary period end
+
+  status      PreSalaryStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  approvedAt  DateTime?        // Optional timestamp when approved
+  rejectedAt  DateTime?        // Optional timestamp when rejected
+  reason      String?          // Optional reason for rejection or note
+  reasonForRejection String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+ @@map("PreSalary")
+  @@index([employeeId])
+  @@index([companyId])
+  @@index([status])
+}
+
+enum PreSalaryStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+model PushSubscription {
+  id        String   @id @default(cuid())   // unique record ID
+  userId    String                          // employee or company ID
+  type      UserType                        // user type: EMPLOYEE, COMPANY, ADMIN
+    endpoint  String   @db.Text
+  p256dh    String                          // encryption key
+  auth      String                          // encryption key
+  createdAt DateTime @default(now())        // record created time
+  label     String?                         // optional human-readable description
+
+  @@index([userId, type])     
+   @@unique([endpoint(length: 255)])               // index to find all devices for a user quickly
+   @@map("PushSubscription")
+}
+
+enum UserType {
+  EMPLOYEE
+  COMPANY
+  ADMIN
+}
+
+
+
+model EmployeeRiskReport {
+  id           String      @id @default(cuid())
+  employee     Employee    @relation(fields: [employeeId], references: [id])
+  employeeId   String
+  company      Company     @relation(fields: [companyId], references: [id])
+  companyId    String
+
+  title        String      // Short title of the risk report
+  description  String      // Detailed description of the risk
+  severity     RiskSeverity @default(MEDIUM) // LOW, MEDIUM, HIGH, CRITICAL
+  status       RiskStatus   @default(PENDING) // PENDING, RESOLVED, REJECTED
+
+  attachments  Json?        // Optional: any files attached (array of { filename, url, mimeType })
+  reportedAt   DateTime     @default(now())
+  resolvedAt   DateTime?    // Optional: when the risk was resolved
+  reason       String?      // Optional: reason for rejection or notes
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+   @@map("EmployeeRiskReport")
+  @@index([employeeId])
+  @@index([companyId])
+  @@index([status])
+  @@index([severity])
+}
+
+enum RiskSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RiskStatus {
+  PENDING
+  RESOLVED
+  REJECTED
+}
+
+
+
 
 model MenuItem {
   id              String            @id @default(cuid())
@@ -214,15 +507,19 @@ model MenuItem {
   discount        Int                @default(0)
   isActive        Boolean            @default(true)
 
+  tags           Json                @default("[]")
+
+
+  stock         Stock?            @relation(fields: [stockId], references: [id])
+  stockId       String?
+
   // 🔹 Relations
   company         Company?            @relation(fields: [companyId], references: [id])
   companyId       String?
 
-  category        MenuCategory?      @relation(fields: [categoryId], references: [id])
-  categoryId      String?
-
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
+    @@map("MenuItem")
 }
 
 enum PurposeStatus {
@@ -260,7 +557,7 @@ model Client {
   // Relations
 
    orders       Order[]   // A user can place multiple orders
-  
+   @@map("Client")
   @@index([email])
   @@index([name])
 }

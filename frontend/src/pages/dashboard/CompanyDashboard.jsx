@@ -148,7 +148,7 @@ const CompanyDashboard = () => {
               >
                 <div className="flex items-center space-x-1">
                   <span>Company Name</span>
-                  <ChevronDown className={`w-4 h-4 ${sortBy === 'name' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'name' ? 'text-primary-600' : 'text-gray-400'}`} />
                 </div>
               </th>
               <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden lg:table-cell">Email</th>
@@ -174,8 +174,8 @@ const CompanyDashboard = () => {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-primary-600" />
                     </div>
                   )}
                 </td>
@@ -188,7 +188,7 @@ const CompanyDashboard = () => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       onClick={() => handleViewCompany(company)}
-                      className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                      className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                       title="View Company"
                     >
                       <Eye className="w-4 h-4" />
@@ -196,7 +196,7 @@ const CompanyDashboard = () => {
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       onClick={() => handleEditCompany(company)}
-                      className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                      className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                       title="Edit Company"
                     >
                       <Edit className="w-4 h-4" />
@@ -237,8 +237,8 @@ const CompanyDashboard = () => {
                 className="w-16 h-16 rounded-full object-cover"
               />
             ) : (
-              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-                <Building2 className="w-8 h-8 text-blue-600" />
+              <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center">
+                <Building2 className="w-8 h-8 text-primary-600" />
               </div>
             )}
             <div className="text-center w-full">
@@ -251,7 +251,7 @@ const CompanyDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 onClick={() => handleViewCompany(company)}
-                className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                 title="View Company"
               >
                 <Eye className="w-4 h-4" />
@@ -259,7 +259,7 @@ const CompanyDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 onClick={() => handleEditCompany(company)}
-                className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                 title="Edit Company"
               >
                 <Edit className="w-4 h-4" />
@@ -298,8 +298,8 @@ const CompanyDashboard = () => {
                   className="w-10 h-10 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-primary-600" />
                 </div>
               )}
               <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ const CompanyDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 onClick={() => handleViewCompany(company)}
-                className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                 title="View Company"
               >
                 <Eye className="w-4 h-4" />
@@ -323,7 +323,7 @@ const CompanyDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 onClick={() => handleEditCompany(company)}
-                className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors"
                 title="Edit Company"
               >
                 <Edit className="w-4 h-4" />
@@ -367,7 +367,7 @@ const CompanyDashboard = () => {
             whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
           </motion.button>
@@ -378,8 +378,8 @@ const CompanyDashboard = () => {
               onClick={() => setCurrentPage(page)}
               className={`px-3 py-1.5 text-sm rounded ${
                 currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 bg-white border border-gray-200 hover:bg-blue-50'
+                  ? 'bg-primary-600 text-white'
+                  : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'
               }`}
             >
               {page}
@@ -389,7 +389,7 @@ const CompanyDashboard = () => {
             whileHover={{ scale: 1.05 }}
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center px-3 py-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />
           </motion.button>
@@ -407,7 +407,7 @@ const CompanyDashboard = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="text-gray-600 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50"
+                className="text-gray-600 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50"
                 title="Toggle Sidebar"
               >
                 <Minimize2 className="w-5 h-5" />
@@ -422,7 +422,7 @@ const CompanyDashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 onClick={loadData}
                 disabled={loading}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-blue-600 border border-gray-200 rounded hover:bg-blue-50 disabled:opacity-50"
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50"
                 title="Refresh"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -432,7 +432,7 @@ const CompanyDashboard = () => {
                 whileHover={{ scale: 1.05 }}
                 onClick={() => navigate('/admin/dashboard/company/create')}
                 disabled={operationLoading}
-                className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
+                className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium transition-colors disabled:opacity-50 shadow-md"
               >
                 <Plus className="w-4 h-4" />
                 <span className="text-sm">Add Company</span>
@@ -451,8 +451,8 @@ const CompanyDashboard = () => {
             className="bg-white rounded-lg shadow border border-gray-100 p-4"
           >
             <div className="flex items-center space-x-3">
-              <div className="p-3 bg-blue-50 rounded-full flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-blue-600" />
+              <div className="p-3 bg-primary-50 rounded-full flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-primary-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-600">Total Companies</p>
@@ -472,14 +472,14 @@ const CompanyDashboard = () => {
                   placeholder="Search companies..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-64 pl-10 pr-4 py-2 text-sm border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center space-x-2 px-3 py-2 text-sm border rounded transition-colors ${
-                  showFilters ? 'bg-blue-50 border-blue-200 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-blue-50'
+                  showFilters ? 'bg-primary-50 border-primary-200 text-primary-700' : 'border-gray-200 text-gray-600 hover:bg-primary-50'
                 }`}
               >
                 <Filter className="w-4 h-4" />
@@ -494,7 +494,7 @@ const CompanyDashboard = () => {
                   setSortBy(field);
                   setSortOrder(order);
                 }}
-                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="text-sm border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <option value="name-asc">Name (A-Z)</option>
                 <option value="name-desc">Name (Z-A)</option>
@@ -506,7 +506,7 @@ const CompanyDashboard = () => {
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setViewMode('table')}
                   className={`p-2 text-sm transition-colors ${
-                    viewMode === 'table' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'
+                    viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'
                   }`}
                   title="Table View"
                 >
@@ -516,7 +516,7 @@ const CompanyDashboard = () => {
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setViewMode('grid')}
                   className={`p-2 text-sm transition-colors ${
-                    viewMode === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'
+                    viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'
                   }`}
                   title="Grid View"
                 >
@@ -526,7 +526,7 @@ const CompanyDashboard = () => {
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setViewMode('list')}
                   className={`p-2 text-sm transition-colors ${
-                    viewMode === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-blue-600'
+                    viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'
                   }`}
                   title="List View"
                 >
@@ -550,7 +550,7 @@ const CompanyDashboard = () => {
         {loading ? (
           <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center text-gray-600">
             <div className="inline-flex items-center space-x-2">
-              <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
               <span className="text-sm">Loading companies...</span>
             </div>
           </div>
@@ -586,12 +586,12 @@ const CompanyDashboard = () => {
                     ? 'bg-green-50 border border-green-200 text-green-800'
                     : operationStatus.type === 'error'
                     ? 'bg-red-50 border border-red-200 text-red-800'
-                    : 'bg-blue-50 border border-blue-200 text-blue-800'
+                    : 'bg-primary-50 border border-primary-200 text-primary-800'
                 }`}
               >
                 {operationStatus.type === 'success' && <CheckCircle className="w-5 h-5 text-green-600" />}
                 {operationStatus.type === 'error' && <XCircle className="w-5 h-5 text-red-600" />}
-                {operationStatus.type === 'info' && <AlertCircle className="w-5 h-5 text-blue-600" />}
+                {operationStatus.type === 'info' && <AlertCircle className="w-5 h-5 text-primary-600" />}
                 <span className="font-medium">{operationStatus.message}</span>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
@@ -611,11 +611,11 @@ const CompanyDashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-40"
+              className="fixed inset-0 bg-black/30 flex items-center justify-center z-40"
             >
               <div className="bg-white rounded-lg p-4 shadow-xl">
                 <div className="flex items-center space-x-2">
-                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
                   <span className="text-gray-700 text-sm font-medium">Processing...</span>
                 </div>
               </div>

@@ -9,8 +9,24 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
     destination: (req, file, cb) => {
       let subFolder: string | undefined;
 
-      if (file.fieldname === 'profileImage') {
+      if (file.fieldname === 'profileImage' || file.fieldname === 'profileImg') {
         subFolder = 'profile';
+      }
+
+       else if(file.fieldname ===  'cv'){
+        subFolder = 'cv_files'
+      
+      }
+      else if(file.fieldname ===  'cvFile'){
+        subFolder = 'cv_files'
+      
+      }
+      else if(file.fieldname ===  'identityCardImage'){
+        subFolder = 'national_id'
+      
+      }
+      else if(file.fieldname ===  'applicationLetter'){
+        subFolder = 'application_letters'
       }
  
       else if (file.fieldname === 'logo') {
@@ -30,6 +46,9 @@ export const createUnifiedUploadConfig = (): MulterOptions => ({
       }
       else if(file.fieldname === 'otherImages'){
         subFolder = 'menu'
+      }
+      else if(file.fieldname === 'attachments'){
+        subFolder = 'attachments'
       }
 
       console.log('Received file.fieldname:', file.fieldname);
@@ -99,6 +118,24 @@ export const CategoryFileFields = [
 export const CompanyFileFields = [
   { name: 'companyLogo', maxCount: 1 },
 ]
+
+export const EmployeeFileFields = [
+  { name: 'profileImg', maxCount:1 },
+  { name: 'applicationLetter', maxCount:1 },
+  { name: 'cv', maxCount:1 },
+  { name: 'identityCardImage', maxCount:1 },
+]
+
+export const LeaveFileFields = [
+  { name: 'attachments', maxCount: 5 },
+];
+
+
+
+export const LeaveUploadConfig =createUnifiedUploadConfig()
+
+
+export const EmployeeUploadConfig = createUnifiedUploadConfig()
 
 export const testimonialUploadConfig = createUnifiedUploadConfig()
 export const partnerUploadConfig = createUnifiedUploadConfig()

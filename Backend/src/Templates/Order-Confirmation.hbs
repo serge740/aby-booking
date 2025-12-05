@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Your order from {{partner_name}} — {{company_name}}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; margin:0; padding:0; }
+    .container { max-width:600px; margin:20px auto; background:#fff; border-radius:8px; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    h1 { color:#1f8f7a; font-size:22px; margin:0 0 10px; }
+    p { font-size:15px; color:#333; line-height:1.5; margin:10px 0; }
+    .order-box { margin:15px 0; padding:12px; background:#f1f9f6; border:1px solid #d7f0ea; border-radius:6px; }
+    .order-box p { margin:6px 0; font-size:15px; }
+    .cta { display:inline-block; text-decoration:none; padding:12px 20px; border-radius:6px; background:#1f8f7a; color:#fff; font-weight:600; margin-top:16px; }
+    .footer { text-align:center; font-size:13px; color:#999; margin-top:18px; }
+    @media only screen and (max-width:480px) {
+      .container { padding:14px; }
+      h1 { font-size:20px; }
+    }
+  </style>
+</head>
+<body>
+  <div style="display:none; max-height:0; overflow:hidden; font-size:1px; line-height:1px; color:#fff; opacity:0;">
+    Your order from {{partner_name}} via {{company_name}} is confirmed — order {{orderNumber}}.
+  </div>
+
+  <div class="container">
+    <h1>Hi {{clientName}}, 🎉</h1>
+
+    <p>Thank you for placing your order through <strong>{{company_name}}</strong>!</p>
+
+    <p>Your order has been successfully received and will be prepared by our partner:</p>
+
+    <div class="order-box">
+      <p><strong>Partner:</strong> {{partner_name}}</p>
+      <p><strong>Order Number:</strong> {{orderNumber}}</p>
+      <p><strong>Total Amount:</strong> ${{totalAmount}}</p>
+      <p><strong>Order Date:</strong> {{orderDate}}</p>
+    </div>
+
+    {{#if notes}}
+      <p><strong>Your notes:</strong> {{notes}}</p>
+    {{/if}}
+
+    <a href="{{orderUrl}}" class="cta" target="_blank" rel="noopener noreferrer">View Your Order</a>
+
+    <p>We’ll notify you as soon as {{partner_name}} confirms your order or updates its status.  
+    You can track your order anytime from your ABY DASH account.</p>
+
+    <div class="footer">
+      <p>© {{year}} {{company_name}} | Order fulfilled by {{partner_name}}</p>
+    </div>
+  </div>
+</body>
+</html>

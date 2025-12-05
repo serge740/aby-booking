@@ -10,11 +10,12 @@ import {
   FiShoppingCart,
 } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-
+  const {cartItems:cart} = useCart()
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -52,8 +53,8 @@ function NavBar() {
       >
         <div className="menuItem mx-auto flex flex-col lg:flex-row items-center justify-between px-4 gap-3 text-sm">
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <a href="mailto:support@freshcart.com" className="flex items-center gap-1 hover:underline">
-              <FiMail className="w-4 h-4" /> support@freshcart.com
+            <a href="mailto:support@aby dash.com" className="flex items-center gap-1 hover:underline">
+              <FiMail className="w-4 h-4" /> support@aby dash.com
             </a>
             <a href="tel:+18005551234" className="flex items-center gap-1 hover:underline">
               <FiPhone className="w-4 h-4" /> +1 800-555-1234
@@ -96,7 +97,7 @@ function NavBar() {
                 </svg>
               </div>
               <span className={`font-bold text-gray-900 ${scrolled ? "text-lg" : "text-xl"}`}>
-                FreshCart
+                ABY DASH
               </span>
             </NavLink>
 
@@ -132,7 +133,7 @@ function NavBar() {
               <NavLink to="/cart" className="relative group">
                 <FiShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-orange-500 transition" />
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  5
+                  {cart?.length > 0 ? cart.length : 0}
                 </span>
               </NavLink>
             </div>
@@ -179,8 +180,8 @@ function NavBar() {
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <FiPhone className="text-orange-500 w-4 h-4" />
             <span>Hotline:</span>
-            <a href="tel:18005551234" className="font-medium text-orange-500 hover:underline">
-              1800-555-1234
+            <a href="tel:+250792888980" className="font-medium text-orange-500 hover:underline">
+             +250792888980
             </a>
           </div>
         </div>
@@ -213,7 +214,7 @@ function NavBar() {
 
             <div className="border-t pt-6 space-y-3 text-sm text-gray-600">
               <p className="flex items-center gap-2">
-                <FiMail className="text-orange-500" /> support@freshcart.com
+                <FiMail className="text-orange-500" /> support@aby dash.com
               </p>
               <p className="flex items-center gap-2">
                 <FiPhone className="text-orange-500" /> +1 800-555-1234

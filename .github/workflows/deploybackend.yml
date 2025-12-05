@@ -1,0 +1,33 @@
+name: Deploy Fullstack App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⏬ Checkout code
+        uses: actions/checkout@v4
+
+      # === BACKEND DEPLOYMENT ===
+      - name: 📦 Install backend dependencies
+        run: npm install
+        working-directory: ./Backend
+
+      - name: 🛠 Build backend
+        run: npm run build
+        working-directory: ./Backend
+
+      - name: 📂 Upload backend to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 162.0.224.102
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "Backend/**"
+          target: "/var/www/abydash"
+          strip_components: 1

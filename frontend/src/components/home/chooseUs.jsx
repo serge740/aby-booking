@@ -90,14 +90,14 @@ export default function AbyWhyChooseUs() {
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="w-2 h-2 rounded-full bg-primary-500"></div>
             <p className="font-semibold text-sm md:text-base tracking-wider uppercase text-primary-600">
-              Why FRESH CART
+              Why ABY DASH
             </p>
             <div className="w-2 h-2 rounded-full bg-primary-500"></div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-gray-900">
             Why Choose
             <br />
-            <span className="text-primary-600">FRESH CART?</span>
+            <span className="text-primary-600">ABY DASH?</span>
           </h2>
           <p className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed text-gray-600">
             Experience seamless discovery, booking, and payment — all in one

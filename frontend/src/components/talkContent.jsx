@@ -67,7 +67,7 @@ export default function WebDevelopmentSection() {
         
         {/* Planning */}
         <div className="flex items-start gap-4 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <FaClipboardList className="text-blue-400 text-4xl" />
+          <FaClipboardList className="text-primary-400 text-4xl" />
           <div>
             <h3 className="text-lg font-semibold">Planning & Strategy</h3>
             <p className="text-gray-400 text-base">
@@ -78,7 +78,7 @@ export default function WebDevelopmentSection() {
 
         {/* Development */}
         <div className="flex items-start gap-4 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <FaCode className="text-blue-400 text-4xl" />
+          <FaCode className="text-primary-400 text-4xl" />
           <div>
             <h3 className="text-lg font-semibold">Development</h3>
             <p className="text-gray-400 text-base">
@@ -89,7 +89,7 @@ export default function WebDevelopmentSection() {
 
         {/* Deployment */}
         <div className="flex items-start gap-4 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <FaRocket className="text-blue-400 text-4xl" />
+          <FaRocket className="text-primary-400 text-4xl" />
           <div>
             <h3 className="text-lg font-semibold">Deployment & Optimization</h3>
             <p className="text-gray-400 text-base">

@@ -4,26 +4,33 @@ import {
   User,
   X,
   Building,
-  ShoppingBag,
-  PackageSearch,
   ClipboardList,
-  History,
-  Users,
-  Settings,
+  MenuSquare,
+  Layers,
+  Box,
+  FileText,
+  Calendar,
+  DollarSign,
   ChevronDown,
+  ExternalLink,
+  Outdent,
+  DoorOpen,
   File,
-  MapPin,
+  BuildingIcon,
+  Receipt,
+  User2,
 } from "lucide-react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-
 import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
+import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
 import logo from '../../assets/tran.png';
+import PWAInstallButton from "./PWAInstallButton";
 
 interface SidebarProps {
   isOpen?: boolean;
   onToggle: () => void;
-  role: "admin" | "company"; // Explicit
+  role: "admin" | "company" | "employee"; // Now includes employee
 }
 
 interface NavItem {
@@ -39,6 +46,7 @@ interface DropdownGroup {
   label: string;
   icon: React.ElementType;
   items: NavItem[];
+  allowedRoles?: string[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
@@ -49,10 +57,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   // Auth contexts
   const adminAuth = useAdminAuth();
   const companyAuth = useCompanyAuth();
+  const employeeAuth = useEmployeeAuth(); // NEW
 
   // Select correct auth and user
-  const auth = role === "admin" ? adminAuth : companyAuth;
-  const user = role === "admin" ? adminAuth.user : companyAuth.company;
+  const auth = role === "admin" ? adminAuth : role === "company" ? companyAuth : employeeAuth;
+  const user = role === "admin" ? adminAuth.user : role === "company" ? companyAuth.company : employeeAuth.user;
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown((prev) => (prev === id ? null : id));
@@ -62,54 +71,53 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   const getNavlinks = (role: string): (NavItem | DropdownGroup)[] => {
     const basePath = `/${role}/dashboard`;
 
-    return [
-      {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: TrendingUp,
-        path: basePath,
-      },
-      {
-        id: "company-management",
-        label: "Company Management",
-        icon: Building,
-        path: `${basePath}/company`,
-        allowedRoles: ["admin"],
-      },
-      {
-        id: "bookings",
-        label: "Bookings",
-        icon: ClipboardList,
-        path: `${basePath}/bookings`,
-        allowedRoles: ["company", "admin"],
-      },
-      {
-        id: "menu-category",
-        label: "Menu",
-        icon: ClipboardList,
-     
-        allowedRoles: ["company",],
+    const adminLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "Dashboard", icon: TrendingUp, path: basePath },
+      { id: "company-management", label: "Company Management", icon: Building, path: `${basePath}/company`, allowedRoles: ["admin"] },
+    ];
 
+    const companyLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "Dashboard Summary", icon: TrendingUp, path: basePath },
+      {
+        id: "employee-management",
+        label: "Employee Management",
+        icon: User2,
+        allowedRoles: ["company"],
         items: [
-          {
-            id: "menu-category",
-            label: "Menu Category",
-            icon: ClipboardList,
-            path: `${basePath}/menu-category`,
-            allowedRoles: ["company",],
-          },
-          {
-            id: "menu-item",
-            label: "Menu Item",
-            icon: ClipboardList,
-            path: `${basePath}/menu-item`,
-            allowedRoles: ["company",],
-          },
-        ]
+          { id: "employee", label: "Employee", icon: User2, path: `${basePath}/employee`, allowedRoles: ["company"] },
+          { id: "leave-request", label: "Leave Request Management", icon: DoorOpen, path: `${basePath}/leave-request` },
+          { id: "pre-salary", label: "Pre Salary Management", icon: DollarSign, path: `${basePath}/pre-salary` },
+          { id: "risk-report", label: "Risk Report Management", icon: File, path: `${basePath}/risk-report` },
+        ],
       },
+      { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
+      { id: "stock", label: "Stock Management", icon: BuildingIcon, path: `${basePath}/stock` },
+      { id: "menu-item", label: "Menu Item Management", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
 
+
+      {
+        id: "report",
+        label: "Reports Management",
+        icon: Receipt,
+        allowedRoles: ["company"],
+        items: [
+          { id: "order-report", label: "Order Report", icon: Layers, path: `${basePath}/order-report`, allowedRoles: ["company"] },
+
+
+        ],
+      },
+    ];
+
+    const employeeLinks: (NavItem | DropdownGroup)[] = [
+      { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
+      { id: "place-order", label: " Order", icon: DoorOpen, path: `${basePath}/order` },
+      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
+      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
+      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
 
     ];
+
+    return role === "admin" ? adminLinks : role === "company" ? companyLinks : employeeLinks;
   };
 
   // Filter items by role
@@ -117,6 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     return items
       .map((item) => {
         if ("items" in item) {
+          if (item.allowedRoles && !item.allowedRoles.includes(role)) return null;
           const filteredItems = item.items.filter(
             (subItem) => !subItem.allowedRoles || subItem.allowedRoles.includes(role)
           );
@@ -148,7 +157,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   }, [location.pathname, navlinks]);
 
   const getProfileRoute = () => `/${role}/dashboard/profile`;
-
   const handleNavigateProfile = () => {
     navigate(getProfileRoute(), { replace: true });
   };
@@ -157,14 +165,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   const displayName =
     role === "admin"
       ? user?.names || "Admin"
-      : user?.name || "Company";
+      : role === "company"
+        ? user?.name || "Company"
+        : `${user?.first_name || ""} ${user?.last_name || ""}`.trim() || "Employee";
 
   const displayEmail =
     role === "admin"
       ? user?.email || "admin@abybooking.com"
-      : user?.email || "company@abybooking.com";
+      : role === "company"
+        ? user?.email || "company@abybooking.com"
+        : user?.email || "employee@abybooking.com";
 
-  const portalTitle = "FRESH CART";
+  const portalTitle = (role ? role?.toLocaleUpperCase() : 'ABY DASH') + " PORTAL";
 
   const isDropdownActive = (dropdown: DropdownGroup) => {
     const currentPath = location.pathname;
@@ -173,7 +185,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
 
   const renderMenuItem = (item: NavItem) => {
     const Icon = item.icon;
-
     return (
       <NavLink
         key={item.id}
@@ -203,7 +214,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
     const Icon = dropdown.icon;
     const isOpen = openDropdown === dropdown.id;
     const hasActiveChild = isDropdownActive(dropdown);
-
     return (
       <div key={dropdown.id} className="w-full">
         <button
@@ -279,9 +289,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-3 border-b border-primary-200">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="FRESH CART" className="w-10 h-10 rounded-lg" />
+            <img src={logo} alt="ABY DASH" className="w-10 h-10 rounded-lg" />
             <div>
-              <h2 className="font-bold text-base text-primary-800">FRESH CART</h2>
+              <h2 className="font-bold text-base text-primary-800">ABY DASH</h2>
               <p className="text-xs text-primary-500">{portalTitle}</p>
             </div>
           </div>
@@ -309,20 +319,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         </div>
 
         {/* Footer: Profile */}
-        <div
-          className="p-2 border-t border-primary-200 cursor-pointer"
-          onClick={handleNavigateProfile}
-        >
-          <div className="flex items-center space-x-2 p-1.5 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-            <div className="w-7 h-7 bg-primary-100 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-primary-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-normal text-gray-900 truncate">{displayName}</p>
-              <p className="text-xs text-gray-500 truncate">{displayEmail}</p>
-            </div>
-          </div>
-        </div>
+        <PWAInstallButton />
       </div>
     </>
   );

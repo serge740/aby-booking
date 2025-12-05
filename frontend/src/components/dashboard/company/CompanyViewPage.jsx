@@ -50,7 +50,7 @@ const CompanyViewPage = () => {
     return (
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-gray-600 text-lg">Loading company details...</p>
         </div>
       </div>

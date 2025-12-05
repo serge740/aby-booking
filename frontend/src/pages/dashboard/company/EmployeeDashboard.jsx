@@ -1,0 +1,526 @@
+// src/pages/EmployeeDashboard.jsx
+import React, { useState, useEffect } from 'react';
+import {
+  Plus, Edit, Trash2, Search, ChevronDown, Eye, ChevronLeft, ChevronRight,
+  AlertTriangle, CheckCircle, XCircle, X, RefreshCw, Grid3X3, List, Menu,
+  User, Phone, Mail, MapPin, Calendar, Briefcase
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import employeeService from '../../../services/employeeService';
+import { useCompanyAuth } from '../../../context/CompanyAuthContext';
+
+const EmployeeDashboard = () => {
+  const { company } = useCompanyAuth();
+  const [employees, setEmployees] = useState([]);
+  const [allEmployees, setAllEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('first_name');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [operationStatus, setOperationStatus] = useState(null);
+  const [operationLoading, setOperationLoading] = useState(false);
+  const [viewMode, setViewMode] = useState('table');
+  const navigate = useNavigate();
+
+  // Load data
+  useEffect(() => {
+    loadEmployees();
+  }, []);
+
+  useEffect(() => {
+    handleFilterAndSort();
+  }, [searchTerm, sortBy, sortOrder, allEmployees]);
+
+  const loadEmployees = async () => {
+    try {
+      setLoading(true);
+      const data = await employeeService.getAllEmployees();
+      setAllEmployees(Array.isArray(data) ? data : []);
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to load employees');
+      setAllEmployees([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showOperationStatus = (type, message, duration = 3000) => {
+    setOperationStatus({ type, message });
+    setTimeout(() => setOperationStatus(null), duration);
+  };
+
+  const handleFilterAndSort = () => {
+    let filtered = [...allEmployees];
+
+    if (searchTerm.trim()) {
+      filtered = filtered.filter(emp =>
+        `${emp.first_name} ${emp.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.phone?.includes(searchTerm) ||
+        emp.position?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    filtered.sort((a, b) => {
+      let aValue = a[sortBy] ?? '';
+      let bValue = b[sortBy] ?? '';
+
+      if (sortBy === 'date_hired') {
+        aValue = new Date(aValue);
+        bValue = new Date(bValue);
+      } else {
+        aValue = aValue.toString().toLowerCase();
+        bValue = bValue.toString().toLowerCase();
+      }
+
+      return sortOrder === 'asc'
+        ? aValue > bValue ? 1 : -1
+        : aValue < bValue ? 1 : -1;
+    });
+
+    setEmployees(filtered);
+    setCurrentPage(1);
+  };
+
+  const handleCreateEmployee = () => {
+    navigate('/company/dashboard/employee/create');
+  };
+
+  const handleEditEmployee = (emp) => {
+    if (!emp?.id) return;
+    navigate(`/company/dashboard/employee/edit/${emp.id}`);
+  };
+
+  const handleViewEmployee = (emp) => {
+    if (!emp?.id) return;
+    navigate(`/company/dashboard/employee/${emp.id}`);
+  };
+
+  const handleDeleteEmployee = async (emp) => {
+    if (!emp?.id) return;
+    try {
+      setOperationLoading(true);
+      await employeeService.deleteEmployee(emp.id);
+      setDeleteConfirm(null);
+      await loadEmployees();
+      showOperationStatus('success', `${emp.first_name} ${emp.last_name} deleted successfully!`);
+    } catch (err) {
+      showOperationStatus('error', err.message || 'Failed to delete employee');
+    } finally {
+      setOperationLoading(false);
+    }
+  };
+
+  const totalEmployees = allEmployees.length;
+  const totalPages = Math.ceil(employees.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEmployees = employees.slice(startIndex, endIndex);
+
+  const renderProfileImage = (url, size = 'w-10 h-10') => {
+    if (!url) {
+      return (
+        <div className={`${size} bg-gray-100 rounded-full flex items-center justify-center border border-gray-200`}>
+          <User className="w-5 h-5 text-gray-400" />
+        </div>
+      );
+    }
+    return <img src={url} alt="Profile" className={`${size} rounded-full object-cover border border-gray-200`} />;
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'ACTIVE': return 'bg-green-100 text-green-800';
+      case 'PROBATION': return 'bg-yellow-100 text-yellow-800';
+      case 'TERMINATED': return 'bg-red-100 text-red-800';
+      case 'RESIGNED': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // === Render Views ===
+  const renderTableView = () => (
+    <div className="bg-white rounded-lg shadow border border-gray-100">
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead className="bg-gray-50 border-b border-gray-200">
+            <tr>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold">Photo</th>
+              <th
+                className="text-left py-3 px-4 text-gray-600 font-semibold cursor-pointer hover:bg-gray-100"
+                onClick={() => {
+                  setSortBy('first_name');
+                  setSortOrder(sortBy === 'first_name' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc');
+                }}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Name</span>
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'first_name' ? 'text-primary-600' : 'text-gray-400'}`} />
+                </div>
+              </th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden lg:table-cell">Position</th>
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden md:table-cell">Email</th>
+                <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden sm:table-cell">Phone Number</th>
+             
+              <th className="text-left py-3 px-4 text-gray-600 font-semibold hidden sm:table-cell">Status</th>
+              <th
+                className="text-left py-3 px-4 text-gray-600 font-semibold cursor-pointer hover:bg-gray-100 hidden xl:table-cell"
+                onClick={() => {
+                  setSortBy('date_hired');
+                  setSortOrder(sortBy === 'date_hired' ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc');
+                }}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Hired</span>
+                  <ChevronDown className={`w-4 h-4 ${sortBy === 'date_hired' ? 'text-primary-600' : 'text-gray-400'}`} />
+                </div>
+              </th>
+              <th className="text-right py-3 px-4 text-gray-600 font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {currentEmployees.map((emp) => (
+              <motion.tr key={emp.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hover:bg-gray-50">
+                <td className="py-3 px-4">{renderProfileImage(emp.profile_picture)}</td>
+                <td className="py-3 px-4 font-medium text-gray-900">
+                  {emp.first_name} {emp.last_name}
+                </td>
+                <td className="py-3 px-4 text-gray-600 hidden lg:table-cell">{emp.position || '—'}</td>
+                <td className="py-3 px-4 text-gray-600 hidden md:table-cell truncate max-w-xs">{emp.email}</td>
+                 <td className="py-3 px-4 text-gray-600 hidden lg:table-cell">{emp.phone || '—'}</td>
+                
+                <td className="py-3 px-4 hidden sm:table-cell">
+                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(emp.status)}`}>
+                    {emp.status}
+                  </span>
+                </td>
+                <td className="py-3 px-4 text-gray-600 hidden xl:table-cell">
+                  {new Date(emp.date_hired).toLocaleDateString()}
+                </td>
+                <td className="py-3 px-4">
+                  <div className="flex items-center justify-end space-x-2">
+                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                      <Eye className="w-4 h-4" />
+                    </motion.button>
+                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                      <Edit className="w-4 h-4" />
+                    </motion.button>
+                    <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(emp)} title="Delete" className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50">
+                      <Trash2 className="w-4 h-4" />
+                    </motion.button>
+                  </div>
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const renderGridView = () => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {currentEmployees.map((emp) => (
+        <motion.div key={emp.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4 hover:shadow-md transition-shadow">
+          <div className="flex flex-col items-center space-y-3">
+            {renderProfileImage(emp.profile_picture, 'w-20 h-20')}
+            <div className="text-center w-full">
+              <h3 className="font-semibold text-gray-900 text-xs truncate">{emp.first_name} {emp.last_name}</h3>
+              <p className="text-xs text-gray-500">{emp.position || 'No Position'}</p>
+            </div>
+            <div className="flex space-x-1 text-xs">
+              <span className={`px-2 py-1 rounded-full ${getStatusColor(emp.status)}`}>
+                {emp.status}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex space-x-2">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                <Eye className="w-4 h-4" />
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                <Edit className="w-4 h-4" />
+              </motion.button>
+            </div>
+            <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(emp)} title="Delete" className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50">
+              <Trash2 className="w-4 h-4" />
+            </motion.button>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  const renderListView = () => (
+    <div className="bg-white rounded-lg shadow border border-gray-100 divide-y divide-gray-100">
+      {currentEmployees.map((emp) => (
+        <motion.div key={emp.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="px-4 py-4 hover:bg-gray-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              {renderProfileImage(emp.profile_picture)}
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold text-gray-900 text-xs truncate">{emp.first_name} {emp.last_name}</div>
+                <div className="text-xs text-gray-500 truncate flex items-center space-x-2">
+                  <Briefcase className="w-3 h-3" /> <span>{emp.position || '—'}</span>
+                  <span className="mx-1">•</span>
+                  <Mail className="w-3 h-3" /> <span>{emp.email}</span>
+                </div>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center space-x-4 text-xs text-gray-600">
+              <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(emp.status)}`}>
+                {emp.status}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleViewEmployee(emp)} title="View" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                <Eye className="w-4 h-4" />
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditEmployee(emp)} title="Edit" className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50">
+                <Edit className="w-4 h-4" />
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.1 }} onClick={() => setDeleteConfirm(emp)} title="Delete" className="text-gray-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50">
+                <Trash2 className="w-4 h-4" />
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  const renderPagination = () => {
+    const pages = [];
+    const maxVisible = 5;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    const end = Math.min(totalPages, start + maxVisible - 1);
+    if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+
+    return (
+      <div className="flex items-center justify-between bg-white px-4 py-3 border-t border-gray-100 rounded-b-lg shadow">
+        <div className="text-xs text-gray-600">
+          Showing {startIndex + 1}-{Math.min(endIndex, employees.length)} of {employees.length}
+        </div>
+        <div className="flex items-center space-x-2">
+          <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
+            <ChevronLeft className="w-4 h-4" />
+          </motion.button>
+          {pages.map(p => (
+            <motion.button key={p} whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p)}
+              className={`px-3 py-1.5 text-xs rounded ${currentPage === p ? 'bg-primary-600 text-white' : 'text-gray-600 bg-white border border-gray-200 hover:bg-primary-50'}`}>
+              {p}
+            </motion.button>
+          ))}
+          <motion.button whileHover={{ scale: 1.05 }} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}
+            className="p-2 text-gray-600 bg-white border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
+            <ChevronRight className="w-4 h-4" />
+          </motion.button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 font-sans">
+      {/* Header */}
+      <div className="sticky top-0 bg-white shadow-md z-10">
+        <div className="mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">Employee Management</h1>
+              <p className="text-xs text-gray-500">Manage your team members</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <motion.button whileHover={{ scale: 1.05 }} onClick={loadEmployees} disabled={loading}
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <span className="text-xs">Refresh</span>
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.05 }} onClick={handleCreateEmployee}
+                className="flex items-center space-x-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded font-medium shadow-md">
+                <Plus className="w-4 h-4" />
+                <span className="text-xs">Add Employee</span>
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="mx-auto px-4 py-6 space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-primary-50 rounded-full"><User className="w-5 h-5 text-primary-600" /></div>
+              <div>
+                <p className="text-xs text-gray-600">Total Employees</p>
+                <p className="text-xl font-semibold text-gray-900">{totalEmployees}</p>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-green-50 rounded-full"><CheckCircle className="w-5 h-5 text-green-600" /></div>
+              <div>
+                <p className="text-xs text-gray-600">Active</p>
+                <p className="text-xl font-semibold text-gray-900">{allEmployees.filter(e => e.status === 'ACTIVE').length}</p>
+              </div>
+            </div>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-lg shadow border border-gray-100 p-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-purple-50 rounded-full"><Briefcase className="w-5 h-5 text-purple-600" /></div>
+              <div>
+                <p className="text-xs text-gray-600">On Probation</p>
+                <p className="text-xl font-semibold text-gray-900">{allEmployees.filter(e => e.status === 'PROBATION').length}</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Controls */}
+        <div className="bg-white rounded-lg shadow border border-gray-100 p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search employees..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-64 pl-10 pr-4 py-2 text-xs border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <select
+                value={`${sortBy}-${sortOrder}`}
+                onChange={(e) => {
+                  const [field, order] = e.target.value.split('-');
+                  setSortBy(field);
+                  setSortOrder(order);
+                }}
+                className="text-xs border border-gray-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="first_name-asc">Name (A-Z)</option>
+                <option value="first_name-desc">Name (Z-A)</option>
+                <option value="date_hired-asc">Hired (Oldest)</option>
+                <option value="date_hired-desc">Hired (Newest)</option>
+              </select>
+              <div className="flex items-center border border-gray-200 rounded">
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('table')} className={`p-2 ${viewMode === 'table' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Table">
+                  <List className="w-4 h-4" />
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('grid')} className={`p-2 ${viewMode === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="Grid">
+                  <Grid3X3 className="w-4 h-4" />
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.05 }} onClick={() => setViewMode('list')} className={`p-2 ${viewMode === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:text-primary-600'}`} title="List">
+                  <List className="w-4 h-4" />
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {error && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-xs">
+            {error}
+          </motion.div>
+        )}
+        {loading ? (
+          <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
+            <div className="inline-flex items-center space-x-2">
+              <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+              <span className="text-xs">Loading employees...</span>
+            </div>
+          </div>
+        ) : employees.length === 0 ? (
+          <div className="bg-white rounded-lg shadow border border-gray-100 p-8 text-center">
+            <p className="text-lg font-semibold text-gray-900">
+              {searchTerm ? 'No Employees Found' : 'No Employees Yet'}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              {searchTerm ? 'Try adjusting your search.' : 'Add your first employee to get started.'}
+            </p>
+          </div>
+        ) : (
+          <div>
+            {viewMode === 'table' && renderTableView()}
+            {viewMode === 'grid' && renderGridView()}
+            {viewMode === 'list' && renderListView()}
+            {renderPagination()}
+          </div>
+        )}
+
+        {/* Toasts & Loading */}
+        <AnimatePresence>
+          {operationStatus && (
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-4 right-4 z-50">
+              <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg shadow-lg text-xs ${operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-red-50 border border-red-200 text-red-800'}`}>
+                {operationStatus.type === 'success' ? <CheckCircle className="w-5 h-5 text-green-600" /> : <XCircle className="w-5 h-5 text-red-600" />}
+                <span className="font-medium">{operationStatus.message}</span>
+                <motion.button whileHover={{ scale: 1.1 }} onClick={() => setOperationStatus(null)}><X className="w-4 h-4" /></motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {operationLoading && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 flex items-center justify-center z-40">
+              <div className="bg-white rounded-lg p-4 shadow-xl">
+                <div className="flex items-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-gray-700 text-xs font-medium">Processing...</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Delete Confirm Modal */}
+        <AnimatePresence>
+          {deleteConfirm && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Delete Employee</h3>
+                    <p className="text-xs text-gray-500">This action cannot be undone</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-700 mb-4">
+                  Are you sure you want to delete <span className="font-semibold">{deleteConfirm.first_name} {deleteConfirm.last_name}</span>?
+                </p>
+                <div className="flex justify-end space-x-3">
+                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => setDeleteConfirm(null)} className="px-4 py-2 text-xs text-gray-600 border border-gray-200 rounded hover:bg-gray-50">
+                    Cancel
+                  </motion.button>
+                  <motion.button whileHover={{ scale: 1.05 }} onClick={() => handleDeleteEmployee(deleteConfirm)} className="px-4 py-2 text-xs bg-red-600 text-white rounded hover:bg-red-700">
+                    Delete
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+export default EmployeeDashboard;

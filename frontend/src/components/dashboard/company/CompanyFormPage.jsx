@@ -223,7 +223,7 @@ export default function CompanyFormPage() {
                     currentStep > index + 1
                       ? 'bg-green-500 text-white shadow-lg'
                       : currentStep === index + 1
-                      ? 'bg-blue-600 text-white shadow-lg scale-110'
+                      ? 'bg-primary-600 text-white shadow-lg scale-110'
                       : 'bg-gray-200 text-gray-500'
                   }`}
                 >
@@ -265,7 +265,7 @@ export default function CompanyFormPage() {
           name="name"
           value={formData.name}
           onChange={handleInputChange}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
             errors.name ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder="Enter company name"
@@ -282,7 +282,7 @@ export default function CompanyFormPage() {
           name="type"
           value={formData.type}
           onChange={handleInputChange}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
             errors.type ? 'border-red-500' : 'border-gray-300'
           }`}
         >
@@ -308,7 +308,7 @@ export default function CompanyFormPage() {
           name="email"
           value={formData.email}
           onChange={handleInputChange}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
             errors.email ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder="company@example.com"
@@ -326,7 +326,7 @@ export default function CompanyFormPage() {
           name="phone"
           value={formData.phone}
           onChange={handleInputChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
           placeholder="+1 234 567 8900"
         />
       </div>
@@ -342,7 +342,7 @@ export default function CompanyFormPage() {
           <FileText className="w-4 h-4 mr-2" />
           Description
         </label>
-        <div className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent outline-none transition ${errors.description ? 'border-red-500' : ''}`}>
+        <div className={`border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent outline-none transition ${errors.description ? 'border-red-500' : ''}`}>
           <ReactQuill
             theme="snow"
             value={formData.description}
@@ -379,7 +379,7 @@ export default function CompanyFormPage() {
           name="address"
           value={formData.address}
           onChange={handleInputChange}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
             errors.address ? 'border-red-500' : 'border-gray-300'
           }`}
           placeholder="Street address"
@@ -398,7 +398,7 @@ export default function CompanyFormPage() {
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
               errors.city ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="City"
@@ -416,7 +416,7 @@ export default function CompanyFormPage() {
             name="country"
             value={formData.country}
             onChange={handleInputChange}
-            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition ${
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition ${
               errors.country ? 'border-red-500' : 'border-gray-300'
             }`}
             placeholder="Country"
@@ -427,8 +427,8 @@ export default function CompanyFormPage() {
         {/* Updated Logo Upload Field */}
       <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
         <div className="flex items-center gap-2 mb-4">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <Upload className="h-5 w-5 text-blue-600" />
+          <div className="p-2 bg-primary-50 rounded-lg">
+            <Upload className="h-5 w-5 text-primary-600" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900">Company Logo</h3>
@@ -439,8 +439,8 @@ export default function CompanyFormPage() {
         <div
           className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer group ${
             isDragging
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50/20'
+              ? 'border-primary-500 bg-primary-50'
+              : 'border-gray-200 hover:border-primary-300 hover:bg-primary-50/20'
           }`}
           onDragOver={handleDragOver}
           onDragEnter={handleDragEnter}
@@ -457,12 +457,12 @@ export default function CompanyFormPage() {
           <label htmlFor="logo" className="cursor-pointer">
             <div
               className={`p-3 rounded-full w-fit mx-auto transition-colors ${
-                isDragging ? 'bg-blue-100' : 'bg-gray-100 group-hover:bg-blue-100'
+                isDragging ? 'bg-primary-100' : 'bg-gray-100 group-hover:bg-primary-100'
               }`}
             >
               <Upload
                 className={`h-8 w-8 ${
-                  isDragging ? 'text-blue-500' : 'text-gray-400 group-hover:text-blue-500'
+                  isDragging ? 'text-primary-500' : 'text-gray-400 group-hover:text-primary-500'
                 }`}
               />
             </div>
@@ -513,7 +513,7 @@ export default function CompanyFormPage() {
 
   const renderStep3 = () => (
     <div className="space-y-6">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <div className="bg-primary-50 border border-primary-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Review Your Information</h3>
         <div className="space-y-4">
           <div>
@@ -571,7 +571,7 @@ export default function CompanyFormPage() {
           id="isActive"
           checked={formData.isActive}
           onChange={handleInputChange}
-          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+          className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500"
         />
         <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
           Company is active
@@ -594,7 +594,7 @@ export default function CompanyFormPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className=" mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
@@ -637,7 +637,7 @@ export default function CompanyFormPage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl"
+                  className="flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-all shadow-lg hover:shadow-xl"
                 >
                   Next
                   <ChevronRight className="w-5 h-5 ml-2" />

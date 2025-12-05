@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Plus,
   Minus,
+  Percent,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Header from '../components/header';
@@ -29,7 +30,6 @@ const formatRWF = (amount) => {
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
-
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [validatedGroups, setValidatedGroups] = useState({});
   const [removedItems, setRemovedItems] = useState([]);
@@ -40,21 +40,19 @@ const CartPage = () => {
     new URLSearchParams(window.location.search).get('companyId') || '1';
 
   const handleContinueShopping = () => window.history.back();
-
   const handleCheckout = () => {
     if (!selectedCompanyId) return;
     setIsOrderModalOpen(true);
   };
 
   // ───────────────────────────────────────────────────────
-  // 1. Validate & enrich cart items (quantity from cart)
+  // 1. Validate & enrich cart items (with discount)
   // ───────────────────────────────────────────────────────
   useEffect(() => {
     const validateCart = async () => {
       setLoading(true);
       const groups = {};
       const removed = [];
-
       const companyGroups = cartItems.reduce((acc, item) => {
         const cid = item.companyId || 'unknown';
         if (!acc[cid]) acc[cid] = [];
@@ -64,15 +62,20 @@ const CartPage = () => {
 
       for (const [companyId, items] of Object.entries(companyGroups)) {
         const validItems = [];
-
         for (const item of items) {
           try {
             const dbItem = await menuItemService.getOneMenuItem(item.menuItemId);
             if (dbItem && dbItem.isActive) {
+              // Calculate final price after discount
+              const discount = dbItem.discount || 0;
+              const finalPrice = dbItem.sellingPrice - (dbItem.sellingPrice * discount / 100);
+
               validItems.push({
-                ...item, // Keep quantity, unitPrice from cart
+                ...item,
                 name: dbItem.name,
-                unitPrice: dbItem.sellingPrice, // Use DB price
+                originalPrice: dbItem.sellingPrice, // original
+                unitPrice: finalPrice,              // after discount
+                discount: discount,                 // % off
                 image: dbItem.mainImage ? `${API_URL}${dbItem.mainImage}` : undefined,
                 companyName: dbItem.company?.name || 'Unknown Restaurant',
                 companyLogo: dbItem.company?.logo
@@ -89,7 +92,6 @@ const CartPage = () => {
             removeFromCart(item.menuItemId);
           }
         }
-
         if (validItems.length > 0) {
           groups[companyId] = validItems;
         }
@@ -97,12 +99,10 @@ const CartPage = () => {
 
       setValidatedGroups(groups);
       setRemovedItems(removed);
-
       const companyIds = Object.keys(groups);
       if (companyIds.length === 1) {
         setSelectedCompanyId(companyIds[0]);
       }
-
       setLoading(false);
     };
 
@@ -131,7 +131,7 @@ const CartPage = () => {
     return (
       <div className="min-h-screen bg-gray-50 py-12">
         <Header title="Your Order" path="Order" />
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <ShoppingCart className="mx-auto h-16 w-16 text-gray-400 mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -153,12 +153,11 @@ const CartPage = () => {
   }
 
   // ───────────────────────────────────────────────────────
-  // 4. Main UI – with quantity controls
+  // 4. Main UI – with discount display
   // ───────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50 text-black">
       <Header title="Your Order" path="Order" />
-
       <div className="menuItem mx-auto px-4 lg:px-16 py-8">
         {/* Removed items warning */}
         {removedItems.length > 0 && (
@@ -194,7 +193,6 @@ const CartPage = () => {
                   (sum, i) => sum + i.unitPrice * (i.quantity || 1),
                   0
                 );
-
                 return (
                   <div
                     key={companyId}
@@ -252,6 +250,7 @@ const CartPage = () => {
                       {items.map((item) => {
                         const qty = item.quantity || 1;
                         const itemTotal = item.unitPrice * qty;
+                        const hasDiscount = item.discount > 0;
 
                         return (
                           <div
@@ -270,11 +269,19 @@ const CartPage = () => {
 
                               {/* Image */}
                               {item.image ? (
-                                <img
-                                  src={item.image}
-                                  alt={item.name}
-                                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                                />
+                                <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                  <img
+                                    src={item.image}
+                                    alt={item.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  {hasDiscount && (
+                                    <div className="absolute top-1 right-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-0.5">
+                                      <Percent className="w-3 h-3" />
+                                      {item.discount}%
+                                    </div>
+                                  )}
+                                </div>
                               ) : (
                                 <div className="w-16 h-16 bg-gray-200 border-2 border-dashed rounded-lg flex-shrink-0" />
                               )}
@@ -284,9 +291,16 @@ const CartPage = () => {
                                 <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
                                   {item.name}
                                 </h3>
-                                <span className="text-sm text-gray-600">
-                                  {formatRWF(item.unitPrice)} each
-                                </span>
+                                <div className="flex items-center gap-2 text-sm">
+                                  <span className="text-orange-600 font-medium">
+                                    {formatRWF(item.unitPrice)} each
+                                  </span>
+                                  {hasDiscount && (
+                                    <span className="text-xs text-gray-500 line-through">
+                                      {formatRWF(item.originalPrice)}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
 
                               {/* Quantity Controls */}
@@ -356,7 +370,6 @@ const CartPage = () => {
               <h2 className="text-xl font-bold text-gray-900 mb-6">
                 Checkout Summary
               </h2>
-
               {!selectedCompanyId ? (
                 <div className="text-center py-8 text-gray-500">
                   <Store className="w-12 h-12 mx-auto mb-3 text-gray-300" />
@@ -395,7 +408,6 @@ const CartPage = () => {
                         : ''}
                     </div>
                   </div>
-
                   <div className="border-t border-gray-200 pt-4 mb-6">
                     <div className="flex justify-between items-center text-lg font-bold text-gray-900">
                       <span>Total</span>
@@ -404,7 +416,6 @@ const CartPage = () => {
                   </div>
                 </>
               )}
-
               <button
                 onClick={handleCheckout}
                 disabled={!selectedCompanyId || loading}
@@ -413,7 +424,6 @@ const CartPage = () => {
                 <ShoppingCart size={20} />
                 {selectedCompanyId ? 'Confirm Order' : 'Select a Restaurant'}
               </button>
-
               <div className="mt-6 pt-4 border-t border-gray-100 space-y-2">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Clock size={16} className="text-orange-500" />
@@ -424,7 +434,6 @@ const CartPage = () => {
                   <span>Table service or pickup</span>
                 </div>
               </div>
-
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <p className="text-xs text-gray-500 text-center">
                   You can only place one order at a time

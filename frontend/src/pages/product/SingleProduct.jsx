@@ -399,19 +399,19 @@ const CoffeeShop = () => {
                   </div>
 
                   {isInCart && (
-                    <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="mb-4 p-4 bg-primary-50 border border-primary-200 rounded-lg">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-blue-800">
+                          <p className="text-sm font-medium text-primary-800">
                             Quantity in cart: <span className="font-bold">{cartQuantity}</span>
                           </p>
-                          <p className="text-xs text-blue-600">
+                          <p className="text-xs text-primary-600">
                             {totalAvailableStock > 0 ? `${totalAvailableStock} more available` : 'Out of stock'}
                           </p>
                         </div>
                         <button
                           onClick={handleRemoveFromCart}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 hover:underline"
+                          className="text-primary-600 hover:text-primary-800 text-sm font-medium flex items-center gap-1 hover:underline"
                         >
                           Remove from cart
                         </button>

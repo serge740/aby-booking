@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Welcome to Aby HR</title>
+  <title>Welcome to {{company_name}}</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     /* Email-safe simple styles */
@@ -24,24 +24,24 @@
 </head>
 <body>
   <!-- Preheader text (visible in inbox preview) -->
-  <div style="display:none; max-height:0; overflow:hidden; font-size:1px; line-height:1px; color:#fff; opacity:0;">Your Aby HR login details are inside — log in and change your password.</div>
+  <div style="display:none; max-height:0; overflow:hidden; font-size:1px; line-height:1px; color:#fff; opacity:0;">Your {{company_name}} login details are inside — log in and change your password.</div>
 
   <div class="container">
     <h1>Welcome, {{firstname}} {{lastname}} 🎉</h1>
 
-    <p>You have been registered in the <strong>Aby HR</strong> system. Use the details below to sign in:</p>
+    <p>You have been registered in the <strong>{{company_name}}</strong> system. Use the details below to sign in:</p>
 
     <div class="info" role="presentation">
       <p><strong>Email:</strong> {{email}}</p>
       <p><strong>Password:</strong> {{password}}</p>
     </div>
 
-    <a href="{{loginUrl}}" class="cta" target="_blank" rel="noopener noreferrer">Log in to Aby HR</a>
+    <a href="{{loginUrl}}" class="cta" target="_blank" rel="noopener noreferrer">Log in to {{company_name}}</a>
 
     <p class="small">Tip: For your security, consider changing this password after your first login.</p>
 
     <div class="footer">
-      <p>© {{year}} Aby HR | All rights reserved.</p>
+      <p>© {{year}} {{company_name}} | All rights reserved.</p>
     </div>
   </div>
 </body>

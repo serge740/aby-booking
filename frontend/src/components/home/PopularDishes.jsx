@@ -135,7 +135,7 @@ export default function AbyPopularDishes() {
     {
       id: 12,
       name: 'Buffalo Chicken',
-      description: 'Spicy buffalo chicken with blue cheese and celery.',
+      description: 'Spicy buffalo chicken with primary cheese and celery.',
       price: 12.5,
       category: 'Chicken',
       image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=400&fit=crop',

@@ -5,6 +5,16 @@ import { ArrowLeft, Share2, Heart, Star, ChevronLeft, ChevronRight, X, AlertCirc
 import menuItemService from '../../../services/menuItemService';
 import { API_URL } from '../../../api/api';
 
+
+const formatRWF = (amount) => {
+  return new Intl.NumberFormat('rw-RW', {
+    style: 'currency',
+    currency: 'RWF',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
 export default function MenuItemView() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -223,7 +233,7 @@ export default function MenuItemView() {
                 </span>
               )}
               {item.purpose && (
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
                   {item.purpose}
                 </span>
               )}
@@ -251,24 +261,24 @@ export default function MenuItemView() {
             <div className="flex items-baseline gap-3">
               {discountedPrice ? (
                 <>
-                  <span className="text-4xl font-bold text-gray-900">${discountedPrice}</span>
+                  <span className="text-4xl font-bold text-gray-900">{formatRWF(discountedPrice)}</span>
                   <span className="text-2xl text-gray-400 line-through">
-                    ${item.sellingPrice.toFixed(2)}
+                    {formatRWF(item.sellingPrice.toFixed(2))}
                   </span>
                   <span className="text-green-600 font-semibold">
-                    Save ${(item.sellingPrice - parseFloat(discountedPrice)).toFixed(2)}
+                    Save {formatRWF(item.sellingPrice - parseFloat(discountedPrice)).toFixed(2)}
                   </span>
                 </>
               ) : (
                 <span className="text-4xl font-bold text-gray-900">
-                  ${item.sellingPrice.toFixed(2)}
+                  {formatRWF(item.sellingPrice.toFixed(2))}
                 </span>
               )}
             </div>
 
             {/* Purpose-Specific Details */}
             {item.purpose === 'DRINKING' && (
-              <div className="bg-blue-50 rounded-xl p-5 space-y-3">
+              <div className="bg-primary-50 rounded-xl p-5 space-y-3">
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-700">Drink Type:</span>
                   <span className="capitalize">{item.drinkState?.toLowerCase()}</span>
@@ -282,7 +292,7 @@ export default function MenuItemView() {
                 {item.difference !== null && item.difference !== undefined && (
                   <div className="flex justify-between text-green-600 font-semibold">
                     <span>Profit Margin:</span>
-                    <span>${item.difference.toFixed(2)}</span>
+                    <span>{formatRWF(item.difference.toFixed(2))}</span>
                   </div>
                 )}
               </div>

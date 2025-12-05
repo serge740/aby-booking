@@ -358,7 +358,7 @@ const CompanyProfileSettings: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto menuItem">
         {/* ---------- Header ---------- */}
         <div className="relative rounded-t-xl overflow-hidden h-48">
           <div

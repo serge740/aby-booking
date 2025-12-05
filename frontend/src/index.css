@@ -2,17 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
 @theme {
 /* --- Colors --- */
---color-primary-50:  #fef2f2;
---color-primary-100: #fee2e2;
---color-primary-200: #fecaca;
---color-primary-300: #fca5a5;
---color-primary-400: #f87171;
---color-primary-500: #ef4444; /* The new base color (Red) */
---color-primary-600: #dc2626;
---color-primary-700: #b91c1c;
---color-primary-800: #991b1b;
---color-primary-900: #7f1d1d;
---color-primary-950: #450a0a;
+--color-primary-50:   #fff7ed;
+--color-primary-100:  #ffedd5;
+--color-primary-200:  #fed7aa;
+--color-primary-300:  #fdba74;
+--color-primary-400:  #fb923c;
+--color-primary-500:  #f97316; /* New Base Color (Orange) */
+--color-primary-600:  #ea580c;
+--color-primary-700:  #c2410c;
+--color-primary-800:  #9a3412;
+--color-primary-900:  #7c2d12;
+--color-primary-950:  #431407;
+
 
 --color-secondary-50:  #fff7ed;
 --color-secondary-100: #ffedd5;
@@ -39,6 +40,35 @@
   /* --- Shadows --- */
   --shadow-glow: 0 0 20px rgba(239, 68, 68, 0.3);
   --shadow-glow-lg: 0 0 40px rgba(239, 68, 68, 0.4);
+}
+
+/* Hide everything except the receipt content when printing */
+@media print {
+  /* Hide modal buttons & close icon */
+  .print\\:hidden,
+  .print\\:hidden * {
+    display: none !important;
+  }
+
+  /* Force white background & remove shadows/scrollbars */
+  body, .bg-white {
+    background: white !important;
+  }
+
+  /* Make sure the receipt takes full width */
+  .receipt-print-container {
+    max-width: 80mm !important;   /* Standard thermal printer width */
+    margin: 0 auto !important;
+    padding: 10mm !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Optional: make it look like a real receipt (80mm) */
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
 }
 html{
   scroll-behavior: smooth;
@@ -128,3 +158,11 @@ body{
           min-height: 400px;
         }
      
+.small-quill .ql-container {
+  height: 80px !important;     /* adjust height */
+}
+
+.small-quill .ql-editor {
+  height: 80px !important;     /* editor height */
+  padding: 8px 12px;
+}

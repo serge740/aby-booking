@@ -22,12 +22,28 @@ class OrderService {
   async updateStatus(orderId: string, status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED') {
     try {
       const response = await api.patch(`/orders/${orderId}/status`, { status });
+      console.warn(response.data);
+      
       return response.data;
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Failed to update order status';
       throw new Error(msg);
     }
   }
+
+  async updatePaymentStatus(
+  orderId: string,
+  status: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED'
+) {
+  try {
+    const response = await api.patch(`/orders/${orderId}/payment-status`, { status });
+    console.log('Payment status updated:', response.data);
+    return response.data;
+  } catch (error: any) {
+    const msg = error.response?.data?.message || 'Failed to update payment status';
+    throw new Error(msg);
+  }
+}
 
   // ✅ Get order by ID
   async getOrderById(orderId: string) {
@@ -53,9 +69,36 @@ class OrderService {
   }
 
   // ✅ Get all orders for a specific client
+  async getOrdersByOrderNumber(orderNumber: string) {
+    try {
+      const response = await api.get(`/orders/order-number/${orderNumber}`);
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to fetch client orders';
+      throw new Error(msg);
+    }
+  }
   async getOrdersByClient(clientId: string) {
     try {
       const response = await api.get(`/orders/client/${clientId}`);
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to fetch client orders';
+      throw new Error(msg);
+    }
+  }
+  async getOrdersByCompany(companyId: string) {
+    try {
+      const response = await api.get(`/orders/company/${companyId}`);
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to fetch client orders';
+      throw new Error(msg);
+    }
+  }
+  async getOrdersByEmployee(employeeId: string) {
+    try {
+      const response = await api.get(`/orders/employee/${employeeId}`);
       return response.data;
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Failed to fetch client orders';

@@ -8,18 +8,18 @@ import * as handlebars from 'handlebars';
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  private transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST!,
-    port: parseInt(process.env.SMTP_PORT || '465'),
-    secure: true,
-    auth: {
-      user: process.env.SMTP_USERNAME!,
-      pass: process.env.SMTP_PASSWORD!,
-    },
-    tls: {
-      rejectUnauthorized: false,  // Important for security: do not disable in production!
-    },
-  });
+private transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST!,
+  port: parseInt(process.env.SMTP_PORT || '465'),
+
+  secure: true, // true for 465, false for other ports  
+
+  auth: {
+    user: process.env.SMTP_USERNAME!,
+    pass: process.env.SMTP_PASSWORD!,
+  },
+    
+});
 
   /**
    * Sends an email with the given subject, recipient, and dynamic template data.
@@ -51,7 +51,7 @@ export class EmailService {
 
     try {
       await this.transporter.sendMail({
-        from: `Fresh cart <${process.env.SMTP_USERNAME}>`,
+        from: `ABY DASH <${process.env.SMTP_USERNAME}>`,
         to,
         subject,
         html,

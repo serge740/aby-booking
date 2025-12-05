@@ -6,7 +6,7 @@ import Header from "../components/header";
 const MenuPage = () => {
 
   return (
-    <section className="bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 text-center min-h-screen">
+    <section className="bg-gradient-to-br from-primary-50 via-purple-50 to-primary-50 text-center min-h-screen">
       <Header title={`our menu`} path={`menu`} />
       
       {/* Menu Introduction Section */}

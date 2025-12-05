@@ -214,7 +214,7 @@ const ReportDashboard = () => {
           </a>
         </div>
       </div>
-      <div className="space-y-2 text-sm text-gray-600">
+      <div className="space-y-2 text-xs text-gray-600">
         <p><span className="font-medium">Created:</span> {formatDate(report.createdAt)}</p>
         <p><span className="font-medium">By:</span> {report.admin.adminName || 'Unknown'}</p>
       </div>
@@ -231,7 +231,7 @@ const ReportDashboard = () => {
         <div className="flex gap-3">
           <button
             onClick={() => handlePreviewReport(handleReportUrl(report.reportUrl))}
-            className="flex items-center gap-1 px-3 py-1 text-primary-600 hover:bg-primary-50 rounded transition-colors text-sm font-medium"
+            className="flex items-center gap-1 px-3 py-1 text-primary-600 hover:bg-primary-50 rounded transition-colors text-xs font-medium"
             title="Preview Report"
           >
             <Eye size={16} />
@@ -239,7 +239,7 @@ const ReportDashboard = () => {
           </button>
           <button
             onClick={() => handleUpdateReport(report)}
-            className="flex items-center gap-1 px-3 py-1 text-yellow-600 hover:bg-yellow-50 rounded transition-colors text-sm font-medium"
+            className="flex items-center gap-1 px-3 py-1 text-yellow-600 hover:bg-yellow-50 rounded transition-colors text-xs font-medium"
             title="Update Report"
           >
             <Edit size={16} />
@@ -248,7 +248,7 @@ const ReportDashboard = () => {
           <a
             href={handleReportUrl(report.reportUrl)}
             download
-            className="flex items-center gap-1 px-3 py-1 text-green-600 hover:bg-green-50 rounded transition-colors text-sm font-medium"
+            className="flex items-center gap-1 px-3 py-1 text-green-600 hover:bg-green-50 rounded transition-colors text-xs font-medium"
             title="Download Report"
           >
             <Download size={16} />
@@ -283,7 +283,7 @@ const ReportDashboard = () => {
         {/* Error Message */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-800">{error}</p>
+            <p className="text-xs text-red-800">{error}</p>
           </div>
         )}
 
@@ -304,7 +304,7 @@ const ReportDashboard = () => {
                     <FileText className="text-primary-600" size={24} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 text-sm font-medium mb-2">Total Reports</p>
+                    <p className="text-gray-600 text-xs font-medium mb-2">Total Reports</p>
                     <p className="text-md font-bold text-gray-900">{getStats.totalReports}</p>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ const ReportDashboard = () => {
                     <Clock className="text-green-600" size={24} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 text-sm font-medium mb-2">Today's Reports</p>
+                    <p className="text-gray-600 text-xs font-medium mb-2">Today's Reports</p>
                     <p className="text-md font-bold text-gray-900">{getStats.todayReports}</p>
                   </div>
                 </div>
@@ -326,7 +326,7 @@ const ReportDashboard = () => {
                     <TrendingUp className="text-purple-600" size={24} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 text-sm font-medium mb-2">This Week</p>
+                    <p className="text-gray-600 text-xs font-medium mb-2">This Week</p>
                     <p className="text-md font-bold text-gray-900">{getStats.weekReports}</p>
                   </div>
                 </div>
@@ -337,7 +337,7 @@ const ReportDashboard = () => {
                     <Calendar className="text-orange-600" size={24} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 text-sm font-medium mb-2">This Month</p>
+                    <p className="text-gray-600 text-xs font-medium mb-2">This Month</p>
                     <p className="text-md font-bold text-gray-900">{getStats.monthReports}</p>
                   </div>
                 </div>
@@ -348,7 +348,7 @@ const ReportDashboard = () => {
                     <Users className="text-red-600" size={24} />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-600 text-sm font-medium mb-2">Total Admins</p>
+                    <p className="text-gray-600 text-xs font-medium mb-2">Total Admins</p>
                     <p className="text-md font-bold text-gray-900">{getStats.uniqueAdmins}</p>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ const ReportDashboard = () => {
                 </div>
                 <div className="flex gap-2 justify-end items-center">
                   <div className="flex items-center gap-2">
-                    <label className="text-sm text-gray-600">Items per page:</label>
+                    <label className="text-xs text-gray-600">Items per page:</label>
                     <select
                       value={itemsPerPage}
                       onChange={handleItemsPerPageChange}
@@ -444,7 +444,7 @@ const ReportDashboard = () => {
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-300">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-xs font-medium text-gray-700 mb-2">
                         Start Date
                       </label>
                       <input
@@ -455,7 +455,7 @@ const ReportDashboard = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-xs font-medium text-gray-700 mb-2">
                         End Date
                       </label>
                       <input
@@ -519,19 +519,19 @@ const ReportDashboard = () => {
                   <table className="w-full">
                     <thead className="bg-gray-100 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900">
                           #
                         </th>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900">
                           Report Title
                         </th>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900">
                           Created By
                         </th>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900">
                           Created At
                         </th>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-900">
                           Actions
                         </th>
                       </tr>
@@ -552,7 +552,7 @@ const ReportDashboard = () => {
 
             {/* Pagination Controls (Bottom) */}
             {paginatedReports.length > 0 && (
-              <div className="mt-4 flex justify-between items-center text-sm text-gray-600">
+              <div className="mt-4 flex justify-between items-center text-xs text-gray-600">
                 <div>
                   Showing <span className="font-semibold">{paginatedReports.length}</span> of{' '}
                   <span className="font-semibold">{filteredReports.length}</span> report(s)

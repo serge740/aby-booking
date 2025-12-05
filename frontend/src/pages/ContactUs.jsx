@@ -51,15 +51,15 @@ const ContactUs = () => {
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
-      detail: "+250 791 813 289",
-      link: "tel:+250791813289",
+      detail: "+250 792 888 980",
+      link: "tel:+250792888980",
       color: "from-primary-600 to-primary-700"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
-      detail: "hello@jambokawa.com",
-      link: "mailto:hello@jambokawa.com",
+      detail: "abytechhubllc@gmail.com",
+      link: "mailto:abytechhubllc@gmail.com",
       color: "from-primary-600 to-primary-700"
     },
     {

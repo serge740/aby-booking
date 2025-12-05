@@ -34,7 +34,7 @@ const ConnectedApps: React.FC = () => {
       description: 'Google Calendar is a web-based scheduling tool that allows users to create, manage, and share events.',
       icon: '📅',
       isConnected: true,
-      color: 'bg-blue-100',
+      color: 'bg-primary-100',
     },
     {
       id: 'github',
