@@ -125,6 +125,7 @@ export class CompanyAuthService {
               country?: string;
               type?: string;
               isActive?: boolean;
+              momoCode?: string;
           },
       ) {
           const company = await this.prisma.company.findUnique({ where: { id } });
@@ -151,6 +152,7 @@ export class CompanyAuthService {
                   logo: data.logo ?? company.logo,
                   address: data.address ?? company.address,
                   city: data.city ?? company.city,
+                  momoCode:  data.momoCode ?? company.momoCode,
                   country: data.country ?? company.country,
                   type: (data.type as any) ?? company.type,
                   isActive: JSON.parse(String(data.isActive)) ?? company.isActive,

@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE `employee` ADD COLUMN `momoCode` INTEGER NULL;
+
+-- AlterTable
+ALTER TABLE `order` ADD COLUMN `debtedAmount` DOUBLE NULL,
+    MODIFY `status` ENUM('PENDING', 'PROCESSING', 'READY', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING';

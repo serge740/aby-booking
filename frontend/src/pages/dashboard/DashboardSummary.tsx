@@ -18,6 +18,7 @@ import preSalaryService from '../../services/preSalaryService';
 import riskReportService from '../../services/riskReportService';
 import leaveService from '../../services/leaveService';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
+import { useCompanyAuth } from '../../context/CompanyAuthContext';
 
 // Types
 type Role = 'company' | 'employee';
@@ -40,6 +41,8 @@ const DashboardSummary = () => {
   const [leaves, setLeaves] = useState<any[]>([]);
   const [preSalaries, setPreSalaries] = useState<any[]>([]);
   const [riskReports, setRiskReports] = useState<any[]>([]);
+  const {company} = useCompanyAuth() as any;
+
 
   // Fetch all data
   useEffect(() => {
@@ -55,7 +58,7 @@ const DashboardSummary = () => {
           preSalariesRes,
           riskReportsRes
         ] = await Promise.all([
-          orderService.getAllOrders(),
+          orderService.getOrdersByCompany(company?.id || user?.companyId),
           role === 'company' ? employeeService.getAllEmployees() : [],
           stockService.getAllStock(),
           leaveService.getAllLeaves?.() || [],

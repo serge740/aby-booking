@@ -109,6 +109,8 @@ model Order {
   totalAmount   Float
   notes         Json?
 
+  debtedAmount   Float?
+
   // 🔹 Client snapshot
   clientName    String
   clientPhone   String?
@@ -169,6 +171,7 @@ model OrderItem {
 enum OrderStatus {
   PENDING
   PROCESSING
+  READY
   COMPLETED
   CANCELLED
 }
@@ -186,6 +189,7 @@ model Company {
   address        String?
   city           String?
   country        String?
+  momoCode       String?
 
   password       String
 
@@ -235,7 +239,7 @@ model Employee {
   cv                      String?
   application_letter      String?
   identityCardImage      String?
-
+  
   position                String
 
   marital_status          MaritalStatus? @default(SINGLE)
