@@ -192,7 +192,7 @@ model Company {
   type           CompanyType @default(OTHER)
   isActive       Boolean     @default(true)
 
- 
+ requisition Requisition[]
   orders       Order[]
   items     MenuItem[] // One category can have many items
   employee  Employee[]
@@ -255,7 +255,7 @@ model Employee {
    presalary  PreSalary[]
    stock  Stock[]
    employeeRiskReports  EmployeeRiskReport[]
-
+   requisition Requisition[]
    orders Order[]
  
   createdAt DateTime   @default(now())
@@ -320,12 +320,56 @@ model Stock {
   company     Company  @relation(fields: [companyId], references: [id])
   employee    Employee? @relation(fields: [employeeId], references: [id])
    items     MenuItem[] // One category can have many items
+  requisitionItems         RequisitionItem[]
   @@map("Stock")
 }
 
 enum StockPurposeStatus {
   EATING
   DRINKING
+}
+
+
+model Requisition {
+  id            String              @id @default(cuid())
+  companyId     String
+  employeeId    String
+  status        RequisitionStatus   @default(PENDING)
+
+  description   String?
+  rejectReason  String?             // Filled only when REJECTED
+  
+
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  company       Company             @relation(fields: [companyId], references: [id])
+  employee      Employee            @relation(fields: [employeeId], references: [id])
+  items         RequisitionItem[]
+
+
+}
+model RequisitionItem {
+  id            String   @id @default(cuid())
+  requisitionId String
+  stockId       String?   // Null if stock item doesn't exist yet
+
+  itemName      String
+  quantity      Float
+  unit          String
+  purpose       StockPurposeStatus
+  note          String?
+
+  requisition   Requisition @relation(fields: [requisitionId], references: [id])
+  stock         Stock?      @relation(fields: [stockId], references: [id])
+}
+
+
+enum RequisitionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
 }
 
 model Leave {

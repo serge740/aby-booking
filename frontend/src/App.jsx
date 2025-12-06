@@ -64,6 +64,7 @@ import OrderReportAnalysis from "./pages/dashboard/company/OrderReportAnalysis";
 import PortalSection from "./pages/auth/PortalSection";
 import EmployeeOrderDashboard from "./pages/dashboard/employee/OrderDashboard";
 import EmployeeOrderDetailView from "./pages/dashboard/employee/CompanyOrderDetailView";
+import RequisitionDashboard from "./pages/dashboard/RequisitionDashoards";
 
 
 // Loading component
@@ -165,9 +166,10 @@ const router = createBrowserRouter([
            {path:'notifications' , element:<NotificationsPage />},
            {path:'stock' , element:<StockManagementDashboard />},
            {path:'order-report' , element:<OrderReportAnalysis />},
-         
-          
-        ]
+           {path:'requisition-management' , element:<RequisitionDashboard />},
+           
+           
+          ]
        },
 
     ]
@@ -176,13 +178,13 @@ const router = createBrowserRouter([
     path:'/employee',
     element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'employee'}} /></ProtectPrivateEmployeeRoute>,
     children:[
-       { index: true, element: <Navigate to={'/employee/dashboard'}></Navigate>},
-       { 
+      { index: true, element: <Navigate to={'/employee/dashboard'}></Navigate>},
+      { 
         path: 'dashboard', 
         element: <SuspenseWrapper><DashboardLayout role={'employee'} /> </SuspenseWrapper>,
         children:[
           {index:true , element:<DashboardSummary />},
- 
+          
           {path:'profile' , element:<EmployeeProfilePage />},
            {path:'leave-request' , element:<LeaveRequestDashboard />},
            {path:'leave-request/:id' , element:<LeaveViewDetails />},
@@ -191,10 +193,11 @@ const router = createBrowserRouter([
            {path:'risk-report' , element:<RiskReportDashboard />},
            {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
-          
+           
            {path:'place-order/:companyId' , element:<EmployeeCreateOrderPage />},
            {path:'order' , element:<EmployeeOrderDashboard />},
            {path:'order/:id' , element:<EmployeeOrderDetailView />},
+           {path:'requisition-management' , element:<RequisitionDashboard />},
 
           
         ]

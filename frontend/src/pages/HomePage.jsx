@@ -16,7 +16,7 @@ const WhyChooseUs = lazy(() => import("../components/home/chooseUs"));
 const ClientsSection = lazy(() => import("../components/home/clients"));
 const ContentReach = lazy(() => import("../components/home/contentReach"));
 const ContentWriteServices = lazy(() =>
-  import("../components/home/contentWrite")
+    import("../components/home/contentWrite")
 );
 const WorkProcess = lazy(() => import("../components/home/workingProcess"));
 const ContentSection = lazy(() => import("../components/home/talkContent"));
@@ -35,14 +35,11 @@ const HomePage = () => {
             <AbyComingSoon />
             {/* <ContentReach /> */}
             {/* <AbyPopularDishes  /> */}
-                    <Programs />
+            <Programs />
             {/* <FoodPromoCards  /> */}
- 
-
-    
 
             <Testimonials />
-          
+
             <BlogLatest />
 
         </>
