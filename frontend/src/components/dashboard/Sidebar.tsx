@@ -93,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       },
       { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
       { id: "stock", label: "Stock Management", icon: BuildingIcon, path: `${basePath}/stock` },
-      { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`, allowedRoles: ["company"] },
+      // { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`, allowedRoles: ["company"] },
       { id: "menu-item", label: "Menu Item Management", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
       
       
