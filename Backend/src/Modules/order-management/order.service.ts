@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { OrderStatus, PaymentStatus, PurposeStatus } from 'generated/prisma'; // optional import if using enums from Prisma
@@ -187,6 +187,121 @@ export class OrderService {
     return order;
   }
 
+
+  async returnOrderItems(
+  orderId: string,
+  returnedItems: { orderItemId: string; quantity: number }[]
+) {
+  return await this.prisma.$transaction(async (tx) => {
+    const order = await tx.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: {
+          include: {
+            menuItem: {
+              include: {
+                stock: true,
+              },
+            },
+          },
+        },
+        employee: true,
+        company: true,
+      },
+    });
+
+    if (!order) throw new NotFoundException("Order not found");
+
+    let updatedTotalAmount = order.totalAmount;
+
+    for (const returned of returnedItems) {
+      const item = order.items.find((i) => i.id === returned.orderItemId);
+      if (!item) throw new NotFoundException(`Order item not found: ${returned.orderItemId}`);
+
+      if (returned.quantity <= 0)
+        throw new BadRequestException("Returned quantity must be greater than 0");
+
+      if (returned.quantity > item.quantity)
+        throw new BadRequestException("Returned quantity exceeds purchased quantity");
+
+      const newQuantity = item.quantity - returned.quantity;
+      const itemRefundValue = returned.quantity * item.unitPrice;
+
+      updatedTotalAmount -= itemRefundValue;
+
+      // --------- REMOVE OR UPDATE ITEM ----------
+      if (newQuantity === 0) {
+        await tx.orderItem.delete({ where: { id: item.id } });
+      } else {
+        await tx.orderItem.update({
+          where: { id: item.id },
+          data: {
+            quantity: newQuantity,
+            totalPrice: newQuantity * item.unitPrice,
+          },
+        });
+      }
+
+      // --------- RESTORE STOCK IF DRINKING ----------
+      if (item.menuItem.stockId && item.menuItem.purpose === "DRINKING") {
+        await tx.stock.update({
+          where: { id: item.menuItem.stockId },
+          data: {
+            quantity: { increment: returned.quantity },
+          },
+        });
+      }
+    }
+
+    // --------- UPDATE ORDER TOTAL ----------
+    const updatedOrder = await tx.order.update({
+      where: { id: orderId },
+      data: { totalAmount: updatedTotalAmount },
+      include: { items: true },
+    });
+
+    // ---------------------------------------------------------
+    // 🔔 SEND NOTIFICATIONS TO EMPLOYEE + COMPANY
+    // ---------------------------------------------------------
+
+    // Employee Notification
+    if (order.employeeId) {
+      await this.notificationService.createNotification({
+        title: "Items Returned",
+        message: `Some items from Order #${order.orderNumber} have been returned. Please review the changes.`,
+        recipients: [
+          { id: order.employeeId, type: "EMPLOYEE", read: false },
+        ],
+        senderId: order.companyId,
+        senderType: "COMPANY",
+        link: `/employee/dashboard/orders/${order.id}`,
+      });
+    }
+
+    // Company Notification (admins)
+    await this.notificationService.createNotification({
+      title: "Order Items Returned",
+      message: `Order #${order.orderNumber} had returned items. Total updated to ${updatedTotalAmount}.`,
+      recipients: [
+        { id: order.companyId, type: "COMPANY", read: false },
+      ],
+      senderId: order.employeeId ?? order.companyId,
+      senderType: order.employeeId ? "EMPLOYEE" : "COMPANY",
+      link: `/company/orders/${order.id}`,
+    });
+
+
+        const newOrder = await tx.order.findUnique({
+       where: { id: orderId },
+      include: { items: { include: { menuItem: true } }, client: true, company: true },
+    });
+
+
+    return newOrder;
+  });
+}
+
+
   // Update order status
 
 
@@ -208,6 +323,7 @@ export class OrderService {
         items: { include: { menuItem: { include: { stock: true } } } },
         client: true,
         company: true,
+          employee: true,
       },
     });
 
@@ -286,22 +402,78 @@ export class OrderService {
   /** ===============================
   * 🧩 Update Payment Status
   * =============================== */
-  async updatePaymentStatus(orderId: string, status: PaymentStatus) {
-    return this.prisma.order.update({
-      where: { id: orderId },
-      data: { paymentStatus: status },
-      include: {
-        items: { include: { menuItem: true } },
-        client: true,
-        company: true,
-      },
-    });
+async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string) {
+  // Find order with current debt information
+  const order = await this.prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: true },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  let newDebtedAmount: number | null = null;
+  let finalPaymentStatus = status;
+
+  if (status === 'DEBTED') {
+    const amountPaid = parseFloat(amount);
+    
+    if (isNaN(amountPaid) || amountPaid <= 0) {
+      throw new Error("Invalid payment amount");
+    }
+
+    // Check if there's an existing debt
+    if (order.debtedAmount && order.debtedAmount > 0) {
+      // Existing debt scenario - customer is paying towards debt
+      newDebtedAmount = order.debtedAmount - amountPaid;
+
+      if (amountPaid > order.debtedAmount) {
+        throw new Error(`Payment amount (${amountPaid}) cannot exceed remaining debt (${order.debtedAmount})`);
+      }
+
+      // CRITICAL FIX: If debt is fully paid, mark as SUCCESSFUL
+      if (newDebtedAmount <= 0) {
+        newDebtedAmount = null;
+        finalPaymentStatus = 'SUCCESSFUL';
+      }
+    } else {
+      // New debt scenario - first time marking as debted
+      newDebtedAmount = order.totalAmount - amountPaid;
+
+      if (amountPaid >= order.totalAmount) {
+        throw new Error("Amount paid exceeds or equals order total. Use 'SUCCESSFUL' status instead.");
+      }
+
+      // CRITICAL FIX: If debt is fully paid immediately, mark as SUCCESSFUL
+      if (newDebtedAmount <= 0) {
+        newDebtedAmount = null;
+        finalPaymentStatus = 'SUCCESSFUL';
+      }
+    }
+  } else {
+    // For SUCCESSFUL, FAILED, or PENDING - clear debt
+    newDebtedAmount = null;
   }
+
+  // Update order with new payment status and debt amount
+  return this.prisma.order.update({
+    where: { id: orderId },
+    data: {
+      paymentStatus: finalPaymentStatus,
+      debtedAmount: newDebtedAmount,
+    },
+    include: {
+      items: { include: { menuItem: true } },
+      client: true,
+      company: true,
+      employee: true,
+    },
+  });
+}
   // Get order by ID
   async getOrder(orderId: string) {
     return this.prisma.order.findUnique({
       where: { id: orderId },
-      include: { items: { include: { menuItem: true } }, client: true, company: true },
+      include: { items: { include: { menuItem: true } }, client: true, company: true,employee:true },
     });
   }
 
@@ -345,7 +517,7 @@ export class OrderService {
   async getOrdersByEmployeeId(employeeId: string) {
     return this.prisma.order.findMany({
       where: { employeeId },
-      include: { items: { include: { menuItem: true } }, client: true, company: true },
+      include: { items: { include: { menuItem: true } }, client: true, company: true,employee:true },
       orderBy: { createdAt: 'desc' },
     });
   }

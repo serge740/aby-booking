@@ -33,10 +33,11 @@ class OrderService {
 
   async updatePaymentStatus(
   orderId: string,
-  status: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED'
+  status: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED',
+  amount?:string | null | number,
 ) {
   try {
-    const response = await api.patch(`/orders/${orderId}/payment-status`, { status });
+    const response = await api.patch(`/orders/${orderId}/payment-status`, { status,amount });
     console.log('Payment status updated:', response.data);
     return response.data;
   } catch (error: any) {
@@ -64,6 +65,23 @@ class OrderService {
       return response.data;
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Failed to fetch orders';
+      throw new Error(msg);
+    }
+  }
+
+   // 🔵 NEW: Return order items
+  async returnOrderItems(
+    orderId: string,
+    returnedItems: { orderItemId: string; quantity: number }[]
+  ) {
+    try {
+      const response = await api.post(`/orders/${orderId}/return-items`, {
+        returnedItems,
+      });
+
+      return response.data;
+    } catch (error: any) {
+      const msg = error.response?.data?.message || 'Failed to return order items';
       throw new Error(msg);
     }
   }
@@ -117,4 +135,5 @@ export const {
   getOrderById,
   getAllOrders,
   getOrdersByClient,
+  returnOrderItems,
 } = orderService;

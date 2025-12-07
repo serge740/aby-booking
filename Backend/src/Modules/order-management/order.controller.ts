@@ -84,9 +84,10 @@ export class OrderController {
   @Patch(':id/payment-status')
   async updatePaymentStatus(
     @Param('id') id: string,
-    @Body('status') status: PaymentStatus
+    @Body('status') status: PaymentStatus,
+    @Body('amount') amount:string,
   ) {
-    const updated = await this.orderService.updatePaymentStatus(id, status);
+    const updated = await this.orderService.updatePaymentStatus(id, status,amount);
 
     // 🔥 Emit event to company
     this.ordersGateway.server
@@ -102,6 +103,42 @@ export class OrderController {
 
     return updated;
   }
+
+  // -------------------------------
+// Return order items
+// -------------------------------
+@Post(':id/return-items')
+async returnItems(
+  @Param('id') orderId: string,
+  @Body()
+  body: {
+    returnedItems: { orderItemId: string; quantity: number }[];
+  },
+) {
+  const updated = await this.orderService.returnOrderItems(orderId, body.returnedItems);
+
+  // 🔥 Emit to company
+  this.ordersGateway.server
+    .to(`company_${updated!.companyId}`)
+    .emit('order_items_returned', updated);
+
+  // 🔥 Emit to employee who made the order
+  if (updated!.employeeId) {
+    this.ordersGateway.server
+      .to(`employee_${updated!.employeeId}`)
+      .emit('order_items_returned', updated);
+  }
+
+  // 🔥 Emit to client if exists
+  if (updated!.clientId) {
+    this.ordersGateway.server
+      .to(`client_${updated!.clientId}`)
+      .emit('order_items_returned', updated);
+  }
+
+  return updated;
+}
+
 
   // -------------------------------
   // Get order by ID

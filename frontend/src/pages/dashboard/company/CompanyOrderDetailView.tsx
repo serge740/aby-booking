@@ -4,11 +4,24 @@ import {
   Package, User, Mail, Phone, Calendar, FileText,
   CheckCircle, XCircle, Clock, AlertCircle, Hash,
   Download, ShoppingCart, Percent, PlayCircle, X, Check,
-  RefreshCw, Receipt, CreditCard, AlertTriangle
+  RefreshCw, Receipt, CreditCard, AlertTriangle, UserCircle, Briefcase
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import orderService from '../../../services/orderService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
+import ReturnItemsModal, { ReturnItemsButton } from '../../../components/dashboard/order/ReturnItemsModal';
+import DebtedAmountModal, { DebtedButton } from '../../../components/dashboard/order/DebtedAmountModal';
+import { API_URL } from '../../../api/api';
+
+interface Employee {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  position: string;
+  profile_picture?: string;
+}
 
 interface OrderItem {
   id: string;
@@ -32,14 +45,17 @@ interface OrderItem {
 interface Order {
   id: string;
   orderNumber: string;
-  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED';
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED' | 'READY';
   paymentStatus: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED';
   totalAmount: number;
+  debtedAmount?: number;
   notes?: string;
   clientName: string;
   clientPhone?: string;
   clientEmail?: string;
   companyId: string;
+  employeeId?: string;
+  employee?: Employee;
   items: OrderItem[];
   createdAt: string;
   updatedAt: string;
@@ -77,7 +93,10 @@ export default function CompanyOrderDetailView() {
   const [operationStatus, setOperationStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [showFoodReceipt, setShowFoodReceipt] = useState(false);
   const [showDrinkReceipt, setShowDrinkReceipt] = useState(false);
-  const [showCombinedReceipt, setShowCombinedReceipt] = useState(false); // NEW
+  const [showCombinedReceipt, setShowCombinedReceipt] = useState(false);
+
+  const [showReturnModal, setShowReturnModal] = useState(false);
+  const [showDebtedModal, setShowDebtedModal] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !company)) {
@@ -113,7 +132,7 @@ export default function CompanyOrderDetailView() {
     setTimeout(() => setOperationStatus(null), 4000);
   };
 
-  const updateOrderStatus = async (newStatus: 'PROCESSING' | 'CANCELLED' | 'COMPLETED') => {
+  const updateOrderStatus = async (newStatus: 'PROCESSING' | 'CANCELLED' | 'COMPLETED' | 'READY') => {
     if (!order || updatingStatus) return;
     setUpdatingStatus(true);
     try {
@@ -146,6 +165,7 @@ export default function CompanyOrderDetailView() {
       case 'COMPLETED': return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, message: 'Order completed!', bg: 'bg-green-50' };
       case 'PROCESSING': return { color: 'bg-primary-100 text-primary-800', icon: <PlayCircle className="w-5 h-5" />, message: 'Order is being prepared', bg: 'bg-primary-50' };
       case 'PENDING': return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, message: 'Order received', bg: 'bg-yellow-50' };
+      case 'READY': return { color: 'bg-blue-100 text-blue-800', icon: <Package className="w-5 h-5" />, message: 'Order Ready', bg: 'bg-blue-50' };
       case 'CANCELLED': return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, message: 'Order cancelled', bg: 'bg-red-50' };
       default: return { color: 'bg-gray-100 text-gray-800', icon: <Package className="w-5 h-5" />, message: 'Unknown', bg: 'bg-gray-50' };
     }
@@ -164,6 +184,38 @@ export default function CompanyOrderDetailView() {
         return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, label: 'Payment Pending', bg: 'bg-yellow-50' };
     }
   };
+
+  const handleReturnSuccess = (order: Order) => {
+    if (!order) return null;
+    setOrder(order);
+  };
+const handleDebtedConfirm = async (amountPaid: number) => {
+  setUpdatingPayment(true);
+  try {
+    const updated = await orderService.updatePaymentStatus(
+      order!.id, 
+      'DEBTED', 
+      amountPaid.toString()  // Backend expects string
+    );
+    
+    setOrder(updated);
+    
+    // Check if debt is fully paid (backend should have changed status to SUCCESSFUL)
+    if (updated.paymentStatus === 'SUCCESSFUL' && !updated.debtedAmount) {
+      showToast('success', 'Debt fully paid! Order marked as SUCCESSFUL ✓');
+    } else if (updated.debtedAmount) {
+      showToast('success', `Payment recorded! Remaining debt: ${formatRWF(updated.debtedAmount)}`);
+    } else {
+      showToast('success', 'Payment status updated successfully!');
+    }
+    
+    setShowDebtedModal(false);
+  } catch (err: any) {
+    showToast('error', err.message || 'Failed to update payment status');
+  } finally {
+    setUpdatingPayment(false);
+  }
+};
 
   const handleDownloadPDF = async () => {
     if (!order) return;
@@ -297,7 +349,7 @@ export default function CompanyOrderDetailView() {
               <div className="mt-3 text-sm">
                 <p><span className="font-semibold">Order #:</span> {order.orderNumber}</p>
                 <p><span className="font-semibold">Date:</span> {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
-                <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
               </div>
             </div>
             <div className="mb-6 pb-4 border-b border-dashed border-gray-400">
@@ -332,7 +384,7 @@ export default function CompanyOrderDetailView() {
                           </div>
                         )}
                         {item.menuItem.description && !showServing && (
-                          <div className="text-xs text-gray-500" dangerouslySetInnerHTML={{__html: item.menuItem.description}}></div>
+                          <div className="text-xs text-gray-500" dangerouslySetInnerHTML={{ __html: item.menuItem.description }}></div>
                         )}
                       </td>
                       <td className="text-center py-2">{item.quantity}</td>
@@ -365,9 +417,13 @@ export default function CompanyOrderDetailView() {
     );
   };
 
-  // NEW: Combined Client Receipt Modal
   const CombinedReceiptModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     if (!isOpen || !order) return null;
+
+    const foodItems = order.items.filter(item => item.menuItem.purpose === 'EATING');
+    const drinkItems = order.items.filter(item => item.menuItem.purpose === 'DRINKING');
+    const foodTotal = foodItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const drinkTotal = drinkItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -389,12 +445,11 @@ export default function CompanyOrderDetailView() {
               <div className="mt-4 text-sm space-y-1">
                 <p><span className="font-semibold">Order #:</span> {order.orderNumber}</p>
                 <p><span className="font-semibold">Date:</span> {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
-                <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                <p><span className="font-semibold">Time:</span> {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                 <p><span className="font-semibold">Customer:</span> {order.clientName}</p>
               </div>
             </div>
 
-            {/* FOOD SECTION */}
             {foodItems.length > 0 && (
               <div className="mb-6">
                 <h4 className="font-bold text-lg mb-3 text-orange-600 border-b pb-1">FOOD</h4>
@@ -403,7 +458,7 @@ export default function CompanyOrderDetailView() {
                     <div>
                       <p className="font-medium">{item.note || item.menuItem.name}</p>
                       {item.menuItem.description && (
-                        <p className="text-xs text-gray-500" dangerouslySetInnerHTML={{__html: item.menuItem.description}}></p>
+                        <p className="text-xs text-gray-500" dangerouslySetInnerHTML={{ __html: item.menuItem.description }}></p>
                       )}
                     </div>
                     <div className="text-right">
@@ -418,7 +473,6 @@ export default function CompanyOrderDetailView() {
               </div>
             )}
 
-            {/* DRINKS SECTION */}
             {drinkItems.length > 0 && (
               <div className="mb-6">
                 <h4 className="font-bold text-lg mb-3 text-blue-600 border-b pb-1">DRINKS</h4>
@@ -454,7 +508,6 @@ export default function CompanyOrderDetailView() {
               </div>
             )}
 
-            {/* FINAL TOTAL */}
             <div className="border-t-4 border-double border-gray-800 pt-4 mt-6">
               <div className="text-right">
                 <p className="text-2xl font-bold text-gray-900">GRAND TOTAL: {formatRWF(order.totalAmount)}</p>
@@ -514,357 +567,507 @@ export default function CompanyOrderDetailView() {
   const foodTotal = foodItems.reduce((sum, item) => sum + item.totalPrice, 0);
   const drinkTotal = drinkItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
+  // CHANGED: Calculate paid amount when debted
+  const paidAmount = order.paymentStatus === 'DEBTED' && order.debtedAmount 
+    ? order.totalAmount - order.debtedAmount 
+    : 0;
+
   return (
     <>
-      <div className="min-h-screen bg-gray-50 p-6 text-sm">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Status Banner */}
-          <div className={`${status.bg} rounded-lg p-6 border-2 ${status.color.split(' ')[2]}`}>
-            <div className="flex items-center justify-between">
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className=" mx-auto space-y-6">
+          {/* Status Banner - IMPROVED */}
+          <div className={`${status.bg} rounded-xl p-6 border-2 border-${status.color.split(' ')[0].replace('bg-', '')}-200 shadow-sm`}>
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-full ${status.color}`}>
+                <div className={`p-4 rounded-xl ${status.color} shadow-sm`}>
                   {status.icon}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">{status.message}</h1>
-                  <p className="text-gray-600 mt-1">Placed on {formatDate(order.createdAt)}</p>
+                  <h1 className="text-3xl font-bold text-gray-900">{status.message}</h1>
+                  <p className="text-gray-600 mt-1 text-base">Order #{order.orderNumber}</p>
+                  <p className="text-gray-500 text-sm mt-1">Placed on {formatDate(order.createdAt)}</p>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleDownloadPDF}
-                  disabled={generatingPDF}
-                  className="p-2 bg-white rounded-lg hover:bg-gray-50 border border-gray-200 disabled:opacity-50"
-                  title="Download Full Receipt"
-                >
-                  {generatingPDF ? (
-                    <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-                  ) : (
-                    <Download className="w-5 h-5 text-gray-700" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Payment Status Section */}
-          {order.status !== 'PENDING' && (
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
-                  Payment Status
-                </h3>
-                <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${paymentStatus.color}`}>
-                  {paymentStatus.icon}
-                  <span className="font-semibold">{paymentStatus.label}</span>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-3 mt-4">
-                {order.paymentStatus !== 'SUCCESSFUL' && (
-                  <button
-                    onClick={() => updatePaymentStatus('SUCCESSFUL')}
-                    disabled={updatingPayment}
-                    className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition"
-                  >
-                    {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
-                    Mark as Paid
-                  </button>
-                )}
-                {order.paymentStatus === 'PENDING' && (
+              <button
+                onClick={handleDownloadPDF}
+                disabled={generatingPDF}
+                className="flex items-center gap-2 px-5 py-3 bg-white rounded-lg hover:bg-gray-50 border-2 border-gray-300 disabled:opacity-50 transition shadow-sm font-medium"
+                title="Download Full Receipt"
+              >
+                {generatingPDF ? (
                   <>
-                    <button
-                      onClick={() => updatePaymentStatus('FAILED')}
-                      disabled={updatingPayment}
-                      className="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition"
-                    >
-                      {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
-                      Mark as Failed
-                    </button>
-                    <button
-                      onClick={() => updatePaymentStatus('DEBTED')}
-                      disabled={updatingPayment}
-                      className="flex items-center gap-2 px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 transition"
-                    >
-                      {updatingPayment ? <RefreshCw className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
-                      Mark as Credit (Debted)
-                    </button>
+                    <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5 text-gray-700" />
+                    <span>Download PDF</span>
                   </>
                 )}
-              </div>
-            </div>
-          )}
-
-          {/* Receipt Buttons */}
-          {order.status !== 'PENDING' && (
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">View Receipts by Category</h3>
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setShowFoodReceipt(true)}
-                  disabled={foodItems.length === 0}
-                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                    foodItems.length === 0
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
-                  }`}
-                >
-                  <Receipt className="w-5 h-5" />
-                  Food Receipt ({foodItems.length} items)
-                </button>
-                <button
-                  onClick={() => setShowDrinkReceipt(true)}
-                  disabled={drinkItems.length === 0}
-                  className={`py-3 px-6 rounded-lg font-semibold transition flex items-center gap-2 ${
-                    drinkItems.length === 0
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg'
-                  }`}
-                >
-                  <Receipt className="w-5 h-5" />
-                  Drinks Receipt ({drinkItems.length} items)
-                </button>
-                <button
-                  onClick={() => setShowCombinedReceipt(true)}
-                  className="py-4 px-6 bg-gradient-to-r from-orange-600 to-blue-600 text-white rounded-lg font-bold hover:from-orange-700 hover:to-blue-700 shadow-lg transition flex items-center justify-center gap-3"
-                >
-                  <Receipt className="w-6 h-6" />
-                  Combined Receipt
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Update Order Status</h3>
-            <div className="flex flex-wrap gap-3">
-              {order.status === 'PENDING' && (
-                <>
-                  <button
-                    onClick={() => updateOrderStatus('PROCESSING')}
-                    disabled={updatingStatus}
-                    className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
-                  >
-                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
-                    <span>Approve & Start Processing</span>
-                  </button>
-                  <button
-                    onClick={() => updateOrderStatus('CANCELLED')}
-                    disabled={updatingStatus}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
-                  >
-                    {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
-                    <span>Cancel Order</span>
-                  </button>
-                </>
-              )}
-              {order.status === 'PROCESSING' && (
-                <button
-                  onClick={() => updateOrderStatus('COMPLETED')}
-                  disabled={updatingStatus || order.paymentStatus !== 'SUCCESSFUL'}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 disabled:bg-amber-600/50 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
-                >
-                  {updatingStatus ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                  <span>Mark as Completed</span>
-                </button>
-              )}
-              {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
-                <div className="flex items-center text-gray-500 text-sm">
-                  <AlertCircle className="w-4 h-4 mr-1" />
-                  <span>No further actions available</span>
-                </div>
-              )}
+              </button>
             </div>
           </div>
 
-          {/* Order Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Order #{order.orderNumber}</h1>
-                <p className="text-gray-500">ID: {order.id}</p>
-              </div>
-              <div className={`px-4 py-2 rounded-full border flex items-center gap-2 ${status.color}`}>
-                {status.icon}
-                <span className="font-semibold">{order.status}</span>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Order Date</p>
-                  <p className="font-medium">{formatDate(order.createdAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Last Updated</p>
-                  <p className="font-medium">{formatDate(order.updatedAt)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <ShoppingCart className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Total Amount</p>
-                  <p className="font-medium text-lg">{formatRWF(order.totalAmount)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Main Info */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* CHANGED: Enhanced Payment Status with Debted Amount */}
+              {order.status !== 'PENDING' && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                      <CreditCard className="w-6 h-6 text-orange-600" />
+                      Payment Information
+                    </h3>
+                    <div className={`px-5 py-2.5 rounded-full border-2 flex items-center gap-2 ${paymentStatus.color} shadow-sm`}>
+                      {paymentStatus.icon}
+                      <span className="font-bold text-base">{paymentStatus.label}</span>
+                    </div>
+                  </div>
 
-          {/* Client Info */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Customer Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="flex items-center gap-3">
-                <User className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Name</p>
-                  <p className="font-medium">{order.clientName}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Phone</p>
-                  <p className="font-medium">{order.clientPhone || '—'}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="text-xs text-gray-500">Email</p>
-                  <p className="font-medium">{order.clientEmail || '—'}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Notes */}
-          {order.notes && (
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Customer Notes
-              </h2>
-              <p className="text-gray-700 italic">"{order.notes}"</p>
-            </div>
-          )}
-
-          {/* Order Items Table - ONLY THIS PART UPDATED */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <Package className="w-5 h-5" />
-                Order Items ({order.items.length})
-              </h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Qty</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Unit Price</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Discount</th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {order.items.map((item) => {
-                    const isCustomServed = !!item.typeShots;
-                    const displayName = item.note || item.menuItem.name;
-                    const discount = item.menuItem.discount || 0;
-                    const original = item.menuItem.sellingPrice;
-                    const discounted = item.unitPrice;
-                    const subtotal = item.totalPrice;
-
-                    return (
-                      <tr key={item.id} className="hover:bg-gray-25">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            {item.menuItem.image ? (
-                              <img src={item.menuItem.image} alt={item.menuItem.name} className="w-12 h-12 rounded-lg object-cover" />
-                            ) : (
-                              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <Package className="w-6 h-6 text-gray-400" />
+                  {/* CHANGED: Payment Summary with Debted Details */}
+                  <div className="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-200">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-600 mb-1">Total Amount</p>
+                        <p className="text-2xl font-bold text-gray-900">{formatRWF(order.totalAmount)}</p>
+                      </div>
+                      {order.paymentStatus === 'DEBTED' && order.debtedAmount && (
+                        <>
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">Amount Paid</p>
+                            <p className="text-2xl font-bold text-green-600">{formatRWF(paidAmount)}</p>
+                          </div>
+                          <div className="col-span-2">
+                            <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4">
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertTriangle className="w-5 h-5 text-orange-600" />
+                                <p className="font-bold text-orange-900">Outstanding Debt</p>
                               </div>
-                            )}
-                            <div>
-                              <p className="font-medium text-gray-900">{displayName}</p>
-                              {isCustomServed && (
-                                <div className="flex items-center gap-2 mt-1">
-                                  {item.typeDrink === 'WINE' ? (
-                                    <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2 py-0.5 rounded">WINE</span>
-                                  ) : item.typeDrink === 'LIQUOR' ? (
-                                    <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">LIQUOR</span>
-                                  ) : null}
-                                  {item.typeShots && (
-                                    <span className="text-xs text-gray-600">• {item.typeShots}</span>
-                                  )}
-                                </div>
-                              )}
+                              <p className="text-3xl font-bold text-orange-600">{formatRWF(order.debtedAmount)}</p>
+                              <p className="text-sm text-orange-700 mt-1">Customer needs to pay this amount to complete the order</p>
                             </div>
                           </div>
-                        </td>
-                        <td className="px-6 py-4 text-right font-medium">{item.quantity}</td>
-                        <td className="px-6 py-4 text-right">
-                          {isCustomServed ? (
-                            <span className="text-gray-400">–</span>
-                          ) : discount > 0 ? (
-                            <div>
-                              <p className="text-sm font-medium text-orange-600">{formatRWF(discounted)}</p>
-                              <p className="text-xs text-gray-500 line-through">{formatRWF(original)}</p>
-                            </div>
-                          ) : (
-                            <p className="font-medium">{formatRWF(discounted)}</p>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          {discount > 0 ? (
-                            <div className="flex items-center justify-end gap-1">
-                              <Percent className="w-3 h-3 text-orange-600" />
-                              <span className="text-sm font-medium text-orange-600">{discount}%</span>
-                            </div>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 text-right font-semibold text-gray-900">
-                          {formatRWF(subtotal)}
+                          
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+                    {order.paymentStatus !== 'SUCCESSFUL' && order.paymentStatus != 'DEBTED' && !order.debtedAmount && (
+                      <button
+                        onClick={() => updatePaymentStatus('SUCCESSFUL')}
+                        disabled={updatingPayment}
+                        className="flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
+                      >
+                        {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+                        Mark as Paid
+                      </button>
+                    )}
+
+                    {order.paymentStatus === 'DEBTED' && order.debtedAmount &&
+                    
+                     <DebtedButton value={'Finish Debt'} onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />}
+
+                    {order.paymentStatus === 'PENDING' && (
+                      <>
+                        <button
+                          onClick={() => updatePaymentStatus('FAILED')}
+                          disabled={updatingPayment}
+                          className="flex items-center gap-2 px-5 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
+                        >
+                          {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <XCircle className="w-5 h-5" />}
+                          Mark as Failed
+                        </button>
+                        <DebtedButton onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Receipt Buttons - IMPROVED */}
+              {order.status !== 'PENDING' && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <Receipt className="w-6 h-6 text-orange-600" />
+                    Print Receipts
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button
+                      onClick={() => setShowFoodReceipt(true)}
+                      disabled={foodItems.length === 0}
+                      className={`py-4 px-4 rounded-lg font-semibold transition flex flex-col items-center justify-center gap-2 ${foodItems.length === 0
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md hover:shadow-lg'
+                        }`}
+                    >
+                      <Receipt className="w-6 h-6" />
+                      <div className="text-center">
+                        <div className="font-bold">Food Receipt</div>
+                        <div className="text-xs opacity-90">{foodItems.length} items</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setShowDrinkReceipt(true)}
+                      disabled={drinkItems.length === 0}
+                      className={`py-4 px-4 rounded-lg font-semibold transition flex flex-col items-center justify-center gap-2 ${drinkItems.length === 0
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                        }`}
+                    >
+                      <Receipt className="w-6 h-6" />
+                      <div className="text-center">
+                        <div className="font-bold">Drinks Receipt</div>
+                        <div className="text-xs opacity-90">{drinkItems.length} items</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setShowCombinedReceipt(true)}
+                      className="py-4 px-4 bg-gradient-to-r from-orange-600 to-blue-600 text-white rounded-lg font-bold hover:from-orange-700 hover:to-blue-700 shadow-lg transition flex flex-col items-center justify-center gap-2"
+                    >
+                      <Receipt className="w-6 h-6" />
+                      <div className="text-center">
+                        <div className="font-bold">Combined</div>
+                        <div className="text-xs opacity-90">Full receipt</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Order Status Actions - IMPROVED */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <PlayCircle className="w-6 h-6 text-orange-600" />
+                  Order Actions
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {order.status === 'PENDING' && (
+                    <>
+                      <button
+                        onClick={() => updateOrderStatus('PROCESSING')}
+                        disabled={updatingStatus}
+                        className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
+                      >
+                        {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
+                        Start Processing
+                      </button>
+                      <button
+                        onClick={() => updateOrderStatus('CANCELLED')}
+                        disabled={updatingStatus}
+                        className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
+                      >
+                        {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
+                        Cancel Order
+                      </button>
+                    </>
+                  )}
+                  {order.status === 'PROCESSING' && (
+                    <button
+                      onClick={() => updateOrderStatus('READY')}
+                      disabled={updatingStatus}
+                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
+                    >
+                      {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
+                      Mark as Ready
+                    </button>
+                  )}
+                  {order.status === 'READY' && (
+                    <button
+                      onClick={() => updateOrderStatus('COMPLETED')}
+                      disabled={updatingStatus || order.paymentStatus !== 'SUCCESSFUL'}
+                      className="flex items-center gap-2 px-6 py-3 bg-green-600 disabled:bg-gray-400 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
+                    >
+                      {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+                      Mark as Completed
+                      {order.paymentStatus !== 'SUCCESSFUL' && (
+                        <span className="ml-2 text-xs">(Payment required)</span>
+                      )}
+                    </button>
+                  )}
+                  {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
+                    <div className="flex items-center text-gray-500 px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <AlertCircle className="w-5 h-5 mr-2" />
+                      <span className="font-medium">No further actions available</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Order Items - IMPROVED */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <Package className="w-6 h-6 text-orange-600" />
+                    Order Items ({order.items.length})
+                  </h2>
+                  <ReturnItemsButton onClick={() => setShowReturnModal(true)} />
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Item</th>
+                        <th className="px-6 py-4 text-right text-sm font-bold text-gray-700 uppercase">Qty</th>
+                        <th className="px-6 py-4 text-right text-sm font-bold text-gray-700 uppercase">Unit Price</th>
+                        <th className="px-6 py-4 text-right text-sm font-bold text-gray-700 uppercase">Discount</th>
+                        <th className="px-6 py-4 text-right text-sm font-bold text-gray-700 uppercase">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {order.items.map((item) => {
+                        const isCustomServed = !!item.typeShots;
+                        const displayName = item.note || item.menuItem.name;
+                        const discount = item.menuItem.discount || 0;
+                        const original = item.menuItem.sellingPrice;
+                        const discounted = item.unitPrice;
+                        const subtotal = item.totalPrice;
+
+                        return (
+                          <tr key={item.id} className="hover:bg-gray-50 transition">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-4">
+                                {item.menuItem.image ? (
+                                  <img src={item.menuItem.image} alt={item.menuItem.name} className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200" />
+                                ) : (
+                                  <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center border-2 border-gray-200">
+                                    <Package className="w-8 h-8 text-gray-400" />
+                                  </div>
+                                )}
+                                <div>
+                                  <p className="font-semibold text-gray-900 text-base">{displayName}</p>
+                                  {isCustomServed && (
+                                    <div className="flex items-center gap-2 mt-1.5">
+                                      {item.typeDrink === 'WINE' ? (
+                                        <span className="text-xs font-bold bg-purple-100 text-purple-700 px-2.5 py-1 rounded-md">WINE</span>
+                                      ) : item.typeDrink === 'LIQUOR' ? (
+                                        <span className="text-xs font-bold bg-blue-100 text-blue-700 px-2.5 py-1 rounded-md">LIQUOR</span>
+                                      ) : null}
+                                      {item.typeShots && (
+                                        <span className="text-sm text-gray-600 font-medium">• {item.typeShots}</span>
+                                      )}
+                                    </div>
+                                  )}
+                                  {item.menuItem.description && !isCustomServed && (
+                                    <p className="text-sm text-gray-500 mt-1" dangerouslySetInnerHTML={{ __html: item.menuItem.description.substring(0, 60) + '...' }}></p>
+                                  )}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <span className="inline-flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg font-bold text-gray-900">{item.quantity}</span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              {isCustomServed ? (
+                                <span className="text-gray-400 font-medium">Custom</span>
+                              ) : discount > 0 ? (
+                                <div>
+                                  <p className="text-base font-bold text-orange-600">{formatRWF(discounted)}</p>
+                                  <p className="text-sm text-gray-500 line-through">{formatRWF(original)}</p>
+                                </div>
+                              ) : (
+                                <p className="font-bold text-gray-900">{formatRWF(discounted)}</p>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              {discount > 0 ? (
+                                <div className="inline-flex items-center gap-1 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-200">
+                                  <Percent className="w-4 h-4 text-orange-600" />
+                                  <span className="text-sm font-bold text-orange-600">{discount}%</span>
+                                </div>
+                              ) : (
+                                <span className="text-gray-400">—</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <p className="text-lg font-bold text-gray-900">{formatRWF(subtotal)}</p>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    <tfoot className="bg-gradient-to-r from-orange-50 to-blue-50">
+                      <tr>
+                        <td colSpan={4} className="px-6 py-5 text-right text-xl font-bold text-gray-900">TOTAL</td>
+                        <td className="px-6 py-5 text-right">
+                          <p className="text-2xl font-bold text-gray-900">{formatRWF(order.totalAmount)}</p>
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-                <tfoot className="bg-gray-50 font-bold">
-                  <tr>
-                    <td colSpan={4} className="px-6 py-4 text-right text-gray-900">TOTAL</td>
-                    <td className="px-6 py-4 text-right text-lg text-gray-900">
-                      {formatRWF(order.totalAmount)}
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Sidebar Info */}
+            <div className="space-y-6">
+              {/* CHANGED: Employee Information Card */}
+              {order.employee && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <UserCircle className="w-5 h-5 text-orange-600" />
+                    Created By
+                  </h3>
+                  <div className="flex items-center gap-4">
+                    {order.employee.profile_picture ? (
+                      <img
+                        src={`${API_URL}${order.employee.profile_picture}`}
+                        alt={`${order.employee.first_name} ${order.employee.last_name}`}
+                        className="w-16 h-16 rounded-full object-cover border-2 border-orange-200"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-blue-100 flex items-center justify-center border-2 border-orange-200">
+                        <UserCircle className="w-10 h-10 text-orange-600" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <p className="font-bold text-gray-900 text-base">
+                        {order.employee.first_name} {order.employee.last_name}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
+                        <Briefcase className="w-3.5 h-3.5" />
+                        <span>{order.employee.position}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
+                        <Mail className="w-3.5 h-3.5" />
+                        <span className="truncate">{order.employee.email}</span>
+                      </div>
+                      {order.employee.phone && (
+                        <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>{order.employee.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Customer Information - IMPROVED */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-orange-600" />
+                  Customer Information
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-gray-100 rounded-lg">
+                      <User className="w-5 h-5 text-gray-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Name</p>
+                      <p className="font-semibold text-gray-900 text-base">{order.clientName}</p>
+                    </div>
+                  </div>
+                  {order.clientPhone && (
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-gray-100 rounded-lg">
+                        <Phone className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600">Phone</p>
+                        <p className="font-semibold text-gray-900 text-base">{order.clientPhone}</p>
+                      </div>
+                    </div>
+                  )}
+                  {order.clientEmail && (
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-gray-100 rounded-lg">
+                        <Mail className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600">Email</p>
+                        <p className="font-semibold text-gray-900 text-base break-all">{order.clientEmail}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Order Timeline - IMPROVED */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-orange-600" />
+                  Timeline
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Calendar className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Created</p>
+                      <p className="font-semibold text-gray-900">{formatDate(order.createdAt)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-orange-100 rounded-lg">
+                      <Clock className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-600">Last Updated</p>
+                      <p className="font-semibold text-gray-900">{formatDate(order.updatedAt)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Notes - IMPROVED */}
+              {order.notes && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-orange-600" />
+                    Customer Notes
+                  </h3>
+                  <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
+                    <p className="text-gray-800 italic leading-relaxed">"{order.notes}"</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Order Summary - IMPROVED */}
+              <div className="bg-gradient-to-br from-orange-50 to-blue-50 rounded-xl shadow-sm p-6 border-2 border-orange-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5 text-orange-600" />
+                  Order Summary
+                </h3>
+                <div className="space-y-3">
+                  {foodItems.length > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-700 font-medium">Food Items ({foodItems.length})</span>
+                      <span className="font-bold text-orange-600">{formatRWF(foodTotal)}</span>
+                    </div>
+                  )}
+                  {drinkItems.length > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-700 font-medium">Drink Items ({drinkItems.length})</span>
+                      <span className="font-bold text-blue-600">{formatRWF(drinkTotal)}</span>
+                    </div>
+                  )}
+                  <div className="border-t-2 border-gray-300 pt-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-bold text-gray-900">Grand Total</span>
+                      <span className="text-2xl font-bold text-gray-900">{formatRWF(order.totalAmount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Toast */}
+          {/* Toast - IMPROVED */}
           {operationStatus && (
-            <div className="fixed top-4 right-4 z-50">
-              <div className={`flex items-center space-x-2 px-3 py-2 rounded shadow-lg text-sm ${
-                operationStatus.type === 'success' ? 'bg-green-50 border border-green-200 text-green-800' :
-                operationStatus.type === 'error' ? 'bg-red-50 border border-red-200 text-red-800' :
-                'bg-primary-50 border border-primary-200 text-primary-800'
-              }`}>
-                <AlertCircle className="w-4 h-4" />
-                <span className="font-medium">{operationStatus.message}</span>
+            <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-right">
+              <div className={`flex items-center gap-3 px-5 py-4 rounded-lg shadow-2xl border-2 ${operationStatus.type === 'success' ? 'bg-green-50 border-green-300 text-green-800' :
+                  operationStatus.type === 'error' ? 'bg-red-50 border-red-300 text-red-800' :
+                    'bg-blue-50 border-blue-300 text-blue-800'
+                }`}>
+                <AlertCircle className="w-6 h-6" />
+                <span className="font-semibold text-base">{operationStatus.message}</span>
               </div>
             </div>
           )}
@@ -873,8 +1076,20 @@ export default function CompanyOrderDetailView() {
 
       <ReceiptModal isOpen={showFoodReceipt} onClose={() => setShowFoodReceipt(false)} items={foodItems} type="food" total={foodTotal} />
       <ReceiptModal isOpen={showDrinkReceipt} onClose={() => setShowDrinkReceipt(false)} items={drinkItems} type="drinks" total={drinkTotal} />
-        <CombinedReceiptModal isOpen={showCombinedReceipt} onClose={() => setShowCombinedReceipt(false)} />
-
+      <CombinedReceiptModal isOpen={showCombinedReceipt} onClose={() => setShowCombinedReceipt(false)} />
+      <ReturnItemsModal
+        isOpen={showReturnModal}
+        onClose={() => setShowReturnModal(false)}
+        order={order}
+        onSuccess={handleReturnSuccess}
+      />
+      <DebtedAmountModal
+        isOpen={showDebtedModal}
+        onClose={() => setShowDebtedModal(false)}
+        order={order}
+        onConfirm={handleDebtedConfirm}
+        isLoading={updatingPayment}
+      />
     </>
   );
 }
