@@ -23,7 +23,7 @@ import {
 import jsPDF from 'jspdf';
 import orderService from "../../../services/orderService";
 import { useCompanyAuth } from "../../../context/CompanyAuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSocketEvent } from "../../../context/SocketContext";
 
 type ViewMode = "table" | "grid" | "list";
@@ -78,6 +78,7 @@ const formatRWF = (amount: number) => {
 
 const OrderDashboard: React.FC = () => {
   const { company, isAuthenticated, isLoading: authLoading } = useCompanyAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [allOrders, setAllOrders] = useState<Order[]>([]);
@@ -94,9 +95,15 @@ const OrderDashboard: React.FC = () => {
 
   // Receipt modals
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<'all' | 'MOMO' | 'CASH'>('all');
   const [showFoodReceipt, setShowFoodReceipt] = useState(false);
   const [showDrinkReceipt, setShowDrinkReceipt] = useState(false);
   const [showCombinedReceipt, setShowCombinedReceipt] = useState(false);
+
+  const [dateFilter, setDateFilter] = useState<'today' | 'week' | 'month' | 'year' | 'custom' | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<Order['status'] | 'all'>('all');
+const [customStartDate, setCustomStartDate] = useState<string>('');
+const [customEndDate, setCustomEndDate] = useState<string>('');
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !company)) {
@@ -104,6 +111,31 @@ const OrderDashboard: React.FC = () => {
     }
   }, [authLoading, isAuthenticated, company, navigate]);
 
+useEffect(() => {
+  const dateParam = searchParams.get('date') as typeof dateFilter | null;
+  const startParam = searchParams.get('start');
+  const endParam = searchParams.get('end');
+  const statusParam = searchParams.get('status') as Order['status'] | null;
+  const paymentParam = searchParams.get('payment') as 'MOMO' | 'CASH' | null;
+  
+  if (dateParam) setDateFilter(dateParam);
+  if (startParam) setCustomStartDate(startParam);
+  if (endParam) setCustomEndDate(endParam);
+  if (statusParam) setStatusFilter(statusParam);
+  if (paymentParam) setPaymentMethodFilter(paymentParam);
+}, []);
+
+useEffect(() => {
+  const params: any = {};
+  
+  if (dateFilter !== 'all') params.date = dateFilter;
+  if (dateFilter === 'custom' && customStartDate) params.start = customStartDate;
+  if (dateFilter === 'custom' && customEndDate) params.end = customEndDate;
+  if (statusFilter !== 'all') params.status = statusFilter;
+  if (paymentMethodFilter !== 'all') params.payment = paymentMethodFilter;
+  
+  setSearchParams(params, { replace: true });
+}, [dateFilter, customStartDate, customEndDate, statusFilter, paymentMethodFilter]);
   useSocketEvent('order_created', (newOrder: Order) => {
     if (newOrder.companyId === company?.id) {
       setAllOrders(prev => {
@@ -127,9 +159,10 @@ const OrderDashboard: React.FC = () => {
     if (company?.id) loadData();
   }, [company?.id]);
 
-  useEffect(() => {
-    handleFilterAndSort();
-  }, [searchTerm, sortBy, sortOrder, allOrders]);
+useEffect(() => {
+  handleFilterAndSort();
+}, [searchTerm, sortBy, sortOrder, allOrders, dateFilter, customStartDate, customEndDate, statusFilter, paymentMethodFilter]);
+
 
   const loadData = async () => {
     if (!company?.id) return;
@@ -155,36 +188,79 @@ const OrderDashboard: React.FC = () => {
     navigate('/company/dashboard/orders/create/' + company?.id);
   };
 
-  const handleFilterAndSort = () => {
-    let filtered = [...allOrders];
-    if (searchTerm.trim()) {
-      filtered = filtered.filter(order =>
-        order.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.clientEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.clientPhone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+const handleFilterAndSort = () => {
+  let filtered = getFilteredOrdersByDate([...allOrders]);
+  
+  // Add status filter
+  if (statusFilter !== 'all') {
+    filtered = filtered.filter(order => order.status === statusFilter);
+  }
+
+    // Payment method filter - Add this
+  if (paymentMethodFilter !== 'all') {
+    filtered = filtered.filter(order => order.paymentMethod === paymentMethodFilter);
+  }
+  
+  if (searchTerm.trim()) {
+    filtered = filtered.filter(order =>
+      order.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.clientEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.clientPhone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.orderNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  filtered.sort((a, b) => {
+    const aValue = a[sortBy];
+    const bValue = b[sortBy];
+    if (sortBy === "createdAt" || sortBy === "updatedAt") {
+      return sortOrder === "asc"
+        ? new Date(aValue).getTime() - new Date(bValue).getTime()
+        : new Date(bValue).getTime() - new Date(aValue).getTime();
     }
+    if (sortBy === "totalAmount") {
+      return sortOrder === "asc" ? (aValue as number) - (bValue as number) : (bValue as number) - (aValue as number);
+    }
+    const aStr = aValue?.toString().toLowerCase() || "";
+    const bStr = bValue?.toString().toLowerCase() || "";
+    return sortOrder === "asc" ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
+  });
 
-    filtered.sort((a, b) => {
-      const aValue = a[sortBy];
-      const bValue = b[sortBy];
-      if (sortBy === "createdAt" || sortBy === "updatedAt") {
-        return sortOrder === "asc"
-          ? new Date(aValue).getTime() - new Date(bValue).getTime()
-          : new Date(bValue).getTime() - new Date(aValue).getTime();
-      }
-      if (sortBy === "totalAmount") {
-        return sortOrder === "asc" ? (aValue as number) - (bValue as number) : (bValue as number) - (aValue as number);
-      }
-      const aStr = aValue?.toString().toLowerCase() || "";
-      const bStr = bValue?.toString().toLowerCase() || "";
-      return sortOrder === "asc" ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
-    });
+  setOrders(filtered);
+  setCurrentPage(1);
+};
 
-    setOrders(filtered);
-    setCurrentPage(1);
-  };
+  const getFilteredOrdersByDate = (orders: Order[]) => {
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  
+  switch (dateFilter) {
+    case 'today':
+      return orders.filter(o => new Date(o.createdAt) >= startOfToday);
+    case 'week':
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return orders.filter(o => new Date(o.createdAt) >= weekAgo);
+    case 'month':
+      const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      return orders.filter(o => new Date(o.createdAt) >= monthAgo);
+    case 'year':
+      const yearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+      return orders.filter(o => new Date(o.createdAt) >= yearAgo);
+    case 'custom':
+      if (customStartDate && customEndDate) {
+        const start = new Date(customStartDate);
+        const end = new Date(customEndDate);
+        end.setHours(23, 59, 59, 999);
+        return orders.filter(o => {
+          const orderDate = new Date(o.createdAt);
+          return orderDate >= start && orderDate <= end;
+        });
+      }
+      return orders;
+    default:
+      return orders;
+  }
+};
 
   const totalOrders = allOrders.length;
   const pendingOrders = allOrders.filter(o => o.status === "PENDING").length;
@@ -775,79 +851,209 @@ const OrderDashboard: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 space-y-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-orange-100 rounded-full"><ShoppingCart className="w-5 h-5 text-orange-600" /></div>
-                <div><p className="text-xs text-gray-600">Total</p><p className="text-lg font-semibold text-gray-900">{totalOrders}</p></div>
-              </div>
-            </div>
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-yellow-100 rounded-full"><Clock className="w-5 h-5 text-yellow-600" /></div>
-                <div><p className="text-xs text-gray-600">Pending</p><p className="text-lg font-semibold text-gray-900">{pendingOrders}</p></div>
-              </div>
-            </div>
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-primary-100 rounded-full"><FileText className="w-5 h-5 text-primary-600" /></div>
-                <div><p className="text-xs text-gray-600">Processing</p><p className="text-lg font-semibold text-gray-900">{processingOrders}</p></div>
-              </div>
-            </div>
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-green-100 rounded-full"><Check className="w-5 h-5 text-green-600" /></div>
-                <div><p className="text-xs text-gray-600">Completed</p><p className="text-lg font-semibold text-gray-900">{completedOrders}</p></div>
-              </div>
-            </div>
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-red-100 rounded-full"><AlertCircle className="w-5 h-5 text-red-600" /></div>
-                <div><p className="text-xs text-gray-600">Cancelled</p><p className="text-lg font-semibold text-gray-900">{cancelledOrders}</p></div>
-              </div>
-            </div>
-          </div>
+     <div className="grid grid-cols-2 sm:grid-cols-3  gap-3">
+  <div 
+    onClick={() => setStatusFilter('all')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'all' ? 'ring-2 ring-orange-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-orange-100 rounded-full"><ShoppingCart className="w-5 h-5 text-orange-600" /></div>
+      <div><p className="text-xs text-gray-600">Total</p><p className="text-lg font-semibold text-gray-900">{totalOrders}</p></div>
+    </div>
+  </div>
+  <div 
+    onClick={() => setStatusFilter('PENDING')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'PENDING' ? 'ring-2 ring-yellow-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-yellow-100 rounded-full"><Clock className="w-5 h-5 text-yellow-600" /></div>
+      <div><p className="text-xs text-gray-600">Pending</p><p className="text-lg font-semibold text-gray-900">{pendingOrders}</p></div>
+    </div>
+  </div>
+  <div 
+    onClick={() => setStatusFilter('PROCESSING')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'PROCESSING' ? 'ring-2 ring-primary-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-primary-100 rounded-full"><FileText className="w-5 h-5 text-primary-600" /></div>
+      <div><p className="text-xs text-gray-600">Processing</p><p className="text-lg font-semibold text-gray-900">{processingOrders}</p></div>
+    </div>
+  </div>
+  <div 
+    onClick={() => setStatusFilter('READY')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'READY' ? 'ring-2 ring-primary-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-primary-100 rounded-full"><FileText className="w-5 h-5 text-primary-600" /></div>
+      <div><p className="text-xs text-gray-600">Ready</p><p className="text-lg font-semibold text-gray-900">{processingOrders}</p></div>
+    </div>
+  </div>
+  <div 
+    onClick={() => setStatusFilter('COMPLETED')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'COMPLETED' ? 'ring-2 ring-green-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-green-100 rounded-full"><Check className="w-5 h-5 text-green-600" /></div>
+      <div><p className="text-xs text-gray-600">Completed</p><p className="text-lg font-semibold text-gray-900">{completedOrders}</p></div>
+    </div>
+  </div>
+  <div 
+    onClick={() => setStatusFilter('CANCELLED')}
+    className={`bg-white rounded shadow p-4 cursor-pointer transition-all hover:shadow-md ${statusFilter === 'CANCELLED' ? 'ring-2 ring-red-500' : ''}`}
+  >
+    <div className="flex items-center space-x-3">
+      <div className="p-3 bg-red-100 rounded-full"><AlertCircle className="w-5 h-5 text-red-600" /></div>
+      <div><p className="text-xs text-gray-600">Cancelled</p><p className="text-lg font-semibold text-gray-900">{cancelledOrders}</p></div>
+    </div>
+  </div>
+</div>
 
-          <div className="bg-white rounded border border-gray-200 p-3">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
-              <div className="flex items-center space-x-2">
-                <div className="relative">
-                  <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
-                  <input
-                    type="text"
-                    placeholder="Search by name, phone, order #..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-48 pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
-                  />
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <select
-                  value={`${sortBy}-${sortOrder}`}
-                  onChange={(e) => {
-                    const [field, order] = e.target.value.split("-") as [keyof Order, "asc" | "desc"];
-                    setSortBy(field);
-                    setSortOrder(order);
-                  }}
-                  className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
-                >
-                  <option value="createdAt-desc">Newest First</option>
-                  <option value="createdAt-asc">Oldest First</option>
-                  <option value="totalAmount-desc">Highest Amount</option>
-                  <option value="totalAmount-asc">Lowest Amount</option>
-                  <option value="status-asc">Status (A-Z)</option>
-                  <option value="status-desc">Status (Z-A)</option>
-                </select>
-                <div className="flex items-center border border-gray-200 rounded">
-                  <button onClick={() => setViewMode("table")} className={`p-1.5 ${viewMode === "table" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Table"><List className="w-3 h-3" /></button>
-                  <button onClick={() => setViewMode("grid")} className={`p-1.5 ${viewMode === "grid" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Grid"><Grid3X3 className="w-3 h-3" /></button>
-                  <button onClick={() => setViewMode("list")} className={`p-1.5 ${viewMode === "list" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="List"><Store className="w-3 h-3" /></button>
-                </div>
-              </div>
-            </div>
-          </div>
 
+<div className="bg-white rounded border border-gray-200 p-3">
+  <div className="flex flex-col space-y-3">
+    {/* First row: Search and Sort */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+      <div className="flex items-center space-x-2">
+        <div className="relative">
+          <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 transform -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search by name, phone, order #..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-48 pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-orange-500"
+          />
+        </div>
+      </div>
+      <div className="flex items-center space-x-2">
+        <select
+          value={`${sortBy}-${sortOrder}`}
+          onChange={(e) => {
+            const [field, order] = e.target.value.split("-") as [keyof Order, "asc" | "desc"];
+            setSortBy(field);
+            setSortOrder(order);
+          }}
+          className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
+        >
+          <option value="createdAt-desc">Newest First</option>
+          <option value="createdAt-asc">Oldest First</option>
+          <option value="totalAmount-desc">Highest Amount</option>
+          <option value="totalAmount-asc">Lowest Amount</option>
+          <option value="status-asc">Status (A-Z)</option>
+          <option value="status-desc">Status (Z-A)</option>
+        </select>
+        <div className="flex items-center border border-gray-200 rounded">
+          <button onClick={() => setViewMode("table")} className={`p-1.5 ${viewMode === "table" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Table"><List className="w-3 h-3" /></button>
+          <button onClick={() => setViewMode("grid")} className={`p-1.5 ${viewMode === "grid" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="Grid"><Grid3X3 className="w-3 h-3" /></button>
+          <button onClick={() => setViewMode("list")} className={`p-1.5 ${viewMode === "list" ? "bg-orange-50 text-orange-600" : "text-gray-400 hover:text-gray-600"}`} title="List"><Store className="w-3 h-3" /></button>
+        </div>
+      </div>
+    </div>
+    
+    {/* Second row: Date Filters */}
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 border-t pt-3">
+      <span className="text-xs text-gray-600 font-medium">Filter by:</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setDateFilter('all')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          All Time
+        </button>
+        <button
+          onClick={() => setDateFilter('today')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'today' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          Today
+        </button>
+        <button
+          onClick={() => setDateFilter('week')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'week' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          This Week
+        </button>
+        <button
+          onClick={() => setDateFilter('month')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'month' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          This Month
+        </button>
+        <button
+          onClick={() => setDateFilter('year')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'year' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          This Year
+        </button>
+        <button
+          onClick={() => setDateFilter('custom')}
+          className={`px-3 py-1.5 text-xs rounded ${dateFilter === 'custom' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          Custom Range
+        </button>
+      </div>
+      
+      {/* Custom Date Range Inputs */}
+      {dateFilter === 'custom' && (
+        <div className="flex items-center space-x-2 ml-0 sm:ml-2">
+          <input
+            type="date"
+            value={customStartDate}
+            onChange={(e) => setCustomStartDate(e.target.value)}
+            className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
+          />
+          <span className="text-xs text-gray-500">to</span>
+          <input
+            type="date"
+            value={customEndDate}
+            onChange={(e) => setCustomEndDate(e.target.value)}
+            className="text-xs border border-gray-200 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-orange-500"
+          />
+        </div>
+      )}
+    </div>
+
+    {/* Third row: Payment Method Filter */}
+    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 border-t pt-3">
+      <span className="text-xs text-gray-600 font-medium">Payment:</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setPaymentMethodFilter('all')}
+          className={`px-3 py-1.5 text-xs rounded ${paymentMethodFilter === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          All Methods
+        </button>
+        <button
+          onClick={() => setPaymentMethodFilter('MOMO')}
+          className={`px-3 py-1.5 text-xs rounded flex items-center gap-1 ${paymentMethodFilter === 'MOMO' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          📱 Mobile Money
+        </button>
+        <button
+          onClick={() => setPaymentMethodFilter('CASH')}
+          className={`px-3 py-1.5 text-xs rounded flex items-center gap-1 ${paymentMethodFilter === 'CASH' ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        >
+          💵 Cash
+        </button>
+      </div>
+      
+      {/* Clear Filters Button */}
+      {(dateFilter !== 'all' || statusFilter !== 'all' || paymentMethodFilter !== 'all') && (
+        <button
+          onClick={() => {
+            setDateFilter('all');
+            setStatusFilter('all');
+            setPaymentMethodFilter('all');
+            setCustomStartDate('');
+            setCustomEndDate('');
+          }}
+          className="px-3 py-1.5 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition ml-0 sm:ml-auto"
+        >
+          Clear All Filters
+        </button>
+      )}
+    </div>
+  </div>
+</div>
           {error && <div className="bg-red-50 border border-red-200 rounded p-3 text-red-700 text-xs">{error}</div>}
 
           {currentOrders.length === 0 ? (

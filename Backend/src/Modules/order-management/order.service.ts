@@ -402,7 +402,7 @@ export class OrderService {
   /** ===============================
   * 🧩 Update Payment Status
   * =============================== */
-async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string) {
+async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string,method:"MOMO"|"CASH") {
   // Find order with current debt information
   const order = await this.prisma.order.findUnique({
     where: { id: orderId },
@@ -413,6 +413,7 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
 
   let newDebtedAmount: number | null = null;
   let finalPaymentStatus = status;
+  
 
   if (status === 'DEBTED') {
     const amountPaid = parseFloat(amount);
@@ -453,6 +454,7 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
     // For SUCCESSFUL, FAILED, or PENDING - clear debt
     newDebtedAmount = null;
   }
+console.log(method);
 
   // Update order with new payment status and debt amount
   return this.prisma.order.update({
@@ -460,6 +462,7 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
     data: {
       paymentStatus: finalPaymentStatus,
       debtedAmount: newDebtedAmount,
+      paymentMethod: method || order.paymentMethod
     },
     include: {
       items: { include: { menuItem: true } },

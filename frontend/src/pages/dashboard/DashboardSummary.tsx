@@ -3,7 +3,9 @@ import { useOutletContext } from 'react-router-dom';
 import {
   TrendingUp, ShoppingCart, DollarSign, Users, Package,
   UserCheck, AlertTriangle, Calendar, Clock, ChevronRight, Briefcase,
-  Activity, BarChart3, PieChart as PieChartIcon, ArrowUpRight, ArrowDownRight
+  Activity, BarChart3, PieChart as PieChartIcon, ArrowUpRight, ArrowDownRight,
+  Banknote,
+  Smartphone
 } from 'lucide-react';
 import {
   AreaChart, Area, PieChart, Pie, Cell,
@@ -98,6 +100,14 @@ const DashboardSummary = () => {
     const completedOrders = orders.filter(o => o.status === 'COMPLETED');
     const totalRevenue = completedOrders.reduce((sum, o) => sum + o.totalAmount, 0);
 
+// Add these new calculations
+const momoOrders = orders.filter(o => o.paymentMethod === "MOMO");
+const cashOrders = orders.filter(o => o.paymentMethod === "CASH");
+
+const momoTotal = momoOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+const cashTotal = cashOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+
     const activeEmployees = employees.filter(e => e.status === 'ACTIVE').length;
     const lowStockItems = stocks.filter(s => s.quantity < 20).length;
 
@@ -122,6 +132,10 @@ const DashboardSummary = () => {
       pendingOrders: orders.filter(o => o.status === 'PENDING').length,
       processingOrders: orders.filter(o => o.status === 'PROCESSING').length,
       totalRevenue,
+      cashTotal,
+      cashOrders,
+      momoTotal,
+      momoOrders,
       activeEmployees,
       totalEmployees: employees.length,
       inactiveEmployees: employees.filter(e => e.status !== 'ACTIVE').length,
@@ -234,7 +248,7 @@ const DashboardSummary = () => {
         {role === 'company' ? (
           <>
             {/* Orders & Revenue Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <StatCard
                 title="Total Orders"
                 value={stats.totalOrders}
@@ -286,6 +300,25 @@ const DashboardSummary = () => {
                 trend="up"
                 change="+3%"
               />
+              <StatCard
+    title="Mobile Money"
+    value={formatCurrency(stats.momoTotal)}
+    icon={Smartphone}
+    gradient="from-purple-500 to-purple-600"
+    bgLight="bg-purple-50"
+    textColor="text-purple-600"
+    subtitle={`${stats.momoOrders.length} transactions`}
+  />
+  
+  <StatCard
+    title="Cash Payments"
+    value={formatCurrency(stats.cashTotal)}
+    icon={Banknote}
+    gradient="from-green-500 to-green-600"
+    bgLight="bg-green-50"
+    textColor="text-green-600"
+    subtitle={`${stats.cashOrders.length} transactions`}
+  />
               <StatCard
                 title="Stock Items"
                 value={stats.totalStock}

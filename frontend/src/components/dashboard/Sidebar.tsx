@@ -116,7 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
       { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
       { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
       { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
-      { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`},
+      // { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`},
 
     ];
 

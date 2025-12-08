@@ -86,8 +86,9 @@ export class OrderController {
     @Param('id') id: string,
     @Body('status') status: PaymentStatus,
     @Body('amount') amount:string,
+    @Body('method') method: 'MOMO' | "CASH" ,
   ) {
-    const updated = await this.orderService.updatePaymentStatus(id, status,amount);
+    const updated = await this.orderService.updatePaymentStatus(id, status,amount,method);
 
     // 🔥 Emit event to company
     this.ordersGateway.server

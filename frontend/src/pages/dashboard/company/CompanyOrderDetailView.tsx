@@ -12,6 +12,7 @@ import { useCompanyAuth } from '../../../context/CompanyAuthContext';
 import ReturnItemsModal, { ReturnItemsButton } from '../../../components/dashboard/order/ReturnItemsModal';
 import DebtedAmountModal, { DebtedButton } from '../../../components/dashboard/order/DebtedAmountModal';
 import { API_URL } from '../../../api/api';
+import PaymentMethodModal from '../../../components/dashboard/order/PaymentMethodModal';
 
 interface Employee {
   id: string;
@@ -97,6 +98,7 @@ export default function CompanyOrderDetailView() {
 
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showDebtedModal, setShowDebtedModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     if (!authLoading && (!isAuthenticated || !company)) {
@@ -171,6 +173,33 @@ export default function CompanyOrderDetailView() {
     }
   };
 
+  // utils/paymentStatus.js
+ const  renderPaymentType = (type:string) =>{
+  switch (type) {
+    case "MOMO":
+      return (
+        <span className="px-5 py-2.5 rounded-full border-2 flex items-center max-w-25 gap-2 bg-yellow-100 text-yellow-700">
+          MOMO
+        </span>
+      );
+
+    case "CASH":
+      return (
+        <span className="px-5 py-2.5 rounded-full border-2 flex items-center  max-w-30 gap-2 bg-green-100 text-green-700">
+          CASH
+        </span>
+      );
+
+    default:
+      return (
+        <span className="px-5 py-2.5 rounded-full border-2 flex items-center gap-2 bg-gray-100 text-gray-600">
+          UNKNOWN
+        </span>
+      );
+  }
+}
+
+
   const getPaymentStatusInfo = (status: string) => {
     switch (status) {
       case 'SUCCESSFUL':
@@ -189,13 +218,15 @@ export default function CompanyOrderDetailView() {
     if (!order) return null;
     setOrder(order);
   };
-const handleDebtedConfirm = async (amountPaid: number) => {
+const handleDebtedConfirm = async (amountPaid: number,method:'MOMO' | 'CASH') => {
   setUpdatingPayment(true);
   try {
     const updated = await orderService.updatePaymentStatus(
       order!.id, 
       'DEBTED', 
-      amountPaid.toString()  // Backend expects string
+      amountPaid.toString(),  // Backend expects string
+      method
+
     );
     
     setOrder(updated);
@@ -210,6 +241,35 @@ const handleDebtedConfirm = async (amountPaid: number) => {
     }
     
     setShowDebtedModal(false);
+  } catch (err: any) {
+    showToast('error', err.message || 'Failed to update payment status');
+  } finally {
+    setUpdatingPayment(false);
+  }
+};
+const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
+  setUpdatingPayment(true);
+  try {
+    const updated = await orderService.updatePaymentStatus(
+      order!.id, 
+      'SUCCESSFUL', 
+     null,  // Backend expects string
+      method
+
+    );
+    
+    setOrder(updated);
+    
+    // Check if debt is fully paid (backend should have changed status to SUCCESSFUL)
+    if (updated.paymentStatus === 'SUCCESSFUL' && !updated.debtedAmount) {
+      showToast('success', 'Debt fully paid! Order marked as SUCCESSFUL ✓');
+    } else if (updated.debtedAmount) {
+      showToast('success', `Payment recorded! Remaining debt: ${formatRWF(updated.debtedAmount)}`);
+    } else {
+      showToast('success', 'Payment status updated successfully!');
+    }
+    
+    setShowPaymentModal(false);
   } catch (err: any) {
     showToast('error', err.message || 'Failed to update payment status');
   } finally {
@@ -401,7 +461,7 @@ const handleDebtedConfirm = async (amountPaid: number) => {
             </div>
             <div className="text-center mt-8 text-xs text-gray-600">
               <p>*** Thank you for your order! ***</p>
-              <p>Come again!</p>
+              <p>Powered By AbyTech!</p>
             </div>
           </div>
           <div className="border-t px-6 py-4 bg-gray-50 flex gap-3 print:hidden">
@@ -522,7 +582,7 @@ const handleDebtedConfirm = async (amountPaid: number) => {
 
             <div className="text-center mt-10 text-xs text-gray-600 space-y-1">
               <p className="font-bold text-lg">Thank you for your visit!</p>
-              <p>Come again soon</p>
+              <p>Powered By AbyTech</p>
             </div>
           </div>
 
@@ -634,6 +694,9 @@ const handleDebtedConfirm = async (amountPaid: number) => {
                         <p className="text-sm text-gray-600 mb-1">Total Amount</p>
                         <p className="text-2xl font-bold text-gray-900">{formatRWF(order.totalAmount)}</p>
                       </div>
+                      <div className="">
+                       {renderPaymentType(order?.paymentMethod) }
+                      </div>
                       {order.paymentStatus === 'DEBTED' && order.debtedAmount && (
                         <>
                           <div>
@@ -659,7 +722,7 @@ const handleDebtedConfirm = async (amountPaid: number) => {
                   <div className="flex flex-wrap gap-3">
                     {order.paymentStatus !== 'SUCCESSFUL' && order.paymentStatus != 'DEBTED' && !order.debtedAmount && (
                       <button
-                        onClick={() => updatePaymentStatus('SUCCESSFUL')}
+                        onClick={() => setShowPaymentModal(true)}
                         disabled={updatingPayment}
                         className="flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
                       >
@@ -682,7 +745,7 @@ const handleDebtedConfirm = async (amountPaid: number) => {
                           {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <XCircle className="w-5 h-5" />}
                           Mark as Failed
                         </button>
-                        <DebtedButton onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
+                        <DebtedButton  onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
                       </>
                     )}
                   </div>
@@ -1088,6 +1151,13 @@ const handleDebtedConfirm = async (amountPaid: number) => {
         onClose={() => setShowDebtedModal(false)}
         order={order}
         onConfirm={handleDebtedConfirm}
+        isLoading={updatingPayment}
+      />
+      <PaymentMethodModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+      
+        onConfirm={handleMarkAsPaid}
         isLoading={updatingPayment}
       />
     </>

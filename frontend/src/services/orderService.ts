@@ -35,9 +35,11 @@ class OrderService {
   orderId: string,
   status: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED',
   amount?:string | null | number,
+  method?:string,
 ) {
   try {
-    const response = await api.patch(`/orders/${orderId}/payment-status`, { status,amount });
+    
+    const response = await api.patch(`/orders/${orderId}/payment-status`, { status,amount,method });
     console.log('Payment status updated:', response.data);
     return response.data;
   } catch (error: any) {

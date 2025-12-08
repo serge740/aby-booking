@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { X, AlertTriangle, CreditCard, DollarSign, Wallet, CheckCircle } from 'lucide-react';
+import { X, AlertTriangle, CreditCard, DollarSign, Wallet, CheckCircle, Smartphone, Banknote } from 'lucide-react';
 
 const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => {
   const [amountPaid, setAmountPaid] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen && order) {
       setAmountPaid('');
+      setPaymentMethod('');
       setError('');
     }
   }, [isOpen, order]);
@@ -33,8 +35,17 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
       return;
     }
 
+    // Check if this is new debt (not existing debt)
+    const isExistingDebt = order.debtedAmount && order.debtedAmount > 0;
+    
+    // For new debt, require payment method
+    if (!isExistingDebt && !paymentMethod) {
+      setError('Please select a payment method');
+      return;
+    }
+
     // For existing debt, check if payment exceeds remaining debt
-    if (order.debtedAmount) {
+    if (isExistingDebt) {
       if (paid > order.debtedAmount) {
         setError(`Payment cannot exceed remaining debt of ${formatRWF(order.debtedAmount)}`);
         return;
@@ -47,12 +58,13 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
       }
     }
 
-    // Call the onConfirm callback with the amount paid
-    onConfirm(paid);
+    // Call the onConfirm callback with the amount paid and payment method
+    onConfirm(paid, paymentMethod || null);
   };
 
   const handleClose = () => {
     setAmountPaid('');
+    setPaymentMethod('');
     setError('');
     onClose();
   };
@@ -149,6 +161,65 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
             )}
           </div>
 
+          {/* Payment Method Selection - Only for new debt */}
+          {!isExistingDebt && (
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <CreditCard className="w-4 h-4" />
+                Payment Method
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('MOMO')}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                    paymentMethod === 'MOMO'
+                      ? 'border-orange-500 bg-orange-50 shadow-md'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
+                  }`}
+                  disabled={isLoading}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    paymentMethod === 'MOMO' ? 'bg-orange-500' : 'bg-gray-200'
+                  }`}>
+                    <Smartphone className={`w-6 h-6 ${
+                      paymentMethod === 'MOMO' ? 'text-white' : 'text-gray-600'
+                    }`} />
+                  </div>
+                  <span className={`text-sm font-semibold ${
+                    paymentMethod === 'MOMO' ? 'text-orange-700' : 'text-gray-700'
+                  }`}>
+                    Mobile Money
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('CASH')}
+                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+                    paymentMethod === 'CASH'
+                      ? 'border-green-500 bg-green-50 shadow-md'
+                      : 'border-gray-300 bg-white hover:border-gray-400'
+                  }`}
+                  disabled={isLoading}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    paymentMethod === 'CASH' ? 'bg-green-500' : 'bg-gray-200'
+                  }`}>
+                    <Banknote className={`w-6 h-6 ${
+                      paymentMethod === 'CASH' ? 'text-white' : 'text-gray-600'
+                    }`} />
+                  </div>
+                  <span className={`text-sm font-semibold ${
+                    paymentMethod === 'CASH' ? 'text-green-700' : 'text-gray-700'
+                  }`}>
+                    Cash
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Amount Paid Input */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
@@ -214,7 +285,7 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
                   
                   {!isExistingDebt && (
                     <div className="flex justify-between items-center text-green-700">
-                      <span className="font-medium">Amount Paid:</span>
+                      <span className="font-medium">Amount Paid ({paymentMethod}):</span>
                       <span className="font-bold text-base">
                         - {formatRWF(paidAmount)}
                       </span>
@@ -260,7 +331,7 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
                             The customer will owe <span className="text-sm font-bold">{formatRWF(remainingDebt)}</span>
                           </p>
                           <p>
-                            They have paid <span className="font-bold">{formatRWF(paidAmount)}</span> now 
+                            They have paid <span className="font-bold">{formatRWF(paidAmount)}</span> via {paymentMethod} now 
                             and will pay the remaining balance later.
                           </p>
                         </>
@@ -293,7 +364,7 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
               <p className="text-xs text-blue-800">
                 {isExistingDebt 
                   ? 'Enter the amount the customer is paying towards their debt. The remaining balance will be updated automatically.'
-                  : 'Enter the amount the customer is paying now. The system will track the remaining debt for future payments.'
+                  : 'Select payment method and enter the amount the customer is paying now. The system will track the remaining debt for future payments.'
                 }
               </p>
             </div>
@@ -311,7 +382,7 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
           </button>
           <button
             onClick={handleSubmit}
-            disabled={isLoading || !amountPaid || paidAmount <= 0}
+            disabled={isLoading || !amountPaid || paidAmount <= 0 || (!isExistingDebt && !paymentMethod)}
             className={`flex-1 px-6 py-3.5 ${isFullyPaid ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600' : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600'} text-white font-bold rounded-xl disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl`}
           >
             {isLoading ? (
@@ -335,7 +406,7 @@ const DebtedAmountModal = ({ isOpen, onClose, order, onConfirm, isLoading }) => 
 
 
 // Export the button component to trigger the modal
-export const DebtedButton = ({ onClick, disabled, className = '' , value}) => {
+export const DebtedButton = ({ onClick, disabled, className = '' , value = ''}) => {
   return (
     <button
       onClick={onClick}

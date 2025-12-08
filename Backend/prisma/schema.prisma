@@ -126,6 +126,8 @@ model Order {
   employeeId     String?
   employee       Employee?        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
+  paymentMethod  PaymentMethod @default(CASH)
+
   items         OrderItem[]
    paymentStatus  PaymentStatus @default(PENDING)
 
@@ -140,6 +142,11 @@ enum PaymentStatus {
   FAILED
   PENDING
   DEBTED
+}
+
+enum PaymentMethod{
+  MOMO
+  CASH
 }
 
 
