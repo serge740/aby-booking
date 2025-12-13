@@ -1,15 +1,62 @@
 import React, { type ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import {useEmployeeAuth} from '../../context/EmployeeAuthContext';
+import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 
 interface ProtectPrivateEmployeeRouteProps {
   children: ReactNode;
 }
 
+// ==========================================
+// CENTRALIZED PERMISSION CONFIGURATION
+// ==========================================
+/**
+ * Maps route paths to required permissions (array)
+ * Employee must have AT LEAST ONE of the permissions in the array
+ * ONLY define routes that REQUIRE permissions
+ * Routes not listed here are accessible to all employees
+ */
+const ROUTE_PERMISSIONS: Record<string, string[]> = {
+  '/employee/dashboard/stock': ['stock_management'],
+  '/employee/dashboard/menu-item': ['menu_management'],
+  '/employee/dashboard/requisition-management': ['requisition_management'],
+};
+
 const ProtectPrivateEmployeeRoute: React.FC<ProtectPrivateEmployeeRouteProps> = ({ children }) => {
-  const { isAuthenticated, isLocked, isLoading } = useEmployeeAuth();
+  const { isAuthenticated, isLocked, isLoading, user } = useEmployeeAuth();
   const location = useLocation();
+
+  // Check if the current route requires specific permissions
+  const checkPermission = () => {
+    const currentPath = location.pathname;
+
+    // Find if current path matches any protected route
+    const matchedRoute = Object.keys(ROUTE_PERMISSIONS).find(route =>
+      currentPath.includes(route) || currentPath === route
+    );
+
+    if (!matchedRoute) {
+      // Route doesn't require permission, allow access
+      return true;
+    }
+
+    const requiredPermissions = ROUTE_PERMISSIONS[matchedRoute];
+
+    // Check if user has permissions
+    if (!user || !user.permissions || !Array.isArray(user.permissions)) {
+      return false;
+    }
+
+    // Extract permission names from user's permissions
+    const userPermissionNames = user.permissions.map((p: any) => 
+      p.permission?.name || p.name
+    ).filter(Boolean);
+
+    // Check if user has ANY of the required permissions for this route
+    return requiredPermissions.some(requiredPermission =>
+      userPermissionNames.includes(requiredPermission)
+    );
+  };
 
   // 🔄 Show loading spinner while checking auth state
   if (isLoading) {
@@ -33,8 +80,18 @@ const ProtectPrivateEmployeeRoute: React.FC<ProtectPrivateEmployeeRouteProps> = 
     return <Navigate to="/auth/employee/unlock" state={{ from: location }} replace />;
   }
 
-  // ✅ Authorized and unlocked — show page content
+  // 🛡️ Check permissions and redirect to dashboard if not authorized
+  if (!checkPermission()) {
+    return <Navigate to="/employee/dashboard" replace />;
+  }
+
+  // ✅ Authorized, unlocked, and has required permissions — show page content
   return <>{children}</>;
 };
 
 export default ProtectPrivateEmployeeRoute;
+
+// ==========================================
+// EXPORT PERMISSION CONFIG for use elsewhere
+// ==========================================
+export { ROUTE_PERMISSIONS };

@@ -599,7 +599,7 @@ export default function CompanyOrderDetailView() {
   return (
     <>
       <div className="min-h-screen bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="/ mx-auto space-y-6">
 
           {/* Status Banner */}
           <div className={`${status.bg} rounded-xl p-6 border-2 border-${status.color.split(' ')[0].replace('bg-', '')}-200 shadow-sm`}>
@@ -638,7 +638,7 @@ export default function CompanyOrderDetailView() {
             <div className="lg:col-span-2 space-y-6">
 
               {/* Payment Information */}
-              {order.status !== 'PENDING' && (
+              {order.status !== 'PENDING' && order.status !== 'PROCESSING' && (
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-5">
                     <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">

@@ -65,7 +65,7 @@ export class OrderService {
           clientPhone: data.clientPhone,
           companyId: data.companyId,
           status: {
-            in: ['PENDING', 'PROCESSING'],
+            in: ['PENDING', 'PROCESSING','READY'],
           },
           createdAt: {
             gte: startOfDay,

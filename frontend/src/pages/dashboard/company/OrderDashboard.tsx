@@ -205,7 +205,14 @@ const OrderDashboard: React.FC = () => {
     if (!currentCompanyId) return;
     try {
       setLoading(true);
-      const response = await orderService.getOrdersByCompany(currentCompanyId);
+      let  response= [];
+      if(role == 'company'){
+        response = await orderService.getOrdersByCompany(currentCompanyId);
+      }
+     else if(role == 'employee'){
+       response = await orderService.getOrdersByEmployee(employee!.id);
+      }
+      
       setAllOrders(Array.isArray(response) ? response : []);
       setError(null);
     } catch (err: any) {
@@ -841,17 +848,7 @@ const OrderDashboard: React.FC = () => {
     );
   }
 
-  if (!canViewOrders) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
-          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
-          <h2 className="text-lg font-bold text-red-900">Access Denied</h2>
-          <p className="text-red-700 mt-2">You don't have permission to view orders</p>
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <>
