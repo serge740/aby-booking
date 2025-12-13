@@ -65,6 +65,12 @@ import PortalSection from "./pages/auth/PortalSection";
 import EmployeeOrderDashboard from "./pages/dashboard/employee/OrderDashboard";
 import EmployeeOrderDetailView from "./pages/dashboard/employee/CompanyOrderDetailView";
 import RequisitionDashboard from "./pages/dashboard/RequisitionDashoards";
+import CreateRequisitionPage from "./components/dashboard/requisition/CreateRequisition";
+import ApproveRequisition from "./components/dashboard/requisition/ApproveRequisition";
+import ReceiveRequisition from "./components/dashboard/requisition/ReceiveRequisition";
+import UpdateRequisition from "./components/dashboard/requisition/UpdateRequistion";
+import RequisitionDetailView from "./components/dashboard/requisition/RequisitionDetailView";
+import PermissionManagement from "./pages/dashboard/company/PermissionManagement";
 
 
 // Loading component
@@ -150,11 +156,12 @@ const router = createBrowserRouter([
           {path:'employee/:id' , element:<EmployeeDetailsPage />},
           {path:'orders/:id' , element:<CompanyOrderDetailView />},
           {path:'orders' , element:<OrderDashboard />},
-          {path:'orders/:id' , element:<CompanyOrderDetailView />},
+     
           {path:'orders/create/:companyId' , element:<CreateOrderPage />},
           {path:'menu-category' , element:<MenuCategoryDashboard />},
           {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/create' , element:<CreateMenuItemPage />},
+          {path:'menu-item' , element:<MenuItemDashboard />},
           {path:'menu-item/:id' , element:<MenuItemView />},
           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
           {path:'leave-request' , element:<LeaveRequestDashboard />},
@@ -163,17 +170,21 @@ const router = createBrowserRouter([
           {path:'pre-salary/:id' , element:<PreSalaryViewDetails />},
           {path:'risk-report' , element:<RiskReportDashboard />},
           {path:'risk-report/:id' , element:<RiskReportViewDetails />},
-           {path:'notifications' , element:<NotificationsPage />},
-           {path:'stock' , element:<StockManagementDashboard />},
-           {path:'order-report' , element:<OrderReportAnalysis />},
-           {path:'requisition-management' , element:<RequisitionDashboard />},
+          {path:'notifications' , element:<NotificationsPage />},
+          {path:'stock' , element:<StockManagementDashboard />},
+          {path:'order-report' , element:<OrderReportAnalysis />},
+          {path:'requisition-management' , element:<RequisitionDashboard />},
+          {path:'requisition-management/approve/:id' , element:<ApproveRequisition />},
+           {path:'requisition-management/view/:id' , element:<RequisitionDetailView />},
+           {path:'requisition-management/receive/:id' , element:<ReceiveRequisition />},
+           {path:'permission-management' , element:<PermissionManagement />},
            
            
           ]
        },
 
-    ]
-  },
+      ]
+    },
   {
     path:'/employee',
     element: <ProtectPrivateEmployeeRoute><Outlet context={{role:'employee'}} /></ProtectPrivateEmployeeRoute>,
@@ -194,15 +205,24 @@ const router = createBrowserRouter([
            {path:'risk-report/:id' , element:<RiskReportViewDetails />},
            {path:'notifications' , element:<NotificationsPage />},
            
-           {path:'place-order/:companyId' , element:<EmployeeCreateOrderPage />},
-           {path:'order' , element:<EmployeeOrderDashboard />},
-           {path:'order/:id' , element:<EmployeeOrderDetailView />},
+           {path:'orders' , element:<OrderDashboard />},
+           {path:'orders/:id' , element:<CompanyOrderDetailView />},
+           {path:'orders/create/:companyId' , element:<EmployeeCreateOrderPage />},
            {path:'requisition-management' , element:<RequisitionDashboard />},
-
+           {path:'requisition-management/create' , element:<CreateRequisitionPage />},
+           {path:'requisition-management/receive/:id' , element:<ReceiveRequisition />},
+           {path:'requisition-management/update/:id' , element:<UpdateRequisition />},
+           {path:'requisition-management/view/:id' , element:<RequisitionDetailView />},
           
-        ]
-       },
+           {path:'menu-item/create' , element:<CreateMenuItemPage />},
+           {path:'menu-item' , element:<MenuItemDashboard />},
+           {path:'menu-item/:id' , element:<MenuItemView />},
+           {path:'menu-item/update/:id' , element:<EditMenuItemPage />},
+           
+           {path:'stock' , element:<StockManagementDashboard />},
+          ]
 
+        },
     ]
   },
   {

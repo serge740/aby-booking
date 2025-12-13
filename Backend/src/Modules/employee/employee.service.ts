@@ -98,7 +98,10 @@ export class EmployeeService {
   async findOne(id: string,) {
     const employee = await this.prisma.employee.findFirst({
       where: { id, },
-      include: { company: true },
+       include:{
+        company:true,
+        permissions:true
+      }
     });
 
     if (!employee) throw new NotFoundException(`Employee not found`);
@@ -157,7 +160,10 @@ export class EmployeeService {
         is2FA:
           typeof data.is2FA === 'string' ? JSON.parse(data.is2FA) : data.is2FA,
       },
-      include: { company: true },
+       include:{
+        company:true,
+        permissions:true
+      },
     });
   }
 
@@ -170,6 +176,10 @@ export class EmployeeService {
 
     return this.prisma.employee.delete({
       where: { id },
+       include:{
+        company:true,
+        permissions:true
+      },
     });
   }
 }

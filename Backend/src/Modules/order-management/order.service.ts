@@ -413,6 +413,7 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
 
   let newDebtedAmount: number | null = null;
   let finalPaymentStatus = status;
+  let finalStatus = order.status
   
 
   if (status === 'DEBTED') {
@@ -435,6 +436,7 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
       if (newDebtedAmount <= 0) {
         newDebtedAmount = null;
         finalPaymentStatus = 'SUCCESSFUL';
+        finalStatus = 'COMPLETED'
       }
     } else {
       // New debt scenario - first time marking as debted
@@ -448,9 +450,13 @@ async updatePaymentStatus(orderId: string, status: PaymentStatus, amount: string
       if (newDebtedAmount <= 0) {
         newDebtedAmount = null;
         finalPaymentStatus = 'SUCCESSFUL';
+        finalStatus = 'COMPLETED'
       }
     }
   } else {
+    if(status == 'SUCCESSFUL'){
+      finalStatus = 'COMPLETED'
+    }
     // For SUCCESSFUL, FAILED, or PENDING - clear debt
     newDebtedAmount = null;
   }
@@ -462,6 +468,7 @@ console.log(method);
     data: {
       paymentStatus: finalPaymentStatus,
       debtedAmount: newDebtedAmount,
+      status:finalStatus,
       paymentMethod: method || order.paymentMethod
     },
     include: {

@@ -268,6 +268,8 @@ model Employee {
    employeeRiskReports  EmployeeRiskReport[]
    requisition Requisition[]
    orders Order[]
+   receivingLog ReceivingLog[]
+  permissions EmployeePermission[]   // <--- ONLY THING ADDED
  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -290,6 +292,34 @@ enum MaritalStatus {
   DIVORCED
   WIDOWED
 }
+
+model Permission {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String?
+
+  employees   EmployeePermission[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("Permission")
+}
+
+model EmployeePermission {
+  id            String     @id @default(uuid())
+  employeeId    String
+  permissionId  String
+
+  employee      Employee   @relation(fields: [employeeId], references: [id])
+  permission    Permission @relation(fields: [permissionId], references: [id])
+
+  createdAt     DateTime @default(now())
+
+  @@unique([employeeId, permissionId])
+  @@map("EmployeePermission")
+}
+
 
 enum LeaveType {
   VACATION
@@ -341,46 +371,84 @@ enum StockPurposeStatus {
 }
 
 
-model Requisition {
-  id            String              @id @default(cuid())
-  companyId     String
-  employeeId    String
-  status        RequisitionStatus   @default(PENDING)
-
-  description   String?
-  rejectReason  String?             // Filled only when REJECTED
-  
-
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-
-  company       Company             @relation(fields: [companyId], references: [id])
-  employee      Employee            @relation(fields: [employeeId], references: [id])
-  items         RequisitionItem[]
-
-
-}
-model RequisitionItem {
-  id            String   @id @default(cuid())
-  requisitionId String
-  stockId       String?   // Null if stock item doesn't exist yet
-
-  itemName      String
-  quantity      Float
-  unit          String
-  purpose       StockPurposeStatus
-  note          String?
-
-  requisition   Requisition @relation(fields: [requisitionId], references: [id])
-  stock         Stock?      @relation(fields: [stockId], references: [id])
-}
-
 
 enum RequisitionStatus {
   PENDING
   APPROVED
+  PARTIALLY_RECEIVED
+  FULLY_RECEIVED
   REJECTED
   COMPLETED
+}
+
+enum ReceivingStatus {
+  NOT_RECEIVED
+  PARTIALLY_RECEIVED
+  FULLY_RECEIVED
+}
+
+model Requisition {
+  id            String            @id @default(cuid())
+  companyId     String
+  employeeId    String
+  status        RequisitionStatus @default(PENDING)
+
+  description   String?
+  rejectReason  String?
+
+  // Approval
+  approvedAt    DateTime?
+
+
+  // Completion (when ALL items are fully received)
+  completedAt   DateTime?
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  // Relations
+  company       Company           @relation(fields: [companyId], references: [id])
+  employee      Employee          @relation(fields: [employeeId], references: [id])
+  items         RequisitionItem[]
+ 
+}
+
+model RequisitionItem {
+  id              String           @id @default(cuid())
+  requisitionId   String
+  stockId         String?          // Null if item doesn't exist in stock yet
+
+  itemName        String
+  quantity        Float            // Requested amount
+  unit            String
+  purpose         StockPurposeStatus
+  note            String?
+
+  // Receiving tracking
+  receivedQty     Float            @default(0)
+  receivingStatus ReceivingStatus  @default(NOT_RECEIVED)
+  
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  // Relations
+  requisition     Requisition      @relation(fields: [requisitionId], references: [id], onDelete: Cascade)
+  stock           Stock?           @relation(fields: [stockId], references: [id])
+  receivingLogs   ReceivingLog[]
+}
+
+// Track each receiving transaction
+model ReceivingLog {
+  id                String          @id @default(cuid())
+  requisitionItemId String
+  receivedQty       Float
+  receivedById      String
+  receivedAt        DateTime        @default(now())
+  note              String?
+
+  // Relations
+  requisitionItem   RequisitionItem @relation(fields: [requisitionItemId], references: [id], onDelete: Cascade)
+  receivedBy        Employee        @relation(fields: [receivedById], references: [id])
 }
 
 model Leave {

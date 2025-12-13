@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/Prisma/prisma.service';
-import { RequisitionStatus, StockPurposeStatus } from 'generated/prisma';
+import { RequisitionStatus, StockPurposeStatus, ReceivingStatus } from 'generated/prisma';
 
 @Injectable()
 export class RequisitionService {
@@ -30,36 +30,43 @@ export class RequisitionService {
     if (!data.items || data.items.length === 0)
       throw new BadRequestException('Requisition must have at least one item');
 
-    const employee = await this.prisma.employee.findUnique({where:{id:data.employeeId}}) as any;
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: data.employeeId },
+    }) as any;
 
     if (!employee) {
-        throw new BadRequestException('Employee not found')
+      throw new BadRequestException('Employee not found');
     }
 
     return this.prisma.requisition.create({
       data: {
         employeeId: data.employeeId,
-        companyId: data.companyId  || employee?.companyId,
+        companyId: data.companyId || employee?.companyId,
         description: data.description,
         status: RequisitionStatus.PENDING,
         items: {
           create: data.items.map((i) => ({
             itemName: i.itemName,
             quantity: i.quantity,
-            unit: i.unit ?? "",
-            purpose: (i.purpose as StockPurposeStatus) ?? "EATING",
+            unit: i.unit ?? '',
+            purpose: (i.purpose as StockPurposeStatus) ?? 'EATING',
             note: i.note,
             stockId: i.stockId || null,
+            receivedQty: 0,
+            receivingStatus: ReceivingStatus.NOT_RECEIVED,
           })),
         },
       },
-      include: { items: true, employee: true, company: true },
+      include: { 
+        items: { include: { receivingLogs: true } }, 
+        employee: true, 
+        company: true 
+      },
     });
   }
 
   // ───────────────────────────────────
-  // UPDATE PENDING REQUISITION
-  // employee only
+  // UPDATE PENDING REQUISITION (Employee Only)
   // ───────────────────────────────────
   async updateRequisition(
     id: string,
@@ -79,7 +86,7 @@ export class RequisitionService {
       throw new ForbiddenException('Only pending requisitions can be updated');
 
     // Update description
-    if (data.description) {
+    if (data.description !== undefined) {
       await this.prisma.requisition.update({
         where: { id },
         data: { description: data.description },
@@ -102,9 +109,10 @@ export class RequisitionService {
             data: {
               itemName: item.itemName,
               quantity: item.quantity,
-              unit: item.unit ?? "",
+              unit: item.unit ?? '',
               note: item.note,
-              purpose: (item.purpose as StockPurposeStatus) ?? "EATING",
+              purpose: (item.purpose as StockPurposeStatus) ?? 'EATING',
+              stockId: item.stockId || null,
             },
           });
         } else {
@@ -114,9 +122,12 @@ export class RequisitionService {
               requisitionId: id,
               itemName: item.itemName,
               quantity: item.quantity,
-              unit: item.unit ?? "",
-              purpose: (item.purpose as StockPurposeStatus) ?? "EATING",
+              unit: item.unit ?? '',
+              purpose: (item.purpose as StockPurposeStatus) ?? 'EATING',
               note: item.note,
+              stockId: item.stockId || null,
+              receivedQty: 0,
+              receivingStatus: ReceivingStatus.NOT_RECEIVED,
             },
           });
         }
@@ -125,15 +136,24 @@ export class RequisitionService {
 
     return this.prisma.requisition.findUnique({
       where: { id },
-      include: { items: true, employee: true, company: true },
+      include: { 
+        items: { include: { receivingLogs: true } }, 
+        employee: true, 
+        company: true 
+      },
     });
   }
 
   // ───────────────────────────────────
   // APPROVE (Admin)
-  // Admin can edit items + update stock
+  // Admin can edit items but NO stock updates
   // ───────────────────────────────────
-  async approveRequisition(id: string, companyId: string, body: { items: any[] }) {
+  async approveRequisition(
+    id: string, 
+    companyId: string, 
+
+    body: { items?: any[] }
+  ) {
     const req = await this.prisma.requisition.findFirst({
       where: { id, companyId },
       include: { items: true },
@@ -143,50 +163,136 @@ export class RequisitionService {
     if (req.status !== 'PENDING')
       throw new ForbiddenException('Only pending requisitions can be approved');
 
-    // Apply admin edits
-    for (const i of body.items) {
-      if (i.remove && i.id) {
-        await this.prisma.requisitionItem.delete({ where: { id: i.id } });
-        continue;
-      }
+    // Apply admin edits if provided
+    if (body.items) {
+      for (const i of body.items) {
+        if (i.remove && i.id) {
+          await this.prisma.requisitionItem.delete({ where: { id: i.id } });
+          continue;
+        }
 
-      if (i.id) {
-        await this.prisma.requisitionItem.update({
-          where: { id: i.id },
-          data: {
-            itemName: i.itemName,
-            quantity: i.quantity,
-            unit: i.unit ?? "",
-            purpose: (i.purpose as StockPurposeStatus) ?? "EATING",
-            note: i.note,
-          },
-        });
-      } else {
-        await this.prisma.requisitionItem.create({
-          data: {
-            requisitionId: id,
-            itemName: i.itemName,
-            quantity: i.quantity,
-            unit: i.unit ?? "",
-            purpose: (i.purpose as StockPurposeStatus) ?? "EATING",
-            note: i.note,
-          },
-        });
+        if (i.id) {
+          await this.prisma.requisitionItem.update({
+            where: { id: i.id },
+            data: {
+              itemName: i.itemName,
+              quantity: i.quantity,
+              unit: i.unit ?? '',
+              purpose: (i.purpose as StockPurposeStatus) ?? 'EATING',
+              note: i.note,
+              stockId: i.stockId || null,
+            },
+          });
+        } else {
+          await this.prisma.requisitionItem.create({
+            data: {
+              requisitionId: id,
+              itemName: i.itemName,
+              quantity: i.quantity,
+              unit: i.unit ?? '',
+              purpose: (i.purpose as StockPurposeStatus) ?? 'EATING',
+              note: i.note,
+              stockId: i.stockId || null,
+              receivedQty: 0,
+              receivingStatus: ReceivingStatus.NOT_RECEIVED,
+            },
+          });
+        }
       }
     }
 
-    // Fetch updated items
-    const finalItems = await this.prisma.requisitionItem.findMany({
-      where: { requisitionId: id },
+    // Mark as approved (NO stock updates here)
+    return this.prisma.requisition.update({
+      where: { id },
+      data: { 
+        status: RequisitionStatus.APPROVED,
+        approvedAt: new Date(),
+      },
+      include: { 
+        items: { include: { receivingLogs: true } }, 
+        employee: true, 
+        company: true,
+        
+      },
+    });
+  }
+
+  // ───────────────────────────────────
+  // RECEIVE ITEMS (New Logic)
+  // ───────────────────────────────────
+  async receiveItems(
+    requisitionId: string,
+    companyId: string,
+    receivedById: string,
+    items: { 
+      itemId: string; 
+      receivedQty: number;
+      note?: string;
+    }[]
+  ) {
+    const req = await this.prisma.requisition.findFirst({
+      where: { id: requisitionId, companyId },
+      include: { items: true },
     });
 
-    // Update stock operations
-    for (const item of finalItems) {
+    if (!req) throw new NotFoundException('Requisition not found');
+    if (req.status !== RequisitionStatus.APPROVED && 
+        req.status !== RequisitionStatus.PARTIALLY_RECEIVED)
+      throw new ForbiddenException('Only approved requisitions can be received');
+
+    // Process each item
+    for (const receiveData of items) {
+      const item = req.items.find(i => i.id === receiveData.itemId);
+      
+      if (!item) {
+        throw new BadRequestException(`Item ${receiveData.itemId} not found`);
+      }
+
+      const newReceivedQty = item.receivedQty + receiveData.receivedQty;
+      
+      if (newReceivedQty > item.quantity) {
+        throw new BadRequestException(
+          `Cannot receive more than requested. Item: ${item.itemName}, ` +
+          `Requested: ${item.quantity}, Already received: ${item.receivedQty}, ` +
+          `Trying to receive: ${receiveData.receivedQty}`
+        );
+      }
+
+      // Create receiving log
+      await this.prisma.receivingLog.create({
+        data: {
+          requisitionItemId: item.id,
+          receivedQty: receiveData.receivedQty,
+          receivedById: receivedById,
+          note: receiveData.note,
+        },
+      });
+
+      // Determine receiving status
+      let receivingStatus: ReceivingStatus;
+      if (newReceivedQty >= item.quantity) {
+        receivingStatus = ReceivingStatus.FULLY_RECEIVED;
+      } else if (newReceivedQty > 0) {
+        receivingStatus = ReceivingStatus.PARTIALLY_RECEIVED;
+      } else {
+        receivingStatus = ReceivingStatus.NOT_RECEIVED;
+      }
+
+      // Update item
+      await this.prisma.requisitionItem.update({
+        where: { id: item.id },
+        data: {
+          receivedQty: newReceivedQty,
+          receivingStatus: receivingStatus,
+        },
+      });
+
+      // Update stock
       if (item.stockId) {
         // Add to existing stock
         await this.prisma.stock.update({
           where: { id: item.stockId },
-          data: { quantity: { increment: item.quantity } },
+          data: { quantity: { increment: receiveData.receivedQty } },
         });
       } else {
         // Create new stock entry
@@ -195,15 +301,16 @@ export class RequisitionService {
             companyId,
             employeeId: req.employeeId,
             name: item.itemName,
-            sku: `SKU-${Date.now()}`,
-            quantity: item.quantity,
-            unit: item.unit ?? "",
-            purpose: (item.purpose as StockPurposeStatus) ?? "EATING",
+            sku: `SKU-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            quantity: receiveData.receivedQty,
+            unit: item.unit ?? '',
+            purpose: item.purpose ?? 'EATING',
             sellingPrice: 0,
             reoderLevel: 0,
           },
         });
 
+        // Link stock to item
         await this.prisma.requisitionItem.update({
           where: { id: item.id },
           data: { stockId: newStock.id },
@@ -211,10 +318,51 @@ export class RequisitionService {
       }
     }
 
+    // Check if all items are fully received
+    const updatedItems = await this.prisma.requisitionItem.findMany({
+      where: { requisitionId },
+    });
+
+    const allFullyReceived = updatedItems.every(
+      item => item.receivingStatus === ReceivingStatus.FULLY_RECEIVED
+    );
+
+    const anyReceived = updatedItems.some(
+      item => item.receivingStatus !== ReceivingStatus.NOT_RECEIVED
+    );
+
+    let newStatus: RequisitionStatus;
+    let completedAt: Date | null = null;
+
+    if (allFullyReceived) {
+      newStatus = RequisitionStatus.FULLY_RECEIVED;
+      completedAt = new Date();
+    } else if (anyReceived) {
+      newStatus = RequisitionStatus.PARTIALLY_RECEIVED;
+    } else {
+      newStatus = RequisitionStatus.APPROVED;
+    }
+
+    // Update requisition status
     return this.prisma.requisition.update({
-      where: { id },
-      data: { status: RequisitionStatus.APPROVED },
-      include: { items: true, employee: true, company: true },
+      where: { id: requisitionId },
+      data: { 
+        status: newStatus,
+        completedAt: completedAt,
+      },
+      include: { 
+        items: { 
+          include: { 
+            receivingLogs: { 
+              include: { receivedBy: true },
+              orderBy: { receivedAt: 'desc' }
+            } 
+          } 
+        }, 
+        employee: true, 
+        company: true,
+  
+      },
     });
   }
 
@@ -238,37 +386,111 @@ export class RequisitionService {
         status: RequisitionStatus.REJECTED,
         rejectReason: reason,
       },
-      include: { items: true, employee: true, company: true },
+      include: { 
+        items: { include: { receivingLogs: true } }, 
+        employee: true, 
+        company: true 
+      },
     });
   }
 
+  // ───────────────────────────────────
   // DELETE
+  // ───────────────────────────────────
   async delete(id: string) {
     return this.prisma.requisition.delete({ where: { id } });
   }
 
+  // ───────────────────────────────────
   // FIND ALL (Admin)
+  // ───────────────────────────────────
   async findAll(companyId: string) {
     return this.prisma.requisition.findMany({
       where: { companyId },
-      include: { items: true, employee: true },
+      include: { 
+        items: { 
+          include: { 
+            receivingLogs: { 
+              include: { receivedBy: true },
+              orderBy: { receivedAt: 'desc' }
+            } 
+          } 
+        }, 
+        employee: true,
+      
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
 
+  // ───────────────────────────────────
   // FIND MY (Employee)
+  // ───────────────────────────────────
   async findByEmployee(employeeId: string) {
     return this.prisma.requisition.findMany({
       where: { employeeId },
-      include: { items: true, company: true },
+      include: { 
+        items: { 
+          include: { 
+            receivingLogs: { 
+              include: { receivedBy: true },
+              orderBy: { receivedAt: 'desc' }
+            } 
+          } 
+        }, 
+        company: true,
+        employee: true,
+      
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
 
+  // ───────────────────────────────────
+  // FIND ONE
+  // ───────────────────────────────────
   async findOne(id: string) {
     return this.prisma.requisition.findUnique({
       where: { id },
-      include: { items: true, employee: true, company: true },
+      include: { 
+        items: { 
+          include: { 
+            receivingLogs: { 
+              include: { receivedBy: true },
+              orderBy: { receivedAt: 'desc' }
+            } 
+          } 
+        }, 
+        employee: true, 
+        company: true,
+       
+      },
     });
+  }
+
+  // ───────────────────────────────────
+  // GET RECEIVING SUMMARY
+  // ───────────────────────────────────
+  async getReceivingSummary(requisitionId: string) {
+    const items = await this.prisma.requisitionItem.findMany({
+      where: { requisitionId },
+      include: {
+        receivingLogs: {
+          include: { receivedBy: true },
+          orderBy: { receivedAt: 'desc' }
+        }
+      }
+    });
+
+    return items.map(item => ({
+      id: item.id,
+      itemName: item.itemName,
+      quantity: item.quantity,
+      receivedQty: item.receivedQty,
+      remainingQty: item.quantity - item.receivedQty,
+      unit: item.unit,
+      receivingStatus: item.receivingStatus,
+   
+    }));
   }
 }

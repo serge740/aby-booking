@@ -9,6 +9,7 @@ import { RequisitionGateway } from './requisition.gateway';
 import { CompanyAuthGuard } from 'src/Guards/company-auth.guard';
 import { PushNotificationsService } from '../push-notification/push-notification.service';
 import { CompanyNotificationService } from '../company-notification/company-notification.service';
+import { EmployeeService } from '../employee/employee.service';
 
 @Module({
   controllers: [RequisitionController],
@@ -27,6 +28,7 @@ import { CompanyNotificationService } from '../company-notification/company-noti
     CompanyAuthGuard,
     CompanyNotificationService,
     PushNotificationsService,
+    EmployeeService,
   ],
 })
 export class RequisitionModule {}

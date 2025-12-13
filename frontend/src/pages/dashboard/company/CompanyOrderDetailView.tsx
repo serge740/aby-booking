@@ -9,10 +9,25 @@ import {
 import jsPDF from 'jspdf';
 import orderService from '../../../services/orderService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
+import { useEmployeeAuth } from '../../../context/EmployeeAuthContext';
 import ReturnItemsModal, { ReturnItemsButton } from '../../../components/dashboard/order/ReturnItemsModal';
 import DebtedAmountModal, { DebtedButton } from '../../../components/dashboard/order/DebtedAmountModal';
 import { API_URL } from '../../../api/api';
 import PaymentMethodModal from '../../../components/dashboard/order/PaymentMethodModal';
+
+// Types matching your Prisma schema
+interface Permission {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+interface EmployeePermission {
+  id: string;
+  employeeId: string;
+  permissionId: string;
+  permission: Permission;
+}
 
 interface Employee {
   id: string;
@@ -22,6 +37,9 @@ interface Employee {
   phone: string;
   position: string;
   profile_picture?: string;
+  companyId?: string;
+  company?: { id: string; name: string };
+  permissions?: EmployeePermission[];
 }
 
 interface OrderItem {
@@ -48,6 +66,7 @@ interface Order {
   orderNumber: string;
   status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED' | 'READY';
   paymentStatus: 'SUCCESSFUL' | 'FAILED' | 'PENDING' | 'DEBTED';
+  paymentMethod?: 'MOMO' | 'CASH';
   totalAmount: number;
   debtedAmount?: number;
   notes?: string;
@@ -83,7 +102,12 @@ const formatDate = (date: string) => {
 export default function CompanyOrderDetailView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { company, isAuthenticated, isLoading: authLoading } = useCompanyAuth();
+
+  const { company, isAuthenticated: isCompanyAuth, isLoading: companyLoading } = useCompanyAuth();
+  const { user: employee, isAuthenticated: isEmployeeAuth, isLoading: employeeLoading } = useEmployeeAuth();
+
+  // Get company ID from either company or employee
+  const currentCompanyId = company?.id || employee?.companyId || employee?.company?.id;
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
@@ -92,32 +116,48 @@ export default function CompanyOrderDetailView() {
   const [updatingPayment, setUpdatingPayment] = useState(false);
   const [generatingPDF, setGeneratingPDF] = useState(false);
   const [operationStatus, setOperationStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
+
   const [showFoodReceipt, setShowFoodReceipt] = useState(false);
   const [showDrinkReceipt, setShowDrinkReceipt] = useState(false);
   const [showCombinedReceipt, setShowCombinedReceipt] = useState(false);
-
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [showDebtedModal, setShowDebtedModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  useEffect(() => {
-    if (!authLoading && (!isAuthenticated || !company)) {
-      navigate('/company/login');
-    }
-  }, [authLoading, isAuthenticated, company, navigate]);
+  // Permission check - EXACTLY matches your Prisma schema
+  const isCompanyUser = isCompanyAuth && !!company;
+  const isEmployeeUser = isEmployeeAuth && !!employee;
 
+  const hasOrderManagementPermission = () => {
+    if (isCompanyUser) return true;
+    if (!employee?.permissions) return false;
+    return employee.permissions.some(ep => ep?.permission?.name?.toLocaleLowerCase() === 'order_management');
+  };
+
+  const canManageOrder = hasOrderManagementPermission();
+
+  // Auth redirect
   useEffect(() => {
-    if (company?.id && id) {
+    if (!companyLoading && !employeeLoading) {
+      if (!isCompanyAuth && !isEmployeeAuth) {
+        navigate('/company/login');
+      }
+    }
+  }, [companyLoading, employeeLoading, isCompanyAuth, isEmployeeAuth, navigate]);
+
+  // Load order
+  useEffect(() => {
+    if (currentCompanyId && id) {
       loadOrder();
     }
-  }, [company?.id, id]);
+  }, [currentCompanyId, id]);
 
   const loadOrder = async () => {
-    if (!id) return;
+    if (!id || !currentCompanyId) return;
     try {
       setLoading(true);
       const data = await orderService.getOrderById(id);
-      if (data.companyId !== company?.id) {
+      if (data.companyId !== currentCompanyId) {
         setError('Unauthorized access');
         return;
       }
@@ -135,7 +175,7 @@ export default function CompanyOrderDetailView() {
   };
 
   const updateOrderStatus = async (newStatus: 'PROCESSING' | 'CANCELLED' | 'COMPLETED' | 'READY') => {
-    if (!order || updatingStatus) return;
+    if (!order || updatingStatus || !canManageOrder) return;
     setUpdatingStatus(true);
     try {
       const updated = await orderService.updateStatus(order.id, newStatus);
@@ -148,18 +188,32 @@ export default function CompanyOrderDetailView() {
     }
   };
 
-  const updatePaymentStatus = async (newStatus: 'SUCCESSFUL' | 'FAILED' | 'DEBTED') => {
-    if (!order || updatingPayment) return;
+  const updatePaymentStatus = async (newStatus: 'SUCCESSFUL' | 'FAILED' | 'DEBTED', amountPaid?: string | null, method?: 'MOMO' | 'CASH') => {
+    if (!order || updatingPayment || !canManageOrder) return;
     setUpdatingPayment(true);
     try {
-      const updated = await orderService.updatePaymentStatus(order.id, newStatus);
+      const updated = await orderService.updatePaymentStatus(order.id, newStatus, amountPaid ?? null, method);
       setOrder(updated);
-      showToast('success', `Payment marked as ${newStatus}!`);
+      showToast('success', 'Payment updated!');
     } catch (err: any) {
-      showToast('error', err.message || 'Failed to update payment status');
+      showToast('error', err.message || 'Failed to update payment');
     } finally {
       setUpdatingPayment(false);
     }
+  };
+
+  const handleDebtedConfirm = async (amountPaid: number, method: 'MOMO' | 'CASH') => {
+    await updatePaymentStatus('DEBTED', amountPaid.toString(), method);
+    setShowDebtedModal(false);
+  };
+
+  const handleMarkAsPaid = async (method: 'MOMO' | 'CASH') => {
+    await updatePaymentStatus('SUCCESSFUL', null, method);
+    setShowPaymentModal(false);
+  };
+
+  const handleReturnSuccess = (updatedOrder: Order) => {
+    setOrder(updatedOrder);
   };
 
   const getStatusInfo = (status: string) => {
@@ -173,109 +227,22 @@ export default function CompanyOrderDetailView() {
     }
   };
 
-  // utils/paymentStatus.js
- const  renderPaymentType = (type:string) =>{
-  switch (type) {
-    case "MOMO":
-      return (
-        <span className="px-5 py-2.5 rounded-full border-2 flex items-center max-w-25 gap-2 bg-yellow-100 text-yellow-700">
-          MOMO
-        </span>
-      );
-
-    case "CASH":
-      return (
-        <span className="px-5 py-2.5 rounded-full border-2 flex items-center  max-w-30 gap-2 bg-green-100 text-green-700">
-          CASH
-        </span>
-      );
-
-    default:
-      return (
-        <span className="px-5 py-2.5 rounded-full border-2 flex items-center gap-2 bg-gray-100 text-gray-600">
-          UNKNOWN
-        </span>
-      );
-  }
-}
-
+  const renderPaymentType = (type?: string) => {
+    switch (type) {
+      case "MOMO": return <span className="px-5 py-2.5 rounded-full border-2 flex items-center gap-2 bg-yellow-100 text-yellow-700">MOMO</span>;
+      case "CASH": return <span className="px-5 py-2.5 rounded-full border-2 flex items-center gap-2 bg-green-100 text-green-700">CASH</span>;
+      default: return <span className="px-5 py-2.5 rounded-full border-2 flex items-center gap-2 bg-gray-100 text-gray-600">UNKNOWN</span>;
+    }
+  };
 
   const getPaymentStatusInfo = (status: string) => {
     switch (status) {
-      case 'SUCCESSFUL':
-        return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, label: 'Paid', bg: 'bg-green-50' };
-      case 'FAILED':
-        return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, label: 'Payment Failed', bg: 'bg-red-50' };
-      case 'DEBTED':
-        return { color: 'bg-orange-100 text-orange-800', icon: <AlertTriangle className="w-5 h-5" />, label: 'On Credit (Debted)', bg: 'bg-orange-50' };
-      case 'PENDING':
-      default:
-        return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, label: 'Payment Pending', bg: 'bg-yellow-50' };
+      case 'SUCCESSFUL': return { color: 'bg-green-100 text-green-800', icon: <CheckCircle className="w-5 h-5" />, label: 'Paid', bg: 'bg-green-50' };
+      case 'FAILED': return { color: 'bg-red-100 text-red-800', icon: <XCircle className="w-5 h-5" />, label: 'Payment Failed', bg: 'bg-red-50' };
+      case 'DEBTED': return { color: 'bg-orange-100 text-orange-800', icon: <AlertTriangle className="w-5 h-5" />, label: 'On Credit (Debted)', bg: 'bg-orange-50' };
+      default: return { color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="w-5 h-5" />, label: 'Payment Pending', bg: 'bg-yellow-50' };
     }
   };
-
-  const handleReturnSuccess = (order: Order) => {
-    if (!order) return null;
-    setOrder(order);
-  };
-const handleDebtedConfirm = async (amountPaid: number,method:'MOMO' | 'CASH') => {
-  setUpdatingPayment(true);
-  try {
-    const updated = await orderService.updatePaymentStatus(
-      order!.id, 
-      'DEBTED', 
-      amountPaid.toString(),  // Backend expects string
-      method
-
-    );
-    
-    setOrder(updated);
-    
-    // Check if debt is fully paid (backend should have changed status to SUCCESSFUL)
-    if (updated.paymentStatus === 'SUCCESSFUL' && !updated.debtedAmount) {
-      showToast('success', 'Debt fully paid! Order marked as SUCCESSFUL ✓');
-    } else if (updated.debtedAmount) {
-      showToast('success', `Payment recorded! Remaining debt: ${formatRWF(updated.debtedAmount)}`);
-    } else {
-      showToast('success', 'Payment status updated successfully!');
-    }
-    
-    setShowDebtedModal(false);
-  } catch (err: any) {
-    showToast('error', err.message || 'Failed to update payment status');
-  } finally {
-    setUpdatingPayment(false);
-  }
-};
-const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
-  setUpdatingPayment(true);
-  try {
-    const updated = await orderService.updatePaymentStatus(
-      order!.id, 
-      'SUCCESSFUL', 
-     null,  // Backend expects string
-      method
-
-    );
-    
-    setOrder(updated);
-    
-    // Check if debt is fully paid (backend should have changed status to SUCCESSFUL)
-    if (updated.paymentStatus === 'SUCCESSFUL' && !updated.debtedAmount) {
-      showToast('success', 'Debt fully paid! Order marked as SUCCESSFUL ✓');
-    } else if (updated.debtedAmount) {
-      showToast('success', `Payment recorded! Remaining debt: ${formatRWF(updated.debtedAmount)}`);
-    } else {
-      showToast('success', 'Payment status updated successfully!');
-    }
-    
-    setShowPaymentModal(false);
-  } catch (err: any) {
-    showToast('error', err.message || 'Failed to update payment status');
-  } finally {
-    setUpdatingPayment(false);
-  }
-};
 
   const handleDownloadPDF = async () => {
     if (!order) return;
@@ -286,6 +253,7 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
       const pageWidth = pdf.internal.pageSize.getWidth();
       const margin = 15;
       let yPos = margin;
+
       const addText = (text: string, x: number, y: number, maxWidth: number, fontSize = 10, bold = false) => {
         pdf.setFontSize(fontSize);
         pdf.setFont('helvetica', bold ? 'bold' : 'normal');
@@ -599,7 +567,7 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
     );
   };
 
-  if (authLoading || loading) {
+  if (companyLoading || employeeLoading || loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
         <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
@@ -626,17 +594,14 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
   const drinkItems = order.items.filter(item => item.menuItem.purpose === 'DRINKING');
   const foodTotal = foodItems.reduce((sum, item) => sum + item.totalPrice, 0);
   const drinkTotal = drinkItems.reduce((sum, item) => sum + item.totalPrice, 0);
-
-  // CHANGED: Calculate paid amount when debted
-  const paidAmount = order.paymentStatus === 'DEBTED' && order.debtedAmount 
-    ? order.totalAmount - order.debtedAmount 
-    : 0;
+  const paidAmount = order.paymentStatus === 'DEBTED' && order.debtedAmount ? order.totalAmount - order.debtedAmount : 0;
 
   return (
     <>
       <div className="min-h-screen bg-gray-50 p-6">
-        <div className=" mx-auto space-y-6">
-          {/* Status Banner - IMPROVED */}
+        <div className="max-w-7xl mx-auto space-y-6">
+
+          {/* Status Banner */}
           <div className={`${status.bg} rounded-xl p-6 border-2 border-${status.color.split(' ')[0].replace('bg-', '')}-200 shadow-sm`}>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
@@ -653,7 +618,6 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                 onClick={handleDownloadPDF}
                 disabled={generatingPDF}
                 className="flex items-center gap-2 px-5 py-3 bg-white rounded-lg hover:bg-gray-50 border-2 border-gray-300 disabled:opacity-50 transition shadow-sm font-medium"
-                title="Download Full Receipt"
               >
                 {generatingPDF ? (
                   <>
@@ -671,9 +635,9 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column - Main Info */}
             <div className="lg:col-span-2 space-y-6">
-              {/* CHANGED: Enhanced Payment Status with Debted Amount */}
+
+              {/* Payment Information */}
               {order.status !== 'PENDING' && (
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-5">
@@ -687,7 +651,6 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                     </div>
                   </div>
 
-                  {/* CHANGED: Payment Summary with Debted Details */}
                   <div className="bg-gray-50 rounded-lg p-5 mb-5 border border-gray-200">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -695,7 +658,7 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                         <p className="text-2xl font-bold text-gray-900">{formatRWF(order.totalAmount)}</p>
                       </div>
                       <div className="">
-                       {renderPaymentType(order?.paymentMethod) }
+                        {renderPaymentType(order.paymentMethod)}
                       </div>
                       {order.paymentStatus === 'DEBTED' && order.debtedAmount && (
                         <>
@@ -713,46 +676,117 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                               <p className="text-sm text-orange-700 mt-1">Customer needs to pay this amount to complete the order</p>
                             </div>
                           </div>
-                          
                         </>
                       )}
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-3">
-                    {order.paymentStatus !== 'SUCCESSFUL' && order.paymentStatus != 'DEBTED' && !order.debtedAmount && (
-                      <button
-                        onClick={() => setShowPaymentModal(true)}
-                        disabled={updatingPayment}
-                        className="flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
-                      >
-                        {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
-                        Mark as Paid
-                      </button>
-                    )}
-
-                    {order.paymentStatus === 'DEBTED' && order.debtedAmount &&
-                    
-                     <DebtedButton value={'Finish Debt'} onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />}
-
-                    {order.paymentStatus === 'PENDING' && (
+                    {!canManageOrder ? (
+                      <p className="text-sm text-gray-500 italic">You don't have permission to manage payments</p>
+                    ) : (
                       <>
-                        <button
-                          onClick={() => updatePaymentStatus('FAILED')}
-                          disabled={updatingPayment}
-                          className="flex items-center gap-2 px-5 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
-                        >
-                          {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <XCircle className="w-5 h-5" />}
-                          Mark as Failed
-                        </button>
-                        <DebtedButton  onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
+                        {order.paymentStatus !== 'SUCCESSFUL' && order.paymentStatus !== 'DEBTED' && !order.debtedAmount && (
+                          <button
+                            onClick={() => setShowPaymentModal(true)}
+                            disabled={updatingPayment}
+                            className="flex items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
+                          >
+                            {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+                            Mark as Paid
+                          </button>
+                        )}
+
+                        {order.paymentStatus === 'DEBTED' && order.debtedAmount && (
+                          <DebtedButton value={'Finish Debt'} onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
+                        )}
+
+                        {order.paymentStatus === 'PENDING' && (
+                          <>
+                            <button
+                              onClick={() => updatePaymentStatus('FAILED')}
+                              disabled={updatingPayment}
+                              className="flex items-center gap-2 px-5 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
+                            >
+                              {updatingPayment ? <RefreshCw className="w-5 h-5 animate-spin" /> : <XCircle className="w-5 h-5" />}
+                              Mark as Failed
+                            </button>
+                            <DebtedButton onClick={() => setShowDebtedModal(true)} disabled={updatingPayment} />
+                          </>
+                        )}
                       </>
                     )}
                   </div>
                 </div>
               )}
-
-              {/* Receipt Buttons - IMPROVED */}
+    {/* Order Actions */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <PlayCircle className="w-6 h-6 text-orange-600" />
+                  Order Actions
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {!canManageOrder ? (
+                    <div className="flex items-center text-gray-500 px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <AlertCircle className="w-5 h-5 mr-2" />
+                      <span className="font-medium">You don't have permission to manage orders</span>
+                    </div>
+                  ) : (
+                    <>
+                      {order.status === 'PENDING' && (
+                        <>
+                          <button
+                            onClick={() => updateOrderStatus('PROCESSING')}
+                            disabled={updatingStatus}
+                            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
+                          >
+                            {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
+                            Start Processing
+                          </button>
+                          <button
+                            onClick={() => updateOrderStatus('CANCELLED')}
+                            disabled={updatingStatus}
+                            className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
+                          >
+                            {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
+                            Cancel Order
+                          </button>
+                        </>
+                      )}
+                      {order.status === 'PROCESSING' && (
+                        <button
+                          onClick={() => updateOrderStatus('READY')}
+                          disabled={updatingStatus}
+                          className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
+                        >
+                          {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
+                          Mark as Ready
+                        </button>
+                      )}
+                      {order.status === 'READY' && (
+                        <button
+                          onClick={() => updateOrderStatus('COMPLETED')}
+                          disabled={updatingStatus || order.paymentStatus !== 'SUCCESSFUL'}
+                          className="flex items-center gap-2 px-6 py-3 bg-green-600 disabled:bg-gray-400 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
+                        >
+                          {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+                          Mark as Completed
+                          {order.paymentStatus !== 'SUCCESSFUL' && (
+                            <span className="ml-2 text-xs">(Payment required)</span>
+                          )}
+                        </button>
+                      )}
+                      {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
+                        <div className="flex items-center text-gray-500 px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
+                          <AlertCircle className="w-5 h-5 mr-2" />
+                          <span className="font-medium">No further actions available</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+              {/* Print Receipts */}
               {order.status !== 'PENDING' && (
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                   <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -802,73 +836,18 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                 </div>
               )}
 
-              {/* Order Status Actions - IMPROVED */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <PlayCircle className="w-6 h-6 text-orange-600" />
-                  Order Actions
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {order.status === 'PENDING' && (
-                    <>
-                      <button
-                        onClick={() => updateOrderStatus('PROCESSING')}
-                        disabled={updatingStatus}
-                        className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
-                      >
-                        {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <PlayCircle className="w-5 h-5" />}
-                        Start Processing
-                      </button>
-                      <button
-                        onClick={() => updateOrderStatus('CANCELLED')}
-                        disabled={updatingStatus}
-                        className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition font-semibold shadow-md"
-                      >
-                        {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <X className="w-5 h-5" />}
-                        Cancel Order
-                      </button>
-                    </>
-                  )}
-                  {order.status === 'PROCESSING' && (
-                    <button
-                      onClick={() => updateOrderStatus('READY')}
-                      disabled={updatingStatus}
-                      className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition font-semibold shadow-md"
-                    >
-                      {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
-                      Mark as Ready
-                    </button>
-                  )}
-                  {order.status === 'READY' && (
-                    <button
-                      onClick={() => updateOrderStatus('COMPLETED')}
-                      disabled={updatingStatus || order.paymentStatus !== 'SUCCESSFUL'}
-                      className="flex items-center gap-2 px-6 py-3 bg-green-600 disabled:bg-gray-400 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition font-semibold shadow-md"
-                    >
-                      {updatingStatus ? <RefreshCw className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
-                      Mark as Completed
-                      {order.paymentStatus !== 'SUCCESSFUL' && (
-                        <span className="ml-2 text-xs">(Payment required)</span>
-                      )}
-                    </button>
-                  )}
-                  {(order.status === 'COMPLETED' || order.status === 'CANCELLED') && (
-                    <div className="flex items-center text-gray-500 px-4 py-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <AlertCircle className="w-5 h-5 mr-2" />
-                      <span className="font-medium">No further actions available</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+          
 
-              {/* Order Items - IMPROVED */}
+              {/* Order Items */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-200 flex items-center justify-between">
                   <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <Package className="w-6 h-6 text-orange-600" />
                     Order Items ({order.items.length})
                   </h2>
-                  <ReturnItemsButton onClick={() => setShowReturnModal(true)} />
+                  {/* Return button only for company owner */}
+                  {canManageOrder && order.status !== 'COMPLETED' && <ReturnItemsButton onClick={() => setShowReturnModal(true)} />}
+                
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -966,9 +945,8 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
               </div>
             </div>
 
-            {/* Right Column - Sidebar Info */}
+            {/* Right Sidebar */}
             <div className="space-y-6">
-              {/* CHANGED: Employee Information Card */}
               {order.employee && (
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -995,22 +973,11 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                         <Briefcase className="w-3.5 h-3.5" />
                         <span>{order.employee.position}</span>
                       </div>
-                      <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
-                        <Mail className="w-3.5 h-3.5" />
-                        <span className="truncate">{order.employee.email}</span>
-                      </div>
-                      {order.employee.phone && (
-                        <div className="flex items-center gap-1.5 mt-1 text-sm text-gray-600">
-                          <Phone className="w-3.5 h-3.5" />
-                          <span>{order.employee.phone}</span>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Customer Information - IMPROVED */}
               <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-orange-600" />
@@ -1051,35 +1018,6 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                 </div>
               </div>
 
-              {/* Order Timeline - IMPROVED */}
-              <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-orange-600" />
-                  Timeline
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <Calendar className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Created</p>
-                      <p className="font-semibold text-gray-900">{formatDate(order.createdAt)}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      <Clock className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">Last Updated</p>
-                      <p className="font-semibold text-gray-900">{formatDate(order.updatedAt)}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Customer Notes - IMPROVED */}
               {order.notes && (
                 <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -1092,7 +1030,6 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
                 </div>
               )}
 
-              {/* Order Summary - IMPROVED */}
               <div className="bg-gradient-to-br from-orange-50 to-blue-50 rounded-xl shadow-sm p-6 border-2 border-orange-200">
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5 text-orange-600" />
@@ -1121,19 +1058,6 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
               </div>
             </div>
           </div>
-
-          {/* Toast - IMPROVED */}
-          {operationStatus && (
-            <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-right">
-              <div className={`flex items-center gap-3 px-5 py-4 rounded-lg shadow-2xl border-2 ${operationStatus.type === 'success' ? 'bg-green-50 border-green-300 text-green-800' :
-                  operationStatus.type === 'error' ? 'bg-red-50 border-red-300 text-red-800' :
-                    'bg-blue-50 border-blue-300 text-blue-800'
-                }`}>
-                <AlertCircle className="w-6 h-6" />
-                <span className="font-semibold text-base">{operationStatus.message}</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -1156,10 +1080,21 @@ const handleMarkAsPaid = async (method:'MOMO' | 'CASH') => {
       <PaymentMethodModal
         isOpen={showPaymentModal}
         onClose={() => setShowPaymentModal(false)}
-      
         onConfirm={handleMarkAsPaid}
         isLoading={updatingPayment}
       />
+
+      {operationStatus && (
+        <div className="fixed top-6 right-6 z-50 animate-in slide-in-from-right">
+          <div className={`flex items-center gap-3 px-5 py-4 rounded-lg shadow-2xl border-2 ${operationStatus.type === 'success' ? 'bg-green-50 border-green-300 text-green-800' :
+              operationStatus.type === 'error' ? 'bg-red-50 border-red-300 text-red-800' :
+                'bg-blue-50 border-blue-300 text-blue-800'
+            }`}>
+            <AlertCircle className="w-6 h-6" />
+            <span className="font-semibold text-base">{operationStatus.message}</span>
+          </div>
+        </div>
+      )}
     </>
   );
 }
