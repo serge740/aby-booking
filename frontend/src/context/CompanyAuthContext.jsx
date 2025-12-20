@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import companyAuthService from '../services/companyAuthService';
 import pushNotificationService from '../services/pushNotificationService';
+import { getClientDescription } from '../stores/detectDevice';
 
 // ✅ Create context
 const CompanyAuthContext = createContext({

@@ -25,6 +25,7 @@ import { SocketModule } from './Global/socket/socket.module';
 import { CompanyNotificationModule } from './Modules/company-notification/company-notification.module';
 import { PushNotificationsModule } from './Modules/push-notification/push-notification.module';
 import { StockModule } from './Modules/stock/stock.module';
+import { RequisitionModule } from './Modules/requisition/requisition.module';
 
 
 @Module({
@@ -55,7 +56,8 @@ import { StockModule } from './Modules/stock/stock.module';
     SocketModule,
     CompanyNotificationModule,
     PushNotificationsModule,
-    StockModule
+    StockModule,
+    RequisitionModule
   ],
   controllers: [],
 })

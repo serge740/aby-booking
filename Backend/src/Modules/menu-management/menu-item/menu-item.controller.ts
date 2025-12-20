@@ -31,6 +31,7 @@ export class MenuItemController {
       body.mainImage = `/uploads/menu/${files.mainImage[0].filename}`;
     if (files?.otherImages)
       body.otherImages = files.otherImages.map((f: any) => `/uploads/menu/${f.filename}`);
+console.log('\n DAATA \n :',body);
 
     return this.service.create(req.company!.id, body);
   }

@@ -43,7 +43,7 @@ const OrderReportAnalysis = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'clients' | 'orders'>('overview');
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('today');
 
-  const {company} = useCompanyAuth();
+  const {company} = useCompanyAuth() as any;
 
   useEffect(() => {
     fetchOrders();
@@ -52,7 +52,7 @@ const OrderReportAnalysis = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getAllOrders();
+      const data = await orderService.getOrdersByCompany(company?.id);
       setOrders(data);
     } catch (err: any) {
       console.error('Failed to load orders:', err);

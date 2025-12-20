@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
+import BulkMenuImportButton from '../../../components/dashboard/BulkMenuImportButton';
 
 const formatRWF = (amount) => {
   return new Intl.NumberFormat('rw-RW', {
@@ -526,6 +527,7 @@ const MenuItemDashboard = () => {
           )}
         </AnimatePresence>
       </div>
+    
     </div>
   );
 };
