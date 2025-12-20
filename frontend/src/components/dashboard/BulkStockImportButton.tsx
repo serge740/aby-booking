@@ -1,6 +1,40 @@
 import React, { useState } from 'react';
-import { createManyStocks } from '../../services/stockService';
+import { createStock } from '../../services/stockService';
 import { bulkStore } from '../../stores/stock';
+
+
+async function createManyStocks(items: any[]): Promise<any> {
+  const successful: any[] = [];
+  const failed: Array<{ item: any; error: string }> = [];
+
+  for (const item of items) {
+    try {
+      // For EATING items, add minimal required fields
+     
+      const result = await createStock(item);
+      successful.push(result);
+      
+      console.log(`✓ Created: ${item.name}`);
+    } catch (error: any) {
+      failed.push({
+        item,
+        error: error.message || 'Unknown error',
+      });
+      
+      console.error(`✗ Failed: ${item.name} - ${error.message}`);
+    }
+  }
+
+  return {
+    successful,
+    failed,
+    summary: {
+      total: items.length,
+      succeeded: successful.length,
+      failed: failed.length,
+    },
+  };
+}
 
 
 const BulkStockImportButton: React.FC = () => {

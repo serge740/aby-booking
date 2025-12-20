@@ -12,6 +12,8 @@ import stockService from '../../services/stockService';
 import { useEmployeeAuth } from '../../context/EmployeeAuthContext';
 import { useSocketEvent } from '../../context/SocketContext';
 
+import BulkStockImportButton from '../../components/dashboard/BulkStockImportButton';
+
 // ──────────────────────────────────────────────────────────────
 // ── TYPES & INTERFACES ───────────────────────────────────────
 // ──────────────────────────────────────────────────────────────
@@ -836,6 +838,7 @@ const StockManagementDashboard: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+    <BulkStockImportButton />
     </div>
   );
 };

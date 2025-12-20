@@ -20,7 +20,7 @@ class MenuItemService {
                     // For JSON arrays (like ingredients) serialize them
                     formData.append(key, JSON.stringify(value));
                 } else {
-                    xxx
+
                     formData.append(key, value);
                 }
             });
@@ -37,7 +37,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to create menu item';
+                error.response.data.message || 'Failed to create menu item';
             throw new Error(msg);
         }
     }
@@ -51,7 +51,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to fetch menu items';
+                error.response.data.message || 'Failed to fetch menu items';
             throw new Error(msg);
         }
     }
@@ -63,7 +63,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to fetch all menu items';
+                error.response.data.message || 'Failed to fetch all menu items';
             throw new Error(msg);
         }
     }
@@ -73,7 +73,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to fetch all menu items';
+                error.response.data.message || 'Failed to fetch all menu items';
             throw new Error(msg);
         }
     }
@@ -85,7 +85,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to fetch menu items by company';
+                error.response.data.message || 'Failed to fetch menu items by company';
             throw new Error(msg);
         }
     }
@@ -120,7 +120,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to update menu item';
+                error.response.data.message || 'Failed to update menu item';
             throw new Error(msg);
         }
     }
@@ -134,7 +134,7 @@ class MenuItemService {
             return response.data;
         } catch (error) {
             const msg =
-                error.response ? .data ? .message || 'Failed to delete menu item';
+                error.response.data.message || 'Failed to delete menu item';
             throw new Error(msg);
         }
     }
