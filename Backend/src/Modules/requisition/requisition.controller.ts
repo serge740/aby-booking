@@ -8,17 +8,20 @@ import {
   Body,
   Req,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { RequisitionService } from './requisition.service';
 import { RequisitionGateway } from './requisition.gateway';
 import { DualAuthGuard, RequestWithCompanyEmployee } from 'src/Guards/dual-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { EmployeeService } from '../employee/employee.service';
 
 @Controller('requisition')
 @UseGuards(DualAuthGuard)
 export class RequisitionController {
   constructor(
     private readonly service: RequisitionService,
+        private readonly employeeService: EmployeeService,
     private readonly gateway: RequisitionGateway,
   ) {}
 
@@ -52,7 +55,13 @@ export class RequisitionController {
     return this.service.findOne(id);
   }
 
-  // UPDATE (employee only)
+  // GET RECEIVING SUMMARY
+  @Get(':id/receiving-summary')
+  async getReceivingSummary(@Param('id') id: string) {
+    return this.service.getReceivingSummary(id);
+  }
+
+  // UPDATE (employee only, PENDING status only)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -64,13 +73,13 @@ export class RequisitionController {
     if (!employeeId)
       throw new UnauthorizedException('Only employees can update requisitions');
 
-    const updated : any = await this.service.updateRequisition(id, employeeId, body);
+    const updated: any = await this.service.updateRequisition(id, employeeId, body);
 
     this.gateway.notifyUpdated(updated?.companyId, updated);
     return updated;
   }
 
-  // APPROVE
+  // APPROVE (Admin only)
   @Put(':id/approve')
   async approve(
     @Param('id') id: string,
@@ -80,13 +89,56 @@ export class RequisitionController {
     if (!req.company)
       throw new UnauthorizedException('Only company accounts can approve requisitions');
 
-    const approved = await this.service.approveRequisition(id, req.company.id, body);
+    // Get the approver employee ID (assuming company user has associated employee)
+    // You may need to adjust this based on your auth structure
+   
+
+    const approved = await this.service.approveRequisition(
+      id, 
+      req.company.id, 
+      
+      body
+    );
 
     this.gateway.notifyApproved(req.company.id, approved);
     return approved;
   }
 
-  // REJECT
+  // RECEIVE ITEMS (Admin only)
+  @Put(':id/receive')
+  async receiveItems(
+    @Param('id') id: string,
+    @Body() body: { 
+      items: { 
+        itemId: string; 
+        receivedQty: number;
+        note?: string;
+      }[] 
+    },
+    @Req() req: RequestWithCompanyEmployee,
+  ) {
+
+    let employee = null as any;
+
+      if(req?.employee?.id){ 
+           employee = await this.employeeService.findOne(req.employee.id)
+          }
+   
+    // Get the receiver employee ID
+    const receivedById = req.employee?.id || req?.company?.id;
+
+    const updated = await this.service.receiveItems(
+      id,
+      req?.company?.id || employee?.companyId,
+      receivedById,
+      body.items
+    );
+
+    this.gateway.notifyReceived(req?.company?.id || employee?.companyId, updated);
+    return updated;
+  }
+
+  // REJECT (Admin only)
   @Put(':id/reject')
   async reject(
     @Param('id') id: string,

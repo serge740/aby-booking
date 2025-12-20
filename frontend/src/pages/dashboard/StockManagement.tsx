@@ -56,7 +56,7 @@ interface FormData {
   description: string;
 }
 
-const UNIT_OPTIONS = ['pcs', 'pack', 'kg'];
+const UNIT_OPTIONS = ['pcs', 'kg'];
 
 // ──────────────────────────────────────────────────────────────
 // ── COMPONENT ─────────────────────────────────────────────────
@@ -96,6 +96,10 @@ const StockManagementDashboard: React.FC = () => {
   });
 
   const navigate = useNavigate();
+
+  const [showUpdateStockModal, setShowUpdateStockModal] = useState<boolean>(false);
+const [updateStockItem, setUpdateStockItem] = useState<Stock | null>(null);
+const [updateQuantity, setUpdateQuantity] = useState<string>(''); 
 
   // ── AUTO GENERATE SKU ──
   const generateSKU = () => {
@@ -161,6 +165,41 @@ const StockManagementDashboard: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleOpenUpdateStock = (stock: Stock) => {
+  setUpdateStockItem(stock);
+  setUpdateQuantity('');
+  setShowUpdateStockModal(true);
+};
+
+const handleUpdateStockQuantity = async () => {
+  if (!updateStockItem || !updateQuantity) {
+    showOperationStatus('error', 'Please enter quantity to add');
+    return;
+  }
+
+  const quantityToAdd = Number(updateQuantity);
+  if (isNaN(quantityToAdd) || quantityToAdd <= 0) {
+    showOperationStatus('error', 'Please enter a valid positive number');
+    return;
+  }
+
+  const newTotalQuantity = updateStockItem.quantity + quantityToAdd;
+
+  try {
+    setOperationLoading(true);
+    await stockService.updateStock(updateStockItem.id, {
+      quantity: newTotalQuantity,
+    });
+    showOperationStatus('success', `Stock updated! Added ${quantityToAdd} ${updateStockItem.unit}`);
+    setShowUpdateStockModal(false);
+    await loadData();
+  } catch (err: any) {
+    showOperationStatus('error', err.message || 'Failed to update stock');
+  } finally {
+    setOperationLoading(false);
+  }
+};
 
   // ── TOAST ──
   const showOperationStatus = (type: 'success' | 'error', message: string, duration = 3000) => {
@@ -335,6 +374,10 @@ const StockManagementDashboard: React.FC = () => {
 
   const renderActions = (stock: Stock) => (
     <div className="flex items-center space-x-2">
+         <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleOpenUpdateStock(stock)}
+      className="text-gray-500 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors" title="Update Stock">
+      <Package className="w-4 h-4" />
+    </motion.button>
       <motion.button whileHover={{ scale: 1.1 }} onClick={() => handleEditStock(stock)}
         className="text-gray-500 hover:text-primary-600 p-2 rounded-full hover:bg-primary-50 transition-colors" title="Edit">
         <Edit className="w-4 h-4" />
@@ -637,6 +680,154 @@ const StockManagementDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+
+      <AnimatePresence>
+  {showUpdateStockModal && updateStockItem && (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }} 
+      animate={{ opacity: 1, scale: 1 }} 
+      exit={{ opacity: 0, scale: 0.95 }} 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    >
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-500 p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <Package className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Update Stock</h2>
+                <p className="text-sm text-white/90">{updateStockItem.name}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowUpdateStockModal(false)}
+              className="w-9 h-9 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors"
+              disabled={operationLoading}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6 space-y-6">
+          {/* Current Stock Info */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border-2 border-gray-200">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">Current Stock</span>
+                <span className="text-2xl font-bold text-gray-900">
+                  {updateStockItem.quantity} {updateStockItem.unit}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-600">SKU:</span>
+                <span className="font-mono text-gray-900">{updateStockItem.sku}</span>
+              </div>
+              {updateStockItem.reoderLevel > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Reorder Level:</span>
+                  <span className="text-orange-600 font-medium">
+                    {updateStockItem.reoderLevel} {updateStockItem.unit}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Add Quantity Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Quantity to Add
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                value={updateQuantity}
+                onChange={(e) => setUpdateQuantity(e.target.value)}
+                placeholder="Enter quantity to add"
+                className="w-full px-4 pr-20 py-3.5 border-2 border-gray-300 rounded-xl text-lg font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                min="0"
+                step="1"
+                disabled={operationLoading}
+                autoFocus
+              />
+              <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                <span className="text-sm font-medium text-gray-500">{updateStockItem.unit}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* New Total Preview */}
+          {updateQuantity && Number(updateQuantity) > 0 && (
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-5 border-2 border-green-200">
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 font-medium">Current Stock:</span>
+                  <span className="font-bold text-gray-900 text-base">
+                    {updateStockItem.quantity} {updateStockItem.unit}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-green-700">
+                  <span className="font-medium">Adding:</span>
+                  <span className="font-bold text-base">
+                    + {Number(updateQuantity)} {updateStockItem.unit}
+                  </span>
+                </div>
+                <div className="pt-3 border-t-2 border-green-300 flex justify-between items-center">
+                  <span className="font-bold text-gray-900">New Total:</span>
+                  <span className="text-2xl font-bold text-green-600">
+                    {updateStockItem.quantity + Number(updateQuantity)} {updateStockItem.unit}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Info Message */}
+          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+            <div className="flex gap-2">
+              <AlertTriangle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-blue-800">
+                Enter the quantity you want to add to the existing stock. The new total will be calculated automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 pb-6 flex items-center gap-3">
+          <button
+            onClick={() => setShowUpdateStockModal(false)}
+            className="flex-1 px-6 py-3.5 text-gray-700 font-semibold bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+            disabled={operationLoading}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleUpdateStockQuantity}
+            disabled={operationLoading || !updateQuantity || Number(updateQuantity) <= 0}
+            className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold rounded-xl hover:from-blue-600 hover:to-indigo-600 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl"
+          >
+            {operationLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Updating...</span>
+              </div>
+            ) : (
+              'Update Stock'
+            )}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* Form Modal with Profit/Loss Calculation */}
       <AnimatePresence>

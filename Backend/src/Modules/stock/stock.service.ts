@@ -6,27 +6,54 @@ export class StockService {
   constructor(private prisma: PrismaService) {}
 
   // CREATE STOCK ITEM
-  async create(data: {
-    companyId: string;
-    employeeId?: string;
-    name: string;
-    sku: string;
-    quantity: number;
-    unit: string;
- 
-    description?: string;
-    purchasingPrice?: number;
-    subquantity?: number;
-      purpose: 'EATING' | 'DRINKING';
+ async create(data: {
+  companyId: string;
+  employeeId?: string;
+  name: string;
+  sku: string;
+  quantity: number;
+  unit: string;
+  description?: string;
+  purchasingPrice?: number;
+  subquantity?: number;
+  purpose: 'EATING' | 'DRINKING';
   sellingPrice: number;
   reoderLevel: number;
-  }) {
-    
-    return this.prisma.stock.create({
+}) {
+  return this.prisma.$transaction(async (tx) => {
+    // 1️⃣ Create stock
+    const stock = await tx.stock.create({
       data,
     });
-  }
-  
+
+    // 2️⃣ If DRINKING → also create menu item
+    if (data.purpose === 'DRINKING') {
+      const diff =
+        data.purchasingPrice && data.sellingPrice
+          ? data.sellingPrice - data.purchasingPrice
+          : null;
+
+      await tx.menuItem.create({
+        data: {
+          companyId: data.companyId,
+          name: data.name,
+          sellingPrice: data.sellingPrice,
+          purchasingPrice: data.purchasingPrice ?? null,
+          difference: diff,
+          purpose: 'DRINKING',
+          drinkState: 'ALCOHOLIC', // default (can be updated later)
+          alcoholicType:'BEER',
+          isActive: true,
+          // Optional: link stock to menu
+          stockId: stock.id,
+        },
+      });
+    }
+
+    return stock;
+  });
+}
+
 
   // FIND ALL FOR COMPANY
   async findAll(companyId: string) {

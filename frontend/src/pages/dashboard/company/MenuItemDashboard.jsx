@@ -6,10 +6,11 @@ import {
   MenuSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import menuItemService from '../../../services/menuItemService';
 import { useCompanyAuth } from '../../../context/CompanyAuthContext';
 import BulkMenuImportButton from '../../../components/dashboard/BulkMenuImportButton';
+import { useEmployeeAuth } from '../../../context/EmployeeAuthContext';
 
 const formatRWF = (amount) => {
   return new Intl.NumberFormat('rw-RW', {
@@ -23,6 +24,7 @@ const formatRWF = (amount) => {
 
 const MenuItemDashboard = () => {
   const { company } = useCompanyAuth();
+  const {user:employee} = useEmployeeAuth()
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +38,7 @@ const MenuItemDashboard = () => {
   const [operationStatus, setOperationStatus] = useState(null);
   const [operationLoading, setOperationLoading] = useState(false);
   const [viewMode, setViewMode] = useState('table');
+  const {role}  = useOutletContext()
 
   const navigate = useNavigate();
 
@@ -96,17 +99,17 @@ const MenuItemDashboard = () => {
   };
 
   const handleCreateItem = () => {
-    navigate('/company/dashboard/menu-item/create');
+    navigate(`/${role}/dashboard/menu-item/create`);
   };
 
   const handleEditItem = (item) => {
     if (!item?.id) return;
-    navigate(`/company/dashboard/menu-item/update/${item.id}`);
+    navigate(`/${role}/dashboard/menu-item/update/${item.id}`);
   };
 
   const handleViewItem = (item) => {
     if (!item?.id) return;
-    navigate(`/company/dashboard/menu-item/${item.id}`);
+    navigate(`/${role}/dashboard/menu-item/${item.id}`);
   };
 
   const handleDeleteItem = async (item) => {
@@ -352,7 +355,7 @@ const MenuItemDashboard = () => {
               <p className="text-xs text-gray-500">Manage all your menu items</p>
             </div>
             <div className="flex items-center space-x-3">
-              <motion.button whileHover={{ scale: 1.05 }} onClick={() => navigate(`/partners/menu/${company?.id}`)}
+              <motion.button whileHover={{ scale: 1.05 }} onClick={() => navigate(`/partners/menu/${company?.id || employee?.companyId}`)}
                 className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-primary-600 border border-gray-200 rounded hover:bg-primary-50 disabled:opacity-50">
                 <MenuSquare className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 <span className="text-xs">See Whole Menu</span>
@@ -527,7 +530,7 @@ const MenuItemDashboard = () => {
           )}
         </AnimatePresence>
       </div>
-    
+    {/* <BulkMenuImportButton /> */}
     </div>
   );
 };

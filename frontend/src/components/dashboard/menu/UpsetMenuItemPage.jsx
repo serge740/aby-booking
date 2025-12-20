@@ -9,10 +9,10 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import menuItemService from '../../../services/menuItemService';
 import stockService from '../../../services/stockService';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { API_URL } from '../../../api/api';
 
-function MenuItemForm({ itemToEdit = null, onSuccess, onCancel }) {
+function MenuItemForm({ itemToEdit = null, onSuccess, onCancel,role }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [drinkingStocks, setDrinkingStocks] = useState([]);
@@ -515,6 +515,8 @@ export function EditMenuItemPage() {
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
+    const {role}  = useOutletContext()
+  
 
   useEffect(() => {
     const loadMenuItem = async () => {
@@ -525,7 +527,8 @@ export function EditMenuItemPage() {
       } catch (error) {
         console.error('Failed to load menu item:', error);
         alert('Failed to load menu item');
-        navigate('/company/dashboard/menu-item');
+        navigate(`/${role}/dashboard/menu-item`);
+       
       } finally {
         setLoading(false);
       }
@@ -535,11 +538,11 @@ export function EditMenuItemPage() {
 
   const handleSuccess = () => {
     alert('Menu item updated successfully!');
-    navigate('/company/dashboard/menu-item');
+    navigate(`/${role}/dashboard/menu-item`);
   };
 
   const handleCancel = () => {
-    navigate('/company/dashboard/menu-item');
+    navigate(`/${role}/dashboard/menu-item`);
   };
 
   if (loading) {
@@ -550,19 +553,20 @@ export function EditMenuItemPage() {
     );
   }
 
-  return <MenuItemForm itemToEdit={item} onSuccess={handleSuccess} onCancel={handleCancel} />;
+  return <MenuItemForm itemToEdit={item} role={role} onSuccess={handleSuccess} onCancel={handleCancel} />;
 }
 
 export function CreateMenuItemPage() {
   const navigate = useNavigate();
+  const {role}  = useOutletContext()
 
   const handleSuccess = () => {
     alert('Menu item created successfully!');
-    navigate('/company/dashboard/menu-item');
+    navigate(`/${role}/dashboard/menu-item`);
   };
 
   const handleCancel = () => {
-    navigate('/company/dashboard/menu-item');
+    navigate(`/${role}/dashboard/menu-item`);
   };
 
   return <MenuItemForm onSuccess={handleSuccess} onCancel={handleCancel} />;

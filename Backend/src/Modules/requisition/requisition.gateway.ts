@@ -47,6 +47,10 @@ export class RequisitionGateway implements OnGatewayConnection, OnGatewayDisconn
     this.server.to(`company_${companyId}`).emit('requisitionApproved', data);
   }
 
+  notifyReceived(companyId: string, data: any) {
+    this.server.to(`company_${companyId}`).emit('requisitionReceived', data);
+  }
+
   notifyRejected(companyId: string, data: any) {
     this.server.to(`company_${companyId}`).emit('requisitionRejected', data);
   }

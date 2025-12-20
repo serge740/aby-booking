@@ -24,14 +24,14 @@ import {
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import useAdminAuth from "../../context/AdminAuthContext";
 import { useCompanyAuth } from "../../context/CompanyAuthContext";
-import { useEmployeeAuth } from "../../context/EmployeeAuthContext"; // NEW
+import { useEmployeeAuth } from "../../context/EmployeeAuthContext";
 import logo from '../../assets/tran.png';
 import PWAInstallButton from "./PWAInstallButton";
 
 interface SidebarProps {
   isOpen?: boolean;
   onToggle: () => void;
-  role: "admin" | "company" | "employee"; // Now includes employee
+  role: "admin" | "company" | "employee";
 }
 
 interface NavItem {
@@ -40,6 +40,7 @@ interface NavItem {
   icon: React.ElementType;
   path: string;
   allowedRoles?: string[];
+  requiredPermission?: string; // NEW: Permission required to see this link
 }
 
 interface DropdownGroup {
@@ -48,6 +49,7 @@ interface DropdownGroup {
   icon: React.ElementType;
   items: NavItem[];
   allowedRoles?: string[];
+  requiredPermission?: string; // NEW: Permission for dropdown visibility
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
@@ -58,14 +60,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
   // Auth contexts
   const adminAuth = useAdminAuth();
   const companyAuth = useCompanyAuth();
-  const employeeAuth = useEmployeeAuth(); // NEW
+  const employeeAuth = useEmployeeAuth();
 
   // Select correct auth and user
   const auth = role === "admin" ? adminAuth : role === "company" ? companyAuth : employeeAuth;
   const user = role === "admin" ? adminAuth.user : role === "company" ? companyAuth.company : employeeAuth.user;
 
+  // NEW: Get employee permissions
+  const employeePermissions = role === "employee" && user?.permissions 
+    ? user.permissions.map((p: any) => p.permission?.name || p.name).filter(Boolean)
+    : [];
+
   const toggleDropdown = (id: string) => {
     setOpenDropdown((prev) => (prev === id ? null : id));
+  };
+
+  // NEW: Permission check helper
+  const hasPermission = (requiredPermission?: string): boolean => {
+    if (!requiredPermission) return true; // No permission required
+    if (role !== "employee") return true; // Non-employees bypass permission check
+    return employeePermissions.includes(requiredPermission);
   };
 
   // Unified navigation with role-based access
@@ -86,16 +100,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         allowedRoles: ["company"],
         items: [
           { id: "employee", label: "Employee", icon: User2, path: `${basePath}/employee`, allowedRoles: ["company"] },
+          { id: "permission", label: "Permissions", icon: User2, path: `${basePath}/permission-management`, allowedRoles: ["company"] },
           { id: "leave-request", label: "Leave Request Management", icon: DoorOpen, path: `${basePath}/leave-request` },
           { id: "pre-salary", label: "Pre Salary Management", icon: DollarSign, path: `${basePath}/pre-salary` },
           { id: "risk-report", label: "Risk Report Management", icon: File, path: `${basePath}/risk-report` },
         ],
       },
+
       { id: "orders", label: "Orders Management", icon: ClipboardList, path: `${basePath}/orders`, allowedRoles: ["company"] },
       { id: "stock", label: "Stock Management", icon: BuildingIcon, path: `${basePath}/stock` },
-      // { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`, allowedRoles: ["company"] },
+      { id: "request", label: "Requisition Management", icon: FileQuestion, path: `${basePath}/requisition-management`, allowedRoles: ["company"] },
       { id: "menu-item", label: "Menu Item Management", icon: Box, path: `${basePath}/menu-item`, allowedRoles: ["company"] },
-      
       
       {
         id: "report",
@@ -104,38 +119,96 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
         allowedRoles: ["company"],
         items: [
           { id: "order-report", label: "Order Report", icon: Layers, path: `${basePath}/order-report`, allowedRoles: ["company"] },
-          
-
         ],
       },
     ];
 
+    // NEW: Employee links with permission requirements
     const employeeLinks: (NavItem | DropdownGroup)[] = [
       { id: "dashboard", label: "My Dashboard", icon: TrendingUp, path: basePath },
-      { id: "place-order", label: " Order", icon: DoorOpen, path: `${basePath}/order` },
-      { id: "leave-request", label: "Leave Request", icon: DoorOpen, path: `${basePath}/leave-request` },
-      { id: "pre-salary", label: "Pre Salary", icon: DollarSign, path: `${basePath}/pre-salary` },
-      { id: "risk-report", label: "Risk Report", icon: File, path: `${basePath}/risk-report` },
-      { id: "request", label: "Requisition", icon: FileQuestion, path: `${basePath}/requisition-management`},
-
+      { 
+        id: "place-order", 
+        label: "Order", 
+        icon: DoorOpen, 
+        path: `${basePath}/orders`,
+      
+      },
+  
+      { 
+        id: "stock", 
+        label: "Stock Management", 
+        icon: BuildingIcon, 
+        path: `${basePath}/stock`,
+        requiredPermission: "stock_management" // Requires "stock_management" permission
+      },
+      { 
+        id: "menu-item", 
+        label: "Menu Item Management", 
+        icon: Box, 
+        path: `${basePath}/menu-item`,
+        requiredPermission: "menu_management" // Requires "menu_management" permission
+      },
+      { 
+        id: "request", 
+        label: "Requisition", 
+        icon: FileQuestion, 
+        path: `${basePath}/requisition-management`,
+        requiredPermission: "requisition_management" // Requires "requisition_management" permission
+      },
+      { 
+        id: "leave-request", 
+        label: "Leave Request", 
+        icon: DoorOpen, 
+        path: `${basePath}/leave-request`
+        // No permission required - all employees can request leave
+      },
+      { 
+        id: "pre-salary", 
+        label: "Pre Salary", 
+        icon: DollarSign, 
+        path: `${basePath}/pre-salary`
+        // No permission required - all employees can access
+      },
+      { 
+        id: "risk-report", 
+        label: "Risk Report", 
+        icon: File, 
+        path: `${basePath}/risk-report`
+        // No permission required - all employees can report risks
+      },
     ];
 
     return role === "admin" ? adminLinks : role === "company" ? companyLinks : employeeLinks;
   };
 
-  // Filter items by role
+  // NEW: Updated filter to include permission checks
   const filterNavItems = (items: (NavItem | DropdownGroup)[]): (NavItem | DropdownGroup)[] => {
     return items
       .map((item) => {
+        // Check if dropdown group
         if ("items" in item) {
+          // Check role permission
           if (item.allowedRoles && !item.allowedRoles.includes(role)) return null;
-          const filteredItems = item.items.filter(
-            (subItem) => !subItem.allowedRoles || subItem.allowedRoles.includes(role)
-          );
+          
+          // Check required permission for dropdown
+          if (item.requiredPermission && !hasPermission(item.requiredPermission)) return null;
+          
+          // Filter child items
+          const filteredItems = item.items.filter((subItem) => {
+            const roleAllowed = !subItem.allowedRoles || subItem.allowedRoles.includes(role);
+            const permissionAllowed = hasPermission(subItem.requiredPermission);
+            return roleAllowed && permissionAllowed;
+          });
+          
           if (filteredItems.length === 0) return null;
           return { ...item, items: filteredItems };
         }
-        if (!item.allowedRoles || item.allowedRoles.includes(role)) {
+        
+        // Check single nav item
+        const roleAllowed = !item.allowedRoles || item.allowedRoles.includes(role);
+        const permissionAllowed = hasPermission(item.requiredPermission);
+        
+        if (roleAllowed && permissionAllowed) {
           return item;
         }
         return null;
@@ -320,6 +393,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, role }) => {
             )}
           </nav>
         </div>
+     
 
         {/* Footer: Profile */}
         <PWAInstallButton />

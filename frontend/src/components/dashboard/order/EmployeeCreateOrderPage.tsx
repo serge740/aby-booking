@@ -274,7 +274,7 @@ const EmployeeCreateOrderPage = () => {
         timerProgressBar: true,
       });
 
-      navigate('/employee/dashboard/order');
+      navigate('/employee/dashboard/orders');
       resetForm();
     } catch (err: any) {
       Swal.fire('Error', err.message || 'Failed to create order', 'error');

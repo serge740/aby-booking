@@ -91,6 +91,10 @@ async lockEmployee(id: string) {
     const lockedEmployee = await this.prisma.employee.update({
       where: { id },
       data: { isLocked: true },
+       include:{
+        company:true,
+        permissions:true
+      }
     });
     return { message: `Employee ${lockedEmployee.email} has been locked.` };
   } catch (error) {
@@ -130,6 +134,10 @@ async unlockEmployee(id: string, body: { password: string }) {
     await this.prisma.employee.update({
       where: { id },
       data: { isLocked: false },
+       include:{
+        company:true,
+        permissions:true
+      }
     });
 
     return { message: 'Employee unlocked successfully' };
@@ -192,7 +200,10 @@ async unlockEmployee(id: string, body: { password: string }) {
         is2FA:
           typeof data.is2FA === 'string' ? JSON.parse(data.is2FA) : data.is2FA,
       },
-      include: { company: true },
+       include:{
+        company:true,
+        permissions:true
+      }
     });
   }
 
@@ -200,6 +211,15 @@ async unlockEmployee(id: string, body: { password: string }) {
  async findOne(employeeId: string) {
     const employee = await this.prisma.employee.findUnique({
       where: { id: employeeId },
+      include:{
+        company:true,
+        permissions:{
+          include:{
+employee:true,
+permission:true,
+          }
+        }
+      }
     });
     return employee;
   }

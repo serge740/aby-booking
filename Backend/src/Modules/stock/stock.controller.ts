@@ -10,6 +10,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   DualAuthGuard,
@@ -17,18 +18,37 @@ import {
 } from 'src/Guards/dual-auth.guard';
 import { StockService } from './stock.service';
 import { StockGateway } from './stock.gateway';
-
+import { EmployeeService } from '../employee/employee.service';
 @Controller('stock')
 @UseGuards(DualAuthGuard)
 export class StockController {
   constructor(
     private readonly stockService: StockService,
+    private readonly employeeService: EmployeeService,
     private readonly stockGateway: StockGateway,
   ) {}
 
+  // 🔹 Helper: always resolve companyId correctly
+  private async resolveCompanyId(req: RequestWithCompanyEmployee): Promise<string> {
+    if (req.employee?.id) {
+      const employee = await this.employeeService.findOne(req.employee.id);
+      if (!employee) {
+        throw new BadRequestException('Employee not Found');
+      }
+      return employee.companyId as string;
+    }
+
+    if (req.company?.id) {
+      return req.company.id;
+    }
+
+    throw new BadRequestException('Company not Found');
+  }
+
+  // ================= CREATE =================
   @Post()
   async create(@Req() req: RequestWithCompanyEmployee, @Body() body: any) {
-    const companyId = req.company?.id || body.companyId;
+    const companyId = await this.resolveCompanyId(req);
     const employeeId = req.employee?.id || body.employeeId;
 
     const stock = await this.stockService.create({
@@ -40,59 +60,61 @@ export class StockController {
       unit: body.unit,
       purchasingPrice: body.purchasingPrice,
       subquantity: body.subquantity,
-
-        purpose: body.purpose,
-  sellingPrice: body.sellingPrice,
-  reoderLevel: body.reoderLevel,
-
+      purpose: body.purpose,
+      sellingPrice: body.sellingPrice,
+      reoderLevel: body.reoderLevel,
       description: body.description,
     });
 
     this.stockGateway.notifyCreated(stock);
-
     return stock;
   }
 
+  // ================= FIND ALL =================
   @Get()
-  findAll(@Req() req: RequestWithCompanyEmployee) {
-    return req.company
-      ? this.stockService.findAll(req.company.id)
-      : this.stockService.findAllByEmployee(req.employee.id);
+  async findAll(@Req() req: RequestWithCompanyEmployee) {
+    const companyId = await this.resolveCompanyId(req);
+    return this.stockService.findAll(companyId);
   }
+
+  // ================= FIND BY PURPOSE =================
   @Get('/purpose/:purpose')
-  findAllByPurpose(@Param('purpose') purpose:'EATING' | 'DRINKING' ,@Req() req: RequestWithCompanyEmployee) {
-    return req.company
-      ? this.stockService.findAllByPurpsose(req.company.id,purpose)
-      : this.stockService.findAllByPurpsose(req.company.id,purpose);
+  async findAllByPurpose(
+    @Param('purpose') purpose: 'EATING' | 'DRINKING',
+    @Req() req: RequestWithCompanyEmployee,
+  ) {
+    const companyId = await this.resolveCompanyId(req);
+    return this.stockService.findAllByPurpsose(companyId, purpose);
   }
 
+  // ================= FIND ONE =================
   @Get(':id')
-  findOne(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
-    return req.company
-      ? this.stockService.findOne(id, req.company.id)
-      : this.stockService.findOneByEmployee(id, req.employee.id);
+  async findOne(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
+    const companyId = await this.resolveCompanyId(req);
+    return this.stockService.findOne(id, companyId);
   }
 
+  // ================= UPDATE =================
   @Put(':id')
   async update(
     @Param('id') id: string,
     @Req() req: RequestWithCompanyEmployee,
     @Body() body: any,
   ) {
-    const ownerId = req.company?.id || req.employee?.id;
+    const companyId = await this.resolveCompanyId(req);
 
-    const updated = await this.stockService.update(id, ownerId, body);
+    const updated = await this.stockService.update(id, companyId, body);
     this.stockGateway.notifyUpdated(updated);
-
     return updated;
   }
 
+  // ================= DELETE =================
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string, @Req() req: RequestWithCompanyEmployee) {
-    const ownerId = req.company?.id || req.employee?.id;
+    const companyId = await this.resolveCompanyId(req);
 
-    await this.stockService.delete(id, ownerId);
+    await this.stockService.delete(id, companyId);
     this.stockGateway.notifyDeleted(id);
   }
 }

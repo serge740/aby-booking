@@ -26,6 +26,7 @@ import { CompanyNotificationModule } from './Modules/company-notification/compan
 import { PushNotificationsModule } from './Modules/push-notification/push-notification.module';
 import { StockModule } from './Modules/stock/stock.module';
 import { RequisitionModule } from './Modules/requisition/requisition.module';
+import { PermissionModule } from './Modules/permissions/permission.module';
 
 
 @Module({
@@ -57,7 +58,8 @@ import { RequisitionModule } from './Modules/requisition/requisition.module';
     CompanyNotificationModule,
     PushNotificationsModule,
     StockModule,
-    RequisitionModule
+    RequisitionModule,
+    PermissionModule,
   ],
   controllers: [],
 })
